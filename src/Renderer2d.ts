@@ -40,16 +40,33 @@ class Renderer2d {
     if (this.ctx) {
       this.ctx.clearRect(0, 0, this.element?.width ?? 0, this.element?.height ?? 0);
 
-      const node1 = store.graph.nodes[0];
-      const node2 = store.graph.nodes[1];
+      for (const edge of store.graph.edges) {
+        const startX = edge.output.node.x + edge.output.offsetX;
+        const startY = edge.output.node.y + edge.output.offsetY;
 
-      this.ctx.beginPath();
-      // this.ctx.moveTo(node1.x * this.scale[0], node1.y * this.scale[1]);
-      // this.ctx.lineTo(node2.x * this.scale[0], node2.y * this.scale[1]);
-      this.ctx.moveTo(node1.x, node1.y);
-      this.ctx.lineTo(node2.x, node2.y);
-      this.ctx.strokeStyle = "white";
-      this.ctx.stroke();
+        const endX = edge.input.node.x + edge.input.offsetX;
+        const endY = edge.input.node.y + edge.input.offsetY;
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(startX, startY);
+        this.ctx.lineTo(startX + 10, startY);
+        this.ctx.lineTo(endX - 10, endY);
+        this.ctx.lineTo(endX, endY);
+        this.ctx.strokeStyle = "white";
+        this.ctx.stroke();
+      }
+
+      if (store.graph.dragConnector !== null) {
+        const point1 = store.graph.dragConnector[0];
+        const point2 = store.graph.dragConnector[1];
+
+        this.ctx.beginPath();
+        this.ctx.moveTo(point1[0], point1[1]);
+        this.ctx.lineTo(point1[0] + 10, point1[1])
+        this.ctx.lineTo(point2[0], point2[1]);
+        this.ctx.strokeStyle = "white";
+        this.ctx.stroke();
+      }
     }
 
     requestPostAnimationFrame(this.updateFrame)

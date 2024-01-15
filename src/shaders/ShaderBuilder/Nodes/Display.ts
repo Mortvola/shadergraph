@@ -3,7 +3,7 @@ import OperationNode from "../OperationNode";
 
 class Display extends OperationNode {
   constructor(id: number) {
-    super('display', id)
+    super('display', 'Display', id)
 
     this.inputPorts = [
       new InputPort(this, 'vec4f', 'fragment'),

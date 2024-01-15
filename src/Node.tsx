@@ -1,6 +1,10 @@
 import React from 'react';
-import GraphNode from './State/GraphNode';
 import { observer } from 'mobx-react-lite';
+import styles from './Node.module.scss';
+import NodeInputPort from './NodeInputPort';
+import NodeOutputPort from './NodeOutputPort';
+import GraphNode from './shaders/ShaderBuilder/GraphNode';
+import { isOperationNode } from './shaders/ShaderBuilder/Types';
 
 type PropsType = {
   node: GraphNode,
@@ -54,7 +58,33 @@ const Node: React.FC<PropsType> = observer(({
       onLostPointerCapture={handleLostPointerCapture}
       onPointerMoveCapture={handlePointerMoveCapture}
     >
-      Test
+      <div className={styles.node}>
+        <div className={styles.title}>{node.name}</div>
+        {
+          isOperationNode(node)
+            ? (
+              <div className={styles.body}>
+                <div className={styles.inputports}>
+                  {
+                    node.inputPorts.map((p) => (
+                      <NodeInputPort port={p} />
+                    ))
+                  }
+                </div>
+                <div>
+                </div>
+                <div className={styles.outputports}>
+                  {
+                    node.outputPort
+                      ? <NodeOutputPort port={node.outputPort} />
+                      : null
+                  }
+                </div>
+              </div>                  
+            )
+            : null
+        }
+      </div>
     </div>
   )
 })

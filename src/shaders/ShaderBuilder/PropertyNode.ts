@@ -3,8 +3,6 @@ import OutputPort from "./OutputPort";
 import { Type } from "./Types";
 
 class PropertyNode extends GraphNode {
-  name: string;
-
   dataType: Type;
 
   value: string | number | [number, number] | [number, number, number] | [number, number, number, number];
@@ -12,7 +10,7 @@ class PropertyNode extends GraphNode {
   outputPort: OutputPort;
 
   constructor(name: string, dataType: Type, value: string | number | [number, number], id: number) {
-    super('property', id)
+    super('property', name, id)
 
     this.name = name;
     this.dataType = dataType;

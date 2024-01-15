@@ -4,7 +4,7 @@ import OutputPort from "../OutputPort";
 
 class Multiply extends OperationNode {
   constructor(id: number) {
-    super('Multiply', id)
+    super('Multiply', 'Multiply', id)
 
     this.inputPorts = [
       new InputPort(this, 'vec2f', 'A'),

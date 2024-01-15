@@ -13,6 +13,10 @@ export interface InputPortInterface {
 
   edge: GraphEdgeInterface | null;
 
+  offsetX: number;
+
+  offsetY: number;
+
   getVarname(): string;
 };
 
@@ -26,12 +30,20 @@ export interface OutputPortInterface {
   varName: string | null;
 
   edge: GraphEdgeInterface | null;
+  
+  offsetX: number;
+
+  offsetY: number;  
 };
 
 export interface GraphNodeInterface {
   type: NodeType;
 
   id: number;
+
+  x: number;
+  
+  y: number;
 }
 
 export interface OperationNodeInterface extends GraphNodeInterface {
@@ -41,6 +53,11 @@ export interface OperationNodeInterface extends GraphNodeInterface {
 
   output(): string;
 }
+
+export const isOperationNode = (r: unknown): r is OperationNodeInterface => (
+  (r as OperationNodeInterface).inputPorts !== undefined
+  && (r as OperationNodeInterface).outputPort !== undefined
+)
 
 export interface GraphEdgeInterface {  
   output: OutputPortInterface;

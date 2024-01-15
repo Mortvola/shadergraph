@@ -3,8 +3,8 @@ import OperationNode from "../OperationNode";
 import OutputPort from "../OutputPort";
 
 class SampleTexture extends OperationNode {
-  constructor(id: number) {
-    super('SampleTexture', id)
+  constructor(id?: number) {
+    super('SampleTexture', 'SampleTexture', id)
 
     this.inputPorts = [
       new InputPort(this, 'texture2D', 'texture'),

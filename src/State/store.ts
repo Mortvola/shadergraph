@@ -4,8 +4,11 @@ import Graph from "./Graph";
 class Store {
   graph: Graph;
 
+  dragMap: Map<string, Object>;
+
   constructor() {
     this.graph = new Graph();
+    this.dragMap = new Map();
   }
 }
 

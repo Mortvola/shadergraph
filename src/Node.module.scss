@@ -1,0 +1,43 @@
+.node {
+  display: grid;
+  grid-template-rows: max-content minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+
+  .title {
+    height: max-content;
+    width: 100%;
+    border-bottom: thin black solid;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .body {
+    min-height: 5rem;
+    height: 100%;
+    width: 100%;
+
+    display: grid;
+    grid-template-columns: 5rem 1rem 5rem;
+    grid-template-rows: minmax(0, 1fr);
+
+    .inputports {
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.5rem;
+      padding-top: 0.5rem;
+    }
+  
+    .outputports {
+      display: flex;
+      flex-direction: column;
+      row-gap: 0.5rem;
+      padding-top: 0.5rem;      
+    }  
+  }
+
+  .inputport {
+    border: thin black solid;
+  }
+}

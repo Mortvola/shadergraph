@@ -11,6 +11,10 @@ class OutputPort implements OutputPortInterface {
 
   edge: GraphEdgeInterface | null = null;
 
+  offsetX = 0;
+
+  offsetY = 0;
+  
   constructor(node: GraphNodeInterface, type: Type, name: string) {
     this.node = node;
     this.type = type;

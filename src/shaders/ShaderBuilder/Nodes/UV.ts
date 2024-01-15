@@ -3,7 +3,7 @@ import OutputPort from "../OutputPort";
 
 class UV extends OperationNode {
   constructor(id?: number) {
-    super('uv', id)
+    super('uv', 'UV', id)
 
     this.outputPort = new OutputPort(this, 'vec2f', 'uv');
     this.outputPort.varName = 'vertexOut.texcoord';

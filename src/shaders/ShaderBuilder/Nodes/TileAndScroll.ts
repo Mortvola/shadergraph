@@ -3,8 +3,8 @@ import OperationNode from "../OperationNode";
 import OutputPort from "../OutputPort";
 
 class TileAndScroll extends OperationNode {
-  constructor(id: number) {
-    super('TileAndScroll', id)
+  constructor(id?: number) {
+    super('TileAndScroll', 'TileAndScroll', id)
 
     this.inputPorts = [
       new InputPort(this, 'vec2f', 'uv'),
