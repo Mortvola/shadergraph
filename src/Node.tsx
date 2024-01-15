@@ -1,13 +1,21 @@
 import React from 'react';
+import GraphNode from './State/GraphNode';
+import { observer } from 'mobx-react-lite';
 
-const Node: React.FC = () => {
+type PropsType = {
+  node: GraphNode,
+}
+
+const Node: React.FC<PropsType> = observer(({
+  node,
+}) => {
   const getStyle = (l: number, t: number) => (
     { left: l, top: t }
   )
 
   const dragRef = React.useRef<HTMLDivElement | null>(null);
   const [dragging, setDragging] = React.useState<boolean>(false);
-  const [position, setPosition] = React.useState<{ left: number, top: number }>({ left: 100, top: 100 })
+  // const [position, setPosition] = React.useState<{ left: number, top: number }>({ left: 100, top: 100 })
   const [start, setStart] = React.useState<{ x: number, y: number, top: number, left: number }>({ x: 0, y: 0, top: 0, left: 0});
 
   const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {
@@ -31,7 +39,8 @@ const Node: React.FC = () => {
 
       if (element) {
         const delta = { x: event.clientX - start.x, y: event.clientY - start.y };
-        setPosition({ left: start.left + delta.x, top: start.top + delta.y })
+        // setPosition({ left: start.left + delta.x, top: start.top + delta.y })
+        node.setPosition(start.left + delta.x, start.top + delta.y);
       }
     }
   }
@@ -40,7 +49,7 @@ const Node: React.FC = () => {
     <div
       ref={dragRef}
       className={`draggable`}
-      style={getStyle(position.left, position.top)}
+      style={getStyle(node.x, node.y)}
       onPointerDown={handlePointerDown}
       onLostPointerCapture={handleLostPointerCapture}
       onPointerMoveCapture={handlePointerMoveCapture}
@@ -48,6 +57,6 @@ const Node: React.FC = () => {
       Test
     </div>
   )
-}
+})
 
 export default Node;
