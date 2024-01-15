@@ -3,11 +3,10 @@ import { observer } from 'mobx-react-lite';
 import styles from './Node.module.scss';
 import NodeInputPort from './NodeInputPort';
 import NodeOutputPort from './NodeOutputPort';
-import GraphNode from './shaders/ShaderBuilder/GraphNode';
-import { isOperationNode } from './shaders/ShaderBuilder/Types';
+import { GraphNodeInterface, isOperationNode } from './shaders/ShaderBuilder/Types';
 
 type PropsType = {
-  node: GraphNode,
+  node: GraphNodeInterface,
 }
 
 const Node: React.FC<PropsType> = observer(({

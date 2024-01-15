@@ -1,12 +1,11 @@
-import { makeAutoObservable } from "mobx";
-import GraphNode from "../shaders/ShaderBuilder/GraphNode";
+import { makeAutoObservable, runInAction } from "mobx";
 import SampleTexture from "../shaders/ShaderBuilder/Nodes/SampleTexture";
 import TileAndScroll from "../shaders/ShaderBuilder/Nodes/TileAndScroll";
-import { InputPortInterface, OutputPortInterface } from "../shaders/ShaderBuilder/Types";
+import { GraphNodeInterface, InputPortInterface, OutputPortInterface } from "../shaders/ShaderBuilder/Types";
 import GraphEdge from "../shaders/ShaderBuilder/GraphEdge";
 
 class Graph {
-  nodes: GraphNode[] = [];
+  nodes: GraphNodeInterface[] = [];
 
   dragConnector: [number, number][] | null = null;
 
@@ -29,6 +28,12 @@ class Graph {
     const edge = new GraphEdge(outputPort, inputPort);
 
     this.edges.push(edge);
+  }
+
+  addNode(node: GraphNodeInterface) {
+    runInAction(() => {
+      this.nodes = this.nodes.concat(node);
+    })
   }
 }
 

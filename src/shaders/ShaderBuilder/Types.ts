@@ -37,6 +37,8 @@ export interface OutputPortInterface {
 };
 
 export interface GraphNodeInterface {
+  name: string;
+  
   type: NodeType;
 
   id: number;
@@ -44,6 +46,8 @@ export interface GraphNodeInterface {
   x: number;
   
   y: number;
+
+  setPosition(x: number, y: number): void;
 }
 
 export interface OperationNodeInterface extends GraphNodeInterface {

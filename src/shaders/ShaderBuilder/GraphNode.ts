@@ -31,7 +31,7 @@ class GraphNode implements GraphNodeInterface {
     return this.nextNodeId;
   }
 
-  setPosition(x: number, y: number) {
+  setPosition(x: number, y: number): void {
     runInAction(() => {
       this.x = x;
       this.y = y;
