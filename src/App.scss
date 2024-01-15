@@ -23,6 +23,13 @@ body {
   background-color: black;
 }
 
+canvas {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  position: relative;
+}
+
 .draggable {
   position: absolute;
   width: 100px;
@@ -30,4 +37,5 @@ body {
   background-color: white;
   user-select: none;
   border: black thin solid;
+  z-index: 1;
 }
