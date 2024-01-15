@@ -75,7 +75,7 @@ const NodeOutputPort: React.FC<PropsType> = ({
   return (
     <div
       ref={portRef}
-      className={styles.inputport}
+      className={styles.outputport}
       draggable onDragStart={handleDragStart}
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
