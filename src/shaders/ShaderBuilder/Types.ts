@@ -84,4 +84,6 @@ export interface GraphEdgeInterface {
   input: InputPortInterface;
 
   getVarName(): string;
+
+  setVarName(name: string): void;
 }

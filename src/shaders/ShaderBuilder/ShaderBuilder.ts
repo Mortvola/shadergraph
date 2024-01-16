@@ -4,9 +4,8 @@ import { common } from "../common";
 import { textureAttributes } from "../textureAttributes";
 import { texturedCommon } from "../texturedCommon";
 import { texturedVertex } from "../texturedVertex";
-import { GraphStageDescriptor, PropertyDescriptor } from "./GraphDescriptor";
+import { GraphDescriptor, GraphStageDescriptor, PropertyDescriptor } from "./GraphDescriptor";
 import GraphEdge from "./GraphEdge";
-import GraphNode from "./GraphNode";
 import Output from "./Nodes/Display";
 import Multiply from "./Nodes/Multiply";
 import SampleTexture from "./Nodes/SampleTexture";
@@ -15,7 +14,7 @@ import Time from "./Nodes/Time";
 import UV from "./Nodes/UV";
 import OperationNode from "./OperationNode";
 import PropertyNode from "./PropertyNode";
-import { GraphNodeInterface, OperationNodeInterface } from "./Types";
+import { GraphEdgeInterface, GraphNodeInterface, OperationNodeInterface, isPropertyNode } from "./Types";
 
 let nextVarId = 0;
 const getNextVarId = () => {
@@ -23,102 +22,151 @@ const getNextVarId = () => {
   return nextVarId;
 }
 
-export const buildGraph = (graph: GraphStageDescriptor): string => {
-  let body = '';
-  let nodes: GraphNode[] = [];
-  let outputNode: Output | null = null;
+export const buildGraph = (graph: GraphStageDescriptor): { nodes: GraphNodeInterface[], edges: GraphEdgeInterface[] } => {
+  let nodes: GraphNodeInterface[] = [];
+  let edges: GraphEdgeInterface[] = [];
 
   // Create the nodes
   for (const nodeDescr of graph.nodes) {
+    // Make sure the id does not already exist.
+    const prevNode = nodes.find((n) => nodeDescr.id === n.id);
+
+    if (prevNode) {
+      // The id already exists. Find the maxiumum node id and set it to the next one.
+      // This may cause links to drop but it is better than losing nodes.
+      const maxId = nodes.reduce((prev, n) => (
+        Math.max(prev, n.id)
+      ), 0);
+
+      nodeDescr.id = maxId + 1;
+    }
+
+    let node: GraphNodeInterface | null = null;
+
     switch (nodeDescr.type) {
       case 'SampleTexture':
-        nodes.push(new SampleTexture(nodeDescr.id));
+        node = new SampleTexture(nodeDescr.id)
         break;
 
       case 'property': 
         const propertyNode = nodeDescr as PropertyDescriptor;
-        nodes.push(new PropertyNode(propertyNode.name, propertyNode.dataType, propertyNode.value, nodeDescr.id))
+        node = new PropertyNode(propertyNode.name, propertyNode.dataType, propertyNode.value, nodeDescr.id)
         break;
 
       case 'display':
-        outputNode = new Output(nodeDescr.id);
+        node = new Output(nodeDescr.id);
         break;
 
       case 'uv':
-        nodes.push(new UV(nodeDescr.id));
+        node = new UV(nodeDescr.id)
         break;
 
       case 'time':
-        nodes.push(new Time(nodeDescr.id));
+        node = new Time(nodeDescr.id);
         break;
 
       case 'TileAndScroll':
-        nodes.push(new TileAndScroll(nodeDescr.id));
+        node = new TileAndScroll(nodeDescr.id);
         break;
 
       case 'Multiply':
-        nodes.push(new Multiply(nodeDescr.id));
+        node = new Multiply(nodeDescr.id);
         break;
+    }
+
+    if (node) {
+      node.x = nodeDescr.x ?? 0;
+      node.y = nodeDescr.y ?? 0;
+
+      nodes.push(node);
     }
   }
 
-  if (outputNode) {
-    nodes = [
-      outputNode,
-      ...nodes,
-    ]
+  for (const edgeDescr of graph.edges) {
+    const outputNode = nodes.find((n) => n.id === edgeDescr[0].id) as OperationNode;
+    const inputNode = nodes.find((n) => n.id === edgeDescr[1].id) as OperationNode;
 
-    nextVarId = 0;
+    if (outputNode && inputNode) {
+      const inputPort = inputNode.inputPorts.find((p) => p.name === edgeDescr[1].port);
 
-    const operations: GraphNode[] = [];
-
-    for (const inputNode of nodes) {
-      if (inputNode.type === 'property') {
-
-      }
-      else {
-        const inputOperation = inputNode as OperationNode;
-
-        // Find input edges for each of the node's input ports
-        for (const inputPort of inputOperation.inputPorts) {
-          if (inputPort.edge === null) {
-            const edge = graph.edges.find((e) => e[1].graphNodeId === inputOperation!.id && e[1].port === inputPort.name)
-
-            if (edge) {
-              // Follow edge to get the output from the attached node.
-              const other = nodes.find((n) => n.id === edge[0].graphNodeId);
-
-              if (other) {
-                const varName = `v${getNextVarId()}`
-
-                if (other.type === 'property') {
-                  const propertyNode = other as PropertyNode;
-
-                  const edge = new GraphEdge(propertyNode.outputPort, inputPort);
-                  if (edge.getVarName() === '') {
-                    edge.setVarName(varName);
-                  }
-                }
-                else {
-                  // Assign a variable name to the output
-                  const outputOperation = other as OperationNode;
-                  var outputPort = outputOperation.outputPort
-
-                  if (outputPort) {
-                    const edge = new GraphEdge(outputPort, inputPort);
-                    if (edge.getVarName() === '') {
-                      edge.setVarName(varName)
-                    }
-  
-                    operations.push(inputNode);  
-                  }
-                }
-              }
-            }
-          }
-        }
+      // Make sure we have an output port, an input port and the input port does
+      // not currently have an assigned edge.
+      if (outputNode.outputPort && inputPort && !inputPort.edge) {
+        const edge = new GraphEdge(outputNode.outputPort, inputPort);
+        edges.push(edge);
       }
     }
+  }
+
+  return { nodes, edges }
+}
+
+// const assignVariables = (nodes: GraphNodeInterface[]) => {
+//   // Find the output node
+//   const outputNode = nodes.find((n) => n.type === 'display');
+
+//   if (outputNode) {
+//     let stack: GraphNodeInterface[] = [outputNode];
+
+//     while (stack.length > 0) {
+//       const inputNode = stack[0];
+//       stack = stack.slice(1)
+
+//       if (inputNode.type === 'property') {
+
+//       }
+//       else {
+//         const inputOperation = inputNode as OperationNode;
+
+//         // Find input edges for each of the node's input ports
+//         for (const inputPort of inputOperation.inputPorts) {
+//           if (inputPort.edge === null) {
+//             const edge = graph.edges.find((e) => e[1].id === inputOperation!.id && e[1].port === inputPort.name)
+
+//             if (edge) {
+//               // Follow edge to get the output from the attached node.
+//               const other = nodes.find((n) => n.id === edge[0].id);
+
+//               if (other) {
+//                 const varName = `v${getNextVarId()}`
+
+//                 if (other.type === 'property') {
+//                   const propertyNode = other as PropertyNode;
+
+//                   const edge = new GraphEdge(propertyNode.outputPort, inputPort);
+//                   if (edge.getVarName() === '') {
+//                     edge.setVarName(varName);
+//                   }
+//                 }
+//                 else {
+//                   // Assign a variable name to the output
+//                   const outputOperation = other as OperationNode;
+//                   var outputPort = outputOperation.outputPort
+
+//                   if (outputPort) {
+//                     const edge = new GraphEdge(outputPort, inputPort);
+//                     if (edge.getVarName() === '') {
+//                       edge.setVarName(varName)
+//                     }
+//                   }
+//                 }
+//               }
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+export const generateShaderCode = (nodes: GraphNodeInterface[]): string => {
+  let body = '';
+
+  // Find the output node
+  const outputNode = nodes.find((n) => n.type === 'display');
+
+  if (outputNode) {
+    nextVarId = 0;
 
     // Output the instructions.
     let stack: GraphNodeInterface[] = [outputNode];
@@ -129,14 +177,22 @@ export const buildGraph = (graph: GraphStageDescriptor): string => {
 
       if (node.type !== 'property') {
         const operationNode = (node as OperationNodeInterface);
-        const text = operationNode.output();
-        body = `${text} ${body}`;
 
+        // Push the input nodes onto the stack
+        // and generate variables.
         for (const input of operationNode.inputPorts) {
           if (input.edge) {
+            if (input.edge.getVarName() === '') {
+              const varName = `v${getNextVarId()}`
+              input.edge.setVarName(varName);
+            }
+
             stack.push(input.edge.output.node);
           }
         }
+
+        const text = operationNode.output();
+        body = text.concat(body); // `${text} ${body}`;
       }
     }
   }
@@ -148,7 +204,9 @@ export const buildFromGraph = (materialDescriptor: MaterialDescriptor) => {
   let body = '';
 
   if (materialDescriptor.graph?.fragment) {
-    body = buildGraph(materialDescriptor.graph?.fragment);
+    const  { nodes } = buildGraph(materialDescriptor.graph?.fragment);
+
+    body = generateShaderCode(nodes);
   }
 
   const code = `
@@ -177,4 +235,42 @@ export const buildFromGraph = (materialDescriptor: MaterialDescriptor) => {
   })
 
   return shaderModule;
+}
+
+export const createDescriptor = (nodes: GraphNodeInterface[], edges: GraphEdgeInterface[]): GraphDescriptor => {
+  const descriptor: GraphDescriptor = {
+    vertex: {
+      nodes: [],
+      edges: [],
+    },
+
+    fragment: {
+      nodes: nodes.map((n) => {
+        if (isPropertyNode(n)) {
+          return ({
+            id: n.id,
+            type: n.type,  
+            name: n.name,
+            dataType: n.dataType,
+            value: n.value,
+            x: n.x,
+            y: n.y,
+          })
+        }
+
+        return ({
+          id: n.id,
+          type: n.type,
+          x: n.x,
+          y: n.y,
+        })
+      }),
+
+      edges: edges.map((e) => (
+        [{ id: e.output.node.id, port: e.output.name}, { id: e.input.node.id, port: e.input.name}]
+      ))
+    }
+  }
+
+  return descriptor;
 }

@@ -4,6 +4,7 @@ import styles from './Node.module.scss';
 import NodeInputPort from './NodeInputPort';
 import NodeOutputPort from './NodeOutputPort';
 import { GraphNodeInterface, isOperationNode, isPropertyNode } from './shaders/ShaderBuilder/Types';
+import { useStores } from './State/store';
 
 type PropsType = {
   node: GraphNodeInterface,
@@ -12,6 +13,7 @@ type PropsType = {
 const Node: React.FC<PropsType> = observer(({
   node,
 }) => {
+  const { graph } = useStores();
   const getStyle = (l: number, t: number) => (
     { left: l, top: t }
   )
@@ -43,7 +45,7 @@ const Node: React.FC<PropsType> = observer(({
       if (element) {
         const delta = { x: event.clientX - start.x, y: event.clientY - start.y };
         // setPosition({ left: start.left + delta.x, top: start.top + delta.y })
-        node.setPosition(start.left + delta.x, start.top + delta.y);
+        graph.setNodePosition(node, start.left + delta.x, start.top + delta.y);
       }
     }
   }

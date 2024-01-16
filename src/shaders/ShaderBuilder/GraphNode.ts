@@ -17,6 +17,10 @@ class GraphNode implements GraphNodeInterface {
     this.name = name;
     this.id = id ?? GraphNode.getNextNodeId();
 
+    if (this.id >= GraphNode.nextNodeId) {
+      GraphNode.nextNodeId = this.id + 1;
+    }
+
     makeObservable(this, {
       x: observable,
       y: observable,
@@ -28,7 +32,7 @@ class GraphNode implements GraphNodeInterface {
   static getNextNodeId(): number {
     GraphNode.nextNodeId += 1;
 
-    return this.nextNodeId;
+    return GraphNode.nextNodeId;
   }
 
   setPosition(x: number, y: number): void {

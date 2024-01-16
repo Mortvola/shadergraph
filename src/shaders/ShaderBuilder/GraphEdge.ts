@@ -1,4 +1,3 @@
-import GraphNode from "./GraphNode";
 import InputPort from "./InputPort";
 import OutputPort from "./OutputPort";
 import { GraphEdgeInterface } from "./Types";
@@ -20,7 +19,7 @@ class GraphEdge implements GraphEdgeInterface {
     return this.output.varName ?? '';
   }
 
-  setVarName(name: string) {
+  setVarName(name: string): void {
     this.output.varName = name;
   }
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
+import { GraphDescriptor } from "../shaders/ShaderBuilder/GraphDescriptor";
 
 class Store {
   graph: Graph;
@@ -10,7 +11,14 @@ class Store {
   modeler: Modeler;
 
   constructor() {
-    this.graph = new Graph();
+    let descriptor: GraphDescriptor | undefined = undefined;
+
+    const savedItem = localStorage.getItem('graph');
+    if (savedItem) {
+      descriptor = JSON.parse(savedItem);
+    }
+
+    this.graph = new Graph(descriptor);
     this.dragMap = new Map();
     this.modeler = new Modeler();
   }

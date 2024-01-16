@@ -1,10 +1,12 @@
 import { NodeType, Type } from "./Types";
 
-export type GraphPortDescriptor = { graphNodeId: number, port: string };
+export type GraphPortDescriptor = { id: number, port: string };
 
 export type GraphEdgeDescriptor = [GraphPortDescriptor, GraphPortDescriptor];
 
 export type GraphNodeDescriptor = {
+  x: number,
+  y: number,
   id: number,
   type: NodeType,
 }

@@ -9,6 +9,21 @@ import ContextMenu from './ContextMenu/ContextMenu';
 const Container: React.FC = observer(() => {
   const { graph } = useStores();
 
+  // Save the grpah every five seconds if there have been changes.
+  React.useEffect(() => {
+    const timer  = setInterval(() => {
+      if (graph.changed) {
+        const descriptor = graph.createDescriptor();
+        localStorage.setItem('graph', JSON.stringify(descriptor))
+        graph.changed = false;  
+      }
+    }, 5000)
+
+    return () => {
+      clearInterval(timer);
+    }
+  }, [graph]);
+
   const [showMenu, setShowMenu] = React.useState<[number, number] | null>(null);
 
   const handleContextMenu: React.MouseEventHandler = (event) => {
