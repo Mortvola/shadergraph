@@ -11,11 +11,16 @@ import { downloadFbx } from "./LoadFbx";
 class Modeler {
   model: SceneNodeInterface | null = null;
 
-  async loadModel(url: string) {
-    this.model = await loadFbx(url);
+  loading = false;
 
-    if (this.model) {
-      renderer.addSceneNode(this.model);
+  async loadModel(url: string) {
+    if (!this.loading) {
+      this.loading = true;
+      this.model = await loadFbx(url);
+
+      if (this.model) {
+        renderer.addSceneNode(this.model);
+      }  
     }
   }
 
