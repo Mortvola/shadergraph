@@ -31,6 +31,7 @@ const Container: React.FC = observer(() => {
         ))
       }
       <div className="preview">
+        <button type="button">Upload</button>
         <Canvas3d />
       </div>
       {

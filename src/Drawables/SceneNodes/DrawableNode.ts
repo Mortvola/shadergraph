@@ -1,7 +1,6 @@
 import { Vec4, mat4, vec4 } from "wgpu-matrix";
 import DrawableInterface from "../DrawableInterface";
 import SceneNode from "./SceneNode";
-// import { PipelineArgs } from "../../Pipelines/PipelineArgs";
 import { DrawableNodeInterface, MaterialInterface } from "../../types";
 import { MaterialDescriptor } from "../../Materials/MaterialDescriptor";
 import Material from "../../Materials/Material";

@@ -369,6 +369,8 @@ export interface SceneNodeInterface {
   transform: Mat4;
 
   computeTransform(transform: Mat4, prepend?: boolean): Mat4;
+
+  setFromAngles(x: number, y: number, z: number): void;
 }
 
 export interface MaterialInterface {

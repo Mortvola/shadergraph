@@ -18,7 +18,7 @@ import Line from './Drawables/Line';
 // import { Occupant } from './Workers/PathPlannerTypes';
 import DrawableNode from './Drawables/SceneNodes/DrawableNode';
 import SceneNode from './Drawables/SceneNodes/SceneNode';
-import { ActionInfo, ActorInterface, FocusInfo, WorldInterface, EpisodeInfo } from './types';
+import { ActionInfo, ActorInterface, FocusInfo, WorldInterface, EpisodeInfo, SceneNodeInterface } from './types';
 import { lineMaterial } from './Materials/Line';
 import {
   makeShaderDataDefinitions,
@@ -237,6 +237,10 @@ class Renderer implements WorldInterface {
           timeBuffer,
       ],
     }
+  }
+
+  addSceneNode(node: SceneNodeInterface) {
+    this.scene.addNode(node);
   }
 
   // startTurn() {

@@ -1,8 +1,11 @@
 import React from 'react';
 import { gpu } from './Gpu';
 import { renderer } from './Main';
+import { useStores } from './State/store';
 
 const Canvas3d: React.FC = () => {
+  const { modeler } = useStores();
+
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
 
   React.useEffect(() => {
@@ -16,6 +19,10 @@ const Canvas3d: React.FC = () => {
       })()  
     }
   }, [])
+
+  React.useEffect(() => {
+    modeler.loadModel('./models/SoulerCoaster.fbx')
+  }, [modeler]);
 
   React.useEffect(() => {
     const element = canvasRef.current;

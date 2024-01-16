@@ -1,10 +1,11 @@
 import { mat4, vec3, Vec4, Mat4, quat, Quat } from 'wgpu-matrix';
 import { getEulerAngles } from '../../Math';
 import { isDrawableNode } from './utils';
+import { SceneNodeInterface } from '../../types';
 
 export const rotationOrder: quat.RotationOrder = 'xyz';
 
-class SceneNode {
+class SceneNode implements SceneNodeInterface {
   uuid = crypto.randomUUID() as string;
 
   name = '';
@@ -43,7 +44,7 @@ class SceneNode {
     this.angles = getEulerAngles(this.qRotate);
   }
 
-  setFromAngles(x: number, y: number, z: number) {
+  setFromAngles(x: number, y: number, z: number): void {
     this.qRotate = quat.fromEuler(x, y, z, rotationOrder);
     this.angles = [x, y, z];
   }
