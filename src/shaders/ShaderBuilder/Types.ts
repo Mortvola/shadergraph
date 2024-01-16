@@ -38,7 +38,7 @@ export interface OutputPortInterface {
 
 export interface GraphNodeInterface {
   name: string;
-  
+
   type: NodeType;
 
   id: number;
@@ -58,9 +58,24 @@ export interface OperationNodeInterface extends GraphNodeInterface {
   output(): string;
 }
 
+export interface PropertyNodeInterface extends GraphNodeInterface {
+  dataType: Type;
+
+  value: string | number | [number, number] | [number, number, number] | [number, number, number, number];
+
+  outputPort: OutputPortInterface;
+
+  readonly: boolean;
+}
+
 export const isOperationNode = (r: unknown): r is OperationNodeInterface => (
   (r as OperationNodeInterface).inputPorts !== undefined
   && (r as OperationNodeInterface).outputPort !== undefined
+)
+
+export const isPropertyNode = (r: unknown): r is PropertyNodeInterface => (
+  (r as PropertyNodeInterface).dataType !== undefined
+  && (r as PropertyNodeInterface).value !== undefined
 )
 
 export interface GraphEdgeInterface {  

@@ -27,7 +27,6 @@ const NodeOutputPort: React.FC<PropsType> = ({
   }, [port]);
 
   const handleDragStart: React.DragEventHandler = (event) => {
-    console.log('drag start');
     event.dataTransfer.dropEffect = 'link';
     
     const key = `${port.node.id}:${port.name}`;

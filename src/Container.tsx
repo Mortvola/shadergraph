@@ -12,7 +12,6 @@ const Container: React.FC = observer(() => {
   const [showMenu, setShowMenu] = React.useState<[number, number] | null>(null);
 
   const handleContextMenu: React.MouseEventHandler = (event) => {
-    console.log('context mnenu')
     if (!event.shiftKey) {
       event.preventDefault();
       setShowMenu([event.clientX, event.clientY]);
@@ -28,7 +27,7 @@ const Container: React.FC = observer(() => {
       <Canvas2d />
       {
         graph.nodes.map((gn) => (
-          <Node node={gn} />
+          <Node key={gn.id} node={gn} />
         ))
       }
       <div className="preview">

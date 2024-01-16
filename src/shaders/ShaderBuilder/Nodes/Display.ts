@@ -2,7 +2,7 @@ import InputPort from "../InputPort";
 import OperationNode from "../OperationNode";
 
 class Display extends OperationNode {
-  constructor(id: number) {
+  constructor(id?: number) {
     super('display', 'Display', id)
 
     this.inputPorts = [

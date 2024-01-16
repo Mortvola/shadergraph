@@ -1,15 +1,17 @@
 import GraphNode from "./GraphNode";
 import OutputPort from "./OutputPort";
-import { Type } from "./Types";
+import { PropertyNodeInterface, Type } from "./Types";
 
-class PropertyNode extends GraphNode {
+class PropertyNode extends GraphNode implements PropertyNodeInterface {
   dataType: Type;
 
   value: string | number | [number, number] | [number, number, number] | [number, number, number, number];
 
   outputPort: OutputPort;
 
-  constructor(name: string, dataType: Type, value: string | number | [number, number], id: number) {
+  readonly = false;
+
+  constructor(name: string, dataType: Type, value: string | number | [number, number], id?: number) {
     super('property', name, id)
 
     this.name = name;

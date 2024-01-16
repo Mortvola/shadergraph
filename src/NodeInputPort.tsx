@@ -34,8 +34,6 @@ const NodeInputPort: React.FC<PropsType> = ({
 
     const data = event.dataTransfer.getData("application/output-port");
 
-    console.log(data);
-
     const outputPort = dragMap.get(data) as OutputPortInterface;
 
     if (outputPort) {

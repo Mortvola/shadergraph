@@ -18,16 +18,9 @@ const ContextMenu: React.FC<PropsType> = ({
     <div className={styles.contextmenu} style={{ left: x, top: y }}>
       {
         menuItems.map((m) => (
-          <MenuItem item={m} x={x} y={y} />
+          <MenuItem key={m.name} item={m} x={x} y={y} />
         ))
       }
-      {/* <div onClick={handleAddSphereClick}>UV Sphere</div>
-      <div onClick={handleAddBoxClick}>Box</div>
-      <div onClick={handleAddTetrahedronClick}>Tetrahedon</div>
-      <div onClick={handleAddCylinderClick}>Cylinder</div>
-      <div onClick={handleAddConeClick}>Cone</div>
-      <div onClick={handleAddPlaneClick}>Plane</div>
-      <div onClick={handleAddTOrusClick}>Torus</div> */}
     </div>
   </div>
 )

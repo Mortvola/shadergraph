@@ -1,12 +1,14 @@
-import OperationNode from "../OperationNode";
 import OutputPort from "../OutputPort";
+import PropertyNode from "../PropertyNode";
 
-class Time extends OperationNode {
+class Time extends PropertyNode {
   constructor(id?: number) {
-    super('time', 'Time', id)
+    super('time', 'float', 'Time', id)
 
     this.outputPort = new OutputPort(this, 'float', 'time');
     this.outputPort.varName = 'time';
+
+    this.readonly = true;
   }
 }
 

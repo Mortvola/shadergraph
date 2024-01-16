@@ -3,6 +3,7 @@ import SampleTexture from "../shaders/ShaderBuilder/Nodes/SampleTexture";
 import TileAndScroll from "../shaders/ShaderBuilder/Nodes/TileAndScroll";
 import { GraphNodeInterface, InputPortInterface, OutputPortInterface } from "../shaders/ShaderBuilder/Types";
 import GraphEdge from "../shaders/ShaderBuilder/GraphEdge";
+import Display from "../shaders/ShaderBuilder/Nodes/Display";
 
 class Graph {
   nodes: GraphNodeInterface[] = [];
@@ -13,8 +14,7 @@ class Graph {
 
   constructor() {
     this.nodes = [
-      new SampleTexture(),
-      new TileAndScroll(),
+      new Display(),
     ];
 
     makeAutoObservable(this);
