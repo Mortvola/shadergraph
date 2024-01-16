@@ -5,6 +5,7 @@ import { useStores } from './State/store';
 import { observer } from 'mobx-react-lite';
 import Canvas2d from './Canvas2d';
 import ContextMenu from './ContextMenu/ContextMenu';
+import Preview from './Preview';
 
 const Container: React.FC = observer(() => {
   const { graph } = useStores();
@@ -72,10 +73,7 @@ const Container: React.FC = observer(() => {
           <Node key={gn.id} node={gn} />
         ))
       }
-      <div className="preview">
-        <button type="button">Upload</button>
-        <Canvas3d />
-      </div>
+      <Preview />
       {
         showMenu
           ? <ContextMenu x={showMenu[0]} y={showMenu[1]} onClose={handleMenuClose} />

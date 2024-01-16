@@ -42,13 +42,3 @@ canvas {
   width: max-content;
   height: max-content;
 }
-
-.preview {
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  right: 0;
-  bottom: 0;
-  display: grid;
-  grid-template-rows: max-content minmax(0, 1fr);
-}

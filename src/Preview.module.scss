@@ -1,0 +1,25 @@
+.preview {
+  width: 200px;
+  height: 200px;
+  display: grid;
+  grid-template-rows: max-content minmax(0, 1fr);
+
+  padding: 5px;
+  background-color: gray;
+  border-radius: 8px;
+  
+  user-select: none;
+
+  div:nth-child(1) {
+    background-color: white;
+    color: black;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+  }
+
+  div:nth-child(2) {
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    overflow: hidden;
+  }
+}

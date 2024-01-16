@@ -6,6 +6,7 @@ import NodeOutputPort from './NodeOutputPort';
 import { GraphNodeInterface, isOperationNode, isPropertyNode } from './shaders/ShaderBuilder/Types';
 import { useStores } from './State/store';
 import PropertyFields from './PropertyFields';
+import Draggable from './Draggable';
 
 type PropsType = {
   node: GraphNodeInterface,
@@ -15,47 +16,13 @@ const Node: React.FC<PropsType> = observer(({
   node,
 }) => {
   const { graph } = useStores();
-  const getStyle = (l: number, t: number) => (
-    { left: l, top: t }
-  )
-
-  const dragRef = React.useRef<HTMLDivElement | null>(null);
-  const [dragging, setDragging] = React.useState<boolean>(false);
-  const [start, setStart] = React.useState<{ x: number, y: number, top: number, left: number }>({ x: 0, y: 0, top: 0, left: 0});
-
-  const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
-    event.stopPropagation();
-  }
 
   const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {
-    event.stopPropagation();
-
     graph.selectNode(node)
-    const element = dragRef.current;
-
-    if (element) {
-      element.focus();
-      element.setPointerCapture(event.pointerId);
-      const rect = element.getBoundingClientRect();
-      setStart({ x: event.clientX, y: event.clientY, top: rect.top, left: rect.left });
-      setDragging(true);
-    }
   }
 
-  const handleLostPointerCapture: React.PointerEventHandler = (event) => {
-    setDragging(false);
-  }
-
-  const handlePointerMoveCapture: React.PointerEventHandler<HTMLDivElement> = (event) => {
-    if (dragging) {
-      const element = dragRef.current;
-
-      if (element) {
-        const delta = { x: event.clientX - start.x, y: event.clientY - start.y };
-        // setPosition({ left: start.left + delta.x, top: start.top + delta.y })
-        graph.setNodePosition(node, start.left + delta.x, start.top + delta.y);
-      }
-    }
+  const handleMove = (x: number, y: number) => {
+    graph.setNodePosition(node, x, y);
   }
 
   const renderNode = () => {
@@ -110,34 +77,18 @@ const Node: React.FC<PropsType> = observer(({
     return null;
   }
 
-  const handleContextMenu: React.MouseEventHandler = (event) => {
-    event.stopPropagation();
-
-    if (!event.shiftKey) {
-      event.preventDefault();
-    }
-  }
-
   return (
-    <div
-      ref={dragRef}
-      className="draggable"
-      style={getStyle(node.x, node.y)}
-      onPointerDown={handlePointerDown}
-      onLostPointerCapture={handleLostPointerCapture}
-      onPointerMoveCapture={handlePointerMoveCapture}
-      onClick={handleClick}
-      onContextMenu={handleContextMenu}
-    >
+    <Draggable position={node} onMove={handleMove}>
       <div
         className={`${styles.node} ${node === graph.selectedNode ? styles.selected : ''}`}
+        onPointerDown={handlePointerDown}
       >
         {
           renderNode()
         }
       </div>
-    </div>
-  )
+    </Draggable>
+  );
 })
 
 export default Node;
