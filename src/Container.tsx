@@ -24,6 +24,16 @@ const Container: React.FC = observer(() => {
     }
   }, [graph]);
 
+  const ref = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    const element = ref.current;
+
+    if (element) {
+      element.focus();
+    }
+  });
+
   const [showMenu, setShowMenu] = React.useState<[number, number] | null>(null);
 
   const handleContextMenu: React.MouseEventHandler = (event) => {
@@ -37,8 +47,25 @@ const Container: React.FC = observer(() => {
     setShowMenu(null)
   }
 
+  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
+    if (event.code === 'Backspace' && graph.selectedNode) {
+      graph.deleteNode(graph.selectedNode);
+    }
+  }
+
+  const handleClick = () => {
+    graph.selectNode(null);
+  }
+
   return (
-    <div className="App" onContextMenu={handleContextMenu}>
+    <div
+      ref={ref}
+      className="App"
+      onContextMenu={handleContextMenu}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      onClick={handleClick}
+    >
       <Canvas2d />
       {
         graph.nodes.map((gn) => (

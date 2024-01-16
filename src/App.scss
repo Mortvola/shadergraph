@@ -37,11 +37,10 @@ canvas {
 
 .draggable {
   position: absolute;
-  background-color: white;
   user-select: none;
-  border: black thin solid;
   z-index: 1;
-  border-radius: 8px;
+  width: max-content;
+  height: max-content;
 }
 
 .preview {

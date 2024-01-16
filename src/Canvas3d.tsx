@@ -12,8 +12,6 @@ const Canvas3d: React.FC = () => {
     const element = canvasRef.current;
 
     if (element) {
-      element.focus();
-
       (async () => {
         await renderer.setCanvas(element);
       })()  
@@ -58,7 +56,6 @@ const Canvas3d: React.FC = () => {
     <div className="canvas-wrapper">
       <canvas
         ref={canvasRef}
-        tabIndex={0}
       />
     </div>
   )

@@ -20,13 +20,20 @@ const Node: React.FC<PropsType> = observer(({
 
   const dragRef = React.useRef<HTMLDivElement | null>(null);
   const [dragging, setDragging] = React.useState<boolean>(false);
-  // const [position, setPosition] = React.useState<{ left: number, top: number }>({ left: 100, top: 100 })
   const [start, setStart] = React.useState<{ x: number, y: number, top: number, left: number }>({ x: 0, y: 0, top: 0, left: 0});
 
+  const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
+    event.stopPropagation();
+  }
+
   const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {
+    event.stopPropagation();
+
+    graph.selectNode(node)
     const element = dragRef.current;
 
     if (element) {
+      element.focus();
       element.setPointerCapture(event.pointerId);
       const rect = element.getBoundingClientRect();
       setStart({ x: event.clientX, y: event.clientY, top: rect.top, left: rect.left });
@@ -95,16 +102,24 @@ const Node: React.FC<PropsType> = observer(({
     return null;
   }
 
+  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
+    console.log(event.code)
+  }
+
   return (
     <div
       ref={dragRef}
-      className={`draggable`}
+      className="draggable"
       style={getStyle(node.x, node.y)}
       onPointerDown={handlePointerDown}
       onLostPointerCapture={handleLostPointerCapture}
       onPointerMoveCapture={handlePointerMoveCapture}
+      onClick={handleClick}
     >
-      <div className={styles.node}>
+      <div
+        className={`${styles.node} ${node === graph.selectedNode ? styles.selected : ''}`}
+        onKeyDown={handleKeyDown}
+      >
         <div className={styles.title}>{node.name}</div>
         {
           renderNode()

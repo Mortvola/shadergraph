@@ -63,14 +63,6 @@ const NodeOutputPort: React.FC<PropsType> = ({
     setDragKey(null);
   }
 
-  const handleMouseDown: React.MouseEventHandler = (event) => {
-    event.stopPropagation();
-  }
-
-  const handlePointerDown: React.PointerEventHandler = (event) => {
-    event.stopPropagation();
-  }
-
   return (
     <div
       ref={portRef}
@@ -78,8 +70,6 @@ const NodeOutputPort: React.FC<PropsType> = ({
       draggable onDragStart={handleDragStart}
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
-      onMouseDown={handleMouseDown}
-      onPointerDown={handlePointerDown}
     >
       <div>{ port.name }</div>
       <div>{ port.type }</div>
