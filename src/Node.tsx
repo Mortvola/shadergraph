@@ -5,6 +5,7 @@ import NodeInputPort from './NodeInputPort';
 import NodeOutputPort from './NodeOutputPort';
 import { GraphNodeInterface, isOperationNode, isPropertyNode } from './shaders/ShaderBuilder/Types';
 import { useStores } from './State/store';
+import PropertyFields from './PropertyFields';
 
 type PropsType = {
   node: GraphNodeInterface,
@@ -60,50 +61,61 @@ const Node: React.FC<PropsType> = observer(({
   const renderNode = () => {
     if (isOperationNode(node)) {
       return (
-        <div className={styles.body}>
-          <div className={styles.inputports}>
-            {
-              node.inputPorts.map((p) => (
-                <NodeInputPort key={p.name} port={p} />
-              ))
-            }
-          </div>
-          <div>
-          </div>
-          <div className={styles.outputports}>
-            {
-              node.outputPort
-                ? <NodeOutputPort port={node.outputPort} />
-                : null
-            }
-          </div>
-        </div>          
+        <>
+          <div className={styles.title}>{node.name}</div>
+          <div className={styles.body}>
+            <div className={styles.inputports}>
+              {
+                node.inputPorts.map((p) => (
+                  <NodeInputPort key={p.name} port={p} />
+                ))
+              }
+            </div>
+            <div>
+            </div>
+            <div className={styles.outputports}>
+              {
+                node.outputPort
+                  ? <NodeOutputPort port={node.outputPort} />
+                  : null
+              }
+            </div>
+          </div>    
+        </>      
       )
     }
 
     if (isPropertyNode(node)) {
       return (
-        <div className={styles.body}>
-          <div className={styles.inputports}>
+        <>
+          <div className={styles.property}>
+            <div className={styles.title}>{node.name}</div>
+              {
+                node.outputPort
+                  ? <NodeOutputPort port={node.outputPort} hideName />
+                  : null
+              }
           </div>
-          <div>
-          </div>
-          <div className={styles.outputports}>
+          <div className={styles.propertybody}>
             {
-              node.outputPort
-                ? <NodeOutputPort port={node.outputPort} />
+              !node.readonly
+                ? <PropertyFields node={node} />
                 : null
             }
           </div>
-        </div>          
+        </>
       )
     }
 
     return null;
   }
 
-  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
-    console.log(event.code)
+  const handleContextMenu: React.MouseEventHandler = (event) => {
+    event.stopPropagation();
+
+    if (!event.shiftKey) {
+      event.preventDefault();
+    }
   }
 
   return (
@@ -115,12 +127,11 @@ const Node: React.FC<PropsType> = observer(({
       onLostPointerCapture={handleLostPointerCapture}
       onPointerMoveCapture={handlePointerMoveCapture}
       onClick={handleClick}
+      onContextMenu={handleContextMenu}
     >
       <div
         className={`${styles.node} ${node === graph.selectedNode ? styles.selected : ''}`}
-        onKeyDown={handleKeyDown}
       >
-        <div className={styles.title}>{node.name}</div>
         {
           renderNode()
         }

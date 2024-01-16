@@ -5,10 +5,12 @@ import { OutputPortInterface } from './shaders/ShaderBuilder/Types';
 
 type PropsType = {
   port: OutputPortInterface,
+  hideName?: boolean,
 }
 
 const NodeOutputPort: React.FC<PropsType> = ({
   port,
+  hideName = false,
 }) => {
   const store = useStores();
   const { graph } = store;
@@ -70,7 +72,11 @@ const NodeOutputPort: React.FC<PropsType> = ({
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
     >
-      <div>{ port.name }</div>
+      {
+        !hideName
+          ? <div>{ port.name }</div>
+          : null
+      }
       <div>{ port.type }</div>
     </div>
   )

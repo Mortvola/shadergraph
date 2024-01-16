@@ -25,7 +25,7 @@
   }
 
   .body {
-    min-height: 5rem;
+    // min-height: 5rem;
     height: 100%;
     width: 100%;
 
@@ -50,6 +50,11 @@
     }  
   }
 
+  .propertybody {
+    width: max-content;
+    min-width: 10rem;
+  }
+
   .inputport {
     border-top: thin black solid;
     border-right: thin black solid;
@@ -60,11 +65,34 @@
   }
 
   .outputport {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     border-top: thin black solid;
     border-left: thin black solid;
     border-bottom: thin black solid;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
     overflow: hidden;
+  }
+
+  .property {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.vec2 {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: max-content;
+  column-gap: 0.5rem;
+
+  padding: 0.25rem;
+
+  input {
+    max-width: 3.5rem;
+    text-align: right;
   }
 }

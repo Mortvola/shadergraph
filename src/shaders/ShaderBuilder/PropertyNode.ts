@@ -1,3 +1,4 @@
+import { makeObservable, observable } from "mobx";
 import GraphNode from "./GraphNode";
 import OutputPort from "./OutputPort";
 import { PropertyNodeInterface, Type } from "./Types";
@@ -20,6 +21,10 @@ class PropertyNode extends GraphNode implements PropertyNodeInterface {
 
     this.outputPort = new OutputPort(this, dataType, name);
     this.outputPort.varName = this.getValueString();
+
+    makeObservable(this, {
+      value: observable,
+    })
   }
 
   getValueString(): string {
