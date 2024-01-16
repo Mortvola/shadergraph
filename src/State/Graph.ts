@@ -2,13 +2,10 @@ import { makeObservable, observable, runInAction } from "mobx";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OperationNodeInterface, OutputPortInterface, isOperationNode } from "../shaders/ShaderBuilder/Types";
 import GraphEdge from "../shaders/ShaderBuilder/GraphEdge";
 import Display from "../shaders/ShaderBuilder/Nodes/Display";
-import { buildGraph, createDescriptor, generateShaderCode } from "../shaders/ShaderBuilder/ShaderBuilder";
+import { buildGraph, createDescriptor } from "../shaders/ShaderBuilder/ShaderBuilder";
 import { GraphDescriptor } from "../shaders/ShaderBuilder/GraphDescriptor";
-import ShaderGraph from "../shaders/ShaderBuilder/ShaderGraph";
-import StageGraph from "../shaders/ShaderBuilder/StageGraph";
-import { MaterialInterface, PipelineInterface } from "../types";
+import { MaterialInterface } from "../types";
 import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
-import { pipelineManager } from "../Pipelines/PipelineManager";
 import Material from "../Materials/Material";
 
 class Graph {

@@ -6,7 +6,7 @@ import { GraphDescriptor } from "../shaders/ShaderBuilder/GraphDescriptor";
 class Store {
   graph: Graph;
 
-  dragMap: Map<string, Object>;
+  private dragObject: unknown | null = null;
 
   modeler: Modeler;
 
@@ -19,8 +19,15 @@ class Store {
     }
 
     this.graph = new Graph(descriptor);
-    this.dragMap = new Map();
     this.modeler = new Modeler();
+  }
+
+  setDragObject(object: unknown | null) {
+    this.dragObject = object;
+  }
+
+  getDragObject(): unknown | null {
+    return this.dragObject;
   }
 }
 

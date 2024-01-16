@@ -10,7 +10,8 @@ type PropsType = {
 const NodeOutputPort: React.FC<PropsType> = ({
   port,
 }) => {
-  const { graph, dragMap } = useStores();
+  const store = useStores();
+  const { graph } = store;
   const [startPoint, setStartPoint] = React.useState<[number, number] | null>(null);
   const [dragKey, setDragKey] = React.useState<string | null>(null);
   const portRef = React.useRef<HTMLDivElement | null>(null);
@@ -28,19 +29,17 @@ const NodeOutputPort: React.FC<PropsType> = ({
 
   const handleDragStart: React.DragEventHandler = (event) => {
     event.dataTransfer.dropEffect = 'link';
-    
-    const key = `${port.node.id}:${port.name}`;
-    dragMap.set(key, port);
-    setDragKey (key);
 
-    event.dataTransfer.setData("application/output-port", key);
+    store.setDragObject(port);
+
+    event.dataTransfer.setData("application/output-port", port.name);
 
     const element = portRef.current;
 
     if (element) {
       const rect = element.getBoundingClientRect();
       setStartPoint([rect.right, rect.top + rect.height / 2]);
-    }
+    }  
   }
 
   const handleDrag: React.DragEventHandler = (event) => {
@@ -51,7 +50,7 @@ const NodeOutputPort: React.FC<PropsType> = ({
       graph.setDragConnector(null)
 
       if (dragKey) {
-        dragMap.delete(dragKey);
+        store.setDragObject(null);
         setStartPoint(null);  
       }
     }

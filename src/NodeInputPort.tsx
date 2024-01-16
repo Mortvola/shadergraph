@@ -10,7 +10,8 @@ type PropsType = {
 const NodeInputPort: React.FC<PropsType> = ({
   port,
 }) => {
-  const { dragMap, graph, modeler } = useStores();
+  const store = useStores();
+  const { graph, modeler } = store;
   const portRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useLayoutEffect(() => {
@@ -34,23 +35,79 @@ const NodeInputPort: React.FC<PropsType> = ({
 
     const data = event.dataTransfer.getData("application/output-port");
 
-    const outputPort = dragMap.get(data) as OutputPortInterface;
+    if (data) {
+      const outputPort = store.getDragObject() as OutputPortInterface;
 
-    if (outputPort) {
-      graph.link(outputPort, port);
+      if (outputPort) {
+        graph.link(outputPort, port);
 
-      (async () => {
-        const material = await graph.generateMaterial();
+        (async () => {
+          const material = await graph.generateMaterial();
 
-        if (material) {
-          modeler.applyMaterial(material);
-        }
-      })()
+          if (material) {
+            modeler.applyMaterial(material);
+          }
+        })()
+      }
+    }
+
+    graph.setDragConnector(null)
+  }
+
+  const [startPoint, setStartPoint] = React.useState<[number, number] | null>(null);
+  const [dragKey, setDragKey] = React.useState<string | null>(null);
+
+  const handleDragStart: React.DragEventHandler = (event) => {
+    if (port.edge) {
+      event.dataTransfer.dropEffect = 'link';
+
+      const outputPort = port.edge.output;
+
+      store.setDragObject(outputPort);
+      event.dataTransfer.setData("application/output-port", port.name);
+
+      const outputNode = outputPort.node;
+      
+      const startX = outputNode.x + outputPort.offsetX;
+      const startY = outputNode.y + outputPort.offsetY;
+
+      setStartPoint([startX, startY]);
+
+      graph.deleteEdge(port.edge);
     }
   }
 
+  const handleDrag: React.DragEventHandler = (event) => {
+    if (startPoint && event.clientX !== 0 && event.clientY !== 0) {
+      graph.setDragConnector([startPoint, [event.clientX, event.clientY]])
+    }
+    else {
+      graph.setDragConnector(null)
+
+      if (dragKey) {
+        store.setDragObject(null);
+        setStartPoint(null);  
+      }
+    }
+  }
+
+  const handleDragEnd: React.DragEventHandler = (event) => {
+    graph.setDragConnector(null)
+    setStartPoint(null);
+    setDragKey(null);
+  }
+
   return (
-    <div ref={portRef} className={styles.inputport} onDragOver={handleDragOver} onDrop={handleDrop}>
+    <div
+      ref={portRef}
+      className={styles.inputport}
+      onDragOver={handleDragOver}
+      onDrop={handleDrop}
+      draggable={port.edge !== null}
+      onDragStart={handleDragStart}
+      onDrag={handleDrag}
+      onDragEnd={handleDragEnd}
+    >
       <div>{ port.name }</div>
       <div>{ port.type }</div>
     </div>
