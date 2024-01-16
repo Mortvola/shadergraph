@@ -10,7 +10,7 @@ type PropsType = {
 const NodeInputPort: React.FC<PropsType> = ({
   port,
 }) => {
-  const { dragMap, graph } = useStores();
+  const { dragMap, graph, modeler } = useStores();
   const portRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useLayoutEffect(() => {
@@ -37,7 +37,15 @@ const NodeInputPort: React.FC<PropsType> = ({
     const outputPort = dragMap.get(data) as OutputPortInterface;
 
     if (outputPort) {
-      graph.link(outputPort, port)
+      graph.link(outputPort, port);
+
+      (async () => {
+        const material = await graph.generateMaterial();
+
+        if (material) {
+          modeler.applyMaterial(material);
+        }
+      })()
     }
   }
 

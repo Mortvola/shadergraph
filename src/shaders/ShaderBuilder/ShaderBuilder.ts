@@ -9,11 +9,15 @@ import GraphEdge from "./GraphEdge";
 import Output from "./Nodes/Display";
 import Multiply from "./Nodes/Multiply";
 import SampleTexture from "./Nodes/SampleTexture";
+import Sampler from "./Nodes/Sampler";
+import Texture2D from "./Nodes/Texture2D";
 import TileAndScroll from "./Nodes/TileAndScroll";
 import Time from "./Nodes/Time";
 import UV from "./Nodes/UV";
 import OperationNode from "./OperationNode";
 import PropertyNode from "./PropertyNode";
+import ShaderGraph from "./ShaderGraph";
+import StageGraph from "./StageGraph";
 import { GraphEdgeInterface, GraphNodeInterface, OperationNodeInterface, isPropertyNode } from "./Types";
 
 let nextVarId = 0;
@@ -22,7 +26,7 @@ const getNextVarId = () => {
   return nextVarId;
 }
 
-export const buildGraph = (graph: GraphStageDescriptor): { nodes: GraphNodeInterface[], edges: GraphEdgeInterface[] } => {
+export const buildStageGraph = (graph: GraphStageDescriptor): StageGraph => {
   let nodes: GraphNodeInterface[] = [];
   let edges: GraphEdgeInterface[] = [];
 
@@ -50,7 +54,20 @@ export const buildGraph = (graph: GraphStageDescriptor): { nodes: GraphNodeInter
 
       case 'property': 
         const propertyNode = nodeDescr as PropertyDescriptor;
-        node = new PropertyNode(propertyNode.name, propertyNode.dataType, propertyNode.value, nodeDescr.id)
+
+        if (propertyNode.dataType === 'texture2D') {
+          node = new Texture2D(nodeDescr.id);
+        }
+        else if (propertyNode.dataType === 'sampler') {
+          node = new Sampler(nodeDescr.id);
+        }
+        else if (propertyNode.name === 'time') {
+          node = new Time(nodeDescr.id);
+        }
+        else {
+          node = new PropertyNode(propertyNode.name, propertyNode.dataType, propertyNode.value, nodeDescr.id)
+        }
+
         break;
 
       case 'display':
@@ -159,11 +176,11 @@ export const buildGraph = (graph: GraphStageDescriptor): { nodes: GraphNodeInter
 //   }
 // }
 
-export const generateShaderCode = (nodes: GraphNodeInterface[]): string => {
+export const generateStageShaderCode = (graph: StageGraph): string => {
   let body = '';
 
   // Find the output node
-  const outputNode = nodes.find((n) => n.type === 'display');
+  const outputNode = graph.nodes.find((n) => n.type === 'display');
 
   if (outputNode) {
     nextVarId = 0;
@@ -200,16 +217,25 @@ export const generateShaderCode = (nodes: GraphNodeInterface[]): string => {
   return body;
 }
 
-export const buildFromGraph = (materialDescriptor: MaterialDescriptor) => {
-  let body = '';
+export const buildGraph = (graphDescriptor: GraphDescriptor): ShaderGraph => {
+  const graph = new ShaderGraph();
 
-  if (materialDescriptor.graph?.fragment) {
-    const  { nodes } = buildGraph(materialDescriptor.graph?.fragment);
-
-    body = generateShaderCode(nodes);
+  if (graphDescriptor?.fragment) {
+    graph.fragment = buildStageGraph(graphDescriptor?.fragment);
   }
 
-  const code = `
+  return graph;
+}
+
+export const generateShaderCode = (graph: ShaderGraph) => {
+  let body = '';
+
+  if (graph.fragment) {
+
+    body = generateStageShaderCode(graph.fragment);
+  }
+
+  return `
     ${texturedCommon}
     
     ${common}
@@ -228,7 +254,11 @@ export const buildFromGraph = (materialDescriptor: MaterialDescriptor) => {
       ${body}
     }
   `
+}
 
+export const generateShaderModule = (graph: ShaderGraph) => {
+  const code = generateShaderCode(graph);
+  
   const shaderModule = gpu.device.createShaderModule({
     label: 'custom shader',
     code: code,

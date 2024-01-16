@@ -2,8 +2,14 @@ import { makeObservable, observable, runInAction } from "mobx";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OperationNodeInterface, OutputPortInterface, isOperationNode } from "../shaders/ShaderBuilder/Types";
 import GraphEdge from "../shaders/ShaderBuilder/GraphEdge";
 import Display from "../shaders/ShaderBuilder/Nodes/Display";
-import { buildGraph, createDescriptor } from "../shaders/ShaderBuilder/ShaderBuilder";
+import { buildGraph, createDescriptor, generateShaderCode } from "../shaders/ShaderBuilder/ShaderBuilder";
 import { GraphDescriptor } from "../shaders/ShaderBuilder/GraphDescriptor";
+import ShaderGraph from "../shaders/ShaderBuilder/ShaderGraph";
+import StageGraph from "../shaders/ShaderBuilder/StageGraph";
+import { MaterialInterface, PipelineInterface } from "../types";
+import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
+import { pipelineManager } from "../Pipelines/PipelineManager";
+import Material from "../Materials/Material";
 
 class Graph {
   nodes: GraphNodeInterface[] = [];
@@ -18,15 +24,20 @@ class Graph {
 
   constructor(descriptor?: GraphDescriptor) {
     if (descriptor) {
-      const { nodes, edges } = buildGraph(descriptor.fragment);
+      const graph = buildGraph(descriptor);
 
-      this.nodes = nodes;
-      this.edges = edges;
+      if (graph.fragment) {
+        this.nodes = graph.fragment.nodes;
+        this.edges = graph.fragment.edges;  
+      }
     }
-    else {
+
+    if (this.nodes.length === 0) {
       this.nodes = [
         new Display(),
-      ];  
+      ];
+
+      this.edges = [];
     }
 
     makeObservable(this, {
@@ -120,6 +131,27 @@ class Graph {
         this.changed = true;    
       })
     }
+  }
+
+  async generateMaterial(): Promise<MaterialInterface> {
+    // const shaderGraph = new ShaderGraph();
+    // shaderGraph.fragment = new StageGraph();
+    // shaderGraph.fragment.nodes = this.nodes;
+    // shaderGraph.fragment.edges = this.edges;
+
+    const materialDescriptor: MaterialDescriptor = {
+      type: 'Lit',
+      cullMode: 'none',
+      texture: {
+        url: './textures/stars.png',
+        scale: [1, 5],
+        offset: [0, 0.1],
+      },
+
+      graph: createDescriptor(this.nodes, this.edges),
+    }
+
+    return await Material.create(materialDescriptor);
   }
 }
 

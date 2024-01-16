@@ -1,15 +1,14 @@
 import { bindGroups } from "../BindGroups";
 import { gpu } from "../Gpu";
 import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
+import { buildGraph, generateShaderCode, generateShaderModule } from "../shaders/ShaderBuilder/ShaderBuilder";
 import { litShader } from "../shaders/lit";
-import { texturedShader } from "../shaders/textured";
 import { PipelineInterface, PipelineManagerInterface } from "../types";
 import CirclePipeline from "./CirclePipeline";
 import LinePipeline from "./LinePipeline";
 import LitPipeline from "./LitPipeline";
 import OutlinePipeline from "./OutlinePipeline";
 import Pipeline from "./Pipeline";
-import { buildFromGraph } from "../shaders/ShaderBuilder/ShaderBuilder";
 // import ReticlePipeline from "./ReticlePipeline";
 import TrajectoryPipeline from "./TrajectoryPipeline";
 
@@ -90,7 +89,7 @@ class PipelineManager implements PipelineManagerInterface {
       let shaderModule: GPUShaderModule;
       let vertexBufferLayout: GPUVertexBufferLayout[] = [];
 
-      if (materialDescriptor.texture) {
+      if (materialDescriptor.texture && materialDescriptor.graph) {
         bindgroupLayout = gpu.device.createPipelineLayout({
           bindGroupLayouts: [
             bindGroups.getBindGroupLayout0(),
@@ -99,7 +98,9 @@ class PipelineManager implements PipelineManagerInterface {
           ],
         });
 
-        shaderModule = buildFromGraph(materialDescriptor);
+        const graph = buildGraph(materialDescriptor.graph);
+        shaderModule = generateShaderModule(graph);  
+
         // shaderModule = gpu.device.createShaderModule({
         //   label: 'base pipeline',
         //   code: texturedShader,

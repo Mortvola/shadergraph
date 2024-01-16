@@ -2,17 +2,47 @@ import Mesh from "../Drawables/Mesh";
 import ContainerNode, { isContainerNode } from "../Drawables/SceneNodes/ContainerNode";
 import DrawableNode from "../Drawables/SceneNodes/DrawableNode";
 import { isGeometryNode } from "../Drawables/SceneNodes/GeometryNode";
+import { isDrawableNode } from "../Drawables/SceneNodes/utils";
 import { renderer } from "../Main";
 import { litMaterial } from "../Materials/Lit";
-import { SceneNodeInterface } from "../types";
+import { DrawableNodeInterface, MaterialInterface, SceneNodeInterface } from "../types";
 import { downloadFbx } from "./LoadFbx";
 
 class Modeler {
-  async loadModel(url: string) {
-    const model = await loadFbx(url);
+  model: SceneNodeInterface | null = null;
 
-    if (model) {
-      renderer.addSceneNode(model);
+  async loadModel(url: string) {
+    this.model = await loadFbx(url);
+
+    if (this.model) {
+      renderer.addSceneNode(this.model);
+    }
+  }
+
+  getDrawableNode(node: SceneNodeInterface): DrawableNodeInterface | null {
+    if (isContainerNode(node)) {
+      for (const child of node.nodes) {
+        const n = this.getDrawableNode(child);
+
+        if (isDrawableNode(n)) {
+          return n;
+        }
+      }
+    }
+    else if (isDrawableNode(node)) {
+      return node;
+    }
+
+    return null;
+  }
+
+  applyMaterial(material: MaterialInterface) {
+    if (this.model) {
+      const drawable = this.getDrawableNode(this.model);
+
+      if (drawable) {
+        drawable.material = material;
+      }
     }
   }
 }
