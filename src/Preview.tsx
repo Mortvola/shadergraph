@@ -16,6 +16,26 @@ const Preview: React.FC = () => {
     setPosition({ x, y, width, height });
   }
 
+  React.useEffect(() => {
+    const positionItem = localStorage.getItem('preview')
+
+    if (positionItem) {
+      const pos = JSON.parse(positionItem);
+      setPosition(pos);
+    }
+
+  }, []);
+
+  React.useEffect(() => {
+    const timer  = setInterval(() => {
+      localStorage.setItem('preview', JSON.stringify(position))
+    }, 5000)
+
+    return () => {
+      clearInterval(timer);
+    }
+  }, [position]);
+
   return (
     <Draggable onMove={handleMove} position={position} onResize={handleResize} resizable >
       <div className={styles.preview}>
