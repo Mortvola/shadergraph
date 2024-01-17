@@ -4,6 +4,7 @@ import styles from './Controls.module.scss';
 import { useStores } from './State/store';
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
+import { CullMode } from './State/types';
 
 const Controls: React.FC = observer(() => {
   const { graph } = useStores();
@@ -52,6 +53,11 @@ const Controls: React.FC = observer(() => {
     event.stopPropagation();
   }
 
+  const handleCullChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
+    console.log(event.target.value)
+    graph.setCullMode(event.target.value as CullMode)
+  }
+
   return (
     <Draggable onMove={handleMove} position={position} >
       <div className={styles.wrapper}  onClick={handleClick}>
@@ -66,6 +72,14 @@ const Controls: React.FC = observer(() => {
               onKeyDown={handleKeyDown}
             />
             Transparent
+          </label>
+          <label>
+            Cull Mode
+            <select value={graph.cullMode} onChange={handleCullChange}>
+              <option value="none">None</option>
+              <option value="back">Back</option>
+              <option value="front">Front</option>
+            </select>
           </label>
         </div>
       </div>

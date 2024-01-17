@@ -176,7 +176,7 @@ class PipelineManager implements PipelineManagerInterface {
         },
         primitive: {
           topology: "triangle-list",
-          cullMode: materialDescriptor.cullMode ?? "back",
+          cullMode: materialDescriptor.cullMode,
           frontFace: "ccw",
         },
         depthStencil: {

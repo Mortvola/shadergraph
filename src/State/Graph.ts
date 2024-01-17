@@ -3,11 +3,10 @@ import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OperationNo
 import GraphEdge from "../shaders/ShaderBuilder/GraphEdge";
 import Display from "../shaders/ShaderBuilder/Nodes/Display";
 import { buildGraph, createDescriptor } from "../shaders/ShaderBuilder/ShaderBuilder";
-import { GraphDescriptor } from "../shaders/ShaderBuilder/GraphDescriptor";
 import { MaterialInterface } from "../types";
 import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
 import Material from "../Materials/Material";
-import { StoreInterface } from "./types";
+import { CullMode, StoreInterface } from "./types";
 
 class Graph {
   nodes: GraphNodeInterface[] = [];
@@ -16,7 +15,7 @@ class Graph {
 
   edges: GraphEdge[] = [];
 
-  cullMode: 'back' | 'none' = 'none';
+  cullMode: CullMode = 'none';
 
   transparent = false;
 
@@ -39,7 +38,7 @@ class Graph {
         }  
       }
 
-      this.cullMode = descriptor.cullMode ?? 'back';
+      this.cullMode = descriptor.cullMode ?? 'front';
 
       this.transparent = descriptor.transparent ?? false;
     }
@@ -56,6 +55,7 @@ class Graph {
       nodes: observable,
       selectedNode: observable,
       transparent: observable,
+      cullMode: observable,
     });
   }
 
@@ -152,10 +152,18 @@ class Graph {
     })
   }
 
+  setCullMode(mode: CullMode): void {
+    runInAction(() => {
+      this.cullMode = mode;
+      this.changed = true;
+      this.store.applyChanges()
+    })
+  }
+
   createMaterialDescriptor(): MaterialDescriptor {
     const materialDescriptor: MaterialDescriptor = {
       type: 'Lit',
-      cullMode: this.cullMode,
+      cullMode: this.cullMode === 'front' ? undefined : this.cullMode,
       transparent: this.transparent,
       
       graph: createDescriptor(this.nodes, this.edges),
