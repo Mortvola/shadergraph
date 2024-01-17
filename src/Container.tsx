@@ -15,8 +15,8 @@ const Container: React.FC = observer(() => {
   React.useEffect(() => {
     const timer  = setInterval(() => {
       if (graph.changed) {
-        const descriptor = graph.createDescriptor();
-        localStorage.setItem('graph', JSON.stringify(descriptor))
+        const descriptor = graph.createMaterialDescriptor();
+        localStorage.setItem('material', JSON.stringify(descriptor))
         graph.changed = false;  
       }
     }, 5000)

@@ -1,24 +1,33 @@
 import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
-import { GraphDescriptor } from "../shaders/ShaderBuilder/GraphDescriptor";
+import { StoreInterface } from "./types";
+import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
 
-class Store {
+class Store implements StoreInterface {
   graph: Graph;
 
   private dragObject: unknown | null = null;
 
   modeler: Modeler;
 
-  constructor() {
-    let descriptor: GraphDescriptor | undefined = undefined;
+  async applyChanges(): Promise<void> {
+    const material = await this.graph.generateMaterial();
 
-    const savedItem = localStorage.getItem('graph');
+    if (material) {
+      this.modeler.applyMaterial(material);
+    }
+  }
+
+  constructor() {
+    let descriptor: MaterialDescriptor | undefined = undefined;
+
+    const savedItem = localStorage.getItem('material');
     if (savedItem) {
       descriptor = JSON.parse(savedItem);
     }
 
-    this.graph = new Graph(descriptor);
+    this.graph = new Graph(this, descriptor);
     this.modeler = new Modeler();
   }
 

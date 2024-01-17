@@ -37,9 +37,7 @@ const Controls: React.FC = observer(() => {
   }, [position]);
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-    runInAction(() => {
-      graph.transparent = event.target.checked
-    })
+    graph.setTransparency(event.target.checked)
   }
 
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {

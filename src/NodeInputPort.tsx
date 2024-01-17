@@ -40,14 +40,6 @@ const NodeInputPort: React.FC<PropsType> = ({
 
       if (outputPort) {
         graph.link(outputPort, port);
-
-        (async () => {
-          const material = await graph.generateMaterial();
-
-          if (material) {
-            modeler.applyMaterial(material);
-          }
-        })()
       }
     }
 

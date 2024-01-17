@@ -7,6 +7,7 @@ import { GraphDescriptor } from "../shaders/ShaderBuilder/GraphDescriptor";
 import { MaterialInterface } from "../types";
 import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
 import Material from "../Materials/Material";
+import { StoreInterface } from "./types";
 
 class Graph {
   nodes: GraphNodeInterface[] = [];
@@ -15,20 +16,32 @@ class Graph {
 
   edges: GraphEdge[] = [];
 
+  cullMode: 'back' | 'none' = 'none';
+
   transparent = false;
 
   changed = false;
 
   selectedNode: GraphNodeInterface | null = null;
 
-  constructor(descriptor?: GraphDescriptor) {
-    if (descriptor) {
-      const graph = buildGraph(descriptor);
+  store: StoreInterface;
 
-      if (graph.fragment) {
-        this.nodes = graph.fragment.nodes;
-        this.edges = graph.fragment.edges;  
+  constructor(store: StoreInterface, descriptor?: MaterialDescriptor) {
+    this.store = store;
+
+    if (descriptor) {
+      if (descriptor.graph) {
+        const graph = buildGraph(descriptor.graph);
+
+        if (graph.fragment) {
+          this.nodes = graph.fragment.nodes;
+          this.edges = graph.fragment.edges;  
+        }  
       }
+
+      this.cullMode = descriptor.cullMode ?? 'back';
+
+      this.transparent = descriptor.transparent ?? false;
     }
 
     if (this.nodes.length === 0) {
@@ -56,6 +69,8 @@ class Graph {
     this.edges.push(edge);
 
     this.changed = true;
+
+    this.store.applyChanges()
   }
 
   addNode(node: GraphNodeInterface) {
@@ -71,10 +86,6 @@ class Graph {
       node.y = y;
       this.changed = true;
     })
-  }
-
-  createDescriptor(): GraphDescriptor {
-    return createDescriptor(this.nodes, this.edges)
   }
 
   selectNode(node: GraphNodeInterface | null) {
@@ -133,19 +144,33 @@ class Graph {
     }
   }
 
+  setTransparency(transparent: boolean) {
+    runInAction(() => {
+      this.transparent = transparent;
+      this.changed = true;
+      this.store.applyChanges()
+    })
+  }
+
+  createMaterialDescriptor(): MaterialDescriptor {
+    const materialDescriptor: MaterialDescriptor = {
+      type: 'Lit',
+      cullMode: this.cullMode,
+      transparent: this.transparent,
+      
+      graph: createDescriptor(this.nodes, this.edges),
+    }
+
+    return materialDescriptor;
+  }
+
   async generateMaterial(): Promise<MaterialInterface> {
     // const shaderGraph = new ShaderGraph();
     // shaderGraph.fragment = new StageGraph();
     // shaderGraph.fragment.nodes = this.nodes;
     // shaderGraph.fragment.edges = this.edges;
 
-    const materialDescriptor: MaterialDescriptor = {
-      type: 'Lit',
-      cullMode: 'none',
-      transparent: this.transparent,
-      
-      graph: createDescriptor(this.nodes, this.edges),
-    }
+    const materialDescriptor = this.createMaterialDescriptor();
 
     return await Material.create(materialDescriptor);
   }
