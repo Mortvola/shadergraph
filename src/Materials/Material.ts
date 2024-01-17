@@ -122,12 +122,19 @@ class Material implements MaterialInterface {
       }
 
       const res = await fetch(url);
-      const blob = await res.blob();
-      try {
-        bitmap = await createImageBitmap(blob, { colorSpaceConversion: 'none' });  
+
+      if (res.ok) {
+        const blob = await res.blob();
+        try {
+          bitmap = await createImageBitmap(blob, { colorSpaceConversion: 'none' });  
+        }
+        catch (error) {
+          console.log(error);
+          throw(error);
+        }  
       }
-      catch (error) {
-        console.log(error);
+      else {
+        throw new Error('texture failed to download')
       }
     }
 

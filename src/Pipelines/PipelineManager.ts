@@ -23,12 +23,17 @@ type Pipelines = {
   pipeline: PipelineInterface,
 }
 
+type PipelineMapEntry = {
+  pipeline: PipelineInterface,
+  properties: StageProperty[],
+}
+
 class PipelineManager implements PipelineManagerInterface {
   // private static instance: PipelineManager | null = null;
 
   pipelines: Pipelines[] = [];
 
-  pipelineMap: Map<string, PipelineInterface> = new Map();
+  pipelineMap: Map<string, PipelineMapEntry> = new Map();
 
   constructor() {
     this.pipelines = [];
@@ -77,18 +82,20 @@ class PipelineManager implements PipelineManagerInterface {
 
     const key = JSON.stringify(materialDescriptor);
 
-    let pipeline: PipelineInterface | undefined = this.pipelineMap.get(key);
+    let pipelineEntry: PipelineMapEntry | undefined = this.pipelineMap.get(key);
 
-    if (pipeline) {
-      return [pipeline, properties];
+    if (pipelineEntry) {
+      return [pipelineEntry.pipeline, pipelineEntry.properties];
     }
+
+    let pipeline: PipelineInterface;
 
     if (!materialDescriptor.graph) {
       pipeline = this.getPipeline(materialDescriptor.type)!
 
-      this.pipelineMap.set(key, pipeline);
+      this.pipelineMap.set(key, { pipeline, properties: [] });
     }
-    else {      
+    else {
       let bindgroupLayout: GPUPipelineLayout;
       let shaderModule: GPUShaderModule;
       let vertexBufferLayout: GPUVertexBufferLayout[] = [];
@@ -192,7 +199,7 @@ class PipelineManager implements PipelineManagerInterface {
       pipeline = new Pipeline();
       pipeline.pipeline = gpuPipeline;
 
-      this.pipelineMap.set(key, pipeline);
+      this.pipelineMap.set(key, { pipeline, properties });
     }
 
     console.log(`pipelines created: ${this.pipelineMap.size}`)
