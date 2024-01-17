@@ -1,0 +1,18 @@
+.wrapper {
+  background-color: white;
+  border-radius: 8px;
+  
+  div:first-child {
+    border-bottom: thin black solid;
+  }
+}
+
+.controls {
+  width: max-content;
+  height: 100px;
+  padding: 1rem;
+
+  label {
+    display: flex;
+  }
+}

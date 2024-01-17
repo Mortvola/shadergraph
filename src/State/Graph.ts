@@ -15,6 +15,8 @@ class Graph {
 
   edges: GraphEdge[] = [];
 
+  transparent = false;
+
   changed = false;
 
   selectedNode: GraphNodeInterface | null = null;
@@ -40,6 +42,7 @@ class Graph {
     makeObservable(this, {
       nodes: observable,
       selectedNode: observable,
+      transparent: observable,
     });
   }
 
@@ -139,7 +142,8 @@ class Graph {
     const materialDescriptor: MaterialDescriptor = {
       type: 'Lit',
       cullMode: 'none',
-
+      transparent: this.transparent,
+      
       graph: createDescriptor(this.nodes, this.edges),
     }
 

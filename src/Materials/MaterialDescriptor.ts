@@ -15,5 +15,7 @@ export type MaterialDescriptor = {
 
   color?: number[],
 
+  transparent?: boolean,
+
   graph?: GraphDescriptor,
 }

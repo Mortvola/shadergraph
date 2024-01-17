@@ -83,7 +83,7 @@ class PipelineManager implements PipelineManagerInterface {
       return [pipeline, properties];
     }
 
-    if (materialDescriptor.type !== 'Lit') {
+    if (!materialDescriptor.graph) {
       pipeline = this.getPipeline(materialDescriptor.type)!
 
       this.pipelineMap.set(key, pipeline);
@@ -93,94 +93,73 @@ class PipelineManager implements PipelineManagerInterface {
       let shaderModule: GPUShaderModule;
       let vertexBufferLayout: GPUVertexBufferLayout[] = [];
 
-      if (materialDescriptor.graph) {
-        bindgroupLayout = gpu.device.createPipelineLayout({
-          bindGroupLayouts: [
-            bindGroups.getBindGroupLayout0(),
-            bindGroups.getBindGroupLayout1(),
-            bindGroups.getBindGroupLayout2(),
+      bindgroupLayout = gpu.device.createPipelineLayout({
+        bindGroupLayouts: [
+          bindGroups.getBindGroupLayout0(),
+          bindGroups.getBindGroupLayout1(),
+          bindGroups.getBindGroupLayout2(),
+        ],
+      });
+
+      const graph = buildGraph(materialDescriptor.graph);
+      shaderModule = generateShaderModule(graph);  
+
+      properties = graph.properties;
+
+      vertexBufferLayout = [
+        {
+          attributes: [
+            {
+              shaderLocation: 0, // position
+              offset: 0,
+              format: "float32x4",
+            },
           ],
-        });
+          arrayStride: 16,
+          stepMode: "vertex",
+        },
+        {
+          attributes: [
+            {
+              shaderLocation: 1, // normal
+              offset: 0,
+              format: "float32x4",
+            }
+          ],
+          arrayStride: 16,
+          stepMode: "vertex",
+        },
+        {
+          attributes: [
+            {
+              shaderLocation: 2, // texcoord
+              offset: 0,
+              format: "float32x2",
+            }
+          ],
+          arrayStride: 8,
+          stepMode: "vertex",
+        }
+      ];
 
-        const graph = buildGraph(materialDescriptor.graph);
-        shaderModule = generateShaderModule(graph);  
-
-        properties = graph.properties;
-
-        vertexBufferLayout = [
-          {
-            attributes: [
-              {
-                shaderLocation: 0, // position
-                offset: 0,
-                format: "float32x4",
-              },
-            ],
-            arrayStride: 16,
-            stepMode: "vertex",
-          },
-          {
-            attributes: [
-              {
-                shaderLocation: 1, // normal
-                offset: 0,
-                format: "float32x4",
-              }
-            ],
-            arrayStride: 16,
-            stepMode: "vertex",
-          },
-          {
-            attributes: [
-              {
-                shaderLocation: 2, // texcoord
-                offset: 0,
-                format: "float32x2",
-              }
-            ],
-            arrayStride: 8,
-            stepMode: "vertex",
-          }
-        ];
+      let target: GPUColorTargetState = {
+        format: navigator.gpu.getPreferredCanvasFormat(),
       }
-      else {
-        bindgroupLayout = gpu.device.createPipelineLayout({
-          bindGroupLayouts: [
-            bindGroups.getBindGroupLayout0(),
-            bindGroups.getBindGroupLayout1(),
-            bindGroups.getBindGroupLayout2A(),
-          ],
-        });
 
-        shaderModule = gpu.device.createShaderModule({
-          label: 'base pipeline',
-          code: litShader,
-        })
-
-        vertexBufferLayout = [
-          {
-            attributes: [
-              {
-                shaderLocation: 0, // position
-                offset: 0,
-                format: "float32x4",
-              },
-            ],
-            arrayStride: 16,
-            stepMode: "vertex",
+      if (materialDescriptor.transparent) {
+        target = {
+          format: navigator.gpu.getPreferredCanvasFormat(),
+          blend: {
+            color: {
+              srcFactor: 'src-alpha' as GPUBlendFactor,
+              dstFactor: 'one-minus-src-alpha' as GPUBlendFactor,
+            },
+            alpha: {
+              srcFactor: 'src-alpha' as GPUBlendFactor,
+              dstFactor: 'one-minus-src-alpha' as GPUBlendFactor,
+            },
           },
-          {
-            attributes: [
-              {
-                shaderLocation: 1, // normal
-                offset: 0,
-                format: "float32x4",
-              }
-            ],
-            arrayStride: 16,
-            stepMode: "vertex",
-          }
-        ];
+        };  
       }
 
       const pipelineDescriptor: GPURenderPipelineDescriptor = {
@@ -193,11 +172,7 @@ class PipelineManager implements PipelineManagerInterface {
         fragment: {
           module: shaderModule,
           entryPoint: "fs",
-          targets: [
-            {
-              format: navigator.gpu.getPreferredCanvasFormat(),
-            },
-          ],
+          targets: [target],
         },
         primitive: {
           topology: "triangle-list",
