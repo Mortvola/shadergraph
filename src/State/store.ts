@@ -31,6 +31,28 @@ class Store {
   }
 }
 
+export const convertType = (type: string) => {
+  switch (type) {
+    case 'float':
+      return 'F1';
+
+    case 'vec2f':
+      return 'F2';
+
+    case 'vec4f':
+      return 'F4';
+
+    case 'texture2D':
+      return 'T2';
+
+    case 'sampler':
+      return 'S';
+
+    default:
+      return type;
+  }
+}
+
 const store = new Store();
 const StoreContext = React.createContext(store);
 

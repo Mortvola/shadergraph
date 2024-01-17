@@ -5,8 +5,9 @@ import NodeInputPort from './NodeInputPort';
 import NodeOutputPort from './NodeOutputPort';
 import { GraphNodeInterface, isOperationNode, isPropertyNode } from './shaders/ShaderBuilder/Types';
 import { useStores } from './State/store';
-import PropertyFields from './PropertyFields';
+import PropertyVec2f from './PropertyVec2f';
 import Draggable from './Draggable';
+import PropertyString from './PropertyString';
 
 type PropsType = {
   node: GraphNodeInterface,
@@ -53,6 +54,19 @@ const Node: React.FC<PropsType> = observer(({
     }
 
     if (isPropertyNode(node)) {
+      const propertyField = () => {
+        switch (node.dataType) {
+          case 'vec2f':
+            return <PropertyVec2f node={node} />;
+
+          case 'string':
+          case 'texture2D':
+            return <PropertyString node={node} />
+        }
+
+        return null;
+      }
+
       return (
         <>
           <div className={styles.property}>
@@ -66,7 +80,7 @@ const Node: React.FC<PropsType> = observer(({
           <div className={styles.propertybody}>
             {
               !node.readonly
-                ? <PropertyFields node={node} />
+                ? propertyField()
                 : null
             }
           </div>

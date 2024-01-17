@@ -9,7 +9,7 @@ type PropsType = {
   node: PropertyNodeInterface,
 }
 
-const PropertyFields: React.FC<PropsType> = observer(({
+const PropertyVec2f: React.FC<PropsType> = observer(({
   node,
 }) => {
   const { graph } = useStores();
@@ -75,4 +75,4 @@ const PropertyFields: React.FC<PropsType> = observer(({
   return null;
 })
 
-export default PropertyFields;
+export default PropertyVec2f;

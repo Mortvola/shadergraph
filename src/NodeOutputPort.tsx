@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './Node.module.scss';
-import { useStores } from './State/store';
+import { convertType, useStores } from './State/store';
 import { OutputPortInterface } from './shaders/ShaderBuilder/Types';
 
 type PropsType = {
@@ -77,7 +77,7 @@ const NodeOutputPort: React.FC<PropsType> = ({
           ? <div>{ port.name }</div>
           : null
       }
-      <div>{ port.type }</div>
+      <div>{ convertType(port.type) }</div>
     </div>
   )
 }

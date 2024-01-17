@@ -1,5 +1,4 @@
 import { gpu } from "../../Gpu";
-import { MaterialDescriptor } from "../../Materials/MaterialDescriptor";
 import { common } from "../common";
 import { textureAttributes } from "../textureAttributes";
 import { texturedCommon } from "../texturedCommon";
@@ -55,18 +54,26 @@ export const buildStageGraph = (graph: GraphStageDescriptor): StageGraph => {
       case 'property': 
         const propertyNode = nodeDescr as PropertyDescriptor;
 
+        let pnode: PropertyNode;
+
         if (propertyNode.dataType === 'texture2D') {
-          node = new Texture2D(nodeDescr.id);
+          pnode = new Texture2D(nodeDescr.id);
+          pnode.value = propertyNode.value;
         }
         else if (propertyNode.dataType === 'sampler') {
-          node = new Sampler(nodeDescr.id);
+          pnode = new Sampler(nodeDescr.id);
         }
         else if (propertyNode.name === 'time') {
-          node = new Time(nodeDescr.id);
+          pnode = new Time(nodeDescr.id);
+        }
+        else if (propertyNode.name === 'uv') {
+          pnode = new UV(nodeDescr.id);
         }
         else {
-          node = new PropertyNode(propertyNode.name, propertyNode.dataType, propertyNode.value, nodeDescr.id)
+          pnode = new PropertyNode(propertyNode.name, propertyNode.dataType, propertyNode.value, nodeDescr.id)
         }
+
+        node = pnode;
 
         break;
 
@@ -258,7 +265,7 @@ export const generateShaderCode = (graph: ShaderGraph) => {
 
 export const generateShaderModule = (graph: ShaderGraph) => {
   const code = generateShaderCode(graph);
-  
+
   const shaderModule = gpu.device.createShaderModule({
     label: 'custom shader',
     code: code,

@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Node.module.scss';
 import { InputPortInterface, OutputPortInterface } from './shaders/ShaderBuilder/Types';
-import { useStores } from './State/store';
+import { convertType, useStores } from './State/store';
 
 type PropsType = {
   port: InputPortInterface,
@@ -109,7 +109,7 @@ const NodeInputPort: React.FC<PropsType> = ({
       onDragEnd={handleDragEnd}
     >
       <div>{ port.name }</div>
-      <div>{ port.type }</div>
+      <div>{ convertType(port.type) }</div>
     </div>
   )
 }
