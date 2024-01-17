@@ -139,11 +139,6 @@ class Graph {
     const materialDescriptor: MaterialDescriptor = {
       type: 'Lit',
       cullMode: 'none',
-      texture: {
-        url: './textures/stars.png',
-        scale: [1, 5],
-        offset: [0, 0.1],
-      },
 
       graph: createDescriptor(this.nodes, this.edges),
     }

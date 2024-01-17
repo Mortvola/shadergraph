@@ -1,18 +1,18 @@
 import { makeObservable, observable } from "mobx";
 import GraphNode from "./GraphNode";
 import OutputPort from "./OutputPort";
-import { PropertyNodeInterface, Type } from "./Types";
+import { PropertyNodeInterface, PropertyType, Type } from "./Types";
 
 class PropertyNode extends GraphNode implements PropertyNodeInterface {
   dataType: Type;
 
-  value: string | number | [number, number] | [number, number, number] | [number, number, number, number];
+  value: PropertyType;
 
   outputPort: OutputPort;
 
   readonly = false;
 
-  constructor(name: string, dataType: Type, value: string | number | [number, number], id?: number) {
+  constructor(name: string, dataType: Type, value: PropertyType, id?: number) {
     super('property', name, id)
 
     this.name = name;

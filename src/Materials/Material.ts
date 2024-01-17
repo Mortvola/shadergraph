@@ -5,7 +5,7 @@ import { gpu } from "../Gpu";
 import { pipelineManager } from "../Pipelines/PipelineManager";
 import { textureAttributes } from "../shaders/textureAttributes";
 import { DrawableNodeInterface, MaterialInterface, PipelineInterface, maxInstances } from "../types";
-import { MaterialDescriptor, TextureDescriptor } from "./MaterialDescriptor";
+import { MaterialDescriptor } from "./MaterialDescriptor";
 
 class Material implements MaterialInterface {
   pipeline: PipelineInterface | null = null;
@@ -20,8 +20,8 @@ class Material implements MaterialInterface {
 
   drawables: DrawableInterface[] = [];
 
-  private constructor(materialDescriptor: MaterialDescriptor, bitmap?: ImageBitmap) {
-    this.pipeline = pipelineManager.getPipelineByArgs(materialDescriptor)
+  private constructor(materialDescriptor: MaterialDescriptor, pipeline: PipelineInterface, bitmap?: ImageBitmap) {
+    this.pipeline = pipeline;
 
     if (materialDescriptor.color) {
       this.color[0] = materialDescriptor.color[0];
@@ -36,7 +36,7 @@ class Material implements MaterialInterface {
       this.color[3] = 1.0;  
     }
 
-    if (materialDescriptor.texture && bitmap) {
+    if (bitmap) {
       const texture = gpu.device.createTexture({
         format: 'rgba8unorm',
         size: [bitmap.width, bitmap.height],
@@ -51,8 +51,6 @@ class Material implements MaterialInterface {
         { width: bitmap.width, height: bitmap.height },
       );
   
-      const sampler = gpu.device.createSampler();
-      
       this.colorBuffer = gpu.device.createBuffer({
         label: 'color',
         size: 4 * Float32Array.BYTES_PER_ELEMENT * maxInstances,
@@ -69,18 +67,7 @@ class Material implements MaterialInterface {
       })
 
       let scale = [1, 1];
-      if (typeof materialDescriptor.texture !== 'string'
-        && materialDescriptor.texture.scale
-      ) {
-        scale = materialDescriptor.texture.scale;
-      }
-
       let offset = [0, 0];
-      if (typeof materialDescriptor.texture !== 'string'
-        && materialDescriptor.texture.offset
-      ) {
-        offset = materialDescriptor.texture.offset;
-      }
 
       textureAttributesStruct.set({
         scale,
@@ -94,7 +81,7 @@ class Material implements MaterialInterface {
         layout: bindGroups.getBindGroupLayout2(),
         entries: [
           { binding: 0, resource: { buffer: this.colorBuffer }},
-          { binding: 1, resource: sampler },
+          { binding: 1, resource: gpu.device.createSampler() },
           { binding: 2, resource: texture.createView() },
           { binding: 3, resource: { buffer: this.textureAttributesBuffer }}
         ],
@@ -118,15 +105,20 @@ class Material implements MaterialInterface {
   }
 
   static async create(materialDescriptor: MaterialDescriptor): Promise<Material> {
+    const [pipeline, properties] = pipelineManager.getPipelineByArgs(materialDescriptor)
+
     let bitmap: ImageBitmap | undefined = undefined;
 
-    if (materialDescriptor.texture) {
+    // Find textures in the properties
+    const texture = properties.find((p) => p.type === 'texture2D');
+
+    if (texture) {
       let url: string;
-      if (typeof materialDescriptor.texture === 'string') {
-        url = materialDescriptor.texture;
+      if (typeof texture.value === 'string') {
+        url = texture.value;
       }
       else {
-        url = (materialDescriptor.texture as TextureDescriptor).url;
+        throw new Error('texture value is unknown type')
       }
 
       const res = await fetch(url);
@@ -139,7 +131,7 @@ class Material implements MaterialInterface {
       }
     }
 
-    return new Material(materialDescriptor, bitmap);
+    return new Material(materialDescriptor, pipeline, bitmap);
   }
 
   addDrawable(drawableNode: DrawableNodeInterface): void {

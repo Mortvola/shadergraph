@@ -1,7 +1,9 @@
 import { bindGroups } from "../BindGroups";
 import { gpu } from "../Gpu";
 import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
-import { buildGraph, generateShaderCode, generateShaderModule } from "../shaders/ShaderBuilder/ShaderBuilder";
+import { buildGraph, generateShaderModule } from "../shaders/ShaderBuilder/ShaderBuilder";
+import StageProperty from "../shaders/ShaderBuilder/StageProperty";
+import { StagePropertyInterface } from "../shaders/ShaderBuilder/Types";
 import { litShader } from "../shaders/lit";
 import { PipelineInterface, PipelineManagerInterface } from "../types";
 import CirclePipeline from "./CirclePipeline";
@@ -70,13 +72,15 @@ class PipelineManager implements PipelineManagerInterface {
     return null;
   }
 
-  getPipelineByArgs(materialDescriptor: MaterialDescriptor): PipelineInterface {
+  getPipelineByArgs(materialDescriptor: MaterialDescriptor): [PipelineInterface, StagePropertyInterface[]] {
+    let properties: StageProperty[] = [];
+
     const key = JSON.stringify(materialDescriptor);
 
     let pipeline: PipelineInterface | undefined = this.pipelineMap.get(key);
 
     if (pipeline) {
-      return pipeline;
+      return [pipeline, properties];
     }
 
     if (materialDescriptor.type !== 'Lit') {
@@ -89,7 +93,7 @@ class PipelineManager implements PipelineManagerInterface {
       let shaderModule: GPUShaderModule;
       let vertexBufferLayout: GPUVertexBufferLayout[] = [];
 
-      if (materialDescriptor.texture && materialDescriptor.graph) {
+      if (materialDescriptor.graph) {
         bindgroupLayout = gpu.device.createPipelineLayout({
           bindGroupLayouts: [
             bindGroups.getBindGroupLayout0(),
@@ -101,10 +105,7 @@ class PipelineManager implements PipelineManagerInterface {
         const graph = buildGraph(materialDescriptor.graph);
         shaderModule = generateShaderModule(graph);  
 
-        // shaderModule = gpu.device.createShaderModule({
-        //   label: 'base pipeline',
-        //   code: texturedShader,
-        // })
+        properties = graph.properties;
 
         vertexBufferLayout = [
           {
@@ -220,7 +221,7 @@ class PipelineManager implements PipelineManagerInterface {
     }
 
     console.log(`pipelines created: ${this.pipelineMap.size}`)
-    return pipeline;
+    return [pipeline, properties];
   }
 }
 

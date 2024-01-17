@@ -17,6 +17,7 @@ import OperationNode from "./OperationNode";
 import PropertyNode from "./PropertyNode";
 import ShaderGraph from "./ShaderGraph";
 import StageGraph from "./StageGraph";
+import StageProperty from "./StageProperty";
 import { GraphEdgeInterface, GraphNodeInterface, OperationNodeInterface, isPropertyNode } from "./Types";
 
 let nextVarId = 0;
@@ -25,12 +26,13 @@ const getNextVarId = () => {
   return nextVarId;
 }
 
-export const buildStageGraph = (graph: GraphStageDescriptor): StageGraph => {
+export const buildStageGraph = (graphDescr: GraphStageDescriptor): [StageGraph, StageProperty[]] => {
   let nodes: GraphNodeInterface[] = [];
   let edges: GraphEdgeInterface[] = [];
+  let properties: StageProperty[] = [];
 
   // Create the nodes
-  for (const nodeDescr of graph.nodes) {
+  for (const nodeDescr of graphDescr.nodes) {
     // Make sure the id does not already exist.
     const prevNode = nodes.find((n) => nodeDescr.id === n.id);
 
@@ -59,6 +61,9 @@ export const buildStageGraph = (graph: GraphStageDescriptor): StageGraph => {
         if (propertyNode.dataType === 'texture2D') {
           pnode = new Texture2D(nodeDescr.id);
           pnode.value = propertyNode.value;
+
+          const stageProp = new StageProperty('texture2D', pnode.value);
+          properties.push(stageProp);
         }
         else if (propertyNode.dataType === 'sampler') {
           pnode = new Sampler(nodeDescr.id);
@@ -106,7 +111,7 @@ export const buildStageGraph = (graph: GraphStageDescriptor): StageGraph => {
     }
   }
 
-  for (const edgeDescr of graph.edges) {
+  for (const edgeDescr of graphDescr.edges) {
     const outputNode = nodes.find((n) => n.id === edgeDescr[0].id) as OperationNode;
     const inputNode = nodes.find((n) => n.id === edgeDescr[1].id) as OperationNode;
 
@@ -122,66 +127,8 @@ export const buildStageGraph = (graph: GraphStageDescriptor): StageGraph => {
     }
   }
 
-  return { nodes, edges }
+  return [{ nodes, edges }, properties]
 }
-
-// const assignVariables = (nodes: GraphNodeInterface[]) => {
-//   // Find the output node
-//   const outputNode = nodes.find((n) => n.type === 'display');
-
-//   if (outputNode) {
-//     let stack: GraphNodeInterface[] = [outputNode];
-
-//     while (stack.length > 0) {
-//       const inputNode = stack[0];
-//       stack = stack.slice(1)
-
-//       if (inputNode.type === 'property') {
-
-//       }
-//       else {
-//         const inputOperation = inputNode as OperationNode;
-
-//         // Find input edges for each of the node's input ports
-//         for (const inputPort of inputOperation.inputPorts) {
-//           if (inputPort.edge === null) {
-//             const edge = graph.edges.find((e) => e[1].id === inputOperation!.id && e[1].port === inputPort.name)
-
-//             if (edge) {
-//               // Follow edge to get the output from the attached node.
-//               const other = nodes.find((n) => n.id === edge[0].id);
-
-//               if (other) {
-//                 const varName = `v${getNextVarId()}`
-
-//                 if (other.type === 'property') {
-//                   const propertyNode = other as PropertyNode;
-
-//                   const edge = new GraphEdge(propertyNode.outputPort, inputPort);
-//                   if (edge.getVarName() === '') {
-//                     edge.setVarName(varName);
-//                   }
-//                 }
-//                 else {
-//                   // Assign a variable name to the output
-//                   const outputOperation = other as OperationNode;
-//                   var outputPort = outputOperation.outputPort
-
-//                   if (outputPort) {
-//                     const edge = new GraphEdge(outputPort, inputPort);
-//                     if (edge.getVarName() === '') {
-//                       edge.setVarName(varName)
-//                     }
-//                   }
-//                 }
-//               }
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
 
 export const generateStageShaderCode = (graph: StageGraph): string => {
   let body = '';
@@ -228,13 +175,13 @@ export const buildGraph = (graphDescriptor: GraphDescriptor): ShaderGraph => {
   const graph = new ShaderGraph();
 
   if (graphDescriptor?.fragment) {
-    graph.fragment = buildStageGraph(graphDescriptor?.fragment);
+    [graph.fragment, graph.properties] = buildStageGraph(graphDescriptor?.fragment);
   }
 
   return graph;
 }
 
-export const generateShaderCode = (graph: ShaderGraph) => {
+export const generateShaderCode = (graph: ShaderGraph): string => {
   let body = '';
 
   if (graph.fragment) {
@@ -263,7 +210,7 @@ export const generateShaderCode = (graph: ShaderGraph) => {
   `
 }
 
-export const generateShaderModule = (graph: ShaderGraph) => {
+export const generateShaderModule = (graph: ShaderGraph): GPUShaderModule => {
   const code = generateShaderCode(graph);
 
   const shaderModule = gpu.device.createShaderModule({

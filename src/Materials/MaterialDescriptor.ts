@@ -13,8 +13,6 @@ export type MaterialDescriptor = {
 
   cullMode?: 'back' | 'none',
 
-  texture?: string | TextureDescriptor,
-
   color?: number[],
 
   graph?: GraphDescriptor,

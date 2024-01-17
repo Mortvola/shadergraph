@@ -4,6 +4,8 @@ export type NodeType =
   'property' | 'texture' | 'SampleTexture' | 'simpleVertex' | 'simpleFrag' | 'display' | 'uv'
   | 'TileAndScroll' | 'Multiply' | 'time';
 
+export type PropertyType = string | number | [number, number] | [number, number, number] | [number, number, number, number];
+
 export interface InputPortInterface {
   node: GraphNodeInterface;
 
@@ -61,11 +63,17 @@ export interface OperationNodeInterface extends GraphNodeInterface {
 export interface PropertyNodeInterface extends GraphNodeInterface {
   dataType: Type;
 
-  value: string | number | [number, number] | [number, number, number] | [number, number, number, number];
+  value: PropertyType;
 
   outputPort: OutputPortInterface;
 
   readonly: boolean;
+}
+
+export interface StagePropertyInterface {
+  type: Type;
+
+  value: PropertyType;
 }
 
 export const isOperationNode = (r: unknown): r is OperationNodeInterface => (

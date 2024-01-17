@@ -5,14 +5,6 @@ export const soulerCoasterMaterial: MaterialDescriptor = {
 
   cullMode: 'none',
 
-  texture: {
-    url: './textures/stars.png',
-
-    scale: [1, 5],
-
-    offset: [0, 0.1],
-  },
-
   graph: {
     vertex: {
       nodes: [],
