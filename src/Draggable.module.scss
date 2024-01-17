@@ -1,0 +1,34 @@
+.draggable {
+  position: absolute;
+  user-select: none;
+  z-index: 1;
+  width: max-content;
+  height: max-content;
+
+  box-sizing: border-box;
+
+  &.resizable {
+    padding: 5px;
+    background-color: gray;
+    border-radius: 8px;  
+  }
+
+  cursor: default;
+
+  &.resizeEW {
+    cursor: ew-resize;
+  }
+
+  &.resizeNS {
+    cursor: ns-resize;
+  }
+
+  &.resizeNWSE {
+    cursor: nwse-resize;
+  }
+
+  &.resizeNESW {
+    cursor: nesw-resize;
+  }
+}
+

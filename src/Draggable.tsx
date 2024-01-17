@@ -1,24 +1,68 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
+import styles from './Draggable.module.scss';
 
 type PropsType = {
-  position: { x: number, y: number }
+  position: { x: number, y: number, width?: number, height?: number }
   children: React.ReactNode,
   onMove: (x: number, y: number) => void,
+  onResize?: (x: number, y: number, width: number, height: number) => void,
+  resizable?: boolean,
 }
 
 const Draggable: React.FC<PropsType> = observer(({
   position,
   children,
   onMove,
+  resizable = false,
+  onResize,
 }) => {
-  const dragRef = React.useRef<HTMLDivElement | null>(null);
-  const [dragging, setDragging] = React.useState<boolean>(false);
-  const [start, setStart] = React.useState<{ x: number, y: number, top: number, left: number }>({ x: 0, y: 0, top: 0, left: 0});
+  type ResizeDirection = 'E' | 'W' | 'N' | 'S' | 'NW' | 'SW' | 'NE' | 'SE';
 
-  const getStyle = (l: number, t: number) => (
-    { left: l, top: t }
-  )
+  type DragInfo = {
+    x: number,
+    y: number, 
+    rect: { top: number, left: number, width: number, height: number },
+    resize?: ResizeDirection,
+  }
+
+  const dragRef = React.useRef<HTMLDivElement | null>(null);
+  const [dragInfo, setDragInfo] = React.useState<DragInfo | null>(null);
+  const [resizeCursor, setResizeCursor] = React.useState<string>('');
+
+  const getResizeDirection = (clientX: number, clientY: number, rect: DOMRect): ResizeDirection | undefined => {
+    if (clientX >= rect.left && clientX < rect.left + 8) {
+      if (clientY >= rect.top && clientY < rect.top + 8) {
+        return 'NW'
+      }
+
+      if (clientY >= rect.bottom - 8 && clientY < rect.bottom) {
+        return 'SW'
+      }
+
+      return 'W';
+    }
+
+    if (clientX >= rect.right - 8 && clientX < rect.right) {
+      if (clientY >= rect.top && clientY < rect.top + 8) {
+        return 'NE'
+      }
+      
+      if (clientY >= rect.bottom - 8 && clientY < rect.bottom) {
+        return 'SE'
+      }
+
+      return 'E'
+    }
+
+    if (clientY >= rect.top && clientY < rect.top + 8) {
+      return 'N'
+    }
+
+    if (clientY >= rect.bottom - 8 && clientY < rect.bottom) {
+      return 'S'
+    }
+  }
 
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();
@@ -34,24 +78,143 @@ const Draggable: React.FC<PropsType> = observer(({
       element.focus();
       element.setPointerCapture(event.pointerId);
       const rect = element.getBoundingClientRect();
-      setStart({ x: event.clientX, y: event.clientY, top: rect.top, left: rect.left });
-      setDragging(true);
+
+      setDragInfo({
+        x: event.clientX,
+        y: event.clientY,
+        rect: { top: rect.top, left: rect.left, width: rect.right - rect.left, height: rect.bottom - rect.top },
+        resize: getResizeDirection(event.clientX, event.clientY, rect),
+      });
     }
   }
 
   const handleLostPointerCapture: React.PointerEventHandler = (event) => {
-    setDragging(false);
+    setDragInfo(null);
   }
 
   const handlePointerMoveCapture: React.PointerEventHandler<HTMLDivElement> = (event) => {
-    if (dragging) {
+    if (dragInfo) {
       const element = dragRef.current;
 
       if (element) {
-        const delta = { x: event.clientX - start.x, y: event.clientY - start.y };
-        // graph.setNodePosition(node, start.left + delta.x, start.top + delta.y);
-        onMove(start.left + delta.x, start.top + delta.y)
+        const delta = { x: event.clientX - dragInfo.x, y: event.clientY - dragInfo.y };
+
+        if (onResize && dragInfo.resize) {
+          switch (dragInfo.resize) {
+            case 'NW':
+              onResize(
+                dragInfo.rect.left + delta.x,
+                dragInfo.rect.top + delta.y,
+                dragInfo.rect.width - delta.x,
+                dragInfo.rect.height - delta.y,
+              );
+              break;
+
+            case 'SW':
+              onResize(
+                dragInfo.rect.left + delta.x,
+                dragInfo.rect.top,
+                dragInfo.rect.width - delta.x,
+                dragInfo.rect.height + delta.y,
+              );
+              break;
+
+            case 'NE':
+              onResize(
+                dragInfo.rect.left,
+                dragInfo.rect.top + delta.y,
+                dragInfo.rect.width + delta.x,
+                dragInfo.rect.height - delta.y,
+              );
+              break;
+
+            case 'SE':
+              onResize(
+                dragInfo.rect.left,
+                dragInfo.rect.top,
+                dragInfo.rect.width + delta.x,
+                dragInfo.rect.height + delta.y,
+              );
+              break;
+
+            case 'E':
+              onResize(
+                dragInfo.rect.left,
+                dragInfo.rect.top,
+                dragInfo.rect.width + delta.x,
+                dragInfo.rect.height,
+              );
+              break;
+
+            case 'W':
+              onResize(
+                dragInfo.rect.left + delta.x,
+                dragInfo.rect.top,
+                dragInfo.rect.width - delta.x,
+                dragInfo.rect.height,
+              );
+              break;
+
+            case 'N':
+              onResize(
+                dragInfo.rect.left,
+                dragInfo.rect.top + delta.y,
+                dragInfo.rect.width,
+                dragInfo.rect.width - delta.y,
+              );
+              break;
+
+            case 'S':
+              onResize(
+                dragInfo.rect.left,
+                dragInfo.rect.top,
+                dragInfo.rect.width,
+                dragInfo.rect.width + delta.y,
+              );
+              break;
+          }
+        }
+        else {
+          onMove(dragInfo.rect.left + delta.x, dragInfo.rect.top + delta.y)
+        }
       }
+    }
+  }
+
+  const handleMouseMove: React.MouseEventHandler<HTMLDivElement> = (event) => {
+    if (resizable) {
+      const element = dragRef.current;
+
+      if (element) {
+        const rect = element.getBoundingClientRect();
+  
+        const direction = getResizeDirection(event.clientX, event.clientY, rect);
+
+        switch (direction) {
+          case 'NW':
+          case 'SE':
+            setResizeCursor(styles.resizeNWSE)
+            break;
+
+          case 'NE':
+          case 'SW':
+            setResizeCursor(styles.resizeNESW)
+            break;
+
+          case 'E':
+          case 'W':
+            setResizeCursor(styles.resizeEW)
+            break;
+
+          case 'N':
+          case 'S':
+            setResizeCursor(styles.resizeNS)
+            break;
+
+          default:
+            setResizeCursor('')
+        }
+      }  
     }
   }
 
@@ -66,11 +229,17 @@ const Draggable: React.FC<PropsType> = observer(({
   return (
     <div
       ref={dragRef}
-      className="draggable"
-      style={getStyle(position.x, position.y)}
+      className={`${styles.draggable} ${resizable ? styles.resizable : ''} ${resizeCursor}`}
+      style={{
+        left: position.x,
+        top: position.y,
+        width: position.width,
+        height: position.height,
+      }}
       onPointerDown={handlePointerDown}
       onLostPointerCapture={handleLostPointerCapture}
       onPointerMoveCapture={handlePointerMoveCapture}
+      onMouseMove={handleMouseMove}
       onClick={handleClick}
       onContextMenu={handleContextMenu}
     >
