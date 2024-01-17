@@ -13,12 +13,11 @@ import Texture2D from "./Nodes/Texture2D";
 import TileAndScroll from "./Nodes/TileAndScroll";
 import Time from "./Nodes/Time";
 import UV from "./Nodes/UV";
-import OperationNode from "./OperationNode";
 import PropertyNode from "./PropertyNode";
 import ShaderGraph from "./ShaderGraph";
 import StageGraph from "./StageGraph";
 import StageProperty from "./StageProperty";
-import { GraphEdgeInterface, GraphNodeInterface, OperationNodeInterface, isPropertyNode } from "./Types";
+import { GraphEdgeInterface, GraphNodeInterface, isPropertyNode } from "./Types";
 
 let nextVarId = 0;
 const getNextVarId = () => {
@@ -112,16 +111,17 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor): [StageGraph, 
   }
 
   for (const edgeDescr of graphDescr.edges) {
-    const outputNode = nodes.find((n) => n.id === edgeDescr[0].id) as OperationNode;
-    const inputNode = nodes.find((n) => n.id === edgeDescr[1].id) as OperationNode;
+    const outputNode = nodes.find((n) => n.id === edgeDescr[0].id);
+    const inputNode = nodes.find((n) => n.id === edgeDescr[1].id);
 
     if (outputNode && inputNode) {
       const inputPort = inputNode.inputPorts.find((p) => p.name === edgeDescr[1].port);
+      const outputPort = outputNode.outputPort.find((p) => p.name === edgeDescr[0].port);
 
       // Make sure we have an output port, an input port and the input port does
       // not currently have an assigned edge.
-      if (outputNode.outputPort && inputPort && !inputPort.edge) {
-        const edge = new GraphEdge(outputNode.outputPort, inputPort);
+      if (outputPort && inputPort && !inputPort.edge) {
+        const edge = new GraphEdge(outputPort, inputPort);
         edges.push(edge);
       }
     }
@@ -131,7 +131,10 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor): [StageGraph, 
 }
 
 export const generateStageShaderCode = (graph: StageGraph): string => {
-  let body = '';
+  // Clear the node priorities
+  for (const node of graph.nodes) {
+    node.priority = null;
+  }
 
   // Find the output node
   const outputNode = graph.nodes.find((n) => n.type === 'display');
@@ -139,6 +142,8 @@ export const generateStageShaderCode = (graph: StageGraph): string => {
   if (outputNode) {
     nextVarId = 0;
 
+    outputNode.priority = 0;
+    
     // Output the instructions.
     let stack: GraphNodeInterface[] = [outputNode];
 
@@ -147,7 +152,7 @@ export const generateStageShaderCode = (graph: StageGraph): string => {
       stack = stack.slice(1)
 
       if (node.type !== 'property') {
-        const operationNode = (node as OperationNodeInterface);
+        const operationNode = node;
 
         // Push the input nodes onto the stack
         // and generate variables.
@@ -158,14 +163,31 @@ export const generateStageShaderCode = (graph: StageGraph): string => {
               input.edge.setVarName(varName);
             }
 
+            // Update the node priority if it is lower than 
+            // the current node's priority plus 1.
+            if (input.edge.output.node.priority ?? 0 < (node.priority ?? 0) + 1) {
+              input.edge.output.node.priority = (node.priority ?? 0) + 1;
+            }
+
             stack.push(input.edge.output.node);
           }
         }
 
-        const text = operationNode.output();
-        body = text.concat(body); // `${text} ${body}`;
+        // const text = operationNode.output();
+        // body = text.concat(body); // `${text} ${body}`;
       }
     }
+  }
+
+  const visitedNodes = graph.nodes.filter((n) => n.priority !== null);
+
+  visitedNodes.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0))
+
+  let body = '';
+
+  for (const node of visitedNodes) {
+    const text = node.output();
+    body = text.concat(body);
   }
 
   return body;
@@ -187,6 +209,8 @@ export const generateShaderCode = (graph: ShaderGraph): string => {
   if (graph.fragment) {
 
     body = generateStageShaderCode(graph.fragment);
+
+    console.log(body);
   }
 
   return `

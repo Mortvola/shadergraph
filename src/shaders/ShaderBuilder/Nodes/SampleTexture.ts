@@ -1,8 +1,12 @@
-import InputPort from "../InputPort";
-import OperationNode from "../OperationNode";
-import OutputPort from "../OutputPort";
+import GraphNode from "../GraphNode";
+import AlphaPort from "../Ports/AlphaPort";
+import BluePort from "../Ports/BluePort";
+import GreenPort from "../Ports/GreenPort";
+import InputPort from "../Ports/InputPort";
+import OutputPort from "../Ports/OutputPort";
+import RedPort from "../Ports/RedPort";
 
-class SampleTexture extends OperationNode {
+class SampleTexture extends GraphNode {
   constructor(id?: number) {
     super('SampleTexture', 'SampleTexture', id)
 
@@ -12,11 +16,17 @@ class SampleTexture extends OperationNode {
       new InputPort(this, 'vec2f', 'uv'),
     ];
 
-    this.outputPort = new OutputPort(this, 'vec4f', 'sample')
+    this.outputPort = [
+      new OutputPort(this, 'vec4f', 'rgba'),
+      new RedPort(this, 'float', 'r'),
+      new GreenPort(this, 'float', 'g'),
+      new BluePort(this, 'float', 'b'),
+      new AlphaPort(this, 'float', 'a'),
+    ]
   }
 
   output(): string {
-    const outputVar = this.outputPort?.varName;
+    const outputVar = this.outputVarName;
     const texture = this.inputPorts[0].getVarname();
     const sampler = this.inputPorts[1].getVarname();
     const textCoord = this.inputPorts[2].getVarname();

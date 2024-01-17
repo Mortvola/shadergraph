@@ -1,5 +1,5 @@
-import InputPort from "./InputPort";
-import OutputPort from "./OutputPort";
+import InputPort from "./Ports/InputPort";
+import OutputPort from "./Ports/OutputPort";
 import { GraphEdgeInterface } from "./Types";
 
 class GraphEdge implements GraphEdgeInterface {
@@ -16,11 +16,11 @@ class GraphEdge implements GraphEdgeInterface {
   }
 
   getVarName(): string {
-    return this.output.varName ?? '';
+    return this.output.getVarName() ?? '';
   }
 
   setVarName(name: string): void {
-    this.output.varName = name;
+    this.output.node.outputVarName = name;
   }
 }
 

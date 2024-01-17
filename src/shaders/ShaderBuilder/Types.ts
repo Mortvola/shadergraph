@@ -29,13 +29,13 @@ export interface OutputPortInterface {
 
   name: string;
 
-  varName: string | null;
-
   edge: GraphEdgeInterface | null;
   
   offsetX: number;
 
-  offsetY: number;  
+  offsetY: number;
+
+  getVarName(): string;
 };
 
 export interface GraphNodeInterface {
@@ -45,19 +45,21 @@ export interface GraphNodeInterface {
 
   id: number;
 
+  inputPorts: InputPortInterface[];
+
+  outputPort: OutputPortInterface[];
+
+  outputVarName: string | null;
+
   x: number;
   
   y: number;
 
-  setPosition(x: number, y: number): void;
-}
-
-export interface OperationNodeInterface extends GraphNodeInterface {
-  inputPorts: InputPortInterface[];
-
-  outputPort: OutputPortInterface | null;
+  priority: number | null;
 
   output(): string;
+
+  setPosition(x: number, y: number): void;
 }
 
 export interface PropertyNodeInterface extends GraphNodeInterface {
@@ -65,7 +67,7 @@ export interface PropertyNodeInterface extends GraphNodeInterface {
 
   value: PropertyType;
 
-  outputPort: OutputPortInterface;
+  outputPort: OutputPortInterface[];
 
   readonly: boolean;
 }
@@ -75,11 +77,6 @@ export interface StagePropertyInterface {
 
   value: PropertyType;
 }
-
-export const isOperationNode = (r: unknown): r is OperationNodeInterface => (
-  (r as OperationNodeInterface).inputPorts !== undefined
-  && (r as OperationNodeInterface).outputPort !== undefined
-)
 
 export const isPropertyNode = (r: unknown): r is PropertyNodeInterface => (
   (r as PropertyNodeInterface).dataType !== undefined

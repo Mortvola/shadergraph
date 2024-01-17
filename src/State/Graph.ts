@@ -1,5 +1,5 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OperationNodeInterface, OutputPortInterface, isOperationNode } from "../shaders/ShaderBuilder/Types";
+import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface } from "../shaders/ShaderBuilder/Types";
 import GraphEdge from "../shaders/ShaderBuilder/GraphEdge";
 import Display from "../shaders/ShaderBuilder/Nodes/Display";
 import { buildGraph, createDescriptor } from "../shaders/ShaderBuilder/ShaderBuilder";
@@ -117,21 +117,22 @@ class Graph {
       runInAction(() => {
         const node = this.nodes[index];
 
-        // Delete any connected edges
-        if (isOperationNode(node)) {
-          for (const inputPort of node.inputPorts) {
-            const edge = inputPort.edge;
+        // Delete any connected input edges
+        for (const inputPort of node.inputPorts) {
+          const edge = inputPort.edge;
 
-            if (edge) {
-              this.deleteEdge(edge);
-            }
+          if (edge) {
+            this.deleteEdge(edge);
           }
         }
 
-        const edge = (node as OperationNodeInterface).outputPort?.edge;
+        // Delete any connected output edges
+        for (const outputPort of node.outputPort) {
+          const edge = outputPort.edge;
 
-        if (edge) {
-          this.deleteEdge(edge);
+          if (edge) {
+            this.deleteEdge(edge);
+          }
         }
 
         this.nodes = [

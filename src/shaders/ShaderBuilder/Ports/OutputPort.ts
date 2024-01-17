@@ -1,6 +1,6 @@
-import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, Type } from "./Types";
+import { GraphEdgeInterface, GraphNodeInterface, OutputPortInterface, Type } from "../Types"
 
-class InputPort implements InputPortInterface {
+class OutputPort implements OutputPortInterface {
   node: GraphNodeInterface;
 
   type: Type;
@@ -19,9 +19,10 @@ class InputPort implements InputPortInterface {
     this.name = name;
   }
 
-  getVarname(): string {
-    return this.edge?.getVarName() ?? '';
+  getVarName(): string {
+    return this.node.outputVarName ?? '';
   }
 }
 
-export default InputPort;
+export default OutputPort;
+

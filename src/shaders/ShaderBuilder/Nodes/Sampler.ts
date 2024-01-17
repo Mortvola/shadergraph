@@ -4,7 +4,7 @@ class Sampler extends PropertyNode {
   constructor(id?: number) {
     super('sampler', 'sampler', '', id)
 
-    this.outputPort.varName = 'ourSampler';
+    this.outputVarName = 'ourSampler';
   }
 }
 

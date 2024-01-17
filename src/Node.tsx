@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import styles from './Node.module.scss';
 import NodeInputPort from './NodeInputPort';
 import NodeOutputPort from './NodeOutputPort';
-import { GraphNodeInterface, isOperationNode, isPropertyNode } from './shaders/ShaderBuilder/Types';
+import { GraphNodeInterface, isPropertyNode } from './shaders/ShaderBuilder/Types';
 import { useStores } from './State/store';
 import PropertyVec2f from './PropertyVec2f';
 import Draggable from './Draggable';
@@ -27,32 +27,6 @@ const Node: React.FC<PropsType> = observer(({
   }
 
   const renderNode = () => {
-    if (isOperationNode(node)) {
-      return (
-        <>
-          <div className={styles.title}>{node.name}</div>
-          <div className={styles.body}>
-            <div className={styles.inputports}>
-              {
-                node.inputPorts.map((p) => (
-                  <NodeInputPort key={p.name} port={p} />
-                ))
-              }
-            </div>
-            <div>
-            </div>
-            <div className={styles.outputports}>
-              {
-                node.outputPort
-                  ? <NodeOutputPort port={node.outputPort} />
-                  : null
-              }
-            </div>
-          </div>    
-        </>      
-      )
-    }
-
     if (isPropertyNode(node)) {
       const propertyField = () => {
         switch (node.dataType) {
@@ -71,11 +45,11 @@ const Node: React.FC<PropsType> = observer(({
         <>
           <div className={styles.property}>
             <div className={styles.title}>{node.name}</div>
-              {
-                node.outputPort
-                  ? <NodeOutputPort port={node.outputPort} hideName />
-                  : null
-              }
+            {
+              node.outputPort.map((p) => (
+                <NodeOutputPort key={p.name} port={p} hideName />
+              ))
+            }
           </div>
           <div className={styles.propertybody}>
             {
@@ -87,8 +61,30 @@ const Node: React.FC<PropsType> = observer(({
         </>
       )
     }
-
-    return null;
+    
+    return (
+      <>
+        <div className={styles.title}>{node.name}</div>
+        <div className={styles.body}>
+          <div className={styles.inputports}>
+            {
+              node.inputPorts.map((p) => (
+                <NodeInputPort key={p.name} port={p} />
+              ))
+            }
+          </div>
+          <div>
+          </div>
+          <div className={styles.outputports}>
+            {
+              node.outputPort.map((p) => (
+                <NodeOutputPort key={p.name} port={p} />
+              ))
+            }
+          </div>
+        </div>    
+      </>      
+    )
   }
 
   return (
