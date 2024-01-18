@@ -1,12 +1,13 @@
 import React from 'react';
 import Node from './Node';
-import Canvas3d from './Canvas3d';
 import { useStores } from './State/store';
 import { observer } from 'mobx-react-lite';
 import Canvas2d from './Canvas2d';
 import ContextMenu from './ContextMenu/ContextMenu';
 import Preview from './Preview';
 import Controls from './Controls';
+import Properties from './Properties';
+import { menuItems } from './ContextMenu/MenuItems';
 
 const Container: React.FC = observer(() => {
   const { graph } = useStores();
@@ -76,9 +77,10 @@ const Container: React.FC = observer(() => {
       }
       <Preview />
       <Controls />
+      <Properties />
       {
         showMenu
-          ? <ContextMenu x={showMenu[0]} y={showMenu[1]} onClose={handleMenuClose} />
+          ? <ContextMenu menuItems={menuItems} x={showMenu[0]} y={showMenu[1]} onClose={handleMenuClose} />
           : null
       }
     </div>

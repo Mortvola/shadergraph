@@ -1,13 +1,10 @@
 import React from 'react';
-import { useStores } from '../State/store';
-import SampleTexture from '../shaders/ShaderBuilder/Nodes/SampleTexture';
-import { GraphNodeInterface } from '../shaders/ShaderBuilder/Types';
-import { MenuItemRecord } from './MenuItems';
+import { MenuActionRecord } from './MenuItems';
 
 type PropsType = {
   x: number,
   y: number,
-  item: MenuItemRecord<GraphNodeInterface>
+  item: MenuActionRecord
 }
 
 const MenuItem: React.FC<PropsType> = ({
@@ -15,13 +12,8 @@ const MenuItem: React.FC<PropsType> = ({
   y,
   item,
 }) => {
-  const { graph } = useStores();
-
   const handleClick = () => {
-    const node = new item.node();
-    node.x = x;
-    node.y = y;
-    graph.addNode(node)
+    item.action(x, y);
   }
 
   return (

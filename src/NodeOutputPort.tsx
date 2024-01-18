@@ -74,10 +74,9 @@ const NodeOutputPort: React.FC<PropsType> = ({
     >
       {
         !hideName
-          ? <div>{ port.name }</div>
-          : null
+          ? <div>{ `${port.name} (${convertType(port.type)})` }</div>
+          : <div>{ convertType(port.type) }</div>
       }
-      <div>{ convertType(port.type) }</div>
     </div>
   )
 }

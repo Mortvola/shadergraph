@@ -3,6 +3,12 @@ import Graph from "./Graph";
 import Modeler from "./Modeler";
 import { StoreInterface } from "./types";
 import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
+import { makeObservable, observable } from "mobx";
+
+type OpenMenuItem = {
+  menuItem: HTMLElement,
+  menuRect: DOMRect,
+}
 
 class Store implements StoreInterface {
   graph: Graph;
@@ -11,13 +17,7 @@ class Store implements StoreInterface {
 
   modeler: Modeler;
 
-  async applyChanges(): Promise<void> {
-    const material = await this.graph.generateMaterial();
-
-    if (material) {
-      this.modeler.applyMaterial(material);
-    }
-  }
+  menus: OpenMenuItem[] = [];
 
   constructor() {
     let descriptor: MaterialDescriptor | undefined = undefined;
@@ -29,6 +29,18 @@ class Store implements StoreInterface {
 
     this.graph = new Graph(this, descriptor);
     this.modeler = new Modeler();
+
+    makeObservable(this, {
+      menus: observable,
+    })
+  }
+
+  async applyChanges(): Promise<void> {
+    const material = await this.graph.generateMaterial();
+
+    if (material) {
+      this.modeler.applyMaterial(material);
+    }
   }
 
   setDragObject(object: unknown | null) {
@@ -43,13 +55,13 @@ class Store implements StoreInterface {
 export const convertType = (type: string) => {
   switch (type) {
     case 'float':
-      return 'F1';
+      return '1';
 
     case 'vec2f':
-      return 'F2';
+      return '2';
 
     case 'vec4f':
-      return 'F4';
+      return '4';
 
     case 'texture2D':
       return 'T2';

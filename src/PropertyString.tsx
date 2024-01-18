@@ -1,10 +1,10 @@
 import React from 'react';
 import { useStores } from './State/store';
-import { PropertyNodeInterface } from './shaders/ShaderBuilder/Types';
+import { PropertyType } from './shaders/ShaderBuilder/Types';
 import { runInAction } from 'mobx';
 
 type PropTypes = {
-  node: PropertyNodeInterface,
+  node: { value: PropertyType },
 }
 
 const PropertyString: React.FC<PropTypes> = ({
@@ -24,7 +24,7 @@ const PropertyString: React.FC<PropTypes> = ({
 
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();
-    graph.selectNode(node)
+    // graph.selectNode(node)
   }
 
   const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {

@@ -1,5 +1,5 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface } from "../shaders/ShaderBuilder/Types";
+import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../shaders/ShaderBuilder/Types";
 import GraphEdge from "../shaders/ShaderBuilder/GraphEdge";
 import Display from "../shaders/ShaderBuilder/Nodes/Display";
 import { buildGraph, createDescriptor } from "../shaders/ShaderBuilder/ShaderBuilder";
@@ -7,6 +7,7 @@ import { MaterialInterface } from "../types";
 import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
 import Material from "../Materials/Material";
 import { CullMode, StoreInterface } from "./types";
+import Property from "../shaders/ShaderBuilder/Property";
 
 class Graph {
   nodes: GraphNodeInterface[] = [];
@@ -19,6 +20,8 @@ class Graph {
 
   transparent = false;
 
+  properties: Property[] = [];
+
   changed = false;
 
   selectedNode: GraphNodeInterface | null = null;
@@ -29,6 +32,12 @@ class Graph {
     this.store = store;
 
     if (descriptor) {
+      if (descriptor.properties) {
+        this.properties = descriptor.properties.map((p) => (
+          new Property(p.name, p.dataType, p.value)
+        ))
+      }
+
       if (descriptor.graph) {
         const graph = buildGraph(descriptor.graph);
 
@@ -56,11 +65,34 @@ class Graph {
       selectedNode: observable,
       transparent: observable,
       cullMode: observable,
+      properties: observable,
     });
   }
 
   setDragConnector(points: [number, number][] | null) {
     this.dragConnector = points;
+  }
+
+  addProperty(property: PropertyInterface) {
+    runInAction(() => {
+      this.properties.push(property);
+      this.changed = true;  
+    })
+  }
+
+  deleteProperty(property: PropertyInterface) {
+    const index = this.properties.findIndex((p) => p === property);
+
+    if (index !== -1) {
+      runInAction(() => {
+        this.properties = [
+          ...this.properties.slice(0, index),
+          ...this.properties.slice(index + 1),
+        ];
+        
+        this.changed = true;  
+      })
+    }
   }
 
   link(outputPort: OutputPortInterface, inputPort: InputPortInterface) {
@@ -167,6 +199,12 @@ class Graph {
       cullMode: this.cullMode === 'front' ? undefined : this.cullMode,
       transparent: this.transparent,
       
+      properties: this.properties.map((p) => ({
+        name: p.name,
+        dataType: p.dataType,
+        value: p.value,
+      })),
+
       graph: createDescriptor(this.nodes, this.edges),
     }
 

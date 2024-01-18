@@ -100,8 +100,7 @@ const NodeInputPort: React.FC<PropsType> = ({
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
     >
-      <div>{ port.name }</div>
-      <div>{ convertType(port.type) }</div>
+      <div>{ `${port.name} (${convertType(port.type)})` }</div>
     </div>
   )
 }

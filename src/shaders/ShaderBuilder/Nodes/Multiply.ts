@@ -3,7 +3,7 @@ import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 
 class Multiply extends GraphNode {
-  constructor(id: number) {
+  constructor(id?: number) {
     super('Multiply', 'Multiply', id)
 
     this.inputPorts = [

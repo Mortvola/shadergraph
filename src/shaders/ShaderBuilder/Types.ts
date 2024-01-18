@@ -92,3 +92,11 @@ export interface GraphEdgeInterface {
 
   setVarName(name: string): void;
 }
+
+export interface PropertyInterface {
+  name: string;
+
+  dataType: Type;
+
+  value: PropertyType;
+}

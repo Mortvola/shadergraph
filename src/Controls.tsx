@@ -2,7 +2,6 @@ import React from 'react';
 import Draggable from './Draggable';
 import styles from './Controls.module.scss';
 import { useStores } from './State/store';
-import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import { CullMode } from './State/types';
 

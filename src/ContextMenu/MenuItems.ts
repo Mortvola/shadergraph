@@ -1,3 +1,4 @@
+import { store } from "../State/store";
 import Display from "../shaders/ShaderBuilder/Nodes/Display";
 import Multiply from "../shaders/ShaderBuilder/Nodes/Multiply";
 import SampleTexture from "../shaders/ShaderBuilder/Nodes/SampleTexture";
@@ -9,19 +10,50 @@ import UV from "../shaders/ShaderBuilder/Nodes/UV";
 import Vector2D from "../shaders/ShaderBuilder/Nodes/Vector2D";
 import { GraphNodeInterface } from "../shaders/ShaderBuilder/Types";
 
-export type MenuItemRecord<T> = {
-  node: new () => T;
-  name: string;
+export type MenuItemLike = MenuActionRecord | SubmenutItemRecord;
+
+export type MenuItemRecord = {
+  name: string,
 }
 
-export const menuItems: MenuItemRecord<GraphNodeInterface>[] = [
-  { node: SampleTexture, name: 'SampleTexture' },
-  { node: TileAndScroll, name: 'TileAndScroll' },
-  { node: Display, name: 'Display' },
-  { node: Multiply, name: 'Multiply' },
-  { node: Time, name: 'Time' },
-  { node: UV, name: 'UV' },
-  { node: Texture2D, name: 'Texture2D' },
-  { node: Sampler, name: 'Sampler'},
-  { node: Vector2D, name: 'Vector2D' },
-]
+export type MenuActionRecord = MenuItemRecord & {
+  action: (x: number, y: number) => void,
+}
+
+export const isMenuActionRecord = (r: unknown): r is MenuActionRecord => (
+  (r as MenuActionRecord).action !== undefined
+)
+
+export type SubmenutItemRecord = MenuItemRecord & {
+  submenu: () => MenuItemLike[],
+}
+
+export const isSubmenuItem = (r: unknown): r is SubmenutItemRecord => (
+  (r as SubmenutItemRecord).submenu !== undefined
+)
+
+function createObject<T>(o: new () => T, x: number, y: number) {
+  const node = new o() as GraphNodeInterface;
+  node.x = x;
+  node.y = y;
+  store.graph.addNode(node)  
+}
+
+export const propertyMenu = (): MenuItemLike[] => ( 
+  store.graph.properties.map((p) => ({
+    name: p.name, action: (x: number, y: number) => {},
+  }))
+)
+
+export const menuItems = (): MenuItemLike[] => ([
+  { name: 'Properties', submenu: propertyMenu },
+  { name: 'SampleTexture', action: (x: number, y: number) => createObject(SampleTexture, x, y) },
+  { name: 'TileAndScroll', action: (x: number, y: number) => createObject(TileAndScroll, x, y) },
+  { name: 'Display', action: (x: number, y: number) => createObject(Display, x, y) },
+  { name: 'Multiply', action: (x: number, y: number) => createObject(Multiply, x, y) },
+  { name: 'Time', action: (x: number, y: number) => createObject(Time, x, y) },
+  { name: 'UV', action: (x: number, y: number) => createObject(UV, x, y) },
+  { name: 'Texture2D', action: (x: number, y: number) => createObject(Texture2D, x, y) },
+  { name: 'Sampler', action: (x: number, y: number) => createObject(Sampler, x, y) },
+  { name: 'Vector2D', action: (x: number, y: number) => createObject(Vector2D, x, y) },
+])
