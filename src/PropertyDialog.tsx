@@ -46,10 +46,10 @@ const PropertyDialog: React.FC<PropsType> = observer(({
   }
 
   const renderValue = () => {
-    switch (property.dataType) {
+    switch (property.value.dataType) {
       case 'string':
       case 'texture2D':
-        return <PropertyString node={property} />
+        return <PropertyString node={property.value} />
     }
   }
 

@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import styles from './Node.module.scss';
 import NodeInputPort from './NodeInputPort';
 import NodeOutputPort from './NodeOutputPort';
-import { GraphNodeInterface, isPropertyNode } from './shaders/ShaderBuilder/Types';
+import { GraphNodeInterface, isPropertyNode, isValueNode } from './shaders/ShaderBuilder/Types';
 import { useStores } from './State/store';
 import PropertyVec2f from './PropertyVec2f';
 import Draggable from './Draggable';
@@ -28,14 +28,29 @@ const Node: React.FC<PropsType> = observer(({
 
   const renderNode = () => {
     if (isPropertyNode(node)) {
+      return (
+        <>
+          <div className={styles.property}>
+            <div className={styles.title}>{node.getName()}</div>
+            {
+              node.outputPort.map((p) => (
+                <NodeOutputPort key={p.name} port={p} hideName />
+              ))
+            }
+          </div>
+        </>
+      )
+    }
+    
+    if (isValueNode(node)) {
       const propertyField = () => {
-        switch (node.dataType) {
+        switch (node.value.dataType) {
           case 'vec2f':
-            return <PropertyVec2f node={node} />;
+            return <PropertyVec2f node={node.value} />;
 
           case 'string':
           case 'texture2D':
-            return <PropertyString node={node} />
+            return <PropertyString node={node.value} />
         }
 
         return null;
@@ -44,7 +59,6 @@ const Node: React.FC<PropsType> = observer(({
       return (
         <>
           <div className={styles.property}>
-            <div className={styles.title}>{node.name}</div>
             {
               node.outputPort.map((p) => (
                 <NodeOutputPort key={p.name} port={p} hideName />
@@ -53,18 +67,16 @@ const Node: React.FC<PropsType> = observer(({
           </div>
           <div className={styles.propertybody}>
             {
-              !node.readonly
-                ? propertyField()
-                : null
+              propertyField()
             }
           </div>
         </>
       )
     }
-    
+
     return (
       <>
-        <div className={styles.title}>{node.name}</div>
+        <div className={styles.title}>{node.getName()}</div>
         <div className={styles.body}>
           <div className={styles.inputports}>
             {

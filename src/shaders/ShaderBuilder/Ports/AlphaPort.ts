@@ -2,8 +2,8 @@ import OutputPort from "./OutputPort";
 
 class AlphaPort extends OutputPort {
   getVarName(): string {
-    if (this.node.outputVarName) {
-      return `${this.node.outputVarName}.a`
+    if (this.node.getVarName()) {
+      return `${this.node.getVarName()}.a`
     }
 
     return '';

@@ -39,7 +39,7 @@ class Graph {
       }
 
       if (descriptor.graph) {
-        const graph = buildGraph(descriptor.graph);
+        const graph = buildGraph(descriptor.graph, this.properties);
 
         if (graph.fragment) {
           this.nodes = graph.fragment.nodes;
@@ -89,7 +89,7 @@ class Graph {
           ...this.properties.slice(0, index),
           ...this.properties.slice(index + 1),
         ];
-        
+
         this.changed = true;  
       })
     }
@@ -201,8 +201,8 @@ class Graph {
       
       properties: this.properties.map((p) => ({
         name: p.name,
-        dataType: p.dataType,
-        value: p.value,
+        dataType: p.value.dataType,
+        value: p.value.value,
       })),
 
       graph: createDescriptor(this.nodes, this.edges),

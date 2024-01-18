@@ -1,12 +1,12 @@
 import React from 'react';
-import { PropertyNodeInterface } from './shaders/ShaderBuilder/Types';
+import { PropertyType } from './shaders/ShaderBuilder/Types';
 import styles from './Node.module.scss';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import { useStores } from './State/store';
 
 type PropsType = {
-  node: PropertyNodeInterface,
+  node: { value: PropertyType },
 }
 
 const PropertyVec2f: React.FC<PropsType> = observer(({
@@ -50,7 +50,7 @@ const PropertyVec2f: React.FC<PropsType> = observer(({
 
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();
-    graph.selectNode(node)
+    // graph.selectNode(node)
   }
 
   const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {

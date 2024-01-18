@@ -1,14 +1,12 @@
+import BuiltIn from "../BuiltInNode";
 import OutputPort from "../Ports/OutputPort";
-import PropertyNode from "../PropertyNode";
 
-class UV extends PropertyNode {
+class UV extends BuiltIn {
   constructor(id?: number) {
-    super('uv', 'vec2f', 'UV', id)
+    super('uv', 'UV', id)
 
     this.outputPort = [new OutputPort(this, 'vec2f', 'uv')];
-    this.outputVarName = 'vertexOut.texcoord';
-
-    this.readonly = true;
+    this.setVarName('vertexOut.texcoord');
   }
 }
 

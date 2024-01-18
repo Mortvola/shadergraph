@@ -8,6 +8,8 @@ import TileAndScroll from "../shaders/ShaderBuilder/Nodes/TileAndScroll";
 import Time from "../shaders/ShaderBuilder/Nodes/Time";
 import UV from "../shaders/ShaderBuilder/Nodes/UV";
 import Vector2D from "../shaders/ShaderBuilder/Nodes/Vector2D";
+import Property from "../shaders/ShaderBuilder/Property";
+import PropertyNode from "../shaders/ShaderBuilder/PropertyNode";
 import { GraphNodeInterface } from "../shaders/ShaderBuilder/Types";
 
 export type MenuItemLike = MenuActionRecord | SubmenutItemRecord;
@@ -41,7 +43,12 @@ function createObject<T>(o: new () => T, x: number, y: number) {
 
 export const propertyMenu = (): MenuItemLike[] => ( 
   store.graph.properties.map((p) => ({
-    name: p.name, action: (x: number, y: number) => {},
+    name: p.name, action: (x: number, y: number) => {
+      const node = new PropertyNode(p)
+      node.x = x;
+      node.y = y;
+      store.graph.addNode(node)  
+    },
   }))
 )
 
@@ -53,7 +60,6 @@ export const menuItems = (): MenuItemLike[] => ([
   { name: 'Multiply', action: (x: number, y: number) => createObject(Multiply, x, y) },
   { name: 'Time', action: (x: number, y: number) => createObject(Time, x, y) },
   { name: 'UV', action: (x: number, y: number) => createObject(UV, x, y) },
-  { name: 'Texture2D', action: (x: number, y: number) => createObject(Texture2D, x, y) },
   { name: 'Sampler', action: (x: number, y: number) => createObject(Sampler, x, y) },
   { name: 'Vector2D', action: (x: number, y: number) => createObject(Vector2D, x, y) },
 ])

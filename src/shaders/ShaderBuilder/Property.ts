@@ -1,17 +1,15 @@
 import { makeObservable, observable } from "mobx";
 import { PropertyInterface, PropertyType, Type } from "./Types";
+import Value from "./Value";
 
 class Property implements PropertyInterface {
   name: string;
 
-  dataType: Type;
-
-  value: PropertyType;
+  value: Value;
 
   constructor(name: string, dataType: Type, value: PropertyType) {
     this.name = name;
-    this.dataType = dataType;
-    this.value = value;
+    this.value = new Value(dataType, value);
 
     makeObservable(this, {
       name: observable,

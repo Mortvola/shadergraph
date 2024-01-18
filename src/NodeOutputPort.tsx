@@ -34,7 +34,7 @@ const NodeOutputPort: React.FC<PropsType> = ({
 
     store.setDragObject(port);
 
-    event.dataTransfer.setData("application/output-port", port.name);
+    event.dataTransfer.setData("application/output-port", "output");
 
     const element = portRef.current;
 

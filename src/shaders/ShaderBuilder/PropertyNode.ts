@@ -1,50 +1,36 @@
 import { makeObservable, observable } from "mobx";
 import GraphNode from "./GraphNode";
 import OutputPort from "./Ports/OutputPort";
-import { PropertyNodeInterface, PropertyType, Type } from "./Types";
+import { PropertyNodeInterface } from "./Types";
+import Property from "./Property";
 
 class PropertyNode extends GraphNode implements PropertyNodeInterface {
-  dataType: Type;
-
-  value: PropertyType;
+  property: Property;
 
   readonly = false;
 
-  constructor(name: string, dataType: Type, value: PropertyType, id?: number) {
-    super('property', name, id)
+  constructor(property: Property, id?: number) {
+    super('property', id)
 
-    this.name = name;
-    this.dataType = dataType;
-    this.value = value;
+    this.property = property;
 
-    this.outputPort = [new OutputPort(this, dataType, name)];
-    this.outputVarName = this.getValueString();
+    this.outputPort = [new OutputPort(this, property.value.dataType, property.name)];
 
     makeObservable(this, {
-      value: observable,
+      property: observable,
     })
   }
 
-  getValueString(): string {
-    switch (typeof this.value) {
-      case 'string':
-        return this.value;
+  getVarName() {
+    return this.property.name;
+  }
 
-      case 'number':
-        return this.value.toString();
+  setVarName() {
+    throw new Error('invalid setting of property var name')
+  }
 
-      case 'object': {
-        if (this.value.length === 2) {
-          return `vec2f(${this.value[0]}, ${this.value[1]})`;
-        }
-
-        if (Array.isArray(this.value) && this.value.length === 3) {
-          return `vec3f(${this.value[0]}, ${this.value[1]}, ${this.value[2]})`;
-        }
-
-        return `vec4f(${this.value[0]}, ${this.value[1]}, ${this.value[2]}, ${this.value[3]})`;
-      }
-    }
+  getName(): string {
+    return this.property.name;
   }
 }
 

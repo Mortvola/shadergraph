@@ -4,8 +4,6 @@ import InputPort from "./Ports/InputPort";
 import OutputPort from "./Ports/OutputPort";
 
 class GraphNode implements GraphNodeInterface {
-  name: string;
-
   type: NodeType;
 
   id: number;
@@ -14,7 +12,7 @@ class GraphNode implements GraphNodeInterface {
 
   outputPort: OutputPort[] = [];
 
-  outputVarName: string | null = null;
+  private outputVarName: string | null = null;
 
   x = 0;
   
@@ -22,9 +20,8 @@ class GraphNode implements GraphNodeInterface {
 
   priority: number | null = null;
 
-  constructor(type: NodeType, name: string, id?: number) {
+  constructor(type: NodeType, id?: number) {
     this.type = type;
-    this.name = name;
     this.id = id ?? GraphNode.getNextNodeId();
 
     if (this.id >= GraphNode.nextNodeId) {
@@ -35,6 +32,18 @@ class GraphNode implements GraphNodeInterface {
       x: observable,
       y: observable,
     });
+  }
+
+  getVarName(): string | null {
+    return this.outputVarName;
+  }
+
+  setVarName(name: string) {
+    this.outputVarName = name;
+  }
+
+  getName(): string {
+    return '';
   }
 
   output(): string { 

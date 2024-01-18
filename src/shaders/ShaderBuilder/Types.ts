@@ -1,8 +1,9 @@
 export type Type = 'float' | 'vec2f' | 'vec3f' | 'vec4f' | 'texture2D' | 'sampler' | 'rgba' | 'string';
 
 export type NodeType =
-  'property' | 'texture' | 'SampleTexture' | 'simpleVertex' | 'simpleFrag' | 'display' | 'uv'
-  | 'TileAndScroll' | 'Multiply' | 'time';
+  'property' | 'value'
+  | 'uv' | 'time'  | 'sampler' | 'time'
+  | 'TileAndScroll' | 'Multiply' | 'SampleTexture' | 'display';
 
 export type PropertyType = string | number | [number, number] | [number, number, number] | [number, number, number, number];
 
@@ -39,8 +40,6 @@ export interface OutputPortInterface {
 };
 
 export interface GraphNodeInterface {
-  name: string;
-
   type: NodeType;
 
   id: number;
@@ -49,13 +48,17 @@ export interface GraphNodeInterface {
 
   outputPort: OutputPortInterface[];
 
-  outputVarName: string | null;
+  getVarName(): string | null;
 
+  setVarName(name: string): void;
+  
   x: number;
   
   y: number;
 
   priority: number | null;
+
+  getName(): string;
 
   output(): string;
 
@@ -63,24 +66,27 @@ export interface GraphNodeInterface {
 }
 
 export interface PropertyNodeInterface extends GraphNodeInterface {
-  dataType: Type;
-
-  value: PropertyType;
+  property: PropertyInterface;
 
   outputPort: OutputPortInterface[];
 
   readonly: boolean;
 }
 
-export interface StagePropertyInterface {
-  type: Type;
+export interface ValueNodeInterface extends GraphNodeInterface {
+  value: ValueInterface;
+}
 
-  value: PropertyType;
+export interface StagePropertyInterface {
+  property: PropertyInterface;
 }
 
 export const isPropertyNode = (r: unknown): r is PropertyNodeInterface => (
-  (r as PropertyNodeInterface).dataType !== undefined
-  && (r as PropertyNodeInterface).value !== undefined
+  (r as PropertyNodeInterface).property !== undefined
+)
+
+export const isValueNode = (r: unknown): r is ValueNodeInterface => (
+  (r as ValueNodeInterface).value !== undefined
 )
 
 export interface GraphEdgeInterface {  
@@ -93,10 +99,16 @@ export interface GraphEdgeInterface {
   setVarName(name: string): void;
 }
 
-export interface PropertyInterface {
-  name: string;
-
+export interface ValueInterface {
   dataType: Type;
 
   value: PropertyType;
+
+  getValueString(): string;
+}
+
+export interface PropertyInterface {
+  name: string;
+
+  value: ValueInterface;
 }

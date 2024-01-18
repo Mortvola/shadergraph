@@ -3,21 +3,23 @@ import { common } from "../common";
 import { textureAttributes } from "../textureAttributes";
 import { texturedCommon } from "../texturedCommon";
 import { texturedVertex } from "../texturedVertex";
-import { GraphDescriptor, GraphStageDescriptor, PropertyDescriptor } from "./GraphDescriptor";
+import { GraphDescriptor, GraphStageDescriptor, PropertyDescriptor, ValueDescriptor } from "./GraphDescriptor";
 import GraphEdge from "./GraphEdge";
 import Output from "./Nodes/Display";
 import Multiply from "./Nodes/Multiply";
 import SampleTexture from "./Nodes/SampleTexture";
 import Sampler from "./Nodes/Sampler";
-import Texture2D from "./Nodes/Texture2D";
 import TileAndScroll from "./Nodes/TileAndScroll";
 import Time from "./Nodes/Time";
 import UV from "./Nodes/UV";
+import Property from "./Property";
 import PropertyNode from "./PropertyNode";
 import ShaderGraph from "./ShaderGraph";
 import StageGraph from "./StageGraph";
 import StageProperty from "./StageProperty";
-import { GraphEdgeInterface, GraphNodeInterface, isPropertyNode } from "./Types";
+import { GraphEdgeInterface, GraphNodeInterface, isPropertyNode, isValueNode } from "./Types";
+import Value from "./Value";
+import ValueNode from "./ValueNode";
 
 let nextVarId = 0;
 const getNextVarId = () => {
@@ -25,10 +27,10 @@ const getNextVarId = () => {
   return nextVarId;
 }
 
-export const buildStageGraph = (graphDescr: GraphStageDescriptor): [StageGraph, StageProperty[]] => {
+export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Property[]): [StageGraph, StageProperty[]] => {
   let nodes: GraphNodeInterface[] = [];
   let edges: GraphEdgeInterface[] = [];
-  let properties: StageProperty[] = [];
+  let stageProperties: StageProperty[] = [];
 
   // Create the nodes
   for (const nodeDescr of graphDescr.nodes) {
@@ -57,28 +59,21 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor): [StageGraph, 
 
         let pnode: PropertyNode;
 
-        if (propertyNode.dataType === 'texture2D') {
-          pnode = new Texture2D(nodeDescr.id);
-          pnode.value = propertyNode.value;
+        // Find property in property table
+        const prop = properties.find((p) => p.name === propertyNode.name);
 
-          const stageProp = new StageProperty('texture2D', pnode.value);
-          properties.push(stageProp);
-        }
-        else if (propertyNode.dataType === 'sampler') {
-          pnode = new Sampler(nodeDescr.id);
-        }
-        else if (propertyNode.name === 'time') {
-          pnode = new Time(nodeDescr.id);
-        }
-        else if (propertyNode.name === 'uv') {
-          pnode = new UV(nodeDescr.id);
-        }
-        else {
-          pnode = new PropertyNode(propertyNode.name, propertyNode.dataType, propertyNode.value, nodeDescr.id)
-        }
+        if (prop) {
+          pnode = new PropertyNode(prop, nodeDescr.id)
 
-        node = pnode;
+          const stageProp = new StageProperty(pnode.property);
+          stageProperties.push(stageProp);
 
+          node = pnode;
+        }
+        break;
+
+      case 'sampler':
+        node = new Sampler(nodeDescr.id);
         break;
 
       case 'display':
@@ -100,6 +95,12 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor): [StageGraph, 
       case 'Multiply':
         node = new Multiply(nodeDescr.id);
         break;
+
+      case 'value': {
+        const vnode = nodeDescr as ValueDescriptor;
+        node = new ValueNode(new Value(vnode.dataType, vnode.value), nodeDescr.id);
+        break;
+      }
     }
 
     if (node) {
@@ -127,14 +128,16 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor): [StageGraph, 
     }
   }
 
-  return [{ nodes, edges }, properties]
+  return [{ nodes, edges }, stageProperties]
 }
 
-export const generateStageShaderCode = (graph: StageGraph): string => {
+export const generateStageShaderCode = (graph: StageGraph): [string, Property[]] => {
   // Clear the node priorities
   for (const node of graph.nodes) {
     node.priority = null;
   }
+
+  const propertyBindings: Property[] = [];
 
   // Find the output node
   const outputNode = graph.nodes.find((n) => n.type === 'display');
@@ -143,7 +146,7 @@ export const generateStageShaderCode = (graph: StageGraph): string => {
     nextVarId = 0;
 
     outputNode.priority = 0;
-    
+
     // Output the instructions.
     let stack: GraphNodeInterface[] = [outputNode];
 
@@ -151,7 +154,14 @@ export const generateStageShaderCode = (graph: StageGraph): string => {
       const node = stack[0];
       stack = stack.slice(1)
 
-      if (node.type !== 'property') {
+      if (node.type === 'property') {
+        if (isPropertyNode(node)) {
+          if (!propertyBindings.some((p) => p === node.property)) {
+            propertyBindings.push(node.property);
+          }
+        }
+      }
+      else {
         const operationNode = node;
 
         // Push the input nodes onto the stack
@@ -190,30 +200,43 @@ export const generateStageShaderCode = (graph: StageGraph): string => {
     body = text.concat(body);
   }
 
-  return body;
+  return [body, propertyBindings];
 }
 
-export const buildGraph = (graphDescriptor: GraphDescriptor): ShaderGraph => {
+export const buildGraph = (graphDescriptor: GraphDescriptor, properties: Property[]): ShaderGraph => {
   const graph = new ShaderGraph();
 
   if (graphDescriptor?.fragment) {
-    [graph.fragment, graph.properties] = buildStageGraph(graphDescriptor?.fragment);
+    [graph.fragment, graph.properties] = buildStageGraph(graphDescriptor?.fragment, properties);
   }
 
   return graph;
 }
 
-export const generateShaderCode = (graph: ShaderGraph): string => {
+export const generateShaderCode = (graph: ShaderGraph): [string, Property[]] => {
   let body = '';
 
+  let bindings = '';
+  let numBindings = 0;
+  let properties: Property[] = [];
+
   if (graph.fragment) {
+    [body, properties] = generateStageShaderCode(graph.fragment);
 
-    body = generateStageShaderCode(graph.fragment);
-
+    for (let i = 0; i < properties.length; i += 1) {
+      bindings = bindings.concat(
+        `@group(2) @binding(${i + 2}) var ${properties[i].name}: texture_2d<f32>;\n`
+      )
+      numBindings += 1;
+    }
+  
     console.log(body);
   }
 
-  return `
+  //     @group(2) @binding(2) var ourTexture: texture_2d<f32>;
+
+  return [
+    `
     ${texturedCommon}
     
     ${common}
@@ -223,26 +246,28 @@ export const generateShaderCode = (graph: ShaderGraph): string => {
     ${textureAttributes}
 
     @group(2) @binding(1) var ourSampler: sampler;
-    @group(2) @binding(2) var ourTexture: texture_2d<f32>;
-    @group(2) @binding(3) var<uniform> texAttr: TextureAttributes;
+    ${bindings}
+    @group(2) @binding(${numBindings + 2}) var<uniform> texAttr: TextureAttributes;
     
     @fragment
     fn fs(vertexOut: VertexOut) -> @location(0) vec4f
     {
       ${body}
     }
-  `
+    `,
+    properties,
+  ]
 }
 
-export const generateShaderModule = (graph: ShaderGraph): GPUShaderModule => {
-  const code = generateShaderCode(graph);
+export const generateShaderModule = (graph: ShaderGraph): [GPUShaderModule, Property[]] => {
+  const [code, properties] = generateShaderCode(graph);
 
   const shaderModule = gpu.device.createShaderModule({
     label: 'custom shader',
     code: code,
   })
 
-  return shaderModule;
+  return [shaderModule, properties];
 }
 
 export const createDescriptor = (nodes: GraphNodeInterface[], edges: GraphEdgeInterface[]): GraphDescriptor => {
@@ -257,12 +282,21 @@ export const createDescriptor = (nodes: GraphNodeInterface[], edges: GraphEdgeIn
         if (isPropertyNode(n)) {
           return ({
             id: n.id,
+            name: n.property.name,
             type: n.type,  
-            name: n.name,
-            dataType: n.dataType,
-            value: n.value,
             x: n.x,
             y: n.y,
+          })
+        }
+
+        if (isValueNode(n)) {
+          return ({
+            id: n.id,
+            type: n.type,
+            x: n.x,
+            y: n.y,
+            dataType: n.value.dataType,
+            value: n.value.value,
           })
         }
 

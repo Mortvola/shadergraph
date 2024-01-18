@@ -13,13 +13,13 @@ export const soulerCoasterMaterial: MaterialDescriptor = {
 
     fragment: {
       nodes: [
-        { id: 0, type: 'property', dataType: 'string', value: './textures/stars.png', x: 0, y: 0 },
+        { id: 0, type: 'property', name: 'test', x: 0, y: 0 },
         { id: 3, type: 'uv', x: 0, y: 0 },
         { id: 1, type: 'SampleTexture', x: 0, y: 0 },
         { id: 2, type: 'display', x: 0, y: 0 },
         { id: 4, type: 'TileAndScroll', x: 0, y: 0 },
-        { id: 5, type: 'property', name: 'tile', dataType: 'vec2f', value: [1, 5], x: 0, y: 0 },
-        { id: 6, type: 'property', name: 'scroll', dataType: 'vec2f', value: [0, 1], x: 0, y: 0 },
+        { id: 5, type: 'property', name: 'tile', x: 0, y: 0 },
+        { id: 6, type: 'property', name: 'scroll', x: 0, y: 0 },
         { id: 7, type: 'Multiply', x: 0, y: 0 },
         { id: 8, type: 'time', x: 0, y: 0 },
       ],

@@ -1,4 +1,4 @@
-import GraphNode from "../GraphNode";
+import OperationNode from "../OperationNode";
 import AlphaPort from "../Ports/AlphaPort";
 import BluePort from "../Ports/BluePort";
 import GreenPort from "../Ports/GreenPort";
@@ -6,7 +6,7 @@ import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 import RedPort from "../Ports/RedPort";
 
-class SampleTexture extends GraphNode {
+class SampleTexture extends OperationNode {
   constructor(id?: number) {
     super('SampleTexture', 'SampleTexture', id)
 
@@ -26,7 +26,7 @@ class SampleTexture extends GraphNode {
   }
 
   output(): string {
-    const outputVar = this.outputVarName;
+    const outputVar = this.getVarName();
     const texture = this.inputPorts[0].getVarname();
     const sampler = this.inputPorts[1].getVarname();
     const textCoord = this.inputPorts[2].getVarname();

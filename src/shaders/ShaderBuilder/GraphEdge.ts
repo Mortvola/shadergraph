@@ -20,7 +20,7 @@ class GraphEdge implements GraphEdgeInterface {
   }
 
   setVarName(name: string): void {
-    this.output.node.outputVarName = name;
+    this.output.node.setVarName(name);
   }
 }
 

@@ -1,10 +1,12 @@
-import PropertyNode from "../PropertyNode";
+import BuiltIn from "../BuiltInNode";
+import OutputPort from "../Ports/OutputPort";
 
-class Sampler extends PropertyNode {
+class Sampler extends BuiltIn {
   constructor(id?: number) {
-    super('sampler', 'sampler', '', id)
+    super('sampler', 'sampler', id)
 
-    this.outputVarName = 'ourSampler';
+    this.outputPort = [new OutputPort(this, 'sampler', 'sampler')];
+    this.setVarName('ourSampler');
   }
 }
 

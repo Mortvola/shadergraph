@@ -1,9 +1,10 @@
 import OutputPort from "../Ports/OutputPort";
-import PropertyNode from "../PropertyNode";
+import Value from "../Value";
+import ValueNode from "../ValueNode";
 
-class Vector2D extends PropertyNode {
+class Vector2D extends ValueNode {
   constructor(id?: number) {
-    super('vector2D', 'vec2f', [0, 0], id)
+    super(new Value('vec2f', [0, 0]), id)
 
     this.outputPort = [new OutputPort(this, 'vec2f', 'vector2D')];
   }

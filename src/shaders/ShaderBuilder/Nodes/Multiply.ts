@@ -1,8 +1,8 @@
-import GraphNode from "../GraphNode";
+import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 
-class Multiply extends GraphNode {
+class Multiply extends OperationNode {
   constructor(id?: number) {
     super('Multiply', 'Multiply', id)
 
@@ -17,7 +17,7 @@ class Multiply extends GraphNode {
   output(): string {
     const varA = this.inputPorts[0].getVarname();
     const varB = this.inputPorts[1].getVarname();
-    const varC = this.outputVarName
+    const varC = this.getVarName();
 
     return `var ${varC} = ${varA} * ${varB};\n`;
   }

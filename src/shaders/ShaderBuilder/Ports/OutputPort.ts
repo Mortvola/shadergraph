@@ -20,7 +20,7 @@ class OutputPort implements OutputPortInterface {
   }
 
   getVarName(): string {
-    return this.node.outputVarName ?? '';
+    return this.node.getVarName() ?? '';
   }
 }
 

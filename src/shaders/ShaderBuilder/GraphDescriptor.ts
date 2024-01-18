@@ -13,12 +13,15 @@ export type GraphNodeDescriptor = {
 
 export type PropertyDescriptor = GraphNodeDescriptor & {
   name: string,
+}
+
+export type ValueDescriptor = GraphNodeDescriptor & {
   dataType: Type,
   value: PropertyType,
 }
 
 export type GraphStageDescriptor = {
-  nodes: (GraphNodeDescriptor | PropertyDescriptor)[],
+  nodes: (GraphNodeDescriptor | PropertyDescriptor | ValueDescriptor)[],
   edges: GraphEdgeDescriptor[],
 }
 

@@ -1,7 +1,7 @@
-import GraphNode from "../GraphNode";
+import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 
-class Display extends GraphNode {
+class Display extends OperationNode {
   constructor(id?: number) {
     super('display', 'Display', id)
 

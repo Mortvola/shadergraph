@@ -1,13 +1,11 @@
-import { PropertyType, StagePropertyInterface, Type } from "./Types";
+import Property from "./Property";
+import { StagePropertyInterface } from "./Types";
 
 class StageProperty implements StagePropertyInterface {
-  type: Type;
+  property: Property;
 
-  value: PropertyType;
-
-  constructor(type: Type, value: PropertyType) {
-    this.type = type;
-    this.value = value;
+  constructor(property: Property) {
+    this.property = property
   }
 }
 

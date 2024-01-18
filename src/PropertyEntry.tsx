@@ -31,7 +31,7 @@ const PropertyEntry: React.FC<PropsType> = ({
   return (
     <div ref={ref} key={property.name} className={styles.item} onClick={handleClick} onPointerDown={handlePointerDown}>
       <div>{property.name}</div>
-      <div>{convertType(property.dataType)}</div>
+      <div>{convertType(property.value.dataType)}</div>
     </div>
   )
 }

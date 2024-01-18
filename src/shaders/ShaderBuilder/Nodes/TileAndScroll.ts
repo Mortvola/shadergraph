@@ -1,8 +1,8 @@
-import GraphNode from "../GraphNode";
+import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 
-class TileAndScroll extends GraphNode {
+class TileAndScroll extends OperationNode {
   constructor(id?: number) {
     super('TileAndScroll', 'TileAndScroll', id)
 
@@ -19,7 +19,7 @@ class TileAndScroll extends GraphNode {
     const uv = this.inputPorts[0].getVarname();
     const tile = this.inputPorts[1].getVarname();
     const scroll = this.inputPorts[2].getVarname();
-    const result = this.outputVarName;
+    const result = this.getVarName();
 
     return `var ${result} = fract(${uv} * ${tile} + ${scroll});\n`
   }

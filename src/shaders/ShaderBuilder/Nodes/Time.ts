@@ -1,14 +1,12 @@
+import BuiltIn from "../BuiltInNode";
 import OutputPort from "../Ports/OutputPort";
-import PropertyNode from "../PropertyNode";
 
-class Time extends PropertyNode {
+class Time extends BuiltIn {
   constructor(id?: number) {
-    super('time', 'float', 'Time', id)
+    super('time', 'Time', id)
 
     this.outputPort = [new OutputPort(this, 'float', 'time')];
-    this.outputVarName = 'time';
-
-    this.readonly = true;
+    this.setVarName('time');
   }
 }
 

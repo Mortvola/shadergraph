@@ -1,9 +1,9 @@
 import { bindGroups } from "../BindGroups";
 import { gpu } from "../Gpu";
 import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
+import Property from "../shaders/ShaderBuilder/Property";
 import { buildGraph, generateShaderModule } from "../shaders/ShaderBuilder/ShaderBuilder";
-import StageProperty from "../shaders/ShaderBuilder/StageProperty";
-import { StagePropertyInterface } from "../shaders/ShaderBuilder/Types";
+import { PropertyInterface } from "../shaders/ShaderBuilder/Types";
 import { litShader } from "../shaders/lit";
 import { PipelineInterface, PipelineManagerInterface } from "../types";
 import CirclePipeline from "./CirclePipeline";
@@ -25,7 +25,7 @@ type Pipelines = {
 
 type PipelineMapEntry = {
   pipeline: PipelineInterface,
-  properties: StageProperty[],
+  properties: Property[],
 }
 
 class PipelineManager implements PipelineManagerInterface {
@@ -77,8 +77,8 @@ class PipelineManager implements PipelineManagerInterface {
     return null;
   }
 
-  getPipelineByArgs(materialDescriptor: MaterialDescriptor): [PipelineInterface, StagePropertyInterface[]] {
-    let properties: StageProperty[] = [];
+  getPipelineByArgs(materialDescriptor: MaterialDescriptor): [PipelineInterface, PropertyInterface[]] {
+    let properties: Property[] = [];
 
     const key = JSON.stringify(materialDescriptor);
 
@@ -108,10 +108,18 @@ class PipelineManager implements PipelineManagerInterface {
         ],
       });
 
-      const graph = buildGraph(materialDescriptor.graph);
-      shaderModule = generateShaderModule(graph);  
+      let props: Property[] = [];
 
-      properties = graph.properties;
+      if (materialDescriptor.properties) {
+        props = materialDescriptor.properties.map((p) => (
+          new Property(p.name, p.dataType, p.value)
+        ))
+      }
+
+      const graph = buildGraph(materialDescriptor.graph, props);
+      [shaderModule, properties] = generateShaderModule(graph);  
+
+      // properties = graph.properties;
 
       vertexBufferLayout = [
         {

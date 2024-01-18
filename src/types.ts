@@ -4,7 +4,7 @@ import { Vec2, Vec3, Vec4, Mat4, Quat } from 'wgpu-matrix';
 // import { Armor } from './Character/Equipment/Armor';
 // import { Abilities } from './Character/Classes/Abilities';
 import DrawableInterface from './Drawables/DrawableInterface';
-import { StagePropertyInterface } from './shaders/ShaderBuilder/Types';
+import { PropertyInterface, StagePropertyInterface } from './shaders/ShaderBuilder/Types';
 // import { Weapon } from './Character/Equipment/Types';
 // import { feetToMeters } from './Math';
 
@@ -416,7 +416,7 @@ export type PipelineAttributes = {
 }
 
 export interface PipelineManagerInterface {
-  getPipelineByArgs(args: PipelineAttributes): [PipelineInterface, StagePropertyInterface[]];
+  getPipelineByArgs(args: PipelineAttributes): [PipelineInterface, PropertyInterface[]];
 }
 
 // export type Party = {

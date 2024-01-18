@@ -110,12 +110,12 @@ class Material implements MaterialInterface {
     let bitmap: ImageBitmap | undefined = undefined;
 
     // Find textures in the properties
-    const texture = properties.find((p) => p.type === 'texture2D');
+    const texture = properties.find((p) => p.value.dataType === 'texture2D');
 
     if (texture) {
       let url: string;
-      if (typeof texture.value === 'string') {
-        url = texture.value;
+      if (typeof texture.value.value === 'string') {
+        url = texture.value.value;
       }
       else {
         throw new Error('texture value is unknown type')
