@@ -16,7 +16,6 @@ import Property from "./Property";
 import PropertyNode from "./PropertyNode";
 import ShaderGraph from "./ShaderGraph";
 import StageGraph from "./StageGraph";
-import StageProperty from "./StageProperty";
 import { GraphEdgeInterface, GraphNodeInterface, isPropertyNode, isValueNode } from "./Types";
 import Value from "./Value";
 import ValueNode from "./ValueNode";
@@ -27,10 +26,9 @@ const getNextVarId = () => {
   return nextVarId;
 }
 
-export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Property[]): [StageGraph, StageProperty[]] => {
+export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Property[]): StageGraph => {
   let nodes: GraphNodeInterface[] = [];
   let edges: GraphEdgeInterface[] = [];
-  let stageProperties: StageProperty[] = [];
 
   // Create the nodes
   for (const nodeDescr of graphDescr.nodes) {
@@ -57,18 +55,11 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Pr
       case 'property': 
         const propertyNode = nodeDescr as PropertyDescriptor;
 
-        let pnode: PropertyNode;
-
         // Find property in property table
         const prop = properties.find((p) => p.name === propertyNode.name);
 
         if (prop) {
-          pnode = new PropertyNode(prop, nodeDescr.id)
-
-          const stageProp = new StageProperty(pnode.property);
-          stageProperties.push(stageProp);
-
-          node = pnode;
+          node = new PropertyNode(prop, nodeDescr.id)
         }
         break;
 
@@ -128,7 +119,7 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Pr
     }
   }
 
-  return [{ nodes, edges }, stageProperties]
+  return { nodes, edges };
 }
 
 export const generateStageShaderCode = (graph: StageGraph): [string, Property[]] => {
@@ -207,7 +198,7 @@ export const buildGraph = (graphDescriptor: GraphDescriptor, properties: Propert
   const graph = new ShaderGraph();
 
   if (graphDescriptor?.fragment) {
-    [graph.fragment, graph.properties] = buildStageGraph(graphDescriptor?.fragment, properties);
+    graph.fragment = buildStageGraph(graphDescriptor?.fragment, properties);
   }
 
   return graph;
