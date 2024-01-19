@@ -1,3 +1,4 @@
+import { vec2 } from "wgpu-matrix";
 import { store } from "./State/store";
 
 const requestPostAnimationFrame = (task: (timestamp: number) => void) => {
@@ -47,11 +48,28 @@ class Renderer2d {
         const endX = edge.input.node.x + edge.input.offsetX;
         const endY = edge.input.node.y + edge.input.offsetY;
 
+        const curveRadius = 20;
+
+        const start = vec2.create(startX, startY);
+        const end = vec2.create(endX, endY);
+        const turn1 = vec2.add(start, vec2.create(curveRadius, 0));
+        const turn2 = vec2.add(end, vec2.create(-curveRadius, 0));
+
+        const distance = vec2.distance(turn1, turn2);
+        
+        const vector = vec2.normalize(vec2.subtract(turn2, turn1));
+
+        const p1 = vec2.addScaled(turn1, vector, distance / 2);
+        const p2 = vec2.addScaled(turn2, vector, -distance / 2);
+
         this.ctx.beginPath();
-        this.ctx.moveTo(startX, startY);
-        this.ctx.lineTo(startX + 10, startY);
-        this.ctx.lineTo(endX - 10, endY);
-        this.ctx.lineTo(endX, endY);
+
+        this.ctx.moveTo(start[0], start[1]);
+        this.ctx.bezierCurveTo(turn1[0], turn1[1], turn1[0], turn1[1], p1[0], p1[1])
+
+        this.ctx.lineTo(p2[0], p2[1]);
+        this.ctx.bezierCurveTo(turn2[0], turn2[1], turn2[0], turn2[1], end[0], end[1])
+
         this.ctx.strokeStyle = "white";
         this.ctx.stroke();
       }
