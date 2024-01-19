@@ -173,11 +173,6 @@ class PipelineManager implements PipelineManagerInterface {
             sampler: property.value.dataType === 'sampler' ? {} : undefined,
             texture: property.value.dataType === 'texture2D' ? {} : undefined,
           })),
-          { // Attributes
-            binding: properties.length + 1,
-            visibility: GPUShaderStage.FRAGMENT,
-            buffer: {},
-          },
         ]
       });
 

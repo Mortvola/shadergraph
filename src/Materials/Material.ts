@@ -68,25 +68,6 @@ class Material implements MaterialInterface {
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       });
 
-      const defs = makeShaderDataDefinitions(textureAttributes);
-      const textureAttributesStruct = makeStructuredView(defs.structs.TextureAttributes);
-
-      this.textureAttributesBuffer = gpu.device.createBuffer({
-        label: 'texture attributes',
-        size: textureAttributesStruct.arrayBuffer.byteLength,
-        usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      })
-
-      let scale = [1, 1];
-      let offset = [0, 0];
-
-      textureAttributesStruct.set({
-        scale,
-        offset,
-      })
-
-      gpu.device.queue.writeBuffer(this.textureAttributesBuffer, 0, textureAttributesStruct.arrayBuffer)
-
       this.bindGroup = gpu.device.createBindGroup({
         label: 'material',
         layout: bindGroupLayout ?? bindGroups.getBindGroupLayout2(),
@@ -96,9 +77,8 @@ class Material implements MaterialInterface {
           ...textures.map((texture, index) => ({
             binding: 2 + index, resource: texture.createView(),
           })),
-          { binding: 2 + textures.length, resource: { buffer: this.textureAttributesBuffer }}
         ],
-      });  
+      });
     }
     else {
       this.colorBuffer = gpu.device.createBuffer({
