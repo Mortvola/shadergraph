@@ -2,13 +2,10 @@ import { store } from "../State/store";
 import Display from "../shaders/ShaderBuilder/Nodes/Display";
 import Multiply from "../shaders/ShaderBuilder/Nodes/Multiply";
 import SampleTexture from "../shaders/ShaderBuilder/Nodes/SampleTexture";
-import Sampler from "../shaders/ShaderBuilder/Nodes/Sampler";
-import Texture2D from "../shaders/ShaderBuilder/Nodes/Texture2D";
 import TileAndScroll from "../shaders/ShaderBuilder/Nodes/TileAndScroll";
 import Time from "../shaders/ShaderBuilder/Nodes/Time";
 import UV from "../shaders/ShaderBuilder/Nodes/UV";
 import Vector2D from "../shaders/ShaderBuilder/Nodes/Vector2D";
-import Property from "../shaders/ShaderBuilder/Property";
 import PropertyNode from "../shaders/ShaderBuilder/PropertyNode";
 import { GraphNodeInterface } from "../shaders/ShaderBuilder/Types";
 
@@ -60,6 +57,5 @@ export const menuItems = (): MenuItemLike[] => ([
   { name: 'Multiply', action: (x: number, y: number) => createObject(Multiply, x, y) },
   { name: 'Time', action: (x: number, y: number) => createObject(Time, x, y) },
   { name: 'UV', action: (x: number, y: number) => createObject(UV, x, y) },
-  { name: 'Sampler', action: (x: number, y: number) => createObject(Sampler, x, y) },
   { name: 'Vector2D', action: (x: number, y: number) => createObject(Vector2D, x, y) },
 ])

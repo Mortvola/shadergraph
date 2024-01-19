@@ -1,4 +1,4 @@
-import { NodeType, PropertyType, Type } from "./Types";
+import { NodeType, ValueType, DataType } from "./Types";
 
 export type GraphPortDescriptor = { id: number, port: string };
 
@@ -16,8 +16,8 @@ export type PropertyDescriptor = GraphNodeDescriptor & {
 }
 
 export type ValueDescriptor = GraphNodeDescriptor & {
-  dataType: Type,
-  value: PropertyType,
+  dataType: DataType,
+  value: ValueType,
 }
 
 export type GraphStageDescriptor = {

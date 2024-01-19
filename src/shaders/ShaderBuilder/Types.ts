@@ -1,16 +1,24 @@
-export type Type = 'float' | 'vec2f' | 'vec3f' | 'vec4f' | 'texture2D' | 'sampler' | 'rgba' | 'string';
+export type DataType = 'float' | 'vec2f' | 'vec3f' | 'vec4f' | 'texture2D' | 'sampler' | 'rgba' | 'string';
 
 export type NodeType =
   'property' | 'value'
-  | 'uv' | 'time'  | 'sampler' | 'time'
+  | 'uv' | 'time'  | 'time'
   | 'TileAndScroll' | 'Multiply' | 'SampleTexture' | 'display';
 
-export type PropertyType = string | number | [number, number] | [number, number, number] | [number, number, number, number];
+export type SamplerDescriptor = {};
+
+export type ValueType =
+  string
+  | number 
+  | [number, number]
+  | [number, number, number]
+  | [number, number, number, number]
+  | SamplerDescriptor;
 
 export interface InputPortInterface {
   node: GraphNodeInterface;
 
-  type: Type;
+  type: DataType;
 
   name: string;
 
@@ -26,7 +34,7 @@ export interface InputPortInterface {
 export interface OutputPortInterface {
   node: GraphNodeInterface;
 
-  type: Type;
+  type: DataType;
 
   name: string;
 
@@ -51,7 +59,7 @@ export interface GraphNodeInterface {
   getVarName(): string | null;
 
   setVarName(name: string): void;
-  
+
   x: number;
   
   y: number;
@@ -100,9 +108,9 @@ export interface GraphEdgeInterface {
 }
 
 export interface ValueInterface {
-  dataType: Type;
+  dataType: DataType;
 
-  value: PropertyType;
+  value: ValueType;
 
   getValueString(): string;
 }
@@ -111,4 +119,6 @@ export interface PropertyInterface {
   name: string;
 
   value: ValueInterface;
+
+  builtin: boolean;
 }

@@ -3,7 +3,7 @@ import OutputPort from "../Ports/OutputPort";
 
 class Time extends BuiltIn {
   constructor(id?: number) {
-    super('time', 'Time', id)
+    super('time', 'Time', false, id)
 
     this.outputPort = [new OutputPort(this, 'float', 'time')];
     this.setVarName('time');

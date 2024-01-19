@@ -8,7 +8,6 @@ import GraphEdge from "./GraphEdge";
 import Output from "./Nodes/Display";
 import Multiply from "./Nodes/Multiply";
 import SampleTexture from "./Nodes/SampleTexture";
-import Sampler from "./Nodes/Sampler";
 import TileAndScroll from "./Nodes/TileAndScroll";
 import Time from "./Nodes/Time";
 import UV from "./Nodes/UV";
@@ -16,7 +15,7 @@ import Property from "./Property";
 import PropertyNode from "./PropertyNode";
 import ShaderGraph from "./ShaderGraph";
 import StageGraph from "./StageGraph";
-import { GraphEdgeInterface, GraphNodeInterface, isPropertyNode, isValueNode } from "./Types";
+import { DataType, GraphEdgeInterface, GraphNodeInterface, isPropertyNode, isValueNode } from "./Types";
 import Value from "./Value";
 import ValueNode from "./ValueNode";
 
@@ -61,10 +60,6 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Pr
         if (prop) {
           node = new PropertyNode(prop, nodeDescr.id)
         }
-        break;
-
-      case 'sampler':
-        node = new Sampler(nodeDescr.id);
         break;
 
       case 'display':
@@ -135,6 +130,7 @@ export const generateStageShaderCode = (graph: StageGraph): [string, Property[]]
 
   if (outputNode) {
     nextVarId = 0;
+    let nextSamplerId = 0;
 
     outputNode.priority = 0;
 
@@ -153,12 +149,35 @@ export const generateStageShaderCode = (graph: StageGraph): [string, Property[]]
         }
       }
       else {
-        const operationNode = node;
+        // For SamplerTexure nodes, fnd the property in the property list
+        // that matches its sampler descriptor. If one is not found then
+        // create a property for that sampler descriptor.
+        if (node.type === 'SampleTexture') {
+          const sampleTexture = (node as SampleTexture);
+          const sampler = propertyBindings.find((p) => (
+            p.value.dataType === 'sampler'
+            && JSON.stringify(p.value.value) === JSON.stringify(sampleTexture.sampler)
+          ))
+
+          if (sampler) {
+            sampleTexture.samplerName = sampler.name;
+          }
+          else {
+            // Property was not found. Create a new property and add it to the
+            // property binding list.
+            const prop = new Property(`sampler${nextSamplerId}`, 'sampler', sampleTexture.sampler);
+            nextSamplerId += 1;
+            propertyBindings.push(prop);
+            sampleTexture.samplerName = prop.name;
+          }
+        }
 
         // Push the input nodes onto the stack
         // and generate variables.
-        for (const input of operationNode.inputPorts) {
+        for (const input of node.inputPorts) {
           if (input.edge) {
+            // Set the var name on the incoming edge if it hasn't been
+            // set yet.
             if (input.edge.getVarName() === '') {
               const varName = `v${getNextVarId()}`
               input.edge.setVarName(varName);
@@ -173,9 +192,6 @@ export const generateStageShaderCode = (graph: StageGraph): [string, Property[]]
             stack.push(input.edge.output.node);
           }
         }
-
-        // const text = operationNode.output();
-        // body = text.concat(body); // `${text} ${body}`;
       }
     }
   }
@@ -204,6 +220,14 @@ export const buildGraph = (graphDescriptor: GraphDescriptor, properties: Propert
   return graph;
 }
 
+const bindingType = (dataType: DataType) => {  
+  if (dataType === 'texture2D') {
+    return 'texture_2d<f32>';
+  }
+
+  return dataType;
+}
+
 export const generateShaderCode = (graph: ShaderGraph): [string, Property[]] => {
   let body = '';
 
@@ -216,7 +240,7 @@ export const generateShaderCode = (graph: ShaderGraph): [string, Property[]] => 
 
     for (let i = 0; i < properties.length; i += 1) {
       bindings = bindings.concat(
-        `@group(2) @binding(${i + 2}) var ${properties[i].name}: texture_2d<f32>;\n`
+        `@group(2) @binding(${i + 1}) var ${properties[i].name}: ${bindingType(properties[i].value.dataType)};\n`
       )
       numBindings += 1;
     }
@@ -224,6 +248,7 @@ export const generateShaderCode = (graph: ShaderGraph): [string, Property[]] => 
     console.log(body);
   }
 
+  //     @group(2) @binding(1) var ourSampler: sampler;
   //     @group(2) @binding(2) var ourTexture: texture_2d<f32>;
 
   return [
@@ -236,9 +261,8 @@ export const generateShaderCode = (graph: ShaderGraph): [string, Property[]] => 
     
     ${textureAttributes}
 
-    @group(2) @binding(1) var ourSampler: sampler;
     ${bindings}
-    @group(2) @binding(${numBindings + 2}) var<uniform> texAttr: TextureAttributes;
+    @group(2) @binding(${numBindings + 1}) var<uniform> texAttr: TextureAttributes;
     
     @fragment
     fn fs(vertexOut: VertexOut) -> @location(0) vec4f

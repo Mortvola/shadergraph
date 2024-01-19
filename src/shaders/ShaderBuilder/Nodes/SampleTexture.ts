@@ -5,14 +5,19 @@ import GreenPort from "../Ports/GreenPort";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 import RedPort from "../Ports/RedPort";
+import { SamplerDescriptor } from "../Types";
 
 class SampleTexture extends OperationNode {
+  sampler: SamplerDescriptor = {};
+
+  samplerName: string | null = null;
+
   constructor(id?: number) {
     super('SampleTexture', 'SampleTexture', id)
 
     this.inputPorts = [
       new InputPort(this, 'texture2D', 'texture'),
-      new InputPort(this, 'sampler', 'sampler'),
+      // new InputPort(this, 'sampler', 'sampler'),
       new InputPort(this, 'vec2f', 'uv'),
     ];
 
@@ -28,8 +33,8 @@ class SampleTexture extends OperationNode {
   output(): string {
     const outputVar = this.getVarName();
     const texture = this.inputPorts[0].getVarname();
-    const sampler = this.inputPorts[1].getVarname();
-    const textCoord = this.inputPorts[2].getVarname();
+    const sampler = this.samplerName;
+    const textCoord = this.inputPorts[1].getVarname();
     // console.log(`var ${outputVar} = textureSample(ourTexture, ourSampler, fract(vertexOut.texcoord * texAttr.scale + offset));`);
     return `var ${outputVar} = textureSample(${texture}, ${sampler}, ${textCoord});\n`;
   }

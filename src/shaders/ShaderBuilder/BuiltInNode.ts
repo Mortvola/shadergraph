@@ -4,10 +4,13 @@ import { NodeType } from "./Types";
 class BuiltIn extends GraphNode {
   name: string;
 
-  constructor(type: NodeType, name: string, id?: number) {
+  property: boolean;
+
+  constructor(type: NodeType, name: string, property: boolean, id?: number) {
     super(type, id)
 
     this.name = name;
+    this.property = property;
   }
 
   getName(): string {

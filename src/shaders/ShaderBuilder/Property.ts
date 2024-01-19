@@ -1,5 +1,5 @@
 import { makeObservable, observable } from "mobx";
-import { PropertyInterface, PropertyType, Type } from "./Types";
+import { PropertyInterface, ValueType, DataType } from "./Types";
 import Value from "./Value";
 
 class Property implements PropertyInterface {
@@ -7,9 +7,12 @@ class Property implements PropertyInterface {
 
   value: Value;
 
-  constructor(name: string, dataType: Type, value: PropertyType) {
+  builtin: boolean;
+
+  constructor(name: string, dataType: DataType, value: ValueType, builtin?: boolean) {
     this.name = name;
     this.value = new Value(dataType, value);
+    this.builtin = builtin ?? false;
 
     makeObservable(this, {
       name: observable,

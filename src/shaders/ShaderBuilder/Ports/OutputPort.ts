@@ -1,9 +1,9 @@
-import { GraphEdgeInterface, GraphNodeInterface, OutputPortInterface, Type } from "../Types"
+import { GraphEdgeInterface, GraphNodeInterface, OutputPortInterface, DataType } from "../Types"
 
 class OutputPort implements OutputPortInterface {
   node: GraphNodeInterface;
 
-  type: Type;
+  type: DataType;
 
   name: string;
 
@@ -13,7 +13,7 @@ class OutputPort implements OutputPortInterface {
 
   offsetY = 0;
   
-  constructor(node: GraphNodeInterface, type: Type, name: string) {
+  constructor(node: GraphNodeInterface, type: DataType, name: string) {
     this.node = node;
     this.type = type;
     this.name = name;

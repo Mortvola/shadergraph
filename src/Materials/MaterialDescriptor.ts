@@ -1,5 +1,5 @@
 import { GraphDescriptor } from "../shaders/ShaderBuilder/GraphDescriptor";
-import { PropertyType, Type } from "../shaders/ShaderBuilder/Types";
+import { ValueType, DataType } from "../shaders/ShaderBuilder/Types";
 
 export type TextureDescriptor = {
   url: string,
@@ -18,7 +18,7 @@ export type MaterialDescriptor = {
 
   transparent?: boolean,
 
-  properties?: { name: string, dataType: Type, value: PropertyType }[],
+  properties?: { name: string, dataType: DataType, value: ValueType }[],
 
   graph?: GraphDescriptor,
 }

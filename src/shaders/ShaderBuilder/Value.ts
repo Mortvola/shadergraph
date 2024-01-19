@@ -1,11 +1,11 @@
-import { PropertyType, Type, ValueInterface } from "./Types";
+import { ValueType, DataType, ValueInterface } from "./Types";
 
 class Value implements ValueInterface {
-  dataType: Type;
+  dataType: DataType;
 
-  value: PropertyType;
+  value: ValueType;
 
-  constructor(dataType: Type, value: PropertyType) {
+  constructor(dataType: DataType, value: ValueType) {
     this.dataType = dataType;
     this.value = value;
   }
@@ -19,17 +19,23 @@ class Value implements ValueInterface {
         return this.value.toString();
 
       case 'object': {
-        if (this.value.length === 2) {
-          return `vec2f(${this.value[0]}, ${this.value[1]})`;
+        if (Array.isArray(this.value)) {
+          if (this.value.length === 2) {
+            return `vec2f(${this.value[0]}, ${this.value[1]})`;
+          }
+  
+          if (this.value.length === 3) {
+            return `vec3f(${this.value[0]}, ${this.value[1]}, ${this.value[2]})`;
+          }
+  
+          if (this.value.length === 3) {
+            return `vec4f(${this.value[0]}, ${this.value[1]}, ${this.value[2]}, ${this.value[3]})`;
+          }
         }
-
-        if (Array.isArray(this.value) && this.value.length === 3) {
-          return `vec3f(${this.value[0]}, ${this.value[1]}, ${this.value[2]})`;
-        }
-
-        return `vec4f(${this.value[0]}, ${this.value[1]}, ${this.value[2]}, ${this.value[3]})`;
       }
     }
+
+    return '';
   }
 }
 

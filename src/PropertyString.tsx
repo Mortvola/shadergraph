@@ -1,10 +1,10 @@
 import React from 'react';
 import { useStores } from './State/store';
-import { PropertyType } from './shaders/ShaderBuilder/Types';
+import { ValueType } from './shaders/ShaderBuilder/Types';
 import { runInAction } from 'mobx';
 
 type PropTypes = {
-  node: { value: PropertyType },
+  node: { value: ValueType },
 }
 
 const PropertyString: React.FC<PropTypes> = ({

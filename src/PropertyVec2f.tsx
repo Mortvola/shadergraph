@@ -1,12 +1,12 @@
 import React from 'react';
-import { PropertyType } from './shaders/ShaderBuilder/Types';
+import { ValueType } from './shaders/ShaderBuilder/Types';
 import styles from './Node.module.scss';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import { useStores } from './State/store';
 
 type PropsType = {
-  node: { value: PropertyType },
+  node: { value: ValueType },
 }
 
 const PropertyVec2f: React.FC<PropsType> = observer(({

@@ -1,9 +1,9 @@
-import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, Type } from "../Types";
+import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, DataType } from "../Types";
 
 class InputPort implements InputPortInterface {
   node: GraphNodeInterface;
 
-  type: Type;
+  type: DataType;
 
   name: string;
 
@@ -13,7 +13,7 @@ class InputPort implements InputPortInterface {
 
   offsetY = 0;
   
-  constructor(node: GraphNodeInterface, type: Type, name: string) {
+  constructor(node: GraphNodeInterface, type: DataType, name: string) {
     this.node = node;
     this.type = type;
     this.name = name;
