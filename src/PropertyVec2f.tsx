@@ -48,26 +48,26 @@ const PropertyVec2f: React.FC<PropsType> = observer(({
     event.stopPropagation();
   }
 
-  const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
+  const handleClick: React.MouseEventHandler<HTMLElement> = (event) => {
     event.stopPropagation();
     // graph.selectNode(node)
   }
 
-  const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {
+  const handlePointerDown: React.PointerEventHandler<HTMLElement> = (event) => {
     event.stopPropagation();
   }
 
-  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
+  const handleKeyDown: React.KeyboardEventHandler<HTMLElement> = (event) => {
     event.stopPropagation();
   }
 
   if (Array.isArray(node.value)) {
     return (
-      <div className={styles.vec2} onClick={handleClick}  onPointerDown={handlePointerDown} onKeyDown={handleKeyDown} >
+      <div className={styles.vec2} >
         X:
-        <input value={value0} onChange={handleValue0Change} />
+        <input value={value0} onChange={handleValue0Change}  onClick={handleClick}  onPointerDown={handlePointerDown} onKeyDown={handleKeyDown}/>
         Y:
-        <input  value={value1} onChange={handleValue1Change} />
+        <input  value={value1} onChange={handleValue1Change} onClick={handleClick}  onPointerDown={handlePointerDown} onKeyDown={handleKeyDown} />
       </div>
     )
   }
