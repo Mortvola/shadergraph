@@ -126,7 +126,7 @@ class Graph {
     })
   }
 
-  deleteEdge(edge: GraphEdgeInterface) {
+  private delEdge(edge: GraphEdgeInterface) {
     edge.output.edge = null;
     edge.input.edge = null;
 
@@ -142,6 +142,12 @@ class Graph {
     }
   }
 
+  deleteEdge(edge: GraphEdgeInterface) {
+    runInAction(() => {
+      this.delEdge(edge);
+    })
+  }
+
   deleteNode(node: GraphNodeInterface) {
     const index = this.nodes.findIndex((n) => n === node);
     
@@ -154,7 +160,7 @@ class Graph {
           const edge = inputPort.edge;
 
           if (edge) {
-            this.deleteEdge(edge);
+            this.delEdge(edge);
           }
         }
 
@@ -163,7 +169,7 @@ class Graph {
           const edge = outputPort.edge;
 
           if (edge) {
-            this.deleteEdge(edge);
+            this.delEdge(edge);
           }
         }
 

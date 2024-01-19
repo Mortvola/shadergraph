@@ -39,6 +39,11 @@ const NodeInputPort: React.FC<PropsType> = ({
       const outputPort = store.getDragObject() as OutputPortInterface;
 
       if (outputPort) {
+        if (port.edge) {
+          // Disconnect any edge already connected.
+          graph.deleteEdge(port.edge);
+        }
+
         graph.link(outputPort, port);
       }
     }
