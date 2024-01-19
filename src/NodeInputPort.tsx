@@ -12,7 +12,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
   port,
 }) => {
   const store = useStores();
-  const { graph, modeler } = store;
+  const { graph } = store;
   const portRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useLayoutEffect(() => {
@@ -101,12 +101,14 @@ const NodeInputPort: React.FC<PropsType> = observer(({
       className={`${styles.port} ${styles.input}`}
       onDragOver={handleDragOver}
       onDrop={handleDrop}
-      draggable={port.edge !== null}
-      onDragStart={handleDragStart}
-      onDrag={handleDrag}
-      onDragEnd={handleDragEnd}
     >
-      <div className={`${styles.connector} ${port.edge ? styles.connected : ''}`} />
+      <div
+        className={`${styles.connector} ${port.edge ? styles.connected : ''}`}
+        onDragStart={handleDragStart}
+        onDrag={handleDrag}
+        onDragEnd={handleDragEnd}
+        draggable={port.edge !== null}
+      />
       <div>{ `${port.name} (${convertType(port.type)})` }</div>
     </div>
   )
