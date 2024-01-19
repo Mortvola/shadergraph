@@ -2,7 +2,7 @@ import { bindGroups } from "../BindGroups";
 import { gpu } from "../Gpu";
 import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
 import Property from "../shaders/ShaderBuilder/Property";
-import { buildGraph, generateShaderModule } from "../shaders/ShaderBuilder/ShaderBuilder";
+import { generateShaderModule } from "../shaders/ShaderBuilder/ShaderBuilder";
 import { PropertyInterface } from "../shaders/ShaderBuilder/Types";
 import { litShader } from "../shaders/lit";
 import { PipelineInterface, PipelineManagerInterface } from "../types";
@@ -25,6 +25,7 @@ type Pipelines = {
 
 type PipelineMapEntry = {
   pipeline: PipelineInterface,
+  bindgroupLayout: GPUBindGroupLayout | null,
   properties: Property[],
 }
 
@@ -77,15 +78,16 @@ class PipelineManager implements PipelineManagerInterface {
     return null;
   }
 
-  getPipelineByArgs(materialDescriptor: MaterialDescriptor): [PipelineInterface, PropertyInterface[]] {
+  getPipelineByArgs(materialDescriptor: MaterialDescriptor): [PipelineInterface, GPUBindGroupLayout | null, PropertyInterface[]] {
     let properties: Property[] = [];
+    let bindgroupLayout: GPUBindGroupLayout | null = null;
 
     const key = JSON.stringify(materialDescriptor);
 
     let pipelineEntry: PipelineMapEntry | undefined = this.pipelineMap.get(key);
 
     if (pipelineEntry) {
-      return [pipelineEntry.pipeline, pipelineEntry.properties];
+      return [pipelineEntry.pipeline, pipelineEntry.bindgroupLayout, pipelineEntry.properties];
     }
 
     let pipeline: PipelineInterface;
@@ -93,33 +95,13 @@ class PipelineManager implements PipelineManagerInterface {
     if (!materialDescriptor.graph) {
       pipeline = this.getPipeline(materialDescriptor.type)!
 
-      this.pipelineMap.set(key, { pipeline, properties: [] });
+      this.pipelineMap.set(key, { pipeline, bindgroupLayout: null, properties: [] });
     }
     else {
-      let bindgroupLayout: GPUPipelineLayout;
       let shaderModule: GPUShaderModule;
       let vertexBufferLayout: GPUVertexBufferLayout[] = [];
 
-      bindgroupLayout = gpu.device.createPipelineLayout({
-        bindGroupLayouts: [
-          bindGroups.getBindGroupLayout0(),
-          bindGroups.getBindGroupLayout1(),
-          bindGroups.getBindGroupLayout2(),
-        ],
-      });
-
-      let props: Property[] = [];
-
-      if (materialDescriptor.properties) {
-        props = materialDescriptor.properties.map((p) => (
-          new Property(p.name, p.dataType, p.value)
-        ))
-      }
-
-      const graph = buildGraph(materialDescriptor.graph, props);
-      [shaderModule, properties] = generateShaderModule(graph);  
-
-      // properties = graph.properties;
+      [shaderModule, properties] = generateShaderModule(materialDescriptor);  
 
       vertexBufferLayout = [
         {
@@ -177,6 +159,36 @@ class PipelineManager implements PipelineManagerInterface {
         };  
       }
 
+      bindgroupLayout = gpu.device.createBindGroupLayout({
+        label: 'group2',
+        entries: [
+          { // Color
+            binding: 0,
+            visibility: GPUShaderStage.VERTEX,
+            buffer: {},
+          },
+          ...properties.map((property, index) => ({
+            binding: index + 1,
+            visibility: GPUShaderStage.FRAGMENT,
+            sampler: property.value.dataType === 'sampler' ? {} : undefined,
+            texture: property.value.dataType === 'texture2D' ? {} : undefined,
+          })),
+          { // Attributes
+            binding: properties.length + 1,
+            visibility: GPUShaderStage.FRAGMENT,
+            buffer: {},
+          },
+        ]
+      });
+
+      const pipelineLayout = gpu.device.createPipelineLayout({
+        bindGroupLayouts: [
+          bindGroups.getBindGroupLayout0(),
+          bindGroups.getBindGroupLayout1(),
+          bindgroupLayout,
+        ],
+      });
+
       const pipelineDescriptor: GPURenderPipelineDescriptor = {
         label: 'base pipeline',
         vertex: {
@@ -199,7 +211,7 @@ class PipelineManager implements PipelineManagerInterface {
           depthCompare: "less",
           format: "depth24plus"
         },
-        layout: bindgroupLayout,
+        layout: pipelineLayout,
       };
       
       const gpuPipeline = gpu.device.createRenderPipeline(pipelineDescriptor);
@@ -207,11 +219,11 @@ class PipelineManager implements PipelineManagerInterface {
       pipeline = new Pipeline();
       pipeline.pipeline = gpuPipeline;
 
-      this.pipelineMap.set(key, { pipeline, properties });
+      this.pipelineMap.set(key, { pipeline, bindgroupLayout, properties });
     }
 
     console.log(`pipelines created: ${this.pipelineMap.size}`)
-    return [pipeline, properties];
+    return [pipeline, bindgroupLayout, properties];
   }
 }
 

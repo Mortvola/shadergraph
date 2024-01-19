@@ -20,7 +20,12 @@ class Material implements MaterialInterface {
 
   drawables: DrawableInterface[] = [];
 
-  private constructor(materialDescriptor: MaterialDescriptor, pipeline: PipelineInterface, bitmap?: ImageBitmap) {
+  private constructor(
+    materialDescriptor: MaterialDescriptor,
+    pipeline: PipelineInterface,
+    bindGroupLayout: GPUBindGroupLayout | null,
+    bitmaps: ImageBitmap[],
+  ) {
     this.pipeline = pipeline;
 
     if (materialDescriptor.color) {
@@ -36,20 +41,26 @@ class Material implements MaterialInterface {
       this.color[3] = 1.0;  
     }
 
-    if (bitmap) {
-      const texture = gpu.device.createTexture({
-        format: 'rgba8unorm',
-        size: [bitmap.width, bitmap.height],
-        usage: GPUTextureUsage.TEXTURE_BINDING |
-               GPUTextureUsage.COPY_DST |
-               GPUTextureUsage.RENDER_ATTACHMENT,
-      });
-  
-      gpu.device.queue.copyExternalImageToTexture(
-        { source: bitmap },
-        { texture },
-        { width: bitmap.width, height: bitmap.height },
-      );
+    if (bitmaps.length > 0) {
+      const textures: GPUTexture[] = [];
+
+      for (const bitmap of bitmaps) {
+        const texture = gpu.device.createTexture({
+          format: 'rgba8unorm',
+          size: [bitmap.width, bitmap.height],
+          usage: GPUTextureUsage.TEXTURE_BINDING |
+                GPUTextureUsage.COPY_DST |
+                GPUTextureUsage.RENDER_ATTACHMENT,
+        });
+    
+        gpu.device.queue.copyExternalImageToTexture(
+          { source: bitmap },
+          { texture },
+          { width: bitmap.width, height: bitmap.height },
+        );
+
+        textures.push(texture);
+      }
   
       this.colorBuffer = gpu.device.createBuffer({
         label: 'color',
@@ -78,12 +89,14 @@ class Material implements MaterialInterface {
 
       this.bindGroup = gpu.device.createBindGroup({
         label: 'material',
-        layout: bindGroups.getBindGroupLayout2(),
+        layout: bindGroupLayout ?? bindGroups.getBindGroupLayout2(),
         entries: [
           { binding: 0, resource: { buffer: this.colorBuffer }},
           { binding: 1, resource: gpu.device.createSampler() },
-          { binding: 2, resource: texture.createView() },
-          { binding: 3, resource: { buffer: this.textureAttributesBuffer }}
+          ...textures.map((texture, index) => ({
+            binding: 2 + index, resource: texture.createView(),
+          })),
+          { binding: 2 + textures.length, resource: { buffer: this.textureAttributesBuffer }}
         ],
       });  
     }
@@ -105,40 +118,40 @@ class Material implements MaterialInterface {
   }
 
   static async create(materialDescriptor: MaterialDescriptor): Promise<Material> {
-    const [pipeline, properties] = pipelineManager.getPipelineByArgs(materialDescriptor)
+    const [pipeline, bindGroupLayout, properties] = pipelineManager.getPipelineByArgs(materialDescriptor)
 
-    let bitmap: ImageBitmap | undefined = undefined;
+    let bitmap: ImageBitmap[] = [];
 
     // Find textures in the properties
-    const texture = properties.find((p) => p.value.dataType === 'texture2D');
-
-    if (texture) {
-      let url: string;
-      if (typeof texture.value.value === 'string') {
-        url = texture.value.value;
-      }
-      else {
-        throw new Error('texture value is unknown type')
-      }
-
-      const res = await fetch(url);
-
-      if (res.ok) {
-        const blob = await res.blob();
-        try {
-          bitmap = await createImageBitmap(blob, { colorSpaceConversion: 'none' });  
+    for (const property of properties) {
+      if (property.value.dataType === 'texture2D') {
+        let url: string;
+        if (typeof property.value.value === 'string') {
+          url = property.value.value;
         }
-        catch (error) {
-          console.log(error);
-          throw(error);
-        }  
-      }
-      else {
-        throw new Error('texture failed to download')
+        else {
+          throw new Error('texture value is unknown type')
+        }
+
+        const res = await fetch(url);
+
+        if (res.ok) {
+          const blob = await res.blob();
+          try {
+            bitmap.push(await createImageBitmap(blob, { colorSpaceConversion: 'none' }));  
+          }
+          catch (error) {
+            console.log(error);
+            throw(error);
+          }  
+        }
+        else {
+          throw new Error('texture failed to download')
+        }
       }
     }
 
-    return new Material(materialDescriptor, pipeline, bitmap);
+    return new Material(materialDescriptor, pipeline, bindGroupLayout, bitmap);
   }
 
   addDrawable(drawableNode: DrawableNodeInterface): void {

@@ -1,4 +1,5 @@
 import { gpu } from "../../Gpu";
+import { MaterialDescriptor } from "../../Materials/MaterialDescriptor";
 import { common } from "../common";
 import { textureAttributes } from "../textureAttributes";
 import { texturedCommon } from "../texturedCommon";
@@ -274,7 +275,17 @@ export const generateShaderCode = (graph: ShaderGraph): [string, Property[]] => 
   ]
 }
 
-export const generateShaderModule = (graph: ShaderGraph): [GPUShaderModule, Property[]] => {
+export const generateShaderModule = (materialDescriptor: MaterialDescriptor): [GPUShaderModule, Property[]] => {
+  let props: Property[] = [];
+
+  if (materialDescriptor.properties) {
+    props = materialDescriptor.properties.map((p) => (
+      new Property(p.name, p.dataType, p.value)
+    ))
+  }
+
+  const graph = buildGraph(materialDescriptor.graph!, props);
+
   const [code, properties] = generateShaderCode(graph);
 
   const shaderModule = gpu.device.createShaderModule({

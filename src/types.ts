@@ -416,7 +416,7 @@ export type PipelineAttributes = {
 }
 
 export interface PipelineManagerInterface {
-  getPipelineByArgs(args: PipelineAttributes): [PipelineInterface, PropertyInterface[]];
+  getPipelineByArgs(args: PipelineAttributes): [PipelineInterface, GPUBindGroupLayout | null, PropertyInterface[]];
 }
 
 // export type Party = {
