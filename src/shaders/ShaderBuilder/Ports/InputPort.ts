@@ -1,25 +1,8 @@
-import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, DataType } from "../Types";
+import { InputPortInterface } from "../Types";
+import Port from "./Port";
 
-class InputPort implements InputPortInterface {
-  node: GraphNodeInterface;
-
-  type: DataType;
-
-  name: string;
-
-  edge: GraphEdgeInterface | null = null;
-
-  offsetX = 0;
-
-  offsetY = 0;
-  
-  constructor(node: GraphNodeInterface, type: DataType, name: string) {
-    this.node = node;
-    this.type = type;
-    this.name = name;
-  }
-
-  getVarname(): string {
+class InputPort extends Port implements InputPortInterface {
+  getVarName(): string {
     return this.edge?.getVarName() ?? '';
   }
 }

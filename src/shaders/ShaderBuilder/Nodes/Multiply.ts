@@ -15,8 +15,8 @@ class Multiply extends OperationNode {
   }
 
   output(): string {
-    const varA = this.inputPorts[0].getVarname();
-    const varB = this.inputPorts[1].getVarname();
+    const varA = this.inputPorts[0].getVarName();
+    const varB = this.inputPorts[1].getVarName();
     const varC = this.getVarName();
 
     return `var ${varC} = ${varA} * ${varB};\n`;

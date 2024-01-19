@@ -16,9 +16,9 @@ class TileAndScroll extends OperationNode {
   }
 
   output(): string {
-    const uv = this.inputPorts[0].getVarname();
-    const tile = this.inputPorts[1].getVarname();
-    const scroll = this.inputPorts[2].getVarname();
+    const uv = this.inputPorts[0].getVarName();
+    const tile = this.inputPorts[1].getVarName();
+    const scroll = this.inputPorts[2].getVarName();
     const result = this.getVarName();
 
     return `var ${result} = fract(${uv} * ${tile} + ${scroll});\n`

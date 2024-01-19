@@ -2,13 +2,14 @@ import React from 'react';
 import styles from './Node.module.scss';
 import { convertType, useStores } from './State/store';
 import { OutputPortInterface } from './shaders/ShaderBuilder/Types';
+import { observer } from 'mobx-react-lite';
 
 type PropsType = {
   port: OutputPortInterface,
   hideName?: boolean,
 }
 
-const NodeOutputPort: React.FC<PropsType> = ({
+const NodeOutputPort: React.FC<PropsType> = observer(({
   port,
   hideName = false,
 }) => {
@@ -67,7 +68,7 @@ const NodeOutputPort: React.FC<PropsType> = ({
   return (
     <div
       ref={portRef}
-      className={styles.outputport}
+      className={`${styles.port} ${styles.output}`}
       draggable onDragStart={handleDragStart}
       onDrag={handleDrag}
       onDragEnd={handleDragEnd}
@@ -77,8 +78,9 @@ const NodeOutputPort: React.FC<PropsType> = ({
           ? <div>{ `${port.name} (${convertType(port.type)})` }</div>
           : <div>{ convertType(port.type) }</div>
       }
+      <div className={`${styles.connector} ${port.edge ? styles.connected : ''}`} />
     </div>
   )
-}
+})
 
 export default NodeOutputPort;

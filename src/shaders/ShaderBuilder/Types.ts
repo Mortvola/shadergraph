@@ -28,7 +28,7 @@ export interface InputPortInterface {
 
   offsetY: number;
 
-  getVarname(): string;
+  getVarName(): string;
 };
 
 export interface OutputPortInterface {

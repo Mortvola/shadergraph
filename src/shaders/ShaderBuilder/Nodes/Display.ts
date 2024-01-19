@@ -13,10 +13,10 @@ class Display extends OperationNode {
 
   output(): string {
     if (this.inputPorts[1].edge) {
-      return `return vec4f(${this.inputPorts[0].getVarname()}.rgb, ${this.inputPorts[1].getVarname()});`;
+      return `return vec4f(${this.inputPorts[0].getVarName()}.rgb, ${this.inputPorts[1].getVarName()});`;
     }
 
-    return `return ${this.inputPorts[0].getVarname()};`;
+    return `return ${this.inputPorts[0].getVarName()};`;
   }
 }
 

@@ -31,7 +31,7 @@ const Node: React.FC<PropsType> = observer(({
       return (
         <>
           <div className={styles.property}>
-            <div className={styles.title}>{node.getName()}</div>
+            <div>{node.getName()}</div>
             {
               node.outputPort.map((p) => (
                 <NodeOutputPort key={p.name} port={p} hideName />
