@@ -8,6 +8,10 @@ class Time extends BuiltIn {
     this.outputPort = [new OutputPort(this, 'float', 'time')];
     this.setVarName('time');
   }
+
+  setVarName(varName: string | null): void {
+    super.setVarName('time');
+  }
 }
 
 export default Time;

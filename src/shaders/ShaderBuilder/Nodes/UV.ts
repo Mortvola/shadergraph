@@ -8,6 +8,10 @@ class UV extends BuiltIn {
     this.outputPort = [new OutputPort(this, 'vec2f', 'uv')];
     this.setVarName('vertexOut.texcoord');
   }
+
+  setVarName(varName: string | null): void {
+    super.setVarName('vertexOut.texcoord')
+  }
 }
 
 export default UV;

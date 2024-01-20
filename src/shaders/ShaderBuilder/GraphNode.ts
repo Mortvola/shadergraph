@@ -3,6 +3,18 @@ import { GraphNodeInterface, NodeType } from "./Types";
 import InputPort from "./Ports/InputPort";
 import OutputPort from "./Ports/OutputPort";
 
+export let nextVarId = 0;
+
+export const setNextVarid = (id: number) => {
+  nextVarId = id;
+}
+
+const generatVarName = () => {
+  const varName = `v${nextVarId}`
+  nextVarId += 1;
+  return varName;
+}
+
 class GraphNode implements GraphNodeInterface {
   type: NodeType;
 
@@ -43,10 +55,14 @@ class GraphNode implements GraphNodeInterface {
   }
 
   getVarName(): string | null {
+    if (this.outputVarName === null) {
+      this.outputVarName = generatVarName();
+    }
+
     return this.outputVarName;
   }
 
-  setVarName(name: string) {
+  setVarName(name: string | null) {
     this.outputVarName = name;
   }
 

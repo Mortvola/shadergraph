@@ -25,8 +25,7 @@ class PropertyNode extends GraphNode implements PropertyNodeInterface {
     return this.property.name;
   }
 
-  setVarName() {
-    throw new Error('invalid setting of property var name')
+  setVarName(varName: string | null) {
   }
 
   getName(): string {

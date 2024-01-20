@@ -17,7 +17,7 @@ class GraphEdge implements GraphEdgeInterface {
     return this.output.getVarName() ?? '';
   }
 
-  setVarName(name: string): void {
+  setVarName(name: string | null): void {
     this.output.node.setVarName(name);
   }
 

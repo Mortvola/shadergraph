@@ -1,4 +1,5 @@
 import { store } from "../State/store";
+import Add from "../shaders/ShaderBuilder/Nodes/Add";
 import Display from "../shaders/ShaderBuilder/Nodes/Display";
 import Fraction from "../shaders/ShaderBuilder/Nodes/Fraction";
 import Multiply from "../shaders/ShaderBuilder/Nodes/Multiply";
@@ -56,6 +57,7 @@ export const menuItems = (): MenuItemLike[] => ([
   { name: 'TileAndScroll', action: (x: number, y: number) => createObject(TileAndScroll, x, y) },
   { name: 'Display', action: (x: number, y: number) => createObject(Display, x, y) },
   { name: 'Fraction', action: (x: number, y: number) => createObject(Fraction, x, y) },
+  { name: 'Add', action: (x: number, y: number) => createObject(Add, x, y) },
   { name: 'Multiply', action: (x: number, y: number) => createObject(Multiply, x, y) },
   { name: 'Time', action: (x: number, y: number) => createObject(Time, x, y) },
   { name: 'UV', action: (x: number, y: number) => createObject(UV, x, y) },

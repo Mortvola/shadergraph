@@ -6,6 +6,8 @@ import { texturedCommon } from "../texturedCommon";
 import { texturedVertex } from "../texturedVertex";
 import { GraphDescriptor, GraphStageDescriptor, PropertyDescriptor, ValueDescriptor } from "./GraphDescriptor";
 import GraphEdge from "./GraphEdge";
+import { setNextVarid } from "./GraphNode";
+import Add from "./Nodes/Add";
 import Output from "./Nodes/Display";
 import Fraction from "./Nodes/Fraction";
 import Multiply from "./Nodes/Multiply";
@@ -20,12 +22,6 @@ import StageGraph from "./StageGraph";
 import { DataType, GraphEdgeInterface, GraphNodeInterface, isPropertyNode, isValueNode } from "./Types";
 import Value from "./Value";
 import ValueNode from "./ValueNode";
-
-let nextVarId = 0;
-const getNextVarId = () => {
-  nextVarId += 1;
-  return nextVarId;
-}
 
 export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Property[]): StageGraph => {
   let nodes: GraphNodeInterface[] = [];
@@ -87,6 +83,10 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Pr
       case 'Multiply':
         node = new Multiply(nodeDescr.id);
         break;
+
+      case 'Add':
+        node = new Add(nodeDescr.id);
+        break;
   
       case 'value': {
         const vnode = nodeDescr as ValueDescriptor;
@@ -127,6 +127,7 @@ export const generateStageShaderCode = (graph: StageGraph): [string, Property[]]
   // Clear the node priorities
   for (const node of graph.nodes) {
     node.priority = null;
+    node.setVarName(null);
   }
 
   const propertyBindings: Property[] = [];
@@ -135,7 +136,7 @@ export const generateStageShaderCode = (graph: StageGraph): [string, Property[]]
   const outputNode = graph.nodes.find((n) => n.type === 'display');
 
   if (outputNode) {
-    nextVarId = 0;
+    setNextVarid(0);
     let nextSamplerId = 0;
 
     outputNode.priority = 0;
@@ -182,13 +183,6 @@ export const generateStageShaderCode = (graph: StageGraph): [string, Property[]]
         // and generate variables.
         for (const input of node.inputPorts) {
           if (input.edge) {
-            // Set the var name on the incoming edge if it hasn't been
-            // set yet.
-            if (input.edge.getVarName() === '') {
-              const varName = `v${getNextVarId()}`
-              input.edge.setVarName(varName);
-            }
-
             // Update the node priority if it is lower than 
             // the current node's priority plus 1.
             if (input.edge.output.node.priority ?? 0 < (node.priority ?? 0) + 1) {

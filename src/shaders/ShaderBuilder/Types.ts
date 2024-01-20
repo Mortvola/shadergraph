@@ -3,7 +3,7 @@ export type DataType = 'float' | 'vec2f' | 'vec3f' | 'vec4f' | 'texture2D' | 'sa
 export type NodeType =
   'property' | 'value'
   | 'uv' | 'time'  | 'time'
-  | 'Fraction' | 'TileAndScroll' | 'Multiply' | 'SampleTexture' | 'display';
+  | 'Add' | 'display' | 'Fraction' | 'Multiply' | 'SampleTexture' | 'TileAndScroll';
 
 export type SamplerDescriptor = {};
 
@@ -62,7 +62,7 @@ export interface GraphNodeInterface {
 
   getVarName(): string | null;
 
-  setVarName(name: string): void;
+  setVarName(name: string | null): void;
 
   getValue(): string;
 
