@@ -29,6 +29,8 @@ export interface InputPortInterface {
   offsetY: number;
 
   getVarName(): string;
+
+  getValue(): string;
 };
 
 export interface OutputPortInterface {
@@ -45,6 +47,8 @@ export interface OutputPortInterface {
   offsetY: number;
 
   getVarName(): string;
+
+  getValue(): string;
 };
 
 export interface GraphNodeInterface {
@@ -59,6 +63,8 @@ export interface GraphNodeInterface {
   getVarName(): string | null;
 
   setVarName(name: string): void;
+
+  getValue(): string;
 
   x: number;
   
@@ -105,6 +111,8 @@ export interface GraphEdgeInterface {
   getVarName(): string;
 
   setVarName(name: string): void;
+
+  getValue(): string;
 }
 
 export interface ValueInterface {

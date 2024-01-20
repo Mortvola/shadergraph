@@ -16,6 +16,10 @@ class InputPort extends Port implements InputPortInterface {
   getVarName(): string {
     return this.edge?.getVarName() ?? '';
   }
+
+  getValue(): string {
+    return this.edge?.getValue() ?? '';
+  }
 }
 
 export default InputPort;

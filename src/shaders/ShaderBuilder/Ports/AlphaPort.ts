@@ -8,6 +8,14 @@ class AlphaPort extends OutputPort {
 
     return '';
   }
+
+  getValue(): string {
+    if (this.node.getValue()) {
+      return `${this.node.getValue()}.a`
+    }
+
+    return '';
+  }
 }
 
 export default AlphaPort;

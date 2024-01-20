@@ -8,6 +8,14 @@ class RedPort extends OutputPort {
 
     return '';
   }
+
+  getValue(): string {
+    if (this.node.getValue()) {
+      return `${this.node.getValue()}.r`
+    }
+
+    return '';
+  }
 }
 
 export default RedPort;

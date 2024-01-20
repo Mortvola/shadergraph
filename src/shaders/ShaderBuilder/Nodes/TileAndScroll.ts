@@ -15,13 +15,12 @@ class TileAndScroll extends OperationNode {
     this.outputPort = [new OutputPort(this, 'vec2f', 'result')]
   }
 
-  output(): string {
-    const uv = this.inputPorts[0].getVarName();
-    const tile = this.inputPorts[1].getVarName();
-    const scroll = this.inputPorts[2].getVarName();
-    const result = this.getVarName();
+  getExpression(): string {
+    const uv = this.inputPorts[0].getValue();
+    const tile = this.inputPorts[1].getValue();
+    const scroll = this.inputPorts[2].getValue();
 
-    return `var ${result} = ${uv} * ${tile} + ${scroll};\n`
+    return `(${uv}) * (${tile}) + ${scroll}`
   }
 }
 

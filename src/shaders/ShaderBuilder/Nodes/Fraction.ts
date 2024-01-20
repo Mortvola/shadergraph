@@ -13,13 +13,9 @@ class Fraction extends OperationNode {
     this.outputPort = [new OutputPort(this, 'vec2f', 'result')]
   }
 
-  output(): string {
-    const varA = this.inputPorts[0].getVarName();
-    const varB = this.getVarName();
-
-    return `var ${varB} = fract(${varA});\n`;
+  getExpression(): string {
+    return `fract(${this.inputPorts[0].getValue()})`;
   }
-
 }
 
 export default Fraction;

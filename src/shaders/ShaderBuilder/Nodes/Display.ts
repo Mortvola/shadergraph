@@ -11,12 +11,16 @@ class Display extends OperationNode {
     ]
   }
 
-  output(): string {
+  getExpression(): string {
     if (this.inputPorts[1].edge) {
-      return `return vec4f(${this.inputPorts[0].getVarName()}.rgb, ${this.inputPorts[1].getVarName()});`;
+      return `vec4f(${this.inputPorts[0].getValue()}.rgb, ${this.inputPorts[1].getValue()})`;
     }
 
-    return `return ${this.inputPorts[0].getVarName()};`;
+    return `${this.inputPorts[0].getValue()}`;
+  }
+
+  output(): string {
+    return `return ${this.getExpression()};`;
   }
 }
 

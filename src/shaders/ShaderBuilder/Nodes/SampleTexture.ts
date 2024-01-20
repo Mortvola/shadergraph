@@ -30,13 +30,12 @@ class SampleTexture extends OperationNode {
     ]
   }
 
-  output(): string {
-    const outputVar = this.getVarName();
-    const texture = this.inputPorts[0].getVarName();
+  getExpression(): string {
+    const texture = this.inputPorts[0].getValue();
     const sampler = this.samplerName;
-    const textCoord = this.inputPorts[1].getVarName();
+    const textCoord = this.inputPorts[1].getValue();
     // console.log(`var ${outputVar} = textureSample(ourTexture, ourSampler, fract(vertexOut.texcoord * texAttr.scale + offset));`);
-    return `var ${outputVar} = textureSample(${texture}, ${sampler}, ${textCoord});\n`;
+    return `textureSample(${texture}, ${sampler}, ${textCoord})`;
   }
 }
 

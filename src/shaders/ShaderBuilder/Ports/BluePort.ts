@@ -8,6 +8,14 @@ class BluePort extends OutputPort {
 
     return '';
   }
+
+  getValue(): string {
+    if (this.node.getValue()) {
+      return `${this.node.getValue()}.b`
+    }
+
+    return '';
+  }
 }
 
 export default BluePort;

@@ -34,6 +34,14 @@ class GraphNode implements GraphNodeInterface {
     });
   }
 
+  getNumOutputEdges(): number {
+    const numEdges = this.outputPort.reduce((count, p) => (
+      count + p.edges.length
+      ), 0)
+
+    return numEdges;
+  }
+
   getVarName(): string | null {
     return this.outputVarName;
   }
@@ -46,8 +54,24 @@ class GraphNode implements GraphNodeInterface {
     return '';
   }
 
+  getExpression(): string {
+    return '';
+  }
+
+  getValue(): string {
+    if (this.getNumOutputEdges() > 1) {
+      return this.getVarName() ?? '';
+    }
+
+    return this.getExpression();
+  }
+
   output(): string { 
-    return '';   
+    if (this.getNumOutputEdges() <= 1) {
+      return '';
+    }
+
+    return `var ${this.getVarName()} = ${this.getExpression()};\n`;
   }
 
   static nextNodeId = 0;

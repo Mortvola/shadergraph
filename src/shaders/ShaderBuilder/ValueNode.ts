@@ -14,8 +14,8 @@ class ValueNode extends GraphNode implements ValueNodeInterface {
     this.value = value;
   }
 
-  getVarName(): string | null {
-    return this.value.getValueString();
+  getExpression(): string {
+    return this.value.getValueString() ?? '';
   }
 }
 

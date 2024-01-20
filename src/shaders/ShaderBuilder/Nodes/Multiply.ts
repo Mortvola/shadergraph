@@ -14,12 +14,11 @@ class Multiply extends OperationNode {
     this.outputPort = [new OutputPort(this, 'vec2f', 'result')]
   }
 
-  output(): string {
-    const varA = this.inputPorts[0].getVarName();
-    const varB = this.inputPorts[1].getVarName();
-    const varC = this.getVarName();
+  getExpression(): string {
+    const varA = this.inputPorts[0].getValue();
+    const varB = this.inputPorts[1].getValue();
 
-    return `var ${varC} = ${varA} * ${varB};\n`;
+    return `(${varA}) * (${varB})`;
   }
 }
 

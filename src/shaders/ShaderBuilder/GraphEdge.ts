@@ -1,13 +1,11 @@
-import InputPort from "./Ports/InputPort";
-import OutputPort from "./Ports/OutputPort";
-import { GraphEdgeInterface } from "./Types";
+import { GraphEdgeInterface, InputPortInterface, OutputPortInterface } from "./Types";
 
 class GraphEdge implements GraphEdgeInterface {
-  output: OutputPort;
+  output: OutputPortInterface;
 
-  input: InputPort;
+  input: InputPortInterface;
 
-  constructor(outputPort: OutputPort, inputPort: InputPort) {
+  constructor(outputPort: OutputPortInterface, inputPort: InputPortInterface) {
     this.output = outputPort;
     outputPort.edges.push(this);
 
@@ -21,6 +19,10 @@ class GraphEdge implements GraphEdgeInterface {
 
   setVarName(name: string): void {
     this.output.node.setVarName(name);
+  }
+
+  getValue(): string {
+    return this.output.getValue() ?? '';
   }
 }
 

@@ -16,6 +16,10 @@ class BuiltIn extends GraphNode {
   getName(): string {
     return this.name;
   }
+
+  getExpression(): string {
+    return this.getVarName() ?? '';
+  }
 }
 
 export default BuiltIn;

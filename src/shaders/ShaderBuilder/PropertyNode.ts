@@ -32,6 +32,14 @@ class PropertyNode extends GraphNode implements PropertyNodeInterface {
   getName(): string {
     return this.property.name;
   }
+
+  getValue(): string {
+    return this.getVarName();
+  }
+
+  output(): string {
+    return '';
+  }
 }
 
 export default PropertyNode;
