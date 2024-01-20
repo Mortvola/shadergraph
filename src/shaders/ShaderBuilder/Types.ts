@@ -3,7 +3,7 @@ export type DataType = 'float' | 'vec2f' | 'vec3f' | 'vec4f' | 'texture2D' | 'sa
 export type NodeType =
   'property' | 'value'
   | 'uv' | 'time'  | 'time'
-  | 'TileAndScroll' | 'Multiply' | 'SampleTexture' | 'display';
+  | 'Fraction' | 'TileAndScroll' | 'Multiply' | 'SampleTexture' | 'display';
 
 export type SamplerDescriptor = {};
 
@@ -38,7 +38,7 @@ export interface OutputPortInterface {
 
   name: string;
 
-  edge: GraphEdgeInterface | null;
+  edges: GraphEdgeInterface[];
   
   offsetX: number;
 

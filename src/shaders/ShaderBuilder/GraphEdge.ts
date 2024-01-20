@@ -9,7 +9,7 @@ class GraphEdge implements GraphEdgeInterface {
 
   constructor(outputPort: OutputPort, inputPort: InputPort) {
     this.output = outputPort;
-    outputPort.edge = this;
+    outputPort.edges.push(this);
 
     this.input = inputPort;
     inputPort.edge = this;

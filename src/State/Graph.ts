@@ -127,10 +127,19 @@ class Graph {
   }
 
   private delEdge(edge: GraphEdgeInterface) {
-    edge.output.edge = null;
+    let index = edge.output.edges.findIndex((e) => e === edge);
+
+    if (index !== -1) {
+      edge.output.edges = [
+        ...edge.output.edges.slice(0, index),
+        ...edge.output.edges.slice(index + 1),
+      ];
+    }
+
     edge.input.edge = null;
 
-    const index = this.edges.findIndex((e) => e === edge);
+    // Find the edge in the edge list and remove eit
+    index = this.edges.findIndex((e) => e === edge);
     
     if (index !== -1) {
       this.edges = [
@@ -166,9 +175,7 @@ class Graph {
 
         // Delete any connected output edges
         for (const outputPort of node.outputPort) {
-          const edge = outputPort.edge;
-
-          if (edge) {
+          for (const edge of outputPort.edges) {
             this.delEdge(edge);
           }
         }

@@ -76,7 +76,7 @@ const NodeOutputPort: React.FC<PropsType> = observer(({
           : <div>{ convertType(port.type) }</div>
       }
       <div
-        className={`${styles.connector} ${port.edge ? styles.connected : ''}`}
+        className={`${styles.connector} ${port.edges.length > 0 ? styles.connected : ''}`}
         draggable
         onDragStart={handleDragStart}
         onDrag={handleDrag}

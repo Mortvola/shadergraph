@@ -7,6 +7,7 @@ import { texturedVertex } from "../texturedVertex";
 import { GraphDescriptor, GraphStageDescriptor, PropertyDescriptor, ValueDescriptor } from "./GraphDescriptor";
 import GraphEdge from "./GraphEdge";
 import Output from "./Nodes/Display";
+import Fraction from "./Nodes/Fraction";
 import Multiply from "./Nodes/Multiply";
 import SampleTexture from "./Nodes/SampleTexture";
 import TileAndScroll from "./Nodes/TileAndScroll";
@@ -79,10 +80,14 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Pr
         node = new TileAndScroll(nodeDescr.id);
         break;
 
+      case 'Fraction':
+        node = new Fraction(nodeDescr.id);
+        break;
+
       case 'Multiply':
         node = new Multiply(nodeDescr.id);
         break;
-
+  
       case 'value': {
         const vnode = nodeDescr as ValueDescriptor;
         node = new ValueNode(new Value(vnode.dataType, vnode.value), nodeDescr.id);
