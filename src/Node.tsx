@@ -5,7 +5,7 @@ import NodeInputPort from './NodeInputPort';
 import NodeOutputPort from './NodeOutputPort';
 import { GraphNodeInterface, isPropertyNode, isValueNode } from './shaders/ShaderBuilder/Types';
 import { useStores } from './State/store';
-import PropertyVec2f from './PropertyVec2f';
+import Vector from './Vector';
 import Draggable from './Draggable';
 import PropertyString from './PropertyString';
 
@@ -46,7 +46,9 @@ const Node: React.FC<PropsType> = observer(({
       const propertyField = () => {
         switch (node.value.dataType) {
           case 'vec2f':
-            return <PropertyVec2f node={node.value} />;
+          case 'vec3f':
+          case 'vec4f':
+            return <Vector node={node.value} />;
 
           case 'string':
           case 'texture2D':

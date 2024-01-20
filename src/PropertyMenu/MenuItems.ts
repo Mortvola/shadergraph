@@ -22,5 +22,5 @@ const createVarName = (basename: string) => {
 
 export const menuItems: MenuItemRecord<Property>[] = [
   { name: 'Texture2D', property: () => new Property(createVarName('texture'), 'texture2D', './textures/texture.png') },
-  { name: 'Vector2D', property: () => new Property(createVarName('property'), 'vec2f', [0, 0])},
+  { name: 'Vector2', property: () => new Property(createVarName('property'), 'vec2f', [0, 0])},
 ]
