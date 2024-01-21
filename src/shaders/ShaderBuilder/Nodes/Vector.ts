@@ -20,7 +20,14 @@ class Vector extends ValueNode {
   }
 
   getExpression(): string {
-    return this.value.getValueString() ?? '';
+    let expression = '';
+
+    for (const port of this.inputPorts) {
+      expression += `${port.getValue()},`
+    }
+
+    return `vec2f(${expression})`;
+    // return this.value.getValueString() ?? '';
   }
 }
 

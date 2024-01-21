@@ -6,6 +6,7 @@ import { observer } from 'mobx-react-lite';
 import PropertyString from './PropertyString';
 import { useStores } from './State/store';
 import { runInAction } from 'mobx';
+import PropertyFloat from './PropertyFloat';
 
 type PropsType = {
   property: PropertyInterface,
@@ -50,6 +51,9 @@ const PropertyDialog: React.FC<PropsType> = observer(({
       case 'string':
       case 'texture2D':
         return <PropertyString node={property.value} />
+
+      case 'float':
+        return <PropertyFloat node={property.value} />
     }
   }
 

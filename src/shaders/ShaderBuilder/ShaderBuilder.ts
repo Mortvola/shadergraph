@@ -275,13 +275,27 @@ const bindingType = (dataType: DataType) => {
     return 'texture_2d<f32>';
   }
 
+  if (dataType === 'float') {
+    return 'f32';
+  }
+
   return dataType;
 }
 
-export const generateShaderCode = (graph: ShaderGraph): [string, Property[]] => {
+const space = (dataType: DataType) => {
+  if (dataType !== 'texture2D' && dataType !== 'sampler') {
+    return '<uniform>';
+  }
+
+  return '';
+}
+
+export const generateShaderCode = (graph: ShaderGraph): [string, Property[], Record<string, unknown>] => {
   let body = '';
 
   let bindings = '';
+  let uniforms = '';
+  let uniformValues: Record<string, unknown> = {};
   let numBindings = 0;
   let properties: Property[] = [];
 
@@ -289,17 +303,36 @@ export const generateShaderCode = (graph: ShaderGraph): [string, Property[]] => 
     [body, properties] = generateStageShaderCode(graph.fragment);
 
     for (let i = 0; i < properties.length; i += 1) {
-      bindings = bindings.concat(
-        `@group(2) @binding(${i + 1}) var ${properties[i].name}: ${bindingType(properties[i].value.dataType)};\n`
-      )
+      if (properties[i].value.dataType === 'texture2D' || properties[i].value.dataType === 'sampler') {
+        bindings = bindings.concat(
+          `@group(2) @binding(${i}) var${space(properties[i].value.dataType)} ${properties[i].name}: ${bindingType(properties[i].value.dataType)};\n`
+        )  
+      }
+      else {
+        uniforms = uniforms.concat(
+          `${properties[i].name}: ${bindingType(properties[i].value.dataType)},`
+        )
+
+        uniformValues = {
+          ...uniformValues,
+          [properties[i].name]: properties[i].value.value,
+        }
+      }
+
       numBindings += 1;
     }
   
     console.log(body);
   }
 
-  //     @group(2) @binding(1) var ourSampler: sampler;
-  //     @group(2) @binding(2) var ourTexture: texture_2d<f32>;
+  if (uniforms !== '') {
+    bindings = bindings.concat(
+      `@group(2) @binding(${numBindings - 1}) var<uniform> properties: Properties;`
+    )
+    numBindings += 1;
+
+    uniforms = `struct Properties { ${uniforms} }\n`
+  }
 
   return [
     `
@@ -309,10 +342,9 @@ export const generateShaderCode = (graph: ShaderGraph): [string, Property[]] => 
   
     ${texturedVertex}
     
-    ${textureAttributes}
+    ${uniforms}
 
     ${bindings}
-    @group(2) @binding(${numBindings + 1}) var<uniform> texAttr: TextureAttributes;
     
     @fragment
     fn fs(vertexOut: VertexOut) -> @location(0) vec4f
@@ -321,10 +353,11 @@ export const generateShaderCode = (graph: ShaderGraph): [string, Property[]] => 
     }
     `,
     properties,
+    uniformValues,
   ]
 }
 
-export const generateShaderModule = (materialDescriptor: MaterialDescriptor): [GPUShaderModule, Property[]] => {
+export const generateShaderModule = (materialDescriptor: MaterialDescriptor): [GPUShaderModule, Property[], string, Record<string, unknown>] => {
   let props: Property[] = [];
 
   if (materialDescriptor.properties) {
@@ -335,14 +368,14 @@ export const generateShaderModule = (materialDescriptor: MaterialDescriptor): [G
 
   const graph = buildGraph(materialDescriptor.graph!, props);
 
-  const [code, properties] = generateShaderCode(graph);
+  const [code, properties, values] = generateShaderCode(graph);
 
   const shaderModule = gpu.device.createShaderModule({
     label: 'custom shader',
     code: code,
   })
 
-  return [shaderModule, properties];
+  return [shaderModule, properties, code, values];
 }
 
 export const createDescriptor = (nodes: GraphNodeInterface[], edges: GraphEdgeInterface[]): GraphDescriptor => {

@@ -33,7 +33,11 @@ class PropertyNode extends GraphNode implements PropertyNodeInterface {
   }
 
   getValue(): string {
-    return this.getVarName();
+    if (this.property.value.dataType === 'texture2D' || this.property.value.dataType === 'sampler') {
+      return this.getVarName();
+    }
+
+    return `properties.${this.getVarName()}`;
   }
 
   output(): string {

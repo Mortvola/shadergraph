@@ -7,6 +7,7 @@ import { createPortal } from 'react-dom';
 import SimpleVector from './SimpleValues/SimpleVector';
 import Value from './shaders/ShaderBuilder/Value';
 import SimpleUV from './SimpleValues/SimpleUV';
+import SimpleFloat from './SimpleValues/SimpleFloat';
 
 type PropsType = {
   port: InputPortInterface,
@@ -106,6 +107,8 @@ const NodeInputPort: React.FC<PropsType> = observer(({
   const simpleValue = (value: Value) => {
     switch (value.dataType) {
       case 'float':
+        return <SimpleFloat value={value} />
+
       case 'vec2f':
       case 'vec3f':
       case 'vec4f':

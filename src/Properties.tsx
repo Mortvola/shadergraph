@@ -7,6 +7,7 @@ import ContextMenu from './PropertyMenu/ContextMenu'
 import PropertyEntry from './PropertyEntry';
 import { PropertyInterface } from './shaders/ShaderBuilder/Types';
 import PropertyDialog from './PropertyDialog';
+import { createPortal } from 'react-dom';
 
 const Properties: React.FC = observer(() => {
   const { graph } = useStores();
@@ -105,7 +106,7 @@ const Properties: React.FC = observer(() => {
       </div>
         {
           showMenu
-            ? <ContextMenu x={showMenu[0]} y={showMenu[1]} onClose={handleMenuClose} />
+            ? createPortal(<ContextMenu x={showMenu[0]} y={showMenu[1]} onClose={handleMenuClose} />, document.body)
             : null
         }
         {

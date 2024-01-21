@@ -5,6 +5,7 @@ import { Vec2, Vec3, Vec4, Mat4, Quat } from 'wgpu-matrix';
 // import { Abilities } from './Character/Classes/Abilities';
 import DrawableInterface from './Drawables/DrawableInterface';
 import { PropertyInterface, StagePropertyInterface } from './shaders/ShaderBuilder/Types';
+import { StructuredView } from 'webgpu-utils';
 // import { Weapon } from './Character/Equipment/Types';
 // import { feetToMeters } from './Math';
 
@@ -383,6 +384,8 @@ export interface MaterialInterface {
 
   colorBuffer: GPUBuffer;
 
+  uniformsBuffer: GPUBuffer | null;
+
   textureAttributesBuffer: GPUBuffer | null;
   
   bindGroup: GPUBindGroup;
@@ -416,7 +419,9 @@ export type PipelineAttributes = {
 }
 
 export interface PipelineManagerInterface {
-  getPipelineByArgs(args: PipelineAttributes): [PipelineInterface, GPUBindGroupLayout | null, PropertyInterface[]];
+  getPipelineByArgs(
+    args: PipelineAttributes,
+  ): [PipelineInterface, GPUBindGroupLayout | null, PropertyInterface[], StructuredView | null, Record<string, unknown> | null];
 }
 
 // export type Party = {

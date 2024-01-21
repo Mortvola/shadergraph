@@ -2,12 +2,13 @@ import React from 'react';
 import { runInAction } from 'mobx';
 import { useStores } from './State/store';
 import { ValueType } from './shaders/ShaderBuilder/Types';
+import styles from './Properties.module.scss'
 
 type PropsType = {
   node: { value: ValueType },
 }
 
-const PropertyString: React.FC<PropsType> = ({
+const PropertyFloat: React.FC<PropsType> = ({
   node,
 }) => {
   const { graph } = useStores();
@@ -15,16 +16,18 @@ const PropertyString: React.FC<PropsType> = ({
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     setValue(event.target.value);
-    
-    runInAction(() => {
-      node.value = event.target.value;
-      graph.changed = true;
-    })
+    const v = parseFloat(event.target.value);
+
+    if (!isNaN(v)) {
+      runInAction(() => {
+        node.value = v;
+        graph.changed = true;
+      })
+    }
   }
 
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();
-    // graph.selectNode(node)
   }
 
   const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {
@@ -36,10 +39,10 @@ const PropertyString: React.FC<PropsType> = ({
   }
 
   return (
-    <div onClick={handleClick}  onPointerDown={handlePointerDown} onKeyDown={handleKeyDown}>
-      <input value={value} onChange={handleChange} />
+    <div onClick={handleClick} onPointerDown={handlePointerDown} onKeyDown={handleKeyDown}>
+      <input className={styles.float} value={value} onChange={handleChange} />
     </div>
   )
 }
 
-export default PropertyString;
+export default PropertyFloat;

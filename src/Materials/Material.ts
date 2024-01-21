@@ -1,9 +1,8 @@
-import { makeShaderDataDefinitions, makeStructuredView } from "webgpu-utils";
+import { StructuredView } from "webgpu-utils";
 import { bindGroups } from "../BindGroups";
 import DrawableInterface from "../Drawables/DrawableInterface";
 import { gpu } from "../Gpu";
 import { pipelineManager } from "../Pipelines/PipelineManager";
-import { textureAttributes } from "../shaders/textureAttributes";
 import { DrawableNodeInterface, MaterialInterface, PipelineInterface, maxInstances } from "../types";
 import { MaterialDescriptor } from "./MaterialDescriptor";
 
@@ -11,6 +10,8 @@ class Material implements MaterialInterface {
   pipeline: PipelineInterface | null = null;
 
   color = new Float32Array(4);
+
+  uniformsBuffer: GPUBuffer | null = null;
 
   colorBuffer: GPUBuffer;
 
@@ -25,6 +26,8 @@ class Material implements MaterialInterface {
     pipeline: PipelineInterface,
     bindGroupLayout: GPUBindGroupLayout | null,
     bitmaps: ImageBitmap[],
+    uniforms: StructuredView | null,
+    uniformValues: Record<string, unknown> | null,
   ) {
     this.pipeline = pipeline;
 
@@ -68,16 +71,33 @@ class Material implements MaterialInterface {
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
       });
 
+      let entries: GPUBindGroupEntry[] = [
+        { binding: 0, resource: gpu.device.createSampler() },
+        ...textures.map((texture, index) => ({
+          binding: 1 + index, resource: texture.createView(),
+        })),
+      ]
+
+      if (uniforms && uniformValues) {
+        this.uniformsBuffer = gpu.device.createBuffer({
+          label: 'uniforms',
+          size: uniforms.arrayBuffer.byteLength,
+          usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        });  
+
+        entries = entries.concat(
+          { binding: 1 + textures.length, resource: { buffer: this.uniformsBuffer }},
+        )
+
+        uniforms.set(uniformValues);
+    
+        gpu.device.queue.writeBuffer(this.uniformsBuffer, 0, uniforms.arrayBuffer);    
+      }
+
       this.bindGroup = gpu.device.createBindGroup({
         label: 'material',
         layout: bindGroupLayout ?? bindGroups.getBindGroupLayout2(),
-        entries: [
-          { binding: 0, resource: { buffer: this.colorBuffer }},
-          { binding: 1, resource: gpu.device.createSampler() },
-          ...textures.map((texture, index) => ({
-            binding: 2 + index, resource: texture.createView(),
-          })),
-        ],
+        entries,
       });
     }
     else {
@@ -98,7 +118,7 @@ class Material implements MaterialInterface {
   }
 
   static async create(materialDescriptor: MaterialDescriptor): Promise<Material> {
-    const [pipeline, bindGroupLayout, properties] = pipelineManager.getPipelineByArgs(materialDescriptor)
+    const [pipeline, bindGroupLayout, properties, uniforms, uniformValues] = pipelineManager.getPipelineByArgs(materialDescriptor)
 
     let bitmap: ImageBitmap[] = [];
 
@@ -131,7 +151,7 @@ class Material implements MaterialInterface {
       }
     }
 
-    return new Material(materialDescriptor, pipeline, bindGroupLayout, bitmap);
+    return new Material(materialDescriptor, pipeline, bindGroupLayout, bitmap, uniforms, uniformValues);
   }
 
   addDrawable(drawableNode: DrawableNodeInterface): void {

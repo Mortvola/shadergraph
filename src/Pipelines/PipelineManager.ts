@@ -1,3 +1,4 @@
+import { StructuredView, makeShaderDataDefinitions, makeStructuredView } from "webgpu-utils";
 import { bindGroups } from "../BindGroups";
 import { gpu } from "../Gpu";
 import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
@@ -27,6 +28,8 @@ type PipelineMapEntry = {
   pipeline: PipelineInterface,
   bindgroupLayout: GPUBindGroupLayout | null,
   properties: Property[],
+  uniforms: StructuredView | null,
+  uniformValues: Record<string, unknown> | null,
 }
 
 class PipelineManager implements PipelineManagerInterface {
@@ -78,16 +81,26 @@ class PipelineManager implements PipelineManagerInterface {
     return null;
   }
 
-  getPipelineByArgs(materialDescriptor: MaterialDescriptor): [PipelineInterface, GPUBindGroupLayout | null, PropertyInterface[]] {
+  getPipelineByArgs(
+    materialDescriptor: MaterialDescriptor,
+  ): [PipelineInterface, GPUBindGroupLayout | null, PropertyInterface[], StructuredView | null, Record<string, unknown> | null] {
     let properties: Property[] = [];
     let bindgroupLayout: GPUBindGroupLayout | null = null;
+    let uniforms: StructuredView | null = null;
+    let uniformValues: Record<string, unknown> | null = null;
 
     const key = JSON.stringify(materialDescriptor);
 
     let pipelineEntry: PipelineMapEntry | undefined = this.pipelineMap.get(key);
 
     if (pipelineEntry) {
-      return [pipelineEntry.pipeline, pipelineEntry.bindgroupLayout, pipelineEntry.properties];
+      return [
+        pipelineEntry.pipeline,
+        pipelineEntry.bindgroupLayout,
+        pipelineEntry.properties,
+        pipelineEntry.uniforms,
+        pipelineEntry.uniformValues,
+      ];
     }
 
     let pipeline: PipelineInterface;
@@ -95,13 +108,18 @@ class PipelineManager implements PipelineManagerInterface {
     if (!materialDescriptor.graph) {
       pipeline = this.getPipeline(materialDescriptor.type)!
 
-      this.pipelineMap.set(key, { pipeline, bindgroupLayout: null, properties: [] });
+      this.pipelineMap.set(key, { pipeline, bindgroupLayout: null, properties: [], uniforms: null, uniformValues: null });
     }
     else {
-      let shaderModule: GPUShaderModule;
       let vertexBufferLayout: GPUVertexBufferLayout[] = [];
 
-      [shaderModule, properties] = generateShaderModule(materialDescriptor);  
+      const [shaderModule, props, code, values] = generateShaderModule(materialDescriptor);  
+
+      properties = props;
+      uniformValues = values;
+
+      const defs = makeShaderDataDefinitions(code);
+      uniforms = makeStructuredView(defs.structs.Properties);
 
       vertexBufferLayout = [
         {
@@ -164,16 +182,12 @@ class PipelineManager implements PipelineManagerInterface {
       bindgroupLayout = gpu.device.createBindGroupLayout({
         label: 'group2',
         entries: [
-          { // Color
-            binding: 0,
-            visibility: GPUShaderStage.VERTEX,
-            buffer: {},
-          },
           ...properties.map((property, index) => ({
-            binding: index + 1,
+            binding: index,
             visibility: GPUShaderStage.FRAGMENT,
             sampler: property.value.dataType === 'sampler' ? {} : undefined,
             texture: property.value.dataType === 'texture2D' ? {} : undefined,
+            buffer: !['sampler', 'texture2D'].includes(property.value.dataType) ? {} : undefined,
           })),
         ]
       });
@@ -216,11 +230,11 @@ class PipelineManager implements PipelineManagerInterface {
       pipeline = new Pipeline();
       pipeline.pipeline = gpuPipeline;
 
-      this.pipelineMap.set(key, { pipeline, bindgroupLayout, properties });
+      this.pipelineMap.set(key, { pipeline, bindgroupLayout, properties, uniforms, uniformValues });
     }
 
     console.log(`pipelines created: ${this.pipelineMap.size}`)
-    return [pipeline, bindgroupLayout, properties];
+    return [pipeline, bindgroupLayout, properties, uniforms, uniformValues];
   }
 }
 
