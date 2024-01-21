@@ -42,11 +42,11 @@ class Renderer2d {
       this.ctx.clearRect(0, 0, this.element?.width ?? 0, this.element?.height ?? 0);
 
       for (const edge of store.graph.edges) {
-        const startX = edge.output.node.x + edge.output.offsetX;
-        const startY = edge.output.node.y + edge.output.offsetY;
+        const startX = edge.output.node.position!.x + edge.output.offsetX;
+        const startY = edge.output.node.position!.y + edge.output.offsetY;
 
-        const endX = edge.input.node.x + edge.input.offsetX;
-        const endY = edge.input.node.y + edge.input.offsetY;
+        const endX = edge.input.node.position!.x + edge.input.offsetX;
+        const endY = edge.input.node.position!.y + edge.input.offsetY;
 
         const curveRadius = 20;
 

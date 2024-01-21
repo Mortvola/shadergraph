@@ -28,7 +28,7 @@ class Value implements ValueInterface {
             return `vec3f(${this.value[0]}, ${this.value[1]}, ${this.value[2]})`;
           }
   
-          if (this.value.length === 3) {
+          if (this.value.length === 4) {
             return `vec4f(${this.value[0]}, ${this.value[1]}, ${this.value[2]}, ${this.value[3]})`;
           }
         }

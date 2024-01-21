@@ -15,11 +15,12 @@ import SampleTexture from "./Nodes/SampleTexture";
 import TileAndScroll from "./Nodes/TileAndScroll";
 import Time from "./Nodes/Time";
 import UV from "./Nodes/UV";
+import Vector from "./Nodes/Vector";
 import Property from "./Property";
 import PropertyNode from "./PropertyNode";
 import ShaderGraph from "./ShaderGraph";
 import StageGraph from "./StageGraph";
-import { DataType, GraphEdgeInterface, GraphNodeInterface, isPropertyNode, isValueNode } from "./Types";
+import { DataType, GraphEdgeInterface, GraphNodeInterface, getLength, isPropertyNode, isValueNode } from "./Types";
 import Value from "./Value";
 import ValueNode from "./ValueNode";
 
@@ -90,14 +91,51 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Pr
   
       case 'value': {
         const vnode = nodeDescr as ValueDescriptor;
-        node = new ValueNode(new Value(vnode.dataType, vnode.value), nodeDescr.id);
+
+        if (vnode.dataType === 'vec2f') {
+          node = new Vector(new Value(vnode.dataType, vnode.value), vnode.id)
+        }
+        else {
+          node = new ValueNode(new Value(vnode.dataType, vnode.value), nodeDescr.id);
+
+        //   if (vnode.dataType === 'vec2f') {
+        //     const getLabel = (i: number) => (
+        //       i === 3 ? 'W' : String.fromCharCode('X'.charCodeAt(0) + i)
+        //     )
+          
+        //     for (let i = 0; i < 2; i += 1) {
+        //       node.inputPorts.push(
+        //         new InputPort(node, 'float', getLabel(i)),
+        //       )
+        //     }
+      
+        //     // for (let i = 0; i < node.inputPorts.length; i += 1) {
+        //     //   const f = new Float();
+        //     //   new GraphEdge(f.outputPort[0], node.inputPorts[i]);
+        //     // }  
+        // }
+        }
+    
         break;
       }
     }
 
     if (node) {
-      node.x = nodeDescr.x ?? 0;
-      node.y = nodeDescr.y ?? 0;
+      node.position = { x: nodeDescr.x ?? 0, y: nodeDescr.y ?? 0 }
+
+      if (nodeDescr.portValues) {
+        for (const portValue of nodeDescr.portValues) {
+          const port = node.inputPorts.find((p) => p.name === portValue.port);
+
+          if (port) {
+            if (Array.isArray(portValue.value)) {
+              portValue.value.length = getLength(port.dataType)
+            }
+            
+            port.value = new Value(port.dataType, portValue.value)
+          }
+        }
+      }
 
       nodes.push(node);
     }
@@ -309,8 +347,8 @@ export const createDescriptor = (nodes: GraphNodeInterface[], edges: GraphEdgeIn
             id: n.id,
             name: n.property.name,
             type: n.type,  
-            x: n.x,
-            y: n.y,
+            x: n.position?.x,
+            y: n.position?.y,
           })
         }
 
@@ -318,8 +356,8 @@ export const createDescriptor = (nodes: GraphNodeInterface[], edges: GraphEdgeIn
           return ({
             id: n.id,
             type: n.type,
-            x: n.x,
-            y: n.y,
+            x: n.position?.x,
+            y: n.position?.y,
             dataType: n.value.dataType,
             value: n.value.value,
           })
@@ -328,8 +366,11 @@ export const createDescriptor = (nodes: GraphNodeInterface[], edges: GraphEdgeIn
         return ({
           id: n.id,
           type: n.type,
-          x: n.x,
-          y: n.y,
+          x: n.position?.x,
+          y: n.position?.y,
+          portValues: n.inputPorts
+            .filter((p) => !p.edge && p.value)
+            .map((p) => ({ port: p.name, value: p.value!.value })),
         })
       }),
 

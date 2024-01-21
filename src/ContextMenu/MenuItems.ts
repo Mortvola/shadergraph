@@ -10,6 +10,7 @@ import UV from "../shaders/ShaderBuilder/Nodes/UV";
 import Vector from "../shaders/ShaderBuilder/Nodes/Vector";
 import PropertyNode from "../shaders/ShaderBuilder/PropertyNode";
 import { GraphNodeInterface } from "../shaders/ShaderBuilder/Types";
+import Value from "../shaders/ShaderBuilder/Value";
 
 export type MenuItemLike = MenuActionRecord | SubmenutItemRecord;
 
@@ -34,8 +35,7 @@ export const isSubmenuItem = (r: unknown): r is SubmenutItemRecord => (
 )
 
 function addNode(node: GraphNodeInterface, x: number, y: number) {
-  node.x = x;
-  node.y = y;
+  node.position = { x, y };
   store.graph.addNode(node)  
 }
 
@@ -57,7 +57,7 @@ const values = (): MenuItemLike[] => (
   [2, 3, 4].map((v) => ({
     name: `vector${v}`,
     action: (x: number, y: number) => {
-      const node = new Vector(v);
+      const node = new Vector(new Value('vec2f', [0, 0]));
       addNode(node, x, y);
     },
   }))

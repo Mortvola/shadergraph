@@ -3,8 +3,9 @@ import React from 'react';
 type PropsType = {
   value: number,
   index?: number,
-  label: string,
+  label?: string,
   onChange: (value: number, index?: number) => void,
+  style?: React.CSSProperties,
 }
 
 const Float: React.FC<PropsType> = ({
@@ -12,6 +13,7 @@ const Float: React.FC<PropsType> = ({
   index,
   label,
   onChange,
+  style,
 }) => {
   const [value0, setValue0] = React.useState<string>(value.toString());
 
@@ -42,7 +44,7 @@ const Float: React.FC<PropsType> = ({
   return (
     <>
         {label}
-        <input value={value0} onChange={handleValue0Change}  onClick={handleClick}  onPointerDown={handlePointerDown} onKeyDown={handleKeyDown}/>
+        <input style={style} value={value0} onChange={handleValue0Change}  onClick={handleClick}  onPointerDown={handlePointerDown} onKeyDown={handleKeyDown}/>
     </>
   )
 }

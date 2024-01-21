@@ -15,37 +15,35 @@ export type ValueType =
   | [number, number, number, number]
   | SamplerDescriptor;
 
-export interface InputPortInterface {
+export interface PortInterface {
   node: GraphNodeInterface;
 
-  type: DataType;
+  dataType: DataType;
 
   name: string;
-
-  edge: GraphEdgeInterface | null;
 
   offsetX: number;
 
   offsetY: number;
+}
+
+export interface InputPortInterface extends PortInterface {
+  edge: GraphEdgeInterface | null;
+
+  value?: ValueInterface;
 
   getVarName(): string;
 
   getValue(): string;
 };
 
-export interface OutputPortInterface {
-  node: GraphNodeInterface;
+export const isInputPort = (r: unknown): r is InputPortInterface => (
+  (r as InputPortInterface).edge !== undefined
+)
 
-  type: DataType;
-
-  name: string;
-
+export interface OutputPortInterface extends PortInterface {
   edges: GraphEdgeInterface[];
   
-  offsetX: number;
-
-  offsetY: number;
-
   getVarName(): string;
 
   getValue(): string;
@@ -66,9 +64,7 @@ export interface GraphNodeInterface {
 
   getValue(): string;
 
-  x: number;
-  
-  y: number;
+  position?: { x: number, y: number };
 
   priority: number | null;
 
@@ -129,4 +125,19 @@ export interface PropertyInterface {
   value: ValueInterface;
 
   builtin: boolean;
+}
+
+export const getLength = (dataType: DataType) => {
+  switch (dataType) {
+    case 'float':
+      return 1;
+    case 'vec2f':
+      return 2;
+    case 'vec3f':
+      return 3;
+    case 'vec4f':
+      return 4;
+  }
+
+  return 0;
 }

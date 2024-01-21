@@ -16,6 +16,8 @@ class Graph {
 
   edges: GraphEdge[] = [];
 
+  defaultEdges: InputPortInterface[] = [];
+
   cullMode: CullMode = 'none';
 
   transparent = false;
@@ -114,8 +116,8 @@ class Graph {
 
   setNodePosition(node: GraphNodeInterface, x: number, y: number) {
     runInAction(() => {
-      node.x = x;
-      node.y = y;
+      node.position!.x = x;
+      node.position!.y = y;
       this.changed = true;
     })
   }

@@ -1,9 +1,9 @@
-import { DataType, GraphNodeInterface } from "../Types";
+import { DataType, GraphNodeInterface, PortInterface } from "../Types";
 
-class Port {
+class Port implements PortInterface {
   node: GraphNodeInterface;
 
-  type: DataType;
+  dataType: DataType;
 
   name: string;
 
@@ -13,7 +13,7 @@ class Port {
   
   constructor(node: GraphNodeInterface, dataType: DataType, name: string) {
     this.node = node;
-    this.type = dataType;
+    this.dataType = dataType;
     this.name = name;    
   }
 }

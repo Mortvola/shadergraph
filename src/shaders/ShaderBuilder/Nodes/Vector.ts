@@ -1,19 +1,26 @@
-import OutputPort from "../Ports/OutputPort";
-import { DataType } from "../Types";
-import Value from "../Value";
+import InputPort from "../Ports/InputPort";
+import { ValueInterface } from "../Types";
 import ValueNode from "../ValueNode";
 
 class Vector extends ValueNode {
-  constructor(length: number, id?: number) {
-    if (length <= 1 || length > 4) {
-      throw new Error('invalid vector length')
-    }
+  constructor(value: ValueInterface, id?: number) {
+    super(value, id)
+
+    if (Array.isArray(value.value)) {
+      const getLabel = (i: number) => (
+        i === 3 ? 'W' : String.fromCharCode('X'.charCodeAt(0) + i)
+      )
     
-    const dataType = `vec${length}f` as DataType;
+      for (let i = 0; i < value.value.length; i += 1) {
+        this.inputPorts.push(
+          new InputPort(this, 'float', getLabel(i)),
+        )
+      }  
+    }
+  }
 
-    super(new Value(dataType, Array(length).fill(0)), id)
-
-    this.outputPort = [new OutputPort(this, dataType, `vector${length}`)];
+  getExpression(): string {
+    return this.value.getValueString() ?? '';
   }
 }
 

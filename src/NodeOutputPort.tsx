@@ -25,8 +25,8 @@ const NodeOutputPort: React.FC<PropsType> = observer(({
     if (element) {
       const rect = element.getBoundingClientRect();
 
-      port.offsetX = rect.right - port.node.x;
-      port.offsetY = rect.top + rect.height / 2 - port.node.y;
+      port.offsetX = rect.right - port.node.position!.x;
+      port.offsetY = rect.top + rect.height / 2 - port.node.position!.y;
     }
   }, [port]);
 
@@ -72,8 +72,8 @@ const NodeOutputPort: React.FC<PropsType> = observer(({
     >
       {
         !hideName
-          ? <div>{ `${port.name} (${convertType(port.type)})` }</div>
-          : <div>{ convertType(port.type) }</div>
+          ? <div>{ `${port.name} (${convertType(port.dataType)})` }</div>
+          : <div>{ convertType(port.dataType) }</div>
       }
       <div
         className={`${styles.connector} ${port.edges.length > 0 ? styles.connected : ''}`}

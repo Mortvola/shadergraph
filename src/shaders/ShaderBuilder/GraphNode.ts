@@ -26,9 +26,7 @@ class GraphNode implements GraphNodeInterface {
 
   private outputVarName: string | null = null;
 
-  x = 0;
-  
-  y = 0;
+  position?: { x: number, y: number };
 
   priority: number | null = null;
 
@@ -41,8 +39,7 @@ class GraphNode implements GraphNodeInterface {
     }
 
     makeObservable(this, {
-      x: observable,
-      y: observable,
+      position: observable,
     });
   }
 
@@ -100,8 +97,7 @@ class GraphNode implements GraphNodeInterface {
 
   setPosition(x: number, y: number): void {
     runInAction(() => {
-      this.x = x;
-      this.y = y;
+      this.position = { x, y }
     })
   }
 }

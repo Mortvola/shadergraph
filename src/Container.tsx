@@ -72,7 +72,7 @@ const Container: React.FC = observer(() => {
       <Canvas2d />
       {
         graph.nodes.map((gn) => (
-          <Node key={gn.id} node={gn} />
+          <Node key={gn.id} node={gn} parentRef={ref} />
         ))
       }
       <Preview />

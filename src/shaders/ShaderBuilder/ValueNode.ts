@@ -1,12 +1,11 @@
 import GraphNode from "./GraphNode";
 import OutputPort from "./Ports/OutputPort";
-import { ValueNodeInterface } from "./Types";
-import Value from "./Value";
+import { ValueInterface, ValueNodeInterface } from "./Types";
 
 class ValueNode extends GraphNode implements ValueNodeInterface {
-  value: Value;
+  value: ValueInterface;
 
-  constructor(value: Value, id?: number) {
+  constructor(value: ValueInterface, id?: number) {
     super('value', id);
 
     this.outputPort = [new OutputPort(this, value.dataType, '')];

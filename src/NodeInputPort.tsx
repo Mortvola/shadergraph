@@ -1,15 +1,19 @@
 import React from 'react';
 import styles from './Node.module.scss';
-import { InputPortInterface, OutputPortInterface } from './shaders/ShaderBuilder/Types';
+import { DataType, InputPortInterface, OutputPortInterface, getLength } from './shaders/ShaderBuilder/Types';
 import { convertType, useStores } from './State/store';
 import { observer } from 'mobx-react-lite';
+import { createPortal } from 'react-dom';
+import SimpleVector from './SimpleVector';
 
 type PropsType = {
   port: InputPortInterface,
+  parentRef: React.RefObject<HTMLElement>
 }
 
 const NodeInputPort: React.FC<PropsType> = observer(({
   port,
+  parentRef,
 }) => {
   const store = useStores();
   const { graph } = store;
@@ -21,8 +25,8 @@ const NodeInputPort: React.FC<PropsType> = observer(({
     if (element) {
       const rect = element.getBoundingClientRect();
 
-      port.offsetX = rect.left - port.node.x;
-      port.offsetY = rect.top + (rect.height / 2) - port.node.y;
+      port.offsetX = rect.left - port.node.position!.x;
+      port.offsetY = rect.top + (rect.height / 2) - port.node.position!.y;
     }
   }, [port]);
 
@@ -66,8 +70,8 @@ const NodeInputPort: React.FC<PropsType> = observer(({
 
       const outputNode = outputPort.node;
       
-      const startX = outputNode.x + outputPort.offsetX;
-      const startY = outputNode.y + outputPort.offsetY;
+      const startX = outputNode.position!.x + outputPort.offsetX;
+      const startY = outputNode.position!.y + outputPort.offsetY;
 
       setStartPoint([startX, startY]);
 
@@ -95,6 +99,24 @@ const NodeInputPort: React.FC<PropsType> = observer(({
     setDragKey(null);
   }
 
+  const handleValue0Change = () => {};
+
+  const renderDefaults = () => (
+    <div
+      className={styles.defaults}
+      style={{
+        left: port.node.position!.x + port.offsetX,
+        top: port.node.position!.y + port.offsetY,
+      }}
+    >
+      {
+        port.value && Array.isArray(port.value.value)
+        ? <SimpleVector value={port.value.value as number[]} length={getLength(port.value.dataType)} />
+        : null
+      }
+    </div>
+  )
+
   return (
     <div
       ref={portRef}
@@ -109,7 +131,12 @@ const NodeInputPort: React.FC<PropsType> = observer(({
         onDragEnd={handleDragEnd}
         draggable={port.edge !== null}
       />
-      <div>{ `${port.name} (${convertType(port.type)})` }</div>
+      <div>{ `${port.name} (${convertType(port.dataType)})` }</div>
+      {
+        !port.edge && parentRef.current
+          ? createPortal(renderDefaults(), parentRef.current)
+          : null
+      }
     </div>
   )
 })
