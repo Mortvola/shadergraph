@@ -26,8 +26,8 @@ class Vector extends ValueNode {
       expression += `${port.getValue()},`
     }
 
+    // TODO: fix this for other vector sizes.
     return `vec2f(${expression})`;
-    // return this.value.getValueString() ?? '';
   }
 }
 

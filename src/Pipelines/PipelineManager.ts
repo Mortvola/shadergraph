@@ -179,7 +179,7 @@ class PipelineManager implements PipelineManagerInterface {
         };  
       }
 
-      bindgroupLayout = gpu.device.createBindGroupLayout({
+      const bindGroupDescriptor: GPUBindGroupLayoutDescriptor = {
         label: 'group2',
         entries: [
           ...properties.map((property, index) => ({
@@ -187,10 +187,22 @@ class PipelineManager implements PipelineManagerInterface {
             visibility: GPUShaderStage.FRAGMENT,
             sampler: property.value.dataType === 'sampler' ? {} : undefined,
             texture: property.value.dataType === 'texture2D' ? {} : undefined,
-            buffer: !['sampler', 'texture2D'].includes(property.value.dataType) ? {} : undefined,
           })),
         ]
-      });
+      };
+
+      if (uniforms) {
+        bindGroupDescriptor.entries = [
+          ...bindGroupDescriptor.entries,
+          {
+            binding: properties.length,
+            visibility: GPUShaderStage.FRAGMENT,
+            buffer: {},
+          },
+        ]
+      }
+
+      bindgroupLayout = gpu.device.createBindGroupLayout(bindGroupDescriptor);
 
       const pipelineLayout = gpu.device.createPipelineLayout({
         bindGroupLayouts: [

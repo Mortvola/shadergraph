@@ -173,14 +173,15 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Pr
   return { nodes, edges };
 }
 
-export const generateStageShaderCode = (graph: StageGraph): [string, Property[]] => {
+export const generateStageShaderCode = (graph: StageGraph): [string, Property[], Property[]] => {
   // Clear the node priorities
   for (const node of graph.nodes) {
     node.priority = null;
     node.setVarName(null);
   }
 
-  const propertyBindings: Property[] = [];
+  const properties: Property[] = [];
+  const uniformBindings: Property[] = [];
 
   // Find the output node
   const outputNode = graph.nodes.find((n) => n.type === 'display');
@@ -200,18 +201,25 @@ export const generateStageShaderCode = (graph: StageGraph): [string, Property[]]
 
       if (node.type === 'property') {
         if (isPropertyNode(node)) {
-          if (!propertyBindings.some((p) => p === node.property)) {
-            propertyBindings.push(node.property);
+          if (node.property.value.dataType === 'texture2D' || node.property.value.dataType === 'sampler') {
+            if (!uniformBindings.some((p) => p === node.property)) {
+              uniformBindings.push(node.property);
+            }  
+          }
+          else {
+            if (!properties.some((p) => p === node.property)) {
+              properties.push(node.property);
+            }  
           }
         }
       }
       else {
-        // For SamplerTexure nodes, fnd the property in the property list
+        // For SamplerTexure nodes, find the property in the property list
         // that matches its sampler descriptor. If one is not found then
         // create a property for that sampler descriptor.
         if (node.type === 'SampleTexture') {
           const sampleTexture = (node as SampleTexture);
-          const sampler = propertyBindings.find((p) => (
+          const sampler = uniformBindings.find((p) => (
             p.value.dataType === 'sampler'
             && JSON.stringify(p.value.value) === JSON.stringify(sampleTexture.sampler)
           ))
@@ -224,7 +232,7 @@ export const generateStageShaderCode = (graph: StageGraph): [string, Property[]]
             // property binding list.
             const prop = new Property(`sampler${nextSamplerId}`, 'sampler', sampleTexture.sampler);
             nextSamplerId += 1;
-            propertyBindings.push(prop);
+            uniformBindings.push(prop);
             sampleTexture.samplerName = prop.name;
           }
         }
@@ -257,7 +265,7 @@ export const generateStageShaderCode = (graph: StageGraph): [string, Property[]]
     body = text.concat(body);
   }
 
-  return [body, propertyBindings];
+  return [body, uniformBindings, properties];
 }
 
 export const buildGraph = (graphDescriptor: GraphDescriptor, properties: Property[]): ShaderGraph => {
@@ -297,29 +305,31 @@ export const generateShaderCode = (graph: ShaderGraph): [string, Property[], Rec
   let uniforms = '';
   let uniformValues: Record<string, unknown> = {};
   let numBindings = 0;
+  let uniformBindings: Property[] = [];
   let properties: Property[] = [];
 
   if (graph.fragment) {
-    [body, properties] = generateStageShaderCode(graph.fragment);
+    [body, uniformBindings, properties] = generateStageShaderCode(graph.fragment);
+
+    for (let i = 0; i < uniformBindings.length; i += 1) {
+      if (uniformBindings[i].value.dataType === 'texture2D' || uniformBindings[i].value.dataType === 'sampler') {
+        bindings = bindings.concat(
+          `@group(2) @binding(${i}) var${space(uniformBindings[i].value.dataType)} ${uniformBindings[i].name}: ${bindingType(uniformBindings[i].value.dataType)};\n`
+        )  
+
+        numBindings += 1;
+      }
+    }
 
     for (let i = 0; i < properties.length; i += 1) {
-      if (properties[i].value.dataType === 'texture2D' || properties[i].value.dataType === 'sampler') {
-        bindings = bindings.concat(
-          `@group(2) @binding(${i}) var${space(properties[i].value.dataType)} ${properties[i].name}: ${bindingType(properties[i].value.dataType)};\n`
-        )  
-      }
-      else {
-        uniforms = uniforms.concat(
-          `${properties[i].name}: ${bindingType(properties[i].value.dataType)},`
-        )
+      uniforms = uniforms.concat(
+        `${properties[i].name}: ${bindingType(properties[i].value.dataType)},`
+      )
 
-        uniformValues = {
-          ...uniformValues,
-          [properties[i].name]: properties[i].value.value,
-        }
+      uniformValues = {
+        ...uniformValues,
+        [properties[i].name]: properties[i].value.value,
       }
-
-      numBindings += 1;
     }
   
     console.log(body);
@@ -327,7 +337,7 @@ export const generateShaderCode = (graph: ShaderGraph): [string, Property[], Rec
 
   if (uniforms !== '') {
     bindings = bindings.concat(
-      `@group(2) @binding(${numBindings - 1}) var<uniform> properties: Properties;`
+      `@group(2) @binding(${numBindings}) var<uniform> properties: Properties;`
     )
     numBindings += 1;
 
@@ -352,7 +362,7 @@ export const generateShaderCode = (graph: ShaderGraph): [string, Property[], Rec
       ${body}
     }
     `,
-    properties,
+    uniformBindings,
     uniformValues,
   ]
 }
