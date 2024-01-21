@@ -1,5 +1,6 @@
 import React from 'react';
 import Float from '../Float';
+import { useStores } from '../State/store';
 
 type PropsType = {
   value: number[],
@@ -10,9 +11,13 @@ const SimpleVector: React.FC<PropsType> = ({
   value,
   length,
 }) => {
+  const store = useStores();
+
   const handleChange = (newValue: number, index?: number) => {
     if (index !== undefined) {
-      value[index] = newValue;      
+      value[index] = newValue;
+      
+      store.applyChanges();
     }
   }
 
