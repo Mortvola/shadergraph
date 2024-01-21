@@ -4,7 +4,9 @@ import { DataType, InputPortInterface, OutputPortInterface, getLength } from './
 import { convertType, useStores } from './State/store';
 import { observer } from 'mobx-react-lite';
 import { createPortal } from 'react-dom';
-import SimpleVector from './SimpleVector';
+import SimpleVector from './SimpleValues/SimpleVector';
+import Value from './shaders/ShaderBuilder/Value';
+import SimpleUV from './SimpleValues/SimpleUV';
 
 type PropsType = {
   port: InputPortInterface,
@@ -101,21 +103,62 @@ const NodeInputPort: React.FC<PropsType> = observer(({
 
   const handleValue0Change = () => {};
 
-  const renderDefaults = () => (
-    <div
-      className={styles.defaults}
-      style={{
-        left: port.node.position!.x + port.offsetX,
-        top: port.node.position!.y + port.offsetY,
-      }}
-    >
-      {
-        port.value && Array.isArray(port.value.value)
-        ? <SimpleVector value={port.value.value as number[]} length={getLength(port.value.dataType)} />
+  const simpleValue = (value: Value) => {
+    switch (value.dataType) {
+      case 'float':
+      case 'vec2f':
+      case 'vec3f':
+      case 'vec4f':
+        return Array.isArray(value.value)
+        ? <SimpleVector value={value.value as number[]} length={getLength(value.dataType)} />
         : null
-      }
-    </div>
-  )
+      case 'uv':
+        return <SimpleUV />
+    }
+
+    return null;
+  }
+  
+  const renderSimpleValues = () => {
+    const parent = parentRef.current;
+
+    if (parent) {
+      return (
+        <>
+          {
+            createPortal(
+              <div
+                className={styles.defaults}
+                style={{
+                  left: port.node.position!.x + port.offsetX,
+                  top: port.node.position!.y + port.offsetY,
+                }}
+              >
+                {
+                  port.value
+                  ? simpleValue(port.value)
+                  : null
+                }
+              </div>,
+              parent,
+            )
+          }
+          {
+            createPortal(
+              <div
+                className={styles.defaultLine}
+                style={{
+                  left: port.node.position!.x + port.offsetX,
+                  top: port.node.position!.y + port.offsetY,
+                }}
+              />,
+              parent,
+            )
+          }
+        </>
+      )
+    }
+  }
 
   return (
     <div
@@ -134,7 +177,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
       <div>{ `${port.name} (${convertType(port.dataType)})` }</div>
       {
         !port.edge && parentRef.current
-          ? createPortal(renderDefaults(), parentRef.current)
+          ? renderSimpleValues()
           : null
       }
     </div>

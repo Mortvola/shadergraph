@@ -7,7 +7,7 @@ class TileAndScroll extends OperationNode {
     super('TileAndScroll', 'TileAndScroll', id)
 
     this.inputPorts = [
-      new InputPort(this, 'vec2f', 'uv'),
+      new InputPort(this, 'uv', 'uv'),
       new InputPort(this, 'vec2f', 'tile'),
       new InputPort(this, 'vec2f', 'scroll'),
     ];

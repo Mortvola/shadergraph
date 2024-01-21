@@ -27,6 +27,10 @@ class InputPort extends Port implements InputPortInterface {
       case 'vec4f':
         this.value = new Value(dataType, [0, 0, 0, 0]);
         break;
+
+      case 'uv':
+        this.value = new Value(dataType, 0);
+        break;
     }
 
     makeObservable(this, {

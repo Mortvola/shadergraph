@@ -15,8 +15,13 @@ class Value implements ValueInterface {
       case 'string':
         return this.value;
 
-      case 'number':
+      case 'number': {
+        if (this.dataType === 'uv') {
+          return 'vertexOut.texcoord';
+        }
+      
         return this.value.toString();
+      }
 
       case 'object': {
         if (Array.isArray(this.value)) {

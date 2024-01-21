@@ -128,11 +128,23 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Pr
           const port = node.inputPorts.find((p) => p.name === portValue.port);
 
           if (port) {
-            if (Array.isArray(portValue.value)) {
-              portValue.value.length = getLength(port.dataType)
+            switch (port.dataType) {
+              case 'float':
+              case 'vec2f':
+              case 'vec3f':
+              case 'vec4f':
+                if (Array.isArray(portValue.value)) {
+                  portValue.value.length = getLength(port.dataType)
+                }
+    
+                port.value = new Value(port.dataType, portValue.value)
+    
+                break;
+
+              case 'uv':
+                port.value = new Value(port.dataType, 0);
+                break;
             }
-            
-            port.value = new Value(port.dataType, portValue.value)
           }
         }
       }

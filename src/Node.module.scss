@@ -8,10 +8,10 @@
   border-radius: 8px;
   background-color: white;
 
-  margin: 4px;
+  margin: 2px;
 
   &.selected {
-    border: darkorange 5px solid;
+    border: darkorange 3px solid;
     margin: 0;
   }
 
@@ -125,7 +125,7 @@
   column-gap: 0.5rem;
   background-color: white;
   position: absolute;
-  transform: translate(calc(-100% - 20px), -50%);
+  transform: translate(calc(-100% - 15px), -50%);
   text-align: right;
 
   >input {
@@ -133,4 +133,11 @@
     text-align: right;
     font-size: 1rem;
   }
+}
+
+.defaultLine {
+  position: absolute;
+  border-top: solid white thin;
+  transform: translate(calc(-15px), 0);
+  width: 20px;
 }

@@ -18,7 +18,7 @@ class SampleTexture extends OperationNode {
     this.inputPorts = [
       new InputPort(this, 'texture2D', 'texture'),
       // new InputPort(this, 'sampler', 'sampler'),
-      new InputPort(this, 'vec2f', 'uv'),
+      new InputPort(this, 'uv', 'uv'),
     ];
 
     this.outputPort = [
