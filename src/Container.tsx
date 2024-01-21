@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import Canvas2d from './Canvas2d';
 import ContextMenu from './ContextMenu/ContextMenu';
 import Preview from './Preview';
-import Controls from './Controls';
+import Controls from './Controls/Controls';
 import Properties from './Properties';
 import { menuItems } from './ContextMenu/MenuItems';
 

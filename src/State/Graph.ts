@@ -22,6 +22,8 @@ class Graph {
 
   transparent = false;
 
+  depthWriteEnabled = true;
+
   properties: Property[] = [];
 
   changed = false;
@@ -52,6 +54,8 @@ class Graph {
       this.cullMode = descriptor.cullMode ?? 'front';
 
       this.transparent = descriptor.transparent ?? false;
+
+      this.depthWriteEnabled = descriptor.depthWriteEnabled ?? true;
     }
 
     if (this.nodes.length === 0) {
@@ -66,6 +70,7 @@ class Graph {
       nodes: observable,
       selectedNode: observable,
       transparent: observable,
+      depthWriteEnabled: observable,
       cullMode: observable,
       properties: observable,
     });
@@ -192,9 +197,17 @@ class Graph {
     }
   }
 
-  setTransparency(transparent: boolean) {
+  setTransparency = (transparent: boolean) => {
     runInAction(() => {
       this.transparent = transparent;
+      this.changed = true;
+      this.store.applyChanges()
+    })
+  }
+
+  setDepthWriteEnabled = (depthWriteEnabled: boolean) => {
+    runInAction(() => {
+      this.depthWriteEnabled = depthWriteEnabled;
       this.changed = true;
       this.store.applyChanges()
     })
@@ -213,6 +226,7 @@ class Graph {
       type: 'Lit',
       cullMode: this.cullMode === 'front' ? undefined : this.cullMode,
       transparent: this.transparent,
+      depthWriteEnabled: this.depthWriteEnabled,
       
       properties: this.properties.map((p) => ({
         name: p.name,

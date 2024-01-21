@@ -143,6 +143,8 @@ class PipelineManager implements PipelineManagerInterface {
         format: navigator.gpu.getPreferredCanvasFormat(),
       }
 
+      let depthWriteEnabled = materialDescriptor.depthWriteEnabled ?? true;
+
       if (materialDescriptor.transparent) {
         target = {
           format: navigator.gpu.getPreferredCanvasFormat(),
@@ -202,7 +204,7 @@ class PipelineManager implements PipelineManagerInterface {
           frontFace: "ccw",
         },
         depthStencil: {
-          depthWriteEnabled: true,
+          depthWriteEnabled,
           depthCompare: "less",
           format: "depth24plus"
         },

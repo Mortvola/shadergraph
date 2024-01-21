@@ -1,9 +1,10 @@
 import React from 'react';
-import Draggable from './Draggable';
+import Draggable from '../Draggable';
 import styles from './Controls.module.scss';
-import { useStores } from './State/store';
+import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
-import { CullMode } from './State/types';
+import { CullMode } from '../State/types';
+import Checkbox from './Checkbox';
 
 const Controls: React.FC = observer(() => {
   const { graph } = useStores();
@@ -36,19 +37,7 @@ const Controls: React.FC = observer(() => {
     }
   }, [position]);
 
-  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-    graph.setTransparency(event.target.checked)
-  }
-
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
-    event.stopPropagation();
-  }
-
-  const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {
-    event.stopPropagation();
-  }
-
-  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();
   }
 
@@ -62,16 +51,8 @@ const Controls: React.FC = observer(() => {
       <div className={styles.wrapper}  onClick={handleClick}>
         <div>Controls</div>
         <div className={styles.controls}>
-          <label>
-            <input
-              type="checkbox"
-              checked={graph.transparent}
-              onChange={handleChange}
-              onPointerDown={handlePointerDown}
-              onKeyDown={handleKeyDown}
-            />
-            Transparent
-          </label>
+          <Checkbox value={graph.transparent} label="Transparent" onChange={graph.setTransparency} />
+          <Checkbox value={graph.depthWriteEnabled} label="Depth Write Enabled" onChange={graph.setDepthWriteEnabled} />
           <label>
             Cull Mode
             <select value={graph.cullMode} onChange={handleCullChange}>
