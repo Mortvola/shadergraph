@@ -1,11 +1,11 @@
 import React from 'react';
 import styles from './Node.module.scss';
-import { DataType, InputPortInterface, OutputPortInterface, getLength } from './shaders/ShaderBuilder/Types';
+import { DataType, InputPortInterface, OutputPortInterface, getLength } from './ShaderBuilder/Types';
 import { convertType, useStores } from './State/store';
 import { observer } from 'mobx-react-lite';
 import { createPortal } from 'react-dom';
 import SimpleVector from './SimpleValues/SimpleVector';
-import Value from './shaders/ShaderBuilder/Value';
+import Value from './ShaderBuilder/Value';
 import SimpleUV from './SimpleValues/SimpleUV';
 import SimpleFloat from './SimpleValues/SimpleFloat';
 

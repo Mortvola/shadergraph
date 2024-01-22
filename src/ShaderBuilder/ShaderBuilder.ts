@@ -1,9 +1,9 @@
-import { gpu } from "../../Gpu";
-import { MaterialDescriptor } from "../../Materials/MaterialDescriptor";
-import { common } from "../common";
-import { textureAttributes } from "../textureAttributes";
-import { texturedCommon } from "../texturedCommon";
-import { texturedVertex } from "../texturedVertex";
+import { gpu } from "../Gpu";
+import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
+import { common } from "../shaders/common";
+import { textureAttributes } from "../shaders/textureAttributes";
+import { texturedCommon } from "../shaders/texturedCommon";
+import { texturedVertex } from "../shaders/texturedVertex";
 import { GraphDescriptor, GraphStageDescriptor, PropertyDescriptor, ValueDescriptor } from "./GraphDescriptor";
 import GraphEdge from "./GraphEdge";
 import { setNextVarid } from "./GraphNode";

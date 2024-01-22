@@ -1,16 +1,16 @@
 import { store } from "../State/store";
-import Add from "../shaders/ShaderBuilder/Nodes/Add";
-import Display from "../shaders/ShaderBuilder/Nodes/Display";
-import Fraction from "../shaders/ShaderBuilder/Nodes/Fraction";
-import Multiply from "../shaders/ShaderBuilder/Nodes/Multiply";
-import SampleTexture from "../shaders/ShaderBuilder/Nodes/SampleTexture";
-import TileAndScroll from "../shaders/ShaderBuilder/Nodes/TileAndScroll";
-import Time from "../shaders/ShaderBuilder/Nodes/Time";
-import UV from "../shaders/ShaderBuilder/Nodes/UV";
-import Vector from "../shaders/ShaderBuilder/Nodes/Vector";
-import PropertyNode from "../shaders/ShaderBuilder/PropertyNode";
-import { GraphNodeInterface } from "../shaders/ShaderBuilder/Types";
-import Value from "../shaders/ShaderBuilder/Value";
+import Add from "../ShaderBuilder/Nodes/Add";
+import Display from "../ShaderBuilder/Nodes/Display";
+import Fraction from "../ShaderBuilder/Nodes/Fraction";
+import Multiply from "../ShaderBuilder/Nodes/Multiply";
+import SampleTexture from "../ShaderBuilder/Nodes/SampleTexture";
+import TileAndScroll from "../ShaderBuilder/Nodes/TileAndScroll";
+import Time from "../ShaderBuilder/Nodes/Time";
+import UV from "../ShaderBuilder/Nodes/UV";
+import Vector from "../ShaderBuilder/Nodes/Vector";
+import PropertyNode from "../ShaderBuilder/PropertyNode";
+import { GraphNodeInterface } from "../ShaderBuilder/Types";
+import Value from "../ShaderBuilder/Value";
 
 export type MenuItemLike = MenuActionRecord | SubmenutItemRecord;
 

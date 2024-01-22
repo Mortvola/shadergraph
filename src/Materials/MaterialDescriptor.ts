@@ -1,5 +1,5 @@
-import { GraphDescriptor } from "../shaders/ShaderBuilder/GraphDescriptor";
-import { ValueType, DataType } from "../shaders/ShaderBuilder/Types";
+import { GraphDescriptor } from "../ShaderBuilder/GraphDescriptor";
+import { ValueType, DataType } from "../ShaderBuilder/Types";
 
 export type TextureDescriptor = {
   url: string,

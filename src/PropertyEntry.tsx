@@ -1,5 +1,5 @@
 import React from 'react';
-import { PropertyInterface } from './shaders/ShaderBuilder/Types';
+import { PropertyInterface } from './ShaderBuilder/Types';
 import { convertType } from './State/store';
 import styles from './Properties.module.scss';
 

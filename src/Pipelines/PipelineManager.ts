@@ -2,9 +2,9 @@ import { StructuredView, makeShaderDataDefinitions, makeStructuredView } from "w
 import { bindGroups } from "../BindGroups";
 import { gpu } from "../Gpu";
 import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
-import Property from "../shaders/ShaderBuilder/Property";
-import { generateShaderModule } from "../shaders/ShaderBuilder/ShaderBuilder";
-import { PropertyInterface } from "../shaders/ShaderBuilder/Types";
+import Property from "../ShaderBuilder/Property";
+import { generateShaderModule } from "../ShaderBuilder/ShaderBuilder";
+import { PropertyInterface } from "../ShaderBuilder/Types";
 import { litShader } from "../shaders/lit";
 import { PipelineInterface, PipelineManagerInterface } from "../types";
 import CirclePipeline from "./CirclePipeline";

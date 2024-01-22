@@ -1,7 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import styles from './PropertyDialog.module.scss';
-import { PropertyInterface } from './shaders/ShaderBuilder/Types';
+import { PropertyInterface } from './ShaderBuilder/Types';
 import { observer } from 'mobx-react-lite';
 import PropertyString from './PropertyString';
 import { useStores } from './State/store';

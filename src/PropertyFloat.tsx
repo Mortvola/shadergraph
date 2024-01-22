@@ -1,7 +1,7 @@
 import React from 'react';
 import { runInAction } from 'mobx';
 import { useStores } from './State/store';
-import { ValueType } from './shaders/ShaderBuilder/Types';
+import { ValueType } from './ShaderBuilder/Types';
 import styles from './Properties.module.scss'
 
 type PropsType = {

@@ -4,7 +4,7 @@ import { Vec2, Vec3, Vec4, Mat4, Quat } from 'wgpu-matrix';
 // import { Armor } from './Character/Equipment/Armor';
 // import { Abilities } from './Character/Classes/Abilities';
 import DrawableInterface from './Drawables/DrawableInterface';
-import { PropertyInterface, StagePropertyInterface } from './shaders/ShaderBuilder/Types';
+import { PropertyInterface, StagePropertyInterface } from './ShaderBuilder/Types';
 import { StructuredView } from 'webgpu-utils';
 // import { Weapon } from './Character/Equipment/Types';
 // import { feetToMeters } from './Math';

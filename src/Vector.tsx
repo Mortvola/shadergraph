@@ -1,5 +1,5 @@
 import React from 'react';
-import { ValueType } from './shaders/ShaderBuilder/Types';
+import { ValueType } from './ShaderBuilder/Types';
 import styles from './Node.module.scss';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
