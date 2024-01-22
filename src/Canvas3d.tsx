@@ -14,6 +14,7 @@ const Canvas3d: React.FC = () => {
     if (element) {
       (async () => {
         await renderer.setCanvas(element);
+        renderer.start();
       })()  
     }
   }, [])

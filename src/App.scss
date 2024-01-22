@@ -21,6 +21,8 @@ body {
   height: 100%;
   position: relative;
   background-color: black;
+  display: grid;
+  grid-template-rows: max-content minmax(0, 1fr);
 }
 
 canvas {
@@ -35,9 +37,19 @@ canvas {
   height: 100%;
 }
 
-.save-button {
+.toolbar {
+  z-index: 100;
+  background-color: lightgray;
+  display: flex;
+  flex-direction: row;
+  column-gap: 1rem;
+  padding: 0.35rem;
   position: absolute;
   left: 0;
   top: 0;
+  right: 0;
+}
+
+.save-button {
   z-index: 1;
 }

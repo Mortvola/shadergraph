@@ -89,6 +89,14 @@ const Container: React.FC = observer(() => {
     })
   }
 
+  const handleOpenShader = async () => {
+    const response = await fetch('/shader-list');
+
+    if (response.ok) {
+      
+    }
+  }
+
   return (
     <div
       ref={ref}
@@ -98,14 +106,17 @@ const Container: React.FC = observer(() => {
       onKeyDown={handleKeyDown}
       onClick={handleClick}
     >
+      <div className="toolbar">
+        <button type="button" className="save-button" onClick={handleSave}>Save</button>
+        <button type="button" className="save-button" onClick={handleMakeMaterial}>Make Material</button>
+        <button type="button" className="save-button" onClick={handleOpenShader}>Open</button>
+      </div>
       <Canvas2d />
       {
         graph.nodes.map((gn) => (
           <Node key={gn.id} node={gn} parentRef={ref} />
         ))
       }
-      <button type="button" className="save-button" onClick={handleSave}>Save</button>
-      <button type="button" className="save-button" onClick={handleMakeMaterial}>Make Material</button>
       <Preview />
       <Controls />
       <Properties />
