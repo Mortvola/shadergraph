@@ -5,7 +5,7 @@ import styles from './Properties.module.scss';
 import { useStores } from './State/store';
 import ContextMenu from './PropertyMenu/ContextMenu'
 import PropertyEntry from './PropertyEntry';
-import { PropertyInterface } from './ShaderBuilder/Types';
+import { PropertyInterface } from './Renderer/ShaderBuilder/Types';
 import PropertyDialog from './PropertyDialog';
 import { createPortal } from 'react-dom';
 

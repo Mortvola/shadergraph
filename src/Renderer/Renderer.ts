@@ -2,6 +2,10 @@
 import {
   Vec4, mat4, vec2, vec4,
 } from 'wgpu-matrix';
+import {
+  makeShaderDataDefinitions,
+  makeStructuredView,
+} from 'webgpu-utils';
 import Camera from './Camera';
 import {
   degToRad,
@@ -10,20 +14,11 @@ import ContainerNode from './Drawables/SceneNodes/ContainerNode';
 import RenderPass from './RenderPass';
 import Light, { isLight } from './Drawables/Light';
 import CartesianAxes from './Drawables/CartesianAxes';
-// import Reticle from './Drawables/Reticle';
 import Line from './Drawables/Line';
-// import Collidees from './Collidees';
-// import Participants, { ParticipantsState } from './Participants';
-// import Script from './Script/Script';
-// import { Occupant } from './Workers/PathPlannerTypes';
 import DrawableNode from './Drawables/SceneNodes/DrawableNode';
 import SceneNode from './Drawables/SceneNodes/SceneNode';
-import { ActionInfo, ActorInterface, FocusInfo, WorldInterface, EpisodeInfo, SceneNodeInterface } from './types';
+import { WorldInterface, SceneNodeInterface } from './types';
 import { lineMaterial } from './Materials/Line';
-import {
-  makeShaderDataDefinitions,
-  makeStructuredView,
-} from 'webgpu-utils';
 import { lights } from "./shaders/lights";
 import { gpu } from './Gpu';
 import { bindGroups } from './BindGroups';
@@ -82,9 +77,9 @@ class Renderer implements WorldInterface {
 
   backward = 0;
 
-  actors: ActorInterface[] = [];
+  // actors: ActorInterface[] = [];
 
-  removeActors: ActorInterface[] = [];
+  // removeActors: ActorInterface[] = [];
 
   lights: Light[] = [];
 
@@ -106,13 +101,13 @@ class Renderer implements WorldInterface {
 
   // collidees = new Collidees();
 
-  scoreCallback: ((episode: EpisodeInfo) => void) | null = null;
+  // scoreCallback: ((episode: EpisodeInfo) => void) | null = null;
 
-  loggerCallback: ((message: string) => void) | null = null;
+  // loggerCallback: ((message: string) => void) | null = null;
   
-  focusCallback: ((focusInfo: FocusInfo | null) => void) | null = null;
+  // focusCallback: ((focusInfo: FocusInfo | null) => void) | null = null;
 
-  actionInfoCallback: ((actionInfo: ActionInfo | null) => void) | null = null;
+  // actionInfoCallback: ((actionInfo: ActionInfo | null) => void) | null = null;
 
   // characterChangeCallback: ((character: CreatureActorInterface | null) => void) | null = null;
 
@@ -308,41 +303,41 @@ class Renderer implements WorldInterface {
   //   }
   // }
 
-  async updateActors(elapsedTime: number, timestamp: number) {
-    // Update shot positions
-    for (let i = 0; i < this.actors.length; i += 1) {
-      const actor = this.actors[i];
+  // async updateActors(elapsedTime: number, timestamp: number) {
+  //   // Update shot positions
+  //   for (let i = 0; i < this.actors.length; i += 1) {
+  //     const actor = this.actors[i];
 
-      const remove = await actor.update(elapsedTime, timestamp, this);
+  //     const remove = await actor.update(elapsedTime, timestamp, this);
 
-      if (remove) {
-        this.actors = [
-          ...this.actors.slice(0, i),
-          ...this.actors.slice(i + 1),
-        ];
+  //     if (remove) {
+  //       this.actors = [
+  //         ...this.actors.slice(0, i),
+  //         ...this.actors.slice(i + 1),
+  //       ];
 
-        i -= 1;
-      }
-    }
+  //       i -= 1;
+  //     }
+  //   }
 
-    for (const removedActor of this.removeActors) {
-      const index = this.actors.findIndex((a) => a === removedActor);
+  //   for (const removedActor of this.removeActors) {
+  //     const index = this.actors.findIndex((a) => a === removedActor);
 
-      if (index !== -1) {
-        this.actors = [
-          ...this.actors.slice(0, index),
-          ...this.actors.slice(index + 1),
-        ];
-      }
+  //     if (index !== -1) {
+  //       this.actors = [
+  //         ...this.actors.slice(0, index),
+  //         ...this.actors.slice(index + 1),
+  //       ];
+  //     }
 
-      // this.participants.remove(removedActor as CreatureActorInterface);
+  //     // this.participants.remove(removedActor as CreatureActorInterface);
 
-      // this.collidees.remove(removedActor as CreatureActorInterface);
-      // this.scene.removeNode((removedActor as CreatureActorInterface).sceneNode);
-    }
+  //     // this.collidees.remove(removedActor as CreatureActorInterface);
+  //     // this.scene.removeNode((removedActor as CreatureActorInterface).sceneNode);
+  //   }
 
-    this.removeActors = [];
-  }
+  //   this.removeActors = [];
+  // }
 
   // async prepareTeams() {
   //   // Remove any current participants
@@ -857,21 +852,21 @@ class Renderer implements WorldInterface {
     this.camera.rotateX += 1;
   }
 
-  setScoreCallback(callback: (episode: EpisodeInfo) => void) {
-    this.scoreCallback = callback;
-  }
+  // setScoreCallback(callback: (episode: EpisodeInfo) => void) {
+  //   this.scoreCallback = callback;
+  // }
 
-  setLoggerCallback(callback: (message: string) => void) {
-    this.loggerCallback = callback;
-  }
+  // setLoggerCallback(callback: (message: string) => void) {
+  //   this.loggerCallback = callback;
+  // }
 
-  setFocusCallback(callback: (focusInfo: FocusInfo | null) => void) {
-    this.focusCallback = callback;
-  }
+  // setFocusCallback(callback: (focusInfo: FocusInfo | null) => void) {
+  //   this.focusCallback = callback;
+  // }
 
-  setActionInfoCallback(callback: (actionInfo: ActionInfo | null) => void) {
-    this.actionInfoCallback = callback;
-  }
+  // setActionInfoCallback(callback: (actionInfo: ActionInfo | null) => void) {
+  //   this.actionInfoCallback = callback;
+  // }
 
   // setCharacterChangeCallback(callback: (actor: CreatureActorInterface | null) => void) {
   //   this.characterChangeCallback = callback;

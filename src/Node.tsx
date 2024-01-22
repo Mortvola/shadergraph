@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import styles from './Node.module.scss';
 import NodeInputPort from './NodeInputPort';
 import NodeOutputPort from './NodeOutputPort';
-import { GraphNodeInterface, isPropertyNode, isValueNode } from './ShaderBuilder/Types';
+import { GraphNodeInterface, isPropertyNode, isValueNode } from './Renderer/ShaderBuilder/Types';
 import { useStores } from './State/store';
 import Vector from './Vector';
 import Draggable from './Draggable';

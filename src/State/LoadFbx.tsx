@@ -1,10 +1,10 @@
 import * as FBXParser from 'fbx-parser'
 import { vec3 } from 'wgpu-matrix';
-import SurfaceMesh from '../Drawables/SurfaceMesh';
-import { degToRad } from '../Math';
-import ContainerNode from '../Drawables/SceneNodes/ContainerNode';
-import GeometryNode from '../Drawables/SceneNodes/GeometryNode';
-import { SceneNodeInterface } from '../types';
+import SurfaceMesh from '../Renderer/Drawables/SurfaceMesh';
+import { degToRad } from '../Renderer/Math';
+import ContainerNode from '../Renderer/Drawables/SceneNodes/ContainerNode';
+import GeometryNode from '../Renderer/Drawables/SceneNodes/GeometryNode';
+import { SceneNodeInterface } from '../Renderer/types';
 
 // export const yieldToMain = () => {
 //   return new Promise(resolve => {

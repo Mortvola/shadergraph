@@ -1,9 +1,9 @@
-import { gpu } from "./Gpu";
+import { gpu } from "./Renderer/Gpu";
 import Renderer2d from "./Renderer2d";
 // import { modelManager } from "./ModelManager";
-import { pipelineManager } from "./Pipelines/PipelineManager";
-import Renderer from "./Renderer";
-import { WorldInterface } from "./types";
+import { pipelineManager } from "./Renderer/Pipelines/PipelineManager";
+import Renderer from "./Renderer/Renderer";
+import { WorldInterface } from "./Renderer/types";
 
 await gpu.ready();
 await pipelineManager.ready();

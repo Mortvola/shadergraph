@@ -1,5 +1,5 @@
 import React from 'react';
-import { gpu } from './Gpu';
+import { gpu } from './Renderer/Gpu';
 import { renderer } from './Main';
 import { useStores } from './State/store';
 

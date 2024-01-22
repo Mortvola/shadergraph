@@ -1,6 +1,6 @@
 import React from 'react';
 import { useStores } from '../State/store';
-import { PropertyInterface } from '../ShaderBuilder/Types';
+import { PropertyInterface } from '../Renderer/ShaderBuilder/Types';
 import { MenuItemRecord } from './MenuItems';
 
 type PropsType = {

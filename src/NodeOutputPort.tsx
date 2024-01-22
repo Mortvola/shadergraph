@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Node.module.scss';
 import { convertType, useStores } from './State/store';
-import { OutputPortInterface } from './ShaderBuilder/Types';
+import { OutputPortInterface } from './Renderer/ShaderBuilder/Types';
 import { observer } from 'mobx-react-lite';
 
 type PropsType = {

@@ -1,11 +1,11 @@
-import Mesh from "../Drawables/Mesh";
-import ContainerNode, { isContainerNode } from "../Drawables/SceneNodes/ContainerNode";
-import DrawableNode from "../Drawables/SceneNodes/DrawableNode";
-import { isGeometryNode } from "../Drawables/SceneNodes/GeometryNode";
-import { isDrawableNode } from "../Drawables/SceneNodes/utils";
+import Mesh from "../Renderer/Drawables/Mesh";
+import ContainerNode, { isContainerNode } from "../Renderer/Drawables/SceneNodes/ContainerNode";
+import DrawableNode from "../Renderer/Drawables/SceneNodes/DrawableNode";
+import { isGeometryNode } from "../Renderer/Drawables/SceneNodes/GeometryNode";
+import { isDrawableNode } from "../Renderer/Drawables/SceneNodes/utils";
 import { renderer } from "../Main";
-import { litMaterial } from "../Materials/Lit";
-import { DrawableNodeInterface, MaterialInterface, SceneNodeInterface } from "../types";
+import { litMaterial } from "../Renderer/Materials/Lit";
+import { DrawableNodeInterface, MaterialInterface, SceneNodeInterface } from "../Renderer/types";
 import { downloadFbx } from "./LoadFbx";
 
 class Modeler {

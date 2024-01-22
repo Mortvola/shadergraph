@@ -1,6 +1,6 @@
 import React from 'react';
 import { renderer2d } from './Main';
-import { gpu } from './Gpu';
+import { gpu } from './Renderer/Gpu';
 
 const Canvas2d: React.FC = () => {
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);

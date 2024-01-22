@@ -1,7 +1,7 @@
 import React from 'react';
 import { runInAction } from 'mobx';
 import { useStores } from './State/store';
-import { ValueType } from './ShaderBuilder/Types';
+import { ValueType } from './Renderer/ShaderBuilder/Types';
 
 type PropsType = {
   node: { value: ValueType },

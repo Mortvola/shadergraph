@@ -1,6 +1,5 @@
 import { vec3, vec4, Vec3, Vec4 } from 'wgpu-matrix';
 import { intersectTriangle } from '../Math';
-// import { yieldToMain } from '../UserInterface/LoadFbx';
 
 const vertexStride = 4;
 

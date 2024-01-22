@@ -87,10 +87,6 @@ export interface ValueNodeInterface extends GraphNodeInterface {
   value: ValueInterface;
 }
 
-export interface StagePropertyInterface {
-  property: PropertyInterface;
-}
-
 export const isPropertyNode = (r: unknown): r is PropertyNodeInterface => (
   (r as PropertyNodeInterface).property !== undefined
 )

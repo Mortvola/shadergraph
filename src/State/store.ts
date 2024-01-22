@@ -2,7 +2,7 @@ import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
 import { StoreInterface } from "./types";
-import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
+import { MaterialDescriptor } from "../Renderer/Materials/MaterialDescriptor";
 import { makeObservable, observable } from "mobx";
 
 type OpenMenuItem = {

@@ -1,7 +1,7 @@
 import React from 'react';
 import Float from '../Float';
 import { useStores } from '../State/store';
-import Value from '../ShaderBuilder/Value';
+import Value from '../Renderer/ShaderBuilder/Value';
 
 type PropsType = {
   value: Value,

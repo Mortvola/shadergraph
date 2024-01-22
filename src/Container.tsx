@@ -8,7 +8,7 @@ import Preview from './Preview';
 import Controls from './Controls/Controls';
 import Properties from './Properties';
 import { menuItems } from './ContextMenu/MenuItems';
-import { generateMaterial } from './ShaderBuilder/ShaderBuilder';
+import { generateMaterial } from './Renderer/ShaderBuilder/ShaderBuilder';
 
 const Container: React.FC = observer(() => {
   const { graph } = useStores();

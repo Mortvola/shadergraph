@@ -1,13 +1,13 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../ShaderBuilder/Types";
-import GraphEdge from "../ShaderBuilder/GraphEdge";
-import Display from "../ShaderBuilder/Nodes/Display";
-import { buildGraph, createDescriptor } from "../ShaderBuilder/ShaderBuilder";
-import { MaterialInterface } from "../types";
-import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
-import Material from "../Materials/Material";
+import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
+import GraphEdge from "../Renderer/ShaderBuilder/GraphEdge";
+import Display from "../Renderer/ShaderBuilder/Nodes/Display";
+import { buildGraph, createDescriptor } from "../Renderer/ShaderBuilder/ShaderBuilder";
+import { MaterialInterface } from "../Renderer/types";
+import { MaterialDescriptor } from "../Renderer/Materials/MaterialDescriptor";
+import Material from "../Renderer/Materials/Material";
 import { CullMode, StoreInterface } from "./types";
-import Property from "../ShaderBuilder/Property";
+import Property from "../Renderer/ShaderBuilder/Property";
 
 class Graph {
   nodes: GraphNodeInterface[] = [];
