@@ -367,7 +367,7 @@ export const generateShaderCode = (graph: ShaderGraph): [string, Property[], Rec
   ]
 }
 
-export const generateShaderModule = (materialDescriptor: MaterialDescriptor): [GPUShaderModule, Property[], string, Record<string, unknown>] => {
+export const generateMaterial = (materialDescriptor: MaterialDescriptor) => {
   let props: Property[] = [];
 
   if (materialDescriptor.properties) {
@@ -378,8 +378,12 @@ export const generateShaderModule = (materialDescriptor: MaterialDescriptor): [G
 
   const graph = buildGraph(materialDescriptor.graph!, props);
 
-  const [code, properties, values] = generateShaderCode(graph);
+  return generateShaderCode(graph);
+}
 
+export const generateShaderModule = (materialDescriptor: MaterialDescriptor): [GPUShaderModule, Property[], string, Record<string, unknown>] => {
+  const [code, properties, values] = generateMaterial(materialDescriptor);
+  
   const shaderModule = gpu.device.createShaderModule({
     label: 'custom shader',
     code: code,

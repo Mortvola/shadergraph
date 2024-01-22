@@ -8,6 +8,7 @@ import Preview from './Preview';
 import Controls from './Controls/Controls';
 import Properties from './Properties';
 import { menuItems } from './ContextMenu/MenuItems';
+import { generateMaterial } from './shaders/ShaderBuilder/ShaderBuilder';
 
 const Container: React.FC = observer(() => {
   const { graph } = useStores();
@@ -60,6 +61,34 @@ const Container: React.FC = observer(() => {
     graph.selectNode(null);
   }
 
+  const handleSave = () => {
+    const descriptor = graph.createMaterialDescriptor();
+
+    fetch('/shaders/test.sg', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(descriptor)
+    })
+  }
+
+  const handleMakeMaterial = () => {
+    const descriptor = graph.createMaterialDescriptor();
+    const [code,, values] = generateMaterial(descriptor);
+    
+    fetch('/material/test.material', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        code,
+        values,
+      })
+    })
+  }
+
   return (
     <div
       ref={ref}
@@ -75,6 +104,8 @@ const Container: React.FC = observer(() => {
           <Node key={gn.id} node={gn} parentRef={ref} />
         ))
       }
+      <button type="button" className="save-button" onClick={handleSave}>Save</button>
+      <button type="button" className="save-button" onClick={handleMakeMaterial}>Make Material</button>
       <Preview />
       <Controls />
       <Properties />

@@ -64,7 +64,7 @@ export interface GraphNodeInterface {
 
   getValue(): string;
 
-  position?: { x: number, y: number };
+  position: { x: number, y: number };
 
   priority: number | null;
 

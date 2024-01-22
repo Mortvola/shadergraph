@@ -26,7 +26,7 @@ class GraphNode implements GraphNodeInterface {
 
   private outputVarName: string | null = null;
 
-  position?: { x: number, y: number };
+  position: { x: number, y: number };
 
   priority: number | null = null;
 
@@ -34,6 +34,8 @@ class GraphNode implements GraphNodeInterface {
     this.type = type;
     this.id = id ?? GraphNode.getNextNodeId();
 
+    this.position = { x: 0, y: 0};
+    
     if (this.id >= GraphNode.nextNodeId) {
       GraphNode.nextNodeId = this.id + 1;
     }
