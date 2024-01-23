@@ -11,6 +11,7 @@ import Vector from "../Renderer/ShaderBuilder/Nodes/Vector";
 import PropertyNode from "../Renderer/ShaderBuilder/PropertyNode";
 import { GraphNodeInterface } from "../Renderer/ShaderBuilder/Types";
 import Value from "../Renderer/ShaderBuilder/Value";
+import PhongShading from "../Renderer/ShaderBuilder/Nodes/PhongShading";
 
 export type MenuItemLike = MenuActionRecord | SubmenutItemRecord;
 
@@ -74,4 +75,5 @@ export const menuItems = (): MenuItemLike[] => ([
   { name: 'Multiply', action: (x: number, y: number) => createObject(Multiply, x, y) },
   { name: 'Time', action: (x: number, y: number) => createObject(Time, x, y) },
   { name: 'UV', action: (x: number, y: number) => createObject(UV, x, y) },
+  { name: 'Phong Shading', action: (x: number, y: number) => createObject(PhongShading, x, y) },
 ])

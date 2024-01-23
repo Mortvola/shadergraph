@@ -53,6 +53,7 @@ const Controls: React.FC = observer(() => {
         <div className={styles.controls}>
           <Checkbox value={graph.transparent} label="Transparent" onChange={graph.setTransparency} />
           <Checkbox value={graph.depthWriteEnabled} label="Depth Write Enabled" onChange={graph.setDepthWriteEnabled} />
+          <Checkbox value={graph.lit} label="Lit" onChange={graph.setLit} />
           <label>
             Cull Mode
             <select value={graph.cullMode} onChange={handleCullChange}>

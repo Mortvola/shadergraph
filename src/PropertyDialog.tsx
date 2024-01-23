@@ -7,6 +7,7 @@ import PropertyString from './PropertyString';
 import { useStores } from './State/store';
 import { runInAction } from 'mobx';
 import PropertyFloat from './PropertyFloat';
+import PropertyVector from './PropertyVector';
 
 type PropsType = {
   property: PropertyInterface,
@@ -52,7 +53,12 @@ const PropertyDialog: React.FC<PropsType> = observer(({
       case 'texture2D':
         return <PropertyString node={property.value} />
 
-      case 'float':
+      case 'vec2f':
+      case 'vec3f':
+      case 'vec4f':
+        return <PropertyVector node={property.value} />
+
+        case 'float':
         return <PropertyFloat node={property.value} />
     }
   }
