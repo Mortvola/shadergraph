@@ -3,7 +3,7 @@ import { bindGroups } from "../BindGroups";
 import { gpu } from "../Gpu";
 import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
 import Property from "../ShaderBuilder/Property";
-import { generateShaderModule } from "../ShaderBuilder/ShaderBuilder";
+import { generateShader } from "../ShaderBuilder/ShaderBuilder";
 import { PropertyInterface } from "../ShaderBuilder/Types";
 import { litShader } from "../shaders/lit";
 import { PipelineInterface, PipelineManagerInterface } from "../types";
@@ -30,6 +30,7 @@ type PipelineMapEntry = {
   properties: Property[],
   uniforms: StructuredView | null,
   uniformValues: Record<string, unknown> | null,
+  fromGraph: boolean,
 }
 
 class PipelineManager implements PipelineManagerInterface {
@@ -83,11 +84,12 @@ class PipelineManager implements PipelineManagerInterface {
 
   getPipelineByArgs(
     materialDescriptor: MaterialDescriptor,
-  ): [PipelineInterface, GPUBindGroupLayout | null, PropertyInterface[], StructuredView | null, Record<string, unknown> | null] {
+  ): [PipelineInterface, GPUBindGroupLayout | null, PropertyInterface[], StructuredView | null, Record<string, unknown> | null, boolean] {
     let properties: Property[] = [];
     let bindgroupLayout: GPUBindGroupLayout | null = null;
     let uniforms: StructuredView | null = null;
     let uniformValues: Record<string, unknown> | null = null;
+    let fromGraph = false;
 
     const key = JSON.stringify(materialDescriptor);
 
@@ -100,6 +102,7 @@ class PipelineManager implements PipelineManagerInterface {
         pipelineEntry.properties,
         pipelineEntry.uniforms,
         pipelineEntry.uniformValues,
+        pipelineEntry.fromGraph,
       ];
     }
 
@@ -108,18 +111,20 @@ class PipelineManager implements PipelineManagerInterface {
     if (!materialDescriptor.graph) {
       pipeline = this.getPipeline(materialDescriptor.type)!
 
-      this.pipelineMap.set(key, { pipeline, bindgroupLayout: null, properties: [], uniforms: null, uniformValues: null });
+      this.pipelineMap.set(key, { pipeline, bindgroupLayout: null, properties: [], uniforms: null, uniformValues: null, fromGraph: false });
     }
     else {
+      fromGraph = true;
+
       let vertexBufferLayout: GPUVertexBufferLayout[] = [];
+      let code = '';
 
-      const [shaderModule, props, code, values] = generateShaderModule(materialDescriptor);  
+      [code, properties, uniforms, uniformValues] = generateShader(materialDescriptor);  
 
-      properties = props;
-      uniformValues = values;
-
-      const defs = makeShaderDataDefinitions(code);
-      uniforms = makeStructuredView(defs.structs.Properties);
+      const shaderModule = gpu.device.createShaderModule({
+        label: 'custom shader',
+        code: code,
+      })
 
       vertexBufferLayout = [
         {
@@ -179,7 +184,7 @@ class PipelineManager implements PipelineManagerInterface {
         };  
       }
 
-      const bindGroupDescriptor: GPUBindGroupLayoutDescriptor = {
+      const bindGroupLayoutDescriptor: GPUBindGroupLayoutDescriptor = {
         label: 'group2',
         entries: [
           ...properties.map((property, index) => ({
@@ -192,8 +197,8 @@ class PipelineManager implements PipelineManagerInterface {
       };
 
       if (uniforms) {
-        bindGroupDescriptor.entries = [
-          ...bindGroupDescriptor.entries,
+        bindGroupLayoutDescriptor.entries = [
+          ...bindGroupLayoutDescriptor.entries,
           {
             binding: properties.length,
             visibility: GPUShaderStage.FRAGMENT,
@@ -202,7 +207,7 @@ class PipelineManager implements PipelineManagerInterface {
         ]
       }
 
-      bindgroupLayout = gpu.device.createBindGroupLayout(bindGroupDescriptor);
+      bindgroupLayout = gpu.device.createBindGroupLayout(bindGroupLayoutDescriptor);
 
       const pipelineLayout = gpu.device.createPipelineLayout({
         bindGroupLayouts: [
@@ -242,11 +247,11 @@ class PipelineManager implements PipelineManagerInterface {
       pipeline = new Pipeline();
       pipeline.pipeline = gpuPipeline;
 
-      this.pipelineMap.set(key, { pipeline, bindgroupLayout, properties, uniforms, uniformValues });
+      this.pipelineMap.set(key, { pipeline, bindgroupLayout, properties, uniforms, uniformValues, fromGraph });
     }
 
     console.log(`pipelines created: ${this.pipelineMap.size}`)
-    return [pipeline, bindgroupLayout, properties, uniforms, uniformValues];
+    return [pipeline, bindgroupLayout, properties, uniforms, uniformValues, fromGraph];
   }
 }
 
