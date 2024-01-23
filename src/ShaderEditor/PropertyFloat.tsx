@@ -1,31 +1,34 @@
 import React from 'react';
 import { runInAction } from 'mobx';
-import { ValueType } from './Renderer/ShaderBuilder/Types';
-import { GraphInterface } from './State/types';
+import { ValueType } from '../Renderer/ShaderBuilder/Types';
+import styles from './Properties.module.scss'
+import { GraphInterface } from '../State/types';
 
 type PropsType = {
-  graph: GraphInterface,
   node: { value: ValueType },
+  graph: GraphInterface,
 }
 
-const PropertyString: React.FC<PropsType> = ({
-  graph,
+const PropertyFloat: React.FC<PropsType> = ({
   node,
+  graph,
 }) => {
   const [value, setValue] = React.useState<string>((node.value as string));
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     setValue(event.target.value);
-    
-    runInAction(() => {
-      node.value = event.target.value;
-      graph.changed = true;
-    })
+    const v = parseFloat(event.target.value);
+
+    if (!isNaN(v)) {
+      runInAction(() => {
+        node.value = v;
+        graph.changed = true;
+      })
+    }
   }
 
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();
-    // graph.selectNode(node)
   }
 
   const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {
@@ -37,10 +40,10 @@ const PropertyString: React.FC<PropsType> = ({
   }
 
   return (
-    <div onClick={handleClick}  onPointerDown={handlePointerDown} onKeyDown={handleKeyDown}>
-      <input value={value} onChange={handleChange} />
+    <div onClick={handleClick} onPointerDown={handlePointerDown} onKeyDown={handleKeyDown}>
+      <input className={styles.float} value={value} onChange={handleChange} />
     </div>
   )
 }
 
-export default PropertyString;
+export default PropertyFloat;

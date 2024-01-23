@@ -1,5 +1,5 @@
 import React from 'react';
-import { useStores } from './State/store';
+import { useStores } from '../State/store';
 import Node from './Node';
 import { observer } from 'mobx-react-lite';
 

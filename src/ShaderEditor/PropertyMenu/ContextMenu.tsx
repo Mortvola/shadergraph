@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './ContextMenu.module.scss';
 import { menuItems } from './MenuItems';
 import MenuItem from './MenuItem';
-import { GraphInterface } from '../State/types';
+import { GraphInterface } from '../../State/types';
 
 type PropsType = {
   graph: GraphInterface,

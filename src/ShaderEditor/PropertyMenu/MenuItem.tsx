@@ -1,7 +1,7 @@
 import React from 'react';
-import { PropertyInterface } from '../Renderer/ShaderBuilder/Types';
+import { PropertyInterface } from '../../Renderer/ShaderBuilder/Types';
 import { MenuItemRecord } from './MenuItems';
-import { GraphInterface } from '../State/types';
+import { GraphInterface } from '../../State/types';
 
 type PropsType = {
   graph: GraphInterface,

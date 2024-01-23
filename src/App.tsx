@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.scss';
-import ShaderEditor from './ShaderEditor';
+import ShaderEditor from './ShaderEditor/ShaderEditor';
 import MainView from './MainView';
 import { useStores } from './State/store';
 import Http from './Http/src';

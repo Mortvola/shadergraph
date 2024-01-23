@@ -1,16 +1,16 @@
 import React from 'react';
-import { useStores } from './State/store';
+import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import Canvas2d from './Canvas2d';
-import ContextMenu from './ContextMenu/ContextMenu';
+import ContextMenu from '../ContextMenu/ContextMenu';
 import Preview from './Preview';
 import Controls from './Controls/Controls';
 import Properties from './Properties';
-import { menuItems } from './ContextMenu/MenuItems';
-import { generateMaterial } from './Renderer/ShaderBuilder/ShaderBuilder';
-import Http from './Http/src';
+import { menuItems } from '../ContextMenu/MenuItems';
+import { generateMaterial } from '../Renderer/ShaderBuilder/ShaderBuilder';
+import Http from '../Http/src';
 import GraphComponent from './Graph';
-import { GraphInterface } from './State/types';
+import { GraphInterface } from '../State/types';
 
 type PropsType = {
   graph: GraphInterface,

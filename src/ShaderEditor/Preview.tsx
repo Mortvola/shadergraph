@@ -1,5 +1,5 @@
 import React from 'react';
-import Canvas3d from './Canvas3d';
+import Canvas3d from '../Canvas3d';
 import styles from './Preview.module.scss';
 import Draggable from './Draggable';
 

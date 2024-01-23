@@ -4,10 +4,10 @@ import Draggable from './Draggable';
 import styles from './Properties.module.scss';
 import ContextMenu from './PropertyMenu/ContextMenu'
 import PropertyEntry from './PropertyEntry';
-import { PropertyInterface } from './Renderer/ShaderBuilder/Types';
+import { PropertyInterface } from '../Renderer/ShaderBuilder/Types';
 import PropertyDialog from './PropertyDialog';
 import { createPortal } from 'react-dom';
-import { GraphInterface } from './State/types';
+import { GraphInterface } from '../State/types';
 
 type PropsType = {
   graph: GraphInterface,

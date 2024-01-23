@@ -3,11 +3,11 @@ import { observer } from 'mobx-react-lite';
 import styles from './Node.module.scss';
 import NodeInputPort from './NodeInputPort';
 import NodeOutputPort from './NodeOutputPort';
-import { GraphNodeInterface, isPropertyNode, isValueNode } from './Renderer/ShaderBuilder/Types';
+import { GraphNodeInterface, isPropertyNode, isValueNode } from '../Renderer/ShaderBuilder/Types';
 import Vector from './Vector';
 import Draggable from './Draggable';
 import PropertyString from './PropertyString';
-import { GraphInterface } from './State/types';
+import { GraphInterface } from '../State/types';
 
 type PropsType = {
   graph: GraphInterface,

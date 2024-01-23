@@ -1,7 +1,7 @@
 import React from 'react';
 import Float from '../Float';
-import Value from '../Renderer/ShaderBuilder/Value';
-import { GraphInterface } from '../State/types';
+import Value from '../../Renderer/ShaderBuilder/Value';
+import { GraphInterface } from '../../State/types';
 
 type PropsType = {
   graph: GraphInterface,

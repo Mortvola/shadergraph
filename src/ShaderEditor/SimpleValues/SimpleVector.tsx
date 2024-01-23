@@ -1,6 +1,6 @@
 import React from 'react';
 import Float from '../Float';
-import { useStores } from '../State/store';
+import { useStores } from '../../State/store';
 
 type PropsType = {
   value: number[],

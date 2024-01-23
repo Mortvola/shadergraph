@@ -1,5 +1,5 @@
-import { store } from "../State/store";
-import Property from "../Renderer/ShaderBuilder/Property";
+import { store } from "../../State/store";
+import Property from "../../Renderer/ShaderBuilder/Property";
 
 export type MenuItemRecord<T> = {
   name: string,

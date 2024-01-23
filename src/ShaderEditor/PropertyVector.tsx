@@ -1,10 +1,10 @@
 import React from 'react';
 import { runInAction } from 'mobx';
-import { useStores } from './State/store';
-import { ValueType } from './Renderer/ShaderBuilder/Types';
+import { useStores } from '../State/store';
+import { ValueType } from '../Renderer/ShaderBuilder/Types';
 import Float from './Float';
 import styles from './Properties.module.scss'
-import { GraphInterface } from './State/types';
+import { GraphInterface } from '../State/types';
 
 type PropsType = {
   graph: GraphInterface,
