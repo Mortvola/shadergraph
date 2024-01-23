@@ -9,6 +9,10 @@ import Checkbox from './Checkbox';
 const Controls: React.FC = observer(() => {
   const { graph } = useStores();
 
+  if (!graph) {
+    return null;
+  }
+
   type SizeInfo = { x: number, y: number };
 
   const [position, setPosition] = React.useState<SizeInfo>({ x: 100, y: 100 });
@@ -43,7 +47,7 @@ const Controls: React.FC = observer(() => {
 
   const handleCullChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     console.log(event.target.value)
-    graph.setCullMode(event.target.value as CullMode)
+    graph?.setCullMode(event.target.value as CullMode)
   }
 
   return (

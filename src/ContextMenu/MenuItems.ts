@@ -37,7 +37,7 @@ export const isSubmenuItem = (r: unknown): r is SubmenutItemRecord => (
 
 function addNode(node: GraphNodeInterface, x: number, y: number) {
   node.position = { x, y };
-  store.graph.addNode(node)  
+  store.graph?.addNode(node)  
 }
 
 function createObject<T>(o: new () => T, x: number, y: number) {
@@ -45,13 +45,13 @@ function createObject<T>(o: new () => T, x: number, y: number) {
   addNode(node, x, y);
 }
 
-const propertyMenu = (): MenuItemLike[] => ( 
-  store.graph.properties.map((p) => ({
+const propertyMenu = (): MenuItemLike[] => (
+  store.graph?.properties.map((p) => ({
     name: p.name, action: (x: number, y: number) => {
       const node = new PropertyNode(p)
       addNode(node, x, y);
     },
-  }))
+  })) ?? []
 )
 
 const values = (): MenuItemLike[] => (

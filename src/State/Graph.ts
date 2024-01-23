@@ -6,10 +6,23 @@ import { buildGraph, createDescriptor } from "../Renderer/ShaderBuilder/ShaderBu
 import { MaterialInterface } from "../Renderer/types";
 import { MaterialDescriptor } from "../Renderer/Materials/MaterialDescriptor";
 import Material from "../Renderer/Materials/Material";
-import { CullMode, StoreInterface } from "./types";
+import { CullMode, GraphInterface, StoreInterface } from "./types";
 import Property from "../Renderer/ShaderBuilder/Property";
 
-class Graph {
+let nextShaderName = 0;
+
+const getNextShaderName = () => {
+  const name = `shader${nextShaderName}`;
+  nextShaderName += 1;
+
+  return name;
+}
+
+class Graph implements GraphInterface {
+  id: number | null = null;
+
+  name = '';
+  
   nodes: GraphNodeInterface[] = [];
 
   dragConnector: [number, number][] | null = null;
@@ -26,7 +39,7 @@ class Graph {
 
   lit = false;
 
-  properties: Property[] = [];
+  properties: PropertyInterface[] = [];
 
   changed = false;
 
@@ -34,8 +47,12 @@ class Graph {
 
   store: StoreInterface;
 
-  constructor(store: StoreInterface, descriptor?: MaterialDescriptor) {
+  constructor(store: StoreInterface, id?: number, name?: string, descriptor?: MaterialDescriptor) {
     this.store = store;
+
+    this.id = id ?? null;
+    
+    this.name = name ?? getNextShaderName();
 
     if (descriptor) {
       if (descriptor.properties) {
@@ -71,6 +88,7 @@ class Graph {
     }
 
     makeObservable(this, {
+      name: observable,
       nodes: observable,
       selectedNode: observable,
       transparent: observable,
@@ -81,18 +99,24 @@ class Graph {
     });
   }
 
-  setDragConnector(points: [number, number][] | null) {
+  setName(name: string): void {
+    runInAction(() => {
+      this.name = name;
+    })
+  }
+
+  setDragConnector(points: [number, number][] | null): void {
     this.dragConnector = points;
   }
 
-  addProperty(property: PropertyInterface) {
+  addProperty(property: PropertyInterface): void {
     runInAction(() => {
       this.properties.push(property);
       this.changed = true;  
     })
   }
 
-  deleteProperty(property: PropertyInterface) {
+  deleteProperty(property: PropertyInterface): void {
     const index = this.properties.findIndex((p) => p === property);
 
     if (index !== -1) {
@@ -107,7 +131,7 @@ class Graph {
     }
   }
 
-  link(outputPort: OutputPortInterface, inputPort: InputPortInterface) {
+  link(outputPort: OutputPortInterface, inputPort: InputPortInterface): void {
     const edge = new GraphEdge(outputPort, inputPort);
 
     this.edges.push(edge);
@@ -124,7 +148,7 @@ class Graph {
     })
   }
 
-  setNodePosition(node: GraphNodeInterface, x: number, y: number) {
+  setNodePosition(node: GraphNodeInterface, x: number, y: number): void {
     runInAction(() => {
       node.position!.x = x;
       node.position!.y = y;
@@ -163,13 +187,13 @@ class Graph {
     }
   }
 
-  deleteEdge(edge: GraphEdgeInterface) {
+  deleteEdge(edge: GraphEdgeInterface): void {
     runInAction(() => {
       this.delEdge(edge);
     })
   }
 
-  deleteNode(node: GraphNodeInterface) {
+  deleteNode(node: GraphNodeInterface): void {
     const index = this.nodes.findIndex((n) => n === node);
     
     if (index !== -1) {

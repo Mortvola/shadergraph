@@ -12,7 +12,7 @@ const createVarName = (basename: string) => {
   for (;;) {
     const varName = `${basename}${id}`;
 
-    if (!store.graph.properties.some((p) => p.name === varName)) {
+    if (!store.graph?.properties.some((p) => p.name === varName)) {
       return varName;
     }
 

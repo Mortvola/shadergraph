@@ -1,5 +1,4 @@
 import React from 'react';
-import Node from './Node';
 import { useStores } from './State/store';
 import { observer } from 'mobx-react-lite';
 import Canvas2d from './Canvas2d';
@@ -9,10 +8,21 @@ import Controls from './Controls/Controls';
 import Properties from './Properties';
 import { menuItems } from './ContextMenu/MenuItems';
 import { generateMaterial } from './Renderer/ShaderBuilder/ShaderBuilder';
+import Http from './Http/src';
+import GraphComponent from './Graph';
+import { GraphInterface } from './State/types';
 
-const Container: React.FC = observer(() => {
-  const { graph } = useStores();
+type PropsType = {
+  graph: GraphInterface,
+  onHide: () => void,
+}
 
+const ShaderEditor: React.FC<PropsType> = observer(({
+  graph,
+  onHide,
+}) => {
+  const store = useStores();
+  
   // Save the grpah every five seconds if there have been changes.
   React.useEffect(() => {
     const timer  = setInterval(() => {
@@ -36,7 +46,7 @@ const Container: React.FC = observer(() => {
     if (element) {
       element.focus();
     }
-  });
+  }, []);
 
   const [showMenu, setShowMenu] = React.useState<[number, number] | null>(null);
 
@@ -61,16 +71,27 @@ const Container: React.FC = observer(() => {
     graph.selectNode(null);
   }
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const descriptor = graph.createMaterialDescriptor();
 
-    fetch('/shaders/test.sg', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(descriptor)
-    })
+    if (graph.id !== null) {
+      await Http.patch<unknown, void>(`/shader-descriptors/${graph.id}`, {
+        name: graph.name,
+        descriptor,
+      })
+    }
+    else {
+      const response = await Http.post<unknown, { id: number }>('/shader-descriptors', {
+        name:  graph.name,
+        descriptor,
+      })
+
+      if (response.ok) {
+        const { id } = await response.body();
+
+        graph.id = id;
+      }
+    }
   }
 
   const handleMakeMaterial = () => {
@@ -89,37 +110,37 @@ const Container: React.FC = observer(() => {
     })
   }
 
-  const handleOpenShader = async () => {
-    const response = await fetch('/shader-list');
+  const handleTitleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    graph.setName(event.target.value);
+  }
 
-    if (response.ok) {
-      
-    }
+  const handleClose = () => {
+    onHide();
   }
 
   return (
     <div
       ref={ref}
-      className="App"
+      className="shaderEditor"
       onContextMenu={handleContextMenu}
       tabIndex={0}
       onKeyDown={handleKeyDown}
       onClick={handleClick}
     >
       <div className="toolbar">
-        <button type="button" className="save-button" onClick={handleSave}>Save</button>
-        <button type="button" className="save-button" onClick={handleMakeMaterial}>Make Material</button>
-        <button type="button" className="save-button" onClick={handleOpenShader}>Open</button>
+        <button type="button" onClick={handleSave}>Save</button>
+        <button type="button" onClick={handleMakeMaterial}>Make Material</button>
+        <label>
+          Name:
+          <input value={graph.name} onChange={handleTitleChange} />
+        </label>
+        <button type="button" onClick={handleClose}>Close</button>
       </div>
       <Canvas2d />
-      {
-        graph.nodes.map((gn) => (
-          <Node key={gn.id} node={gn} parentRef={ref} />
-        ))
-      }
+      <GraphComponent parent={ref} />
       <Preview />
       <Controls />
-      <Properties />
+      <Properties graph={graph} />
       {
         showMenu
           ? <ContextMenu menuItems={menuItems} x={showMenu[0]} y={showMenu[1]} onClose={handleMenuClose} />
@@ -129,4 +150,4 @@ const Container: React.FC = observer(() => {
   )
 })
 
-export default Container;
+export default ShaderEditor;

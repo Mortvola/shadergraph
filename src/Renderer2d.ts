@@ -38,7 +38,7 @@ class Renderer2d {
   }
 
   updateFrame = () => {
-    if (this.ctx) {
+    if (this.ctx && store.graph) {
       this.ctx.clearRect(0, 0, this.element?.width ?? 0, this.element?.height ?? 0);
 
       for (const edge of store.graph.edges) {
@@ -74,7 +74,7 @@ class Renderer2d {
         this.ctx.stroke();
       }
 
-      if (store.graph.dragConnector !== null) {
+      if (store.graph && store.graph.dragConnector !== null) {
         const point1 = store.graph.dragConnector[0];
         const point2 = store.graph.dragConnector[1];
 

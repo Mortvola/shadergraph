@@ -1,20 +1,20 @@
 import React from 'react';
 import Float from '../Float';
-import { useStores } from '../State/store';
 import Value from '../Renderer/ShaderBuilder/Value';
+import { GraphInterface } from '../State/types';
 
 type PropsType = {
+  graph: GraphInterface,
   value: Value,
 }
 
 const SimpleFloat: React.FC<PropsType> = ({
+  graph,
   value,
 }) => {
-  const store = useStores();
-
   const handleChange = (newValue: number, index?: number) => {
     value.value = newValue;
-    store.graph.changed = true;
+    graph.changed = true;
   }
 
   return (

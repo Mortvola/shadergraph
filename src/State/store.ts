@@ -2,7 +2,6 @@ import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
 import { StoreInterface } from "./types";
-import { MaterialDescriptor } from "../Renderer/Materials/MaterialDescriptor";
 import { makeObservable, observable } from "mobx";
 
 type OpenMenuItem = {
@@ -11,7 +10,7 @@ type OpenMenuItem = {
 }
 
 class Store implements StoreInterface {
-  graph: Graph;
+  graph: Graph | null = null;
 
   private dragObject: unknown | null = null;
 
@@ -20,26 +19,21 @@ class Store implements StoreInterface {
   menus: OpenMenuItem[] = [];
 
   constructor() {
-    let descriptor: MaterialDescriptor | undefined = undefined;
-
-    const savedItem = localStorage.getItem('material');
-    if (savedItem) {
-      descriptor = JSON.parse(savedItem);
-    }
-
-    this.graph = new Graph(this, descriptor);
     this.modeler = new Modeler();
 
     makeObservable(this, {
       menus: observable,
+      graph: observable,
     })
   }
 
   async applyChanges(): Promise<void> {
-    const material = await this.graph.generateMaterial();
+    if (this.graph) {
+      const material = await this.graph.generateMaterial();
 
-    if (material) {
-      this.modeler.applyMaterial(material);
+      if (material) {
+        this.modeler.applyMaterial(material);
+      }  
     }
   }
 

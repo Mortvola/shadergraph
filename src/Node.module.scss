@@ -25,6 +25,7 @@ $selected-border-width: 3px;
     border-bottom: thin black solid;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
+    padding-left: 0.5rem;
     overflow: hidden;
   }
 
@@ -88,11 +89,12 @@ $selected-border-width: 3px;
     display: grid;
     grid-template-columns: 1fr max-content;
 
-      height: max-content;
-      width: 100%;
-      padding-top: 0.5rem;
-      padding-bottom: 0.5rem;
-      overflow: hidden;  
+    height: max-content;
+    width: 100%;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 0.5rem;
+    overflow: hidden;  
   }
 }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './Node.module.scss';
-import { DataType, InputPortInterface, OutputPortInterface, getLength } from './Renderer/ShaderBuilder/Types';
+import { InputPortInterface, OutputPortInterface, getLength } from './Renderer/ShaderBuilder/Types';
 import { convertType, useStores } from './State/store';
 import { observer } from 'mobx-react-lite';
 import { createPortal } from 'react-dom';
@@ -8,18 +8,20 @@ import SimpleVector from './SimpleValues/SimpleVector';
 import Value from './Renderer/ShaderBuilder/Value';
 import SimpleUV from './SimpleValues/SimpleUV';
 import SimpleFloat from './SimpleValues/SimpleFloat';
+import { GraphInterface } from './State/types';
 
 type PropsType = {
+  graph: GraphInterface,
   port: InputPortInterface,
   parentRef: React.RefObject<HTMLElement>
 }
 
 const NodeInputPort: React.FC<PropsType> = observer(({
+  graph,
   port,
   parentRef,
 }) => {
   const store = useStores();
-  const { graph } = store;
   const portRef = React.useRef<HTMLDivElement | null>(null);
 
   React.useLayoutEffect(() => {
@@ -102,12 +104,10 @@ const NodeInputPort: React.FC<PropsType> = observer(({
     setDragKey(null);
   }
 
-  const handleValue0Change = () => {};
-
   const simpleValue = (value: Value) => {
     switch (value.dataType) {
       case 'float':
-        return <SimpleFloat value={value} />
+        return <SimpleFloat graph={graph} value={value} />
 
       case 'vec2f':
       case 'vec3f':

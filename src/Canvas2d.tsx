@@ -10,10 +10,7 @@ const Canvas2d: React.FC = () => {
 
     if (element) {
       element.focus();
-
-      (async () => {
-        renderer2d.setCanvas(element);
-      })()  
+      renderer2d.setCanvas(element);
     }
   }, [])
   

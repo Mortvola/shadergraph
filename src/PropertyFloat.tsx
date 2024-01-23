@@ -1,17 +1,18 @@
 import React from 'react';
 import { runInAction } from 'mobx';
-import { useStores } from './State/store';
 import { ValueType } from './Renderer/ShaderBuilder/Types';
 import styles from './Properties.module.scss'
+import { GraphInterface } from './State/types';
 
 type PropsType = {
   node: { value: ValueType },
+  graph: GraphInterface,
 }
 
 const PropertyFloat: React.FC<PropsType> = ({
   node,
+  graph,
 }) => {
-  const { graph } = useStores();
   const [value, setValue] = React.useState<string>((node.value as string));
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {

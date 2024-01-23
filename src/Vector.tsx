@@ -3,18 +3,18 @@ import { ValueType } from './Renderer/ShaderBuilder/Types';
 import styles from './Node.module.scss';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
-import { useStores } from './State/store';
 import Float from './Float';
+import { GraphInterface } from './State/types';
 
 type PropsType = {
+  graph: GraphInterface,
   node: { value: ValueType },
 }
 
 const Vector: React.FC<PropsType> = observer(({
+  graph,
   node,
 }) => {
-  const { graph } = useStores();
-
   const handleValue0Change = (v: number, index?: number) => {
     runInAction(() => {
       if (Array.isArray(node.value)) {

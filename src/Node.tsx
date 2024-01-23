@@ -4,22 +4,22 @@ import styles from './Node.module.scss';
 import NodeInputPort from './NodeInputPort';
 import NodeOutputPort from './NodeOutputPort';
 import { GraphNodeInterface, isPropertyNode, isValueNode } from './Renderer/ShaderBuilder/Types';
-import { useStores } from './State/store';
 import Vector from './Vector';
 import Draggable from './Draggable';
 import PropertyString from './PropertyString';
-import exp from 'constants';
+import { GraphInterface } from './State/types';
 
 type PropsType = {
+  graph: GraphInterface,
   node: GraphNodeInterface,
   parentRef: React.RefObject<HTMLElement>
 }
 
 const Node: React.FC<PropsType> = observer(({
+  graph,
   node,
   parentRef,
 }) => {
-  const { graph } = useStores();
   const [expanded, setExpanded] = React.useState<boolean>(false);
 
   const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {
@@ -27,7 +27,7 @@ const Node: React.FC<PropsType> = observer(({
   }
 
   const handleMove = (x: number, y: number) => {
-    graph.setNodePosition(node, x, y);
+    graph?.setNodePosition(node, x, y);
   }
 
   const handleExpansionClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
@@ -62,14 +62,14 @@ const Node: React.FC<PropsType> = observer(({
           case 'vec2f':
           case 'vec3f':
           case 'vec4f':
-            return <Vector node={node.value} />;
+            return <Vector graph={graph} node={node.value} />;
 
           case 'float':
-            return <Vector node={node.value} />;
+            return <Vector graph={graph} node={node.value} />;
 
           case 'string':
           case 'texture2D':
-            return <PropertyString node={node.value} />
+            return <PropertyString graph={graph} node={node.value} />
         }
 
         return null;
@@ -95,7 +95,7 @@ const Node: React.FC<PropsType> = observer(({
           <div className={styles.inputports}>
             {
               node.inputPorts.map((p) => (
-                <NodeInputPort key={p.name} parentRef={parentRef} port={p} />
+                <NodeInputPort graph={graph} key={p.name} parentRef={parentRef} port={p} />
               ))
             }
           </div>

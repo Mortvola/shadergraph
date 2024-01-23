@@ -2,16 +2,20 @@ import { observer } from 'mobx-react-lite';
 import React from 'react';
 import Draggable from './Draggable';
 import styles from './Properties.module.scss';
-import { useStores } from './State/store';
 import ContextMenu from './PropertyMenu/ContextMenu'
 import PropertyEntry from './PropertyEntry';
 import { PropertyInterface } from './Renderer/ShaderBuilder/Types';
 import PropertyDialog from './PropertyDialog';
 import { createPortal } from 'react-dom';
+import { GraphInterface } from './State/types';
 
-const Properties: React.FC = observer(() => {
-  const { graph } = useStores();
+type PropsType = {
+  graph: GraphInterface,
+}
 
+const Properties: React.FC<PropsType> = observer(({
+  graph,
+}) => {
   type SizeInfo = { x: number, y: number };
   const [position, setPosition] = React.useState<SizeInfo>({ x: 100, y: 100 });
 
@@ -106,12 +110,12 @@ const Properties: React.FC = observer(() => {
       </div>
         {
           showMenu
-            ? createPortal(<ContextMenu x={showMenu[0]} y={showMenu[1]} onClose={handleMenuClose} />, document.body)
+            ? createPortal(<ContextMenu graph={graph} x={showMenu[0]} y={showMenu[1]} onClose={handleMenuClose} />, document.body)
             : null
         }
         {
           showDialog
-            ? <PropertyDialog onHide={handleHideDialog} property={showDialog.property} x={showDialog.x} y={showDialog.y} />
+            ? <PropertyDialog graph={graph} show={!!showDialog} onHide={handleHideDialog} property={showDialog.property} x={showDialog.x} y={showDialog.y} />
             : null
         }
     </Draggable>

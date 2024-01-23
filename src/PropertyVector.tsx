@@ -4,16 +4,17 @@ import { useStores } from './State/store';
 import { ValueType } from './Renderer/ShaderBuilder/Types';
 import Float from './Float';
 import styles from './Properties.module.scss'
+import { GraphInterface } from './State/types';
 
 type PropsType = {
+  graph: GraphInterface,
   node: { value: ValueType },
 }
 
 const PropertyVector: React.FC<PropsType> = ({
+  graph,
   node,
 }) => {
-  const { graph } = useStores();
-
   const handleValue0Change = (v: number, index?: number) => {
     runInAction(() => {
       if (Array.isArray(node.value)) {

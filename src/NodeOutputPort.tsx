@@ -15,6 +15,11 @@ const NodeOutputPort: React.FC<PropsType> = observer(({
 }) => {
   const store = useStores();
   const { graph } = store;
+
+  if (!graph) {
+    return null;
+  }
+  
   const [startPoint, setStartPoint] = React.useState<[number, number] | null>(null);
   const [dragKey, setDragKey] = React.useState<string | null>(null);
   const portRef = React.useRef<HTMLDivElement | null>(null);
