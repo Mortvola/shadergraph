@@ -1,0 +1,13 @@
+.toolbar {
+  z-index: 100;
+  background-color: lightgray;
+  display: flex;
+  flex-direction: row;
+  column-gap: 1rem;
+  padding: 0.35rem;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+}
+

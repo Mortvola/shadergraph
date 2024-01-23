@@ -44,6 +44,7 @@ const ShaderList: React.FC<PropsType> = ({
 
   return (
     <div className={styles.list}>
+      Textures
       <button type="button" onClick={handleAddClick}>Add</button>
       {
         shaders.map((s) => (

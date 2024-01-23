@@ -3,16 +3,16 @@ import Http from './Http/src';
 import styles from './ModelList.module.scss';
 import UploadFileButton from './UploadFileButton';
 
-const ModelList: React.FC = () => {
-  const [models, setModels] = React.useState<{ id: number, name: string }[]>([])
+const TextureList: React.FC = () => {
+  const [textures, setTexturs] = React.useState<{ id: number, name: string }[]>([])
 
   const queryList = async () => {
-    const response = await Http.get<{ id: number, name: string }[]>('/models-list');
+    const response = await Http.get<{ id: number, name: string }[]>('/textures-list');
 
     if (response.ok) {
       const list = await response.body()
 
-      setModels(list);
+      setTexturs(list);
       console.log(list)
     }
   }
@@ -26,7 +26,7 @@ const ModelList: React.FC = () => {
       const formData = new FormData();
       formData.append('file', event.target.files[0])
 
-      await fetch('/models', {
+      await fetch('/textures', {
         method: 'POST',
         body: formData
       })
@@ -35,10 +35,10 @@ const ModelList: React.FC = () => {
 
   return (
     <div className={styles.list}>
-      Models
+      Textures
       <UploadFileButton onFileSelection={handleFileSelection} label="Add" />
       {
-        models.map((m) => (
+        textures.map((m) => (
           <div key={m.id}>{m.name}</div>
         ))
       }              
@@ -46,4 +46,4 @@ const ModelList: React.FC = () => {
   )
 }
 
-export default ModelList;
+export default TextureList;

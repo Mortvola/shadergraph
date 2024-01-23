@@ -11,6 +11,7 @@ import { generateMaterial } from '../Renderer/ShaderBuilder/ShaderBuilder';
 import Http from '../Http/src';
 import GraphComponent from './Graph';
 import { GraphInterface } from '../State/types';
+import Toolbar from './Toolbar';
 
 type PropsType = {
   graph: GraphInterface,
@@ -127,7 +128,7 @@ const ShaderEditor: React.FC<PropsType> = observer(({
       onKeyDown={handleKeyDown}
       onClick={handleClick}
     >
-      <div className="toolbar">
+      <Toolbar>
         <button type="button" onClick={handleSave}>Save</button>
         <button type="button" onClick={handleMakeMaterial}>Make Material</button>
         <label>
@@ -135,7 +136,7 @@ const ShaderEditor: React.FC<PropsType> = observer(({
           <input value={graph.name} onChange={handleTitleChange} />
         </label>
         <button type="button" onClick={handleClose}>Close</button>
-      </div>
+      </Toolbar>
       <Canvas2d />
       <GraphComponent parent={ref} />
       <Preview />
