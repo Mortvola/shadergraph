@@ -7,7 +7,6 @@ import Preview from './Preview';
 import Controls from './Controls/Controls';
 import Properties from './Properties';
 import { menuItems } from '../ContextMenu/MenuItems';
-import { generateMaterial } from '../Renderer/ShaderBuilder/ShaderBuilder';
 import Http from '../Http/src';
 import GraphComponent from './Graph';
 import { GraphInterface } from '../State/types';
@@ -95,22 +94,6 @@ const ShaderEditor: React.FC<PropsType> = observer(({
     }
   }
 
-  const handleMakeMaterial = () => {
-    const descriptor = graph.createMaterialDescriptor();
-    const [code,, values] = generateMaterial(descriptor);
-    
-    fetch('/material/test.material', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        code,
-        values,
-      })
-    })
-  }
-
   const handleTitleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     graph.setName(event.target.value);
   }
@@ -130,7 +113,6 @@ const ShaderEditor: React.FC<PropsType> = observer(({
     >
       <Toolbar>
         <button type="button" onClick={handleSave}>Save</button>
-        <button type="button" onClick={handleMakeMaterial}>Make Material</button>
         <label>
           Name:
           <input value={graph.name} onChange={handleTitleChange} />

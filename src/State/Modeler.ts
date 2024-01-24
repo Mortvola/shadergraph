@@ -3,8 +3,8 @@ import ContainerNode, { isContainerNode } from "../Renderer/Drawables/SceneNodes
 import DrawableNode from "../Renderer/Drawables/SceneNodes/DrawableNode";
 import { isGeometryNode } from "../Renderer/Drawables/SceneNodes/GeometryNode";
 import { isDrawableNode } from "../Renderer/Drawables/SceneNodes/utils";
-import { renderer } from "../Main";
 import { litMaterial } from "../Renderer/Materials/Lit";
+import Renderer from "../Renderer/Renderer";
 import { DrawableNodeInterface, MaterialInterface, SceneNodeInterface } from "../Renderer/types";
 import { downloadFbx } from "./LoadFbx";
 
@@ -13,13 +13,19 @@ class Modeler {
 
   loading = false;
 
+  renderer: Renderer;
+
+  constructor(renderer: Renderer) {
+    this.renderer = renderer;
+  }
+
   async loadModel(url: string) {
     if (!this.loading) {
       this.loading = true;
       this.model = await loadFbx(url);
 
       if (this.model) {
-        renderer.addSceneNode(this.model);
+        this.renderer.addSceneNode(this.model);
       }  
     }
   }

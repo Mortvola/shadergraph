@@ -8,6 +8,7 @@ import PropertyFloat from './PropertyFloat';
 import PropertyVector from './PropertyVector';
 import Modal from '../Modal';
 import { GraphInterface } from '../State/types';
+import PropertyTexture from './PropertyTexture';
 
 type PropsType = {
   graph: GraphInterface,
@@ -48,8 +49,10 @@ const PropertyDialog: React.FC<PropsType> = observer(({
   const renderValue = () => {
     switch (property.value.dataType) {
       case 'string':
-      case 'texture2D':
         return <PropertyString graph={graph} node={property.value} />
+
+      case 'texture2D':
+        return <PropertyTexture graph={graph} node={property.value} />
 
       case 'vec2f':
       case 'vec3f':

@@ -2,8 +2,11 @@ import React from 'react';
 import Canvas3d from '../Canvas3d';
 import styles from './Preview.module.scss';
 import Draggable from './Draggable';
+import { useStores } from '../State/store';
 
 const Preview: React.FC = () => {
+  const { shaderPreview } = useStores();
+
   type SizeInfo = { x: number, y: number, width: number, height: number };
 
   const [position, setPosition] = React.useState<SizeInfo>({ x: 100, y: 100, width: 200, height: 200});
@@ -40,7 +43,7 @@ const Preview: React.FC = () => {
     <Draggable onMove={handleMove} position={position} onResize={handleResize} resizable >
       <div className={styles.preview}>
         <div>Preview</div>
-        <Canvas3d />
+        <Canvas3d renderer={shaderPreview} />
       </div>
     </Draggable>
   )

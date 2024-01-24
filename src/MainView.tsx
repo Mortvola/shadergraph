@@ -6,6 +6,8 @@ import styles from './MainView.module.scss';
 import Toolbar from './ShaderEditor/Toolbar';
 import UploadFileButton from './UploadFileButton';
 import TextureList from './TextureList';
+import Canvas3d from './Canvas3d';
+import { useStores } from './State/store';
 
 type PropsType = {
   onEditShader: (id: number) => void,
@@ -14,6 +16,8 @@ type PropsType = {
 const MainView: React.FC<PropsType> = ({
   onEditShader,
 }) => {
+  const { mainView } = useStores();
+  
   const handleEditShader = (id: number) => {
     onEditShader(id);
   }
@@ -32,11 +36,7 @@ const MainView: React.FC<PropsType> = ({
 
   return (
     <div className={styles.main}>
-      <div>
-        {/* <Toolbar >
-          <UploadFileButton onFileSelection={handleFileSelection} label="Upload Model" />
-        </Toolbar> */}
-      </div>
+      <Canvas3d renderer={mainView} />
       <div className={styles.sidebar}>
         <ShaderList onEdit={handleEditShader} />
         <MaterialList />

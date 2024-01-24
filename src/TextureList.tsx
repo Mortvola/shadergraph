@@ -1,6 +1,6 @@
 import React from 'react';
 import Http from './Http/src';
-import styles from './ModelList.module.scss';
+import styles from './TextureList.module.scss';
 import UploadFileButton from './UploadFileButton';
 
 const TextureList: React.FC = () => {
@@ -13,7 +13,6 @@ const TextureList: React.FC = () => {
       const list = await response.body()
 
       setTexturs(list);
-      console.log(list)
     }
   }
 

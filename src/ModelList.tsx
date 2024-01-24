@@ -13,7 +13,6 @@ const ModelList: React.FC = () => {
       const list = await response.body()
 
       setModels(list);
-      console.log(list)
     }
   }
 

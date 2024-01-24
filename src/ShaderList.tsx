@@ -4,7 +4,6 @@ import styles from './ShaderList.module.scss';
 import ShaderListEntry from './ShaderListEntry';
 import { useStores } from './State/store';
 import Graph from './State/Graph';
-import { MaterialDescriptor } from './Renderer/Materials/MaterialDescriptor';
 
 type PropsType = {
   onEdit: (id: number) => void,
@@ -23,7 +22,6 @@ const ShaderList: React.FC<PropsType> = ({
       const list = await response.body()
 
       setShaders(list);
-      console.log(list)
     }
   }
 
@@ -32,23 +30,16 @@ const ShaderList: React.FC<PropsType> = ({
   }, [])
 
   const handleAddClick = () => {
-    let descriptor: MaterialDescriptor | undefined = undefined;
-
-    const savedItem = localStorage.getItem('material');
-    if (savedItem) {
-      descriptor = JSON.parse(savedItem);
-    }
-
-    store.graph = new Graph(store, undefined, 'SoulerCoaster', descriptor);
+    store.graph = new Graph(store);
   }
 
   return (
     <div className={styles.list}>
-      Textures
+      Shaders
       <button type="button" onClick={handleAddClick}>Add</button>
       {
         shaders.map((s) => (
-          <ShaderListEntry item={s} onEdit={onEdit} />
+          <ShaderListEntry key={s.id} item={s} onEdit={onEdit} />
         ))
       }              
     </div>

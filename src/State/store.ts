@@ -3,6 +3,7 @@ import Graph from "./Graph";
 import Modeler from "./Modeler";
 import { StoreInterface } from "./types";
 import { makeObservable, observable } from "mobx";
+import Renderer from "../Renderer/Renderer";
 
 type OpenMenuItem = {
   menuItem: HTMLElement,
@@ -18,13 +19,27 @@ class Store implements StoreInterface {
 
   menus: OpenMenuItem[] = [];
 
-  constructor() {
-    this.modeler = new Modeler();
+  mainView: Renderer;
+
+  shaderPreview: Renderer;
+
+  private constructor(mainRenderer: Renderer, previewRenderer: Renderer) {
+    this.mainView = mainRenderer;
+    this.shaderPreview = previewRenderer;
+
+    this.modeler = new Modeler(previewRenderer);
 
     makeObservable(this, {
       menus: observable,
       graph: observable,
     })
+  }
+
+  static async create() {
+    const mainRenderer = await Renderer.create();
+    const previewRenderer = await Renderer.create();
+
+    return new Store(mainRenderer, previewRenderer)
   }
 
   async applyChanges(): Promise<void> {
@@ -68,7 +83,7 @@ export const convertType = (type: string) => {
   }
 }
 
-const store = new Store();
+const store = await Store.create();
 const StoreContext = React.createContext(store);
 
 const useStores = (): Store => (

@@ -1,12 +1,15 @@
 import React from 'react';
-import Http from '../Http/src';
-import Modal from '../Modal';
-import styles from './OpenShader.module.scss';
+import Http from './Http/src';
+import Modal from './Modal';
+import styles from './SelectShader.module.scss';
+import SelectShaderEntry from './SelectShaderEntry';
 
 type PropsType = {
+  onSelection: (id: number) => void,
 }
 
-const OpenShader: React.FC<PropsType> = ({
+const SelectShader: React.FC<PropsType> = ({
+  onSelection,
 }) => {
   const [shaders, setShaders] = React.useState<{ id: number, name: string }[]>([])
 
@@ -17,22 +20,19 @@ const OpenShader: React.FC<PropsType> = ({
       const list = await response.body()
 
       setShaders(list);
-      console.log(list)
     }
   }
-
-  React.useEffect(() => {
-    queryList()
-  }, [])
 
   const ref = React.useRef<HTMLButtonElement>(null);
   const [showShaders, setShowShaders] = React.useState<boolean>(false);
   const [position, setPostion] = React.useState<{ x: number, y: number }>({ x: 0, y: 0});
 
-  const handleOpenShader = () => {
+  const handleSelectShader = () => {
     const element = ref.current;
 
     if (element) {
+      queryList()
+
       const rect = element.getBoundingClientRect();
 
       setPostion({ x: rect.left, y: rect.bottom });
@@ -46,12 +46,12 @@ const OpenShader: React.FC<PropsType> = ({
 
   return (
     <>
-      <button ref={ref} type="button" className="save-button" onClick={handleOpenShader}>Open</button>
+      <button ref={ref} type="button" className="save-button" onClick={handleSelectShader}>Add</button>
       <Modal show={showShaders} onHide={handleHideShaders}>
         <div className={styles.list} style={{ left: position.x, top: position.y }}>
           {
             shaders.map((s) => (
-              <div>{s.name}</div>
+              <SelectShaderEntry  key={s.id} shader={s} onSelection={onSelection} />
             ))
           }              
         </div>
@@ -60,4 +60,4 @@ const OpenShader: React.FC<PropsType> = ({
   )
 }
 
-export default OpenShader;
+export default SelectShader;
