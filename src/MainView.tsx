@@ -8,6 +8,7 @@ import UploadFileButton from './UploadFileButton';
 import TextureList from './TextureList';
 import Canvas3d from './Canvas3d';
 import { useStores } from './State/store';
+import ObjectList from './ObjectList';
 
 type PropsType = {
   onEditShader: (id: number) => void,
@@ -38,10 +39,11 @@ const MainView: React.FC<PropsType> = ({
     <div className={styles.main}>
       <Canvas3d renderer={mainView} />
       <div className={styles.sidebar}>
+        <TextureList />
         <ShaderList onEdit={handleEditShader} />
         <MaterialList />
-        <TextureList />
         <ModelList />
+        <ObjectList />
       </div>
     </div>
   )
