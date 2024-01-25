@@ -41,6 +41,29 @@ const ObjectList: React.FC = () => {
     store.selectObject(selection.id);
   }
 
+  const handleDelete = async (id: number) => {
+    const response = await Http.delete(`/game-objects/${id}`)
+
+    if (response.ok) {
+      setObjects((prev) => {
+        const index = objects.findIndex((o) => o.id === id)
+
+        if (index !== -1) {
+          return [
+            ...prev.slice(0, index),
+            ...prev.slice(index + 1),
+          ]
+        }
+
+        return prev;
+      })
+
+      if (selection?.id === id) {
+        setSelection(null);
+      }
+    }
+  }
+
   const renderAddButton = () => (
     <SelectModel onSelection={handleAdd} />
   )
@@ -49,7 +72,7 @@ const ObjectList: React.FC = () => {
     <SidebarList title="Game Objects" addButton={renderAddButton()}>
       {
         objects.map((o) => (
-          <ObjectListEntry key={o.id} object={o} onSelect={handleSelect} selected={o.id === selection?.id } />
+          <ObjectListEntry key={o.id} object={o} onSelect={handleSelect} onDelete={handleDelete} selected={o.id === selection?.id } />
         ))
       }              
     </SidebarList>

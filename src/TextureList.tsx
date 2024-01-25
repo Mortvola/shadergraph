@@ -1,8 +1,8 @@
 import React from 'react';
 import Http from './Http/src';
-import styles from './TextureList.module.scss';
 import UploadFileButton from './UploadFileButton';
 import SidebarList from './SidebarList';
+import SidebarListEntry from './SidebarListEntry';
 
 const TextureList: React.FC = () => {
   const [textures, setTexturs] = React.useState<{ id: number, name: string }[]>([])
@@ -33,6 +33,25 @@ const TextureList: React.FC = () => {
     }
   }
 
+  const handleDelete = async (id: number) => {
+    const response = await Http.delete(`/textures/${id}`)
+
+    if (response.ok) {
+      setTexturs((prev) => {
+        const index = textures.findIndex((m) => m.id === id)
+
+        if (index !== -1) {
+          return [
+            ...prev.slice(0, index),
+            ...prev.slice(index + 1),
+          ]
+        }
+
+        return prev;
+      })
+    }
+  }
+
   const renderAddButton = () => (
     <UploadFileButton onFileSelection={handleFileSelection} label="Add" />
   )
@@ -41,7 +60,9 @@ const TextureList: React.FC = () => {
     <SidebarList title="Textures" addButton={renderAddButton()}>
       {
         textures.map((m) => (
-          <div key={m.id}>{m.name}</div>
+          <SidebarListEntry key={m.id} id={m.id} onDelete={handleDelete}>
+            <div key={m.id}>{m.name}</div>
+          </SidebarListEntry>
         ))
       }              
     </SidebarList>

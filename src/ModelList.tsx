@@ -3,12 +3,14 @@ import Http from './Http/src';
 import styles from './ModelList.module.scss';
 import UploadFileButton from './UploadFileButton';
 import SidebarList from './SidebarList';
+import { ModelRecord } from './State/types';
+import ModelListEntry from './ModelListEntry';
 
 const ModelList: React.FC = () => {
-  const [models, setModels] = React.useState<{ id: number, name: string }[]>([])
+  const [models, setModels] = React.useState<ModelRecord[]>([])
 
   const queryList = async () => {
-    const response = await Http.get<{ id: number, name: string }[]>('/models-list');
+    const response = await Http.get<ModelRecord[]>('/models-list');
 
     if (response.ok) {
       const list = await response.body()
@@ -33,6 +35,25 @@ const ModelList: React.FC = () => {
     }
   }
 
+  const handleDelete = async (id: number) => {
+    const response = await Http.delete(`/models/${id}`)
+
+    if (response.ok) {
+      setModels((prev) => {
+        const index = models.findIndex((m) => m.id === id)
+
+        if (index !== -1) {
+          return [
+            ...prev.slice(0, index),
+            ...prev.slice(index + 1),
+          ]
+        }
+
+        return prev;
+      })
+    }
+  }
+
   const renderAddButton = () => (
     <UploadFileButton onFileSelection={handleFileSelection} label="Add" />
   )
@@ -41,7 +62,7 @@ const ModelList: React.FC = () => {
     <SidebarList title="Models" addButton={renderAddButton()}>
       {
         models.map((m) => (
-          <div key={m.id}>{m.name}</div>
+          <ModelListEntry key={m.id} model={m} onDelete={handleDelete} />
         ))
       }              
     </SidebarList>

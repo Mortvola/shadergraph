@@ -1,15 +1,18 @@
 import React from 'react';
 import styles from './ObjectList.module.scss';
+import SidebarListEntry from './SidebarListEntry';
 
 type PropsType = {
   object: { id: number, name: string }
   onSelect: (selection: { id: number, name: string }) => void,
+  onDelete: (id: number) => void,
   selected: boolean,
 }
 
 const ObjectListEntry: React.FC<PropsType> = ({
   object,
   onSelect,
+  onDelete,
   selected,
 }) => {
   const handleDragStart = () => {
@@ -29,16 +32,18 @@ const ObjectListEntry: React.FC<PropsType> = ({
   }
 
   return (
-    <div
-      className={`${styles.entry} ${selected ? styles.selected : ''}`}
-      onClick={handleClick}
-      onDragStart={handleDragStart}
-      onDrag={handleDrag}
-      onDragEnd={handleDragEnd}
-      draggable
-    >
-      {object.name}
-    </div>
+    <SidebarListEntry id={object.id} onDelete={onDelete}>
+      <div
+        className={`${styles.entry} ${selected ? styles.selected : ''}`}
+        onClick={handleClick}
+        onDragStart={handleDragStart}
+        onDrag={handleDrag}
+        onDragEnd={handleDragEnd}
+        draggable
+      >
+        {object.name}
+      </div>
+    </SidebarListEntry>
   )
 }
 

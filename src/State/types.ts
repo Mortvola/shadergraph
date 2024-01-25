@@ -46,3 +46,7 @@ export type MaterialRecord = {
   properties: PropertyInterface[],
 }
 
+export type ModelRecord = {
+  id: number,
+  name: string,
+}

@@ -33,6 +33,29 @@ const ShaderList: React.FC<PropsType> = ({
     store.graph = new Graph(store);
   }
 
+  const handleDelete = async (id: number) => {
+    const response = await Http.delete(`/shader-descriptors/${id}`)
+
+    if (response.ok) {
+      setShaders((prev) => {
+        const index = shaders.findIndex((s) => s.id === id)
+
+        if (index !== -1) {
+          return [
+            ...prev.slice(0, index),
+            ...prev.slice(index + 1),
+          ]
+        }
+
+        return prev;
+      })
+
+      // if (selection?.id === id) {
+      //   setSelection(null);
+      // }
+    }
+  }
+
   const renderButton = () => (
     <button type="button" onClick={handleAddClick}>Add</button>
   )
@@ -41,7 +64,7 @@ const ShaderList: React.FC<PropsType> = ({
     <SidebarList title="Shaders" addButton={renderButton()}>
       {
         shaders.map((s) => (
-          <ShaderListEntry key={s.id} item={s} onEdit={onEdit} />
+          <ShaderListEntry key={s.id} item={s} onEdit={onEdit} onDelete={handleDelete} />
         ))
       }
     </SidebarList>

@@ -8,6 +8,7 @@ import MaterialListEntry from './MaterialListEntry';
 import { useStores } from './State/store';
 import { MaterialRecord } from './State/types';
 import { observer } from 'mobx-react-lite';
+import { runInAction } from 'mobx';
 
 const MaterialList: React.FC = observer(() => {
   const store = useStores();
@@ -48,6 +49,27 @@ const MaterialList: React.FC = observer(() => {
     store.selectMaterial(selection);
   }
 
+  const handleDelete = async (id: number) => {
+    const response = await Http.delete(`/materials/${id}`)
+
+    if (response.ok) {
+      runInAction(() => {
+        const index = store.materials.materials.findIndex((m) => m.id === id)
+
+        if (index !== -1) {
+            store.materials.materials = [
+              ...store.materials.materials.slice(0, index),
+              ...store.materials.materials.slice(index + 1),
+            ]  
+        }
+      })
+
+      if (selection?.id === id) {
+        setSelection(null);
+      }
+    }
+  }
+
   const renderAddButton = () => (
     <SelectShader onSelection={handleAdd} />
   )
@@ -56,7 +78,7 @@ const MaterialList: React.FC = observer(() => {
     <SidebarList title="Materials" addButton={renderAddButton()}>
       {
         store.materials.materials.map((m) => (
-          <MaterialListEntry key={m.id} material={m} onSelect={handleSelect} selected={m.id === selection?.id} />
+          <MaterialListEntry key={m.id} material={m} onSelect={handleSelect} onDelete={handleDelete} selected={m.id === selection?.id} />
         ))
       }              
     </SidebarList>

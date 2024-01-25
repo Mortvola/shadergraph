@@ -4,3 +4,9 @@
   row-gap: 0.25rem;
   user-select: none;
 }
+
+.entry {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
