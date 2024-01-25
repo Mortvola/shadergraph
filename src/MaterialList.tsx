@@ -7,16 +7,13 @@ import SidebarList from './SidebarList';
 import MaterialListEntry from './MaterialListEntry';
 import { useStores } from './State/store';
 import { MaterialRecord } from './State/types';
+import { observer } from 'mobx-react-lite';
 
-const MaterialList: React.FC = () => {
+const MaterialList: React.FC = observer(() => {
   const store = useStores();
-  const [material, setMaterials] = React.useState<MaterialRecord[]>([])
 
   React.useEffect(() => {
-    (async () => {
-      const list = await store.materials.getList();
-      setMaterials(list);  
-    })()
+    store.materials.query();
   }, [store.materials])
 
   const addMaterial = async (values: unknown) => {
@@ -27,7 +24,7 @@ const MaterialList: React.FC = () => {
     }
   }
 
-  const handleSelection = async (id: number) => {
+  const handleAdd = async (id: number) => {
     const response = await Http.get<{ name: string, descriptor: MaterialDescriptor }>(`/shader-descriptors/${id}`)
 
     if (response.ok) {
@@ -48,22 +45,22 @@ const MaterialList: React.FC = () => {
   const handleSelect = (selection: MaterialRecord) => {
     setSelection(selection);
 
-    store.selectMaterial(selection.id);
+    store.selectMaterial(selection);
   }
 
   const renderAddButton = () => (
-    <SelectShader onSelection={handleSelection} />
+    <SelectShader onSelection={handleAdd} />
   )
 
   return (
     <SidebarList title="Materials" addButton={renderAddButton()}>
       {
-        material.map((m) => (
-          <MaterialListEntry material={m} onSelect={handleSelect} selected={m.id === selection?.id} />
+        store.materials.materials.map((m) => (
+          <MaterialListEntry key={m.id} material={m} onSelect={handleSelect} selected={m.id === selection?.id} />
         ))
       }              
     </SidebarList>
   )
-}
+})
 
 export default MaterialList;

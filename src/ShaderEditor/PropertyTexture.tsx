@@ -1,34 +1,26 @@
 import React from 'react';
-import { runInAction } from 'mobx';
 import { ValueType } from '../Renderer/ShaderBuilder/Types';
-import { GraphInterface } from '../State/types';
 import Http from '../Http/src';
 
 type PropsType = {
-  graph: GraphInterface,
   node: { value: ValueType },
+  onChange: (id: number) => void,
 }
 
 const PropertyTexture: React.FC<PropsType> = ({
-  graph,
   node,
+  onChange,
 }) => {
   const [value, setValue] = React.useState<string>((node.value as string));
 
   const handleChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     const id = parseInt(event.target.value, 10);
-
     setValue(id.toString());
-    
-    runInAction(() => {
-      node.value = id;
-      graph.changed = true;
-    })
+    onChange(id);
   }
 
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();
-    // graph.selectNode(node)
   }
 
   const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {

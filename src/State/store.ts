@@ -1,8 +1,8 @@
 import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
-import { StoreInterface } from "./types";
-import { makeObservable, observable } from "mobx";
+import { MaterialRecord, StoreInterface } from "./types";
+import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
 import Http from "../Http/src";
 import { PropertyInterface } from "../Renderer/ShaderBuilder/Types";
@@ -30,6 +30,8 @@ class Store implements StoreInterface {
 
   materials: Materials;
 
+  selectedMaterial: MaterialRecord   | null = null;
+
   private constructor(mainRenderer: Renderer, previewRenderer: Renderer) {
     this.mainView = mainRenderer;
     this.shaderPreview = previewRenderer;
@@ -38,10 +40,11 @@ class Store implements StoreInterface {
     this.modeler = new Modeler(previewRenderer);
 
     this.materials = new Materials();
-    
+
     makeObservable(this, {
       menus: observable,
       graph: observable,
+      selectedMaterial: observable,
     })
   }
 
@@ -80,13 +83,10 @@ class Store implements StoreInterface {
     }
   }
 
-  async selectMaterial(id: number) {
-    let response = await Http.get<{ id: number, name: string, shaderId: number, properties: PropertyInterface[] }>(`/materials/${id}`)
-
-    if (response.ok) {
-      const material = await response.body();
-      console.log('test')
-    }
+  async selectMaterial(materialRecord: MaterialRecord) {
+    runInAction(() => {
+      this.selectedMaterial = materialRecord
+    })
   }
 }
 

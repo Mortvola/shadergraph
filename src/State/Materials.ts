@@ -1,3 +1,4 @@
+import { makeObservable, observable, runInAction } from "mobx";
 import Http from "../Http/src";
 import Material from "../Renderer/Materials/Material";
 import { MaterialDescriptor } from "../Renderer/Materials/MaterialDescriptor";
@@ -5,13 +6,19 @@ import { DrawableNodeInterface } from "../Renderer/types";
 import { MaterialRecord } from "./types";
 
 class Materials {
-  private materials: MaterialRecord[] = [];
+  materials: MaterialRecord[] = [];
 
   materialMap: Map<number, Material> = new Map();
   
   shaderMap: Map<number, MaterialDescriptor> = new Map();
 
   queried = false;
+
+  constructor() {
+    makeObservable(this, {
+      materials: observable,
+    })
+  }
 
   async query() {
     if (!this.queried) {
@@ -20,17 +27,12 @@ class Materials {
       if (response.ok) {
         const list = await response.body()
   
-        this.materials = list;
-
-        this.queried = true;
+        runInAction(() => {
+          this.materials = list;
+          this.queried = true;  
+        })
       }
     }
-  }
-
-  async getList(): Promise<MaterialRecord[]> {
-    await this.query();
-
-    return this.materials;
   }
 
   async applyMaterial(id: number, node: DrawableNodeInterface): Promise<void> {

@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './Inspector.module.scss'
 import ModelTree from './ModelTree/ModelTree';
-import Tab from './Tab';
-import TabPane from './TabPane';
+import Tab from './Tabs/Tab';
+import TabPane from './Tabs/TabPane';
 import Material from './Material';
-import Tabs from './Tabs';
+import Tabs from './Tabs/Tabs';
 
 const Inspector: React.FC = () => {
   const [tabKey, setTabKey] = React.useState<string>('Object')

@@ -7,6 +7,7 @@ import Http from './Http/src';
 import { MaterialDescriptor } from './Renderer/Materials/MaterialDescriptor';
 import Graph from './State/Graph';
 import { observer } from 'mobx-react-lite';
+import { runInAction } from 'mobx';
 
 const App: React.FC = observer(() => {
   const store = useStores();
@@ -19,7 +20,9 @@ const App: React.FC = observer(() => {
       if (response.ok) {
         const descriptor = await response.body();
 
-        store.graph = new Graph(store, id, descriptor.name, descriptor.descriptor);    
+        runInAction(() => {
+          store.graph = new Graph(store, id, descriptor.name, descriptor.descriptor);    
+        })
       }
     })()
   }

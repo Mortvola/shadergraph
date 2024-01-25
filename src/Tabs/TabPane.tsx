@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './Tabs.module.scss';
 
 type PropsType = {
   tabKey: string,
@@ -11,7 +12,7 @@ const TabPane: React.FC<PropsType> = ({
   currentKey,
   children,
 }) => (
-  <div hidden={tabKey !== currentKey}>
+  <div className={styles.pane} hidden={tabKey !== currentKey}>
     { children }
   </div>
 )

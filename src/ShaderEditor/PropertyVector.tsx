@@ -1,29 +1,17 @@
 import React from 'react';
-import { runInAction } from 'mobx';
-import { useStores } from '../State/store';
 import { ValueType } from '../Renderer/ShaderBuilder/Types';
 import Float from './Float';
 import styles from './Properties.module.scss'
-import { GraphInterface } from '../State/types';
 
 type PropsType = {
-  graph: GraphInterface,
   node: { value: ValueType },
+  onChange: (v: number, index?: number) => void,
 }
 
 const PropertyVector: React.FC<PropsType> = ({
-  graph,
   node,
+  onChange,
 }) => {
-  const handleValue0Change = (v: number, index?: number) => {
-    runInAction(() => {
-      if (Array.isArray(node.value)) {
-        node.value[index ?? 0] = v;
-        graph.changed = true;
-      }
-    })  
-  }
-
   const getLabel = (i: number) => (
     i === 3 ? 'W:' : `${String.fromCharCode('X'.charCodeAt(0) + i)}:`
   )
@@ -44,7 +32,7 @@ const PropertyVector: React.FC<PropsType> = ({
     <div className={styles.vector} onClick={handleClick} onPointerDown={handlePointerDown} onKeyDown={handleKeyDown}>
         {
           Array.isArray(node.value) && node.value.map((v, i) => (
-            <Float value={v} onChange={handleValue0Change} label={getLabel(i)} index={i} />
+            <Float key={i} value={v} onChange={onChange} label={getLabel(i)} index={i} />
           ))
         }
     </div>

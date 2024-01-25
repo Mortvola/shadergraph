@@ -26,6 +26,7 @@ const SimpleVector: React.FC<PropsType> = ({
       {
         value.slice(0, length).map((v, index) => (
           <Float
+            key={index}
             value={value[index]}
             onChange={handleChange}
             index={index}

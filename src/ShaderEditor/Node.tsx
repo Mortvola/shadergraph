@@ -4,10 +4,9 @@ import styles from './Node.module.scss';
 import NodeInputPort from './NodeInputPort';
 import NodeOutputPort from './NodeOutputPort';
 import { GraphNodeInterface, isPropertyNode, isValueNode } from '../Renderer/ShaderBuilder/Types';
-import Vector from './Vector';
 import Draggable from './Draggable';
-import PropertyString from './PropertyString';
 import { GraphInterface } from '../State/types';
+import ValueInput from './ValueInput';
 
 type PropsType = {
   graph: GraphInterface,
@@ -40,6 +39,10 @@ const Node: React.FC<PropsType> = observer(({
     event.stopPropagation();
   }
 
+  const handleValueChange = () => {
+    graph.changed = true;
+  }
+
   const renderNode = () => {
     if (isPropertyNode(node)) {
       return (
@@ -57,30 +60,10 @@ const Node: React.FC<PropsType> = observer(({
     }
     
     if (isValueNode(node) && !expanded) {
-      const propertyField = () => {
-        switch (node.value.dataType) {
-          case 'vec2f':
-          case 'vec3f':
-          case 'vec4f':
-            return <Vector graph={graph} node={node.value} />;
-
-          case 'float':
-            return <Vector graph={graph} node={node.value} />;
-
-          case 'string':
-          case 'texture2D':
-            return <PropertyString graph={graph} node={node.value} />
-        }
-
-        return null;
-      }
-
       return (
         <>
           <div className={styles.value}>
-            {
-              propertyField()
-            }
+            <ValueInput value={node.value} onChange={handleValueChange} />
             <div onClick={handleExpansionClick} onPointerDown={handlePointerDown2}>V</div>
             <NodeOutputPort key={node.outputPort[0].name} port={node.outputPort[0]} hideName />
           </div>

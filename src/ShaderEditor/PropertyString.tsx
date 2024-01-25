@@ -1,31 +1,24 @@
 import React from 'react';
-import { runInAction } from 'mobx';
 import { ValueType } from '../Renderer/ShaderBuilder/Types';
-import { GraphInterface } from '../State/types';
 
 type PropsType = {
-  graph: GraphInterface,
   node: { value: ValueType },
+  onChange: (value: string) => void,
 }
 
 const PropertyString: React.FC<PropsType> = ({
-  graph,
   node,
+  onChange,
 }) => {
   const [value, setValue] = React.useState<string>((node.value as string));
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     setValue(event.target.value);
-    
-    runInAction(() => {
-      node.value = event.target.value;
-      graph.changed = true;
-    })
+    onChange(event.target.value);
   }
 
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();
-    // graph.selectNode(node)
   }
 
   const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {

@@ -1,17 +1,15 @@
 import React from 'react';
-import { runInAction } from 'mobx';
 import { ValueType } from '../Renderer/ShaderBuilder/Types';
 import styles from './Properties.module.scss'
-import { GraphInterface } from '../State/types';
 
 type PropsType = {
   node: { value: ValueType },
-  graph: GraphInterface,
+  onChange: (value: number) => void,
 }
 
 const PropertyFloat: React.FC<PropsType> = ({
   node,
-  graph,
+  onChange,
 }) => {
   const [value, setValue] = React.useState<string>((node.value as string));
 
@@ -20,10 +18,7 @@ const PropertyFloat: React.FC<PropsType> = ({
     const v = parseFloat(event.target.value);
 
     if (!isNaN(v)) {
-      runInAction(() => {
-        node.value = v;
-        graph.changed = true;
-      })
+      onChange(v);
     }
   }
 

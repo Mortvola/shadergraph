@@ -9,6 +9,7 @@ import PropertyVector from './PropertyVector';
 import Modal from '../Modal';
 import { GraphInterface } from '../State/types';
 import PropertyTexture from './PropertyTexture';
+import ValueInput from './ValueInput';
 
 type PropsType = {
   graph: GraphInterface,
@@ -46,27 +47,13 @@ const PropertyDialog: React.FC<PropsType> = observer(({
     })
   }
 
-  const renderValue = () => {
-    switch (property.value.dataType) {
-      case 'string':
-        return <PropertyString graph={graph} node={property.value} />
-
-      case 'texture2D':
-        return <PropertyTexture graph={graph} node={property.value} />
-
-      case 'vec2f':
-      case 'vec3f':
-      case 'vec4f':
-        return <PropertyVector graph={graph} node={property.value} />
-
-        case 'float':
-        return <PropertyFloat graph={graph} node={property.value} />
-    }
-  }
-
   const handleDeleteClick = () => {
     graph.deleteProperty(property);
     onHide();
+  }
+
+  const handleValueChange = () => {
+    graph.changed = true;
   }
 
   return (
@@ -80,9 +67,7 @@ const PropertyDialog: React.FC<PropsType> = observer(({
       >
         <div className={styles.property}>
           <input type="text" value={property.name} onChange={handleNameChange} />
-          {
-            renderValue()
-          }
+          <ValueInput value={property.value} onChange={handleValueChange} />
         </div>
         <button type="button" onClick={handleDeleteClick}>X</button>
       </div>
