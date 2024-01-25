@@ -35,12 +35,14 @@ const ValueInput: React.FC<PropsType> = observer(({
   const handleTextureChange = (id: number) => {
     runInAction(() => {
       value.value = id;
+      onChange()
     })
   }
 
   const handleNumberChange = (v: number) => {
     runInAction(() => {
       value.value = v;
+      onChange();
     })
   }
 

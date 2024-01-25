@@ -62,6 +62,14 @@ class Materials {
       node.material = material;
     }
   }
+
+  applyPropertyValues(materialRecord: MaterialRecord) {
+    let material = this.materialMap.get(materialRecord.id);
+
+    if (material) {
+      material.setPropertyValues(materialRecord.properties);
+    }
+  }
 }
 
 export default Materials;

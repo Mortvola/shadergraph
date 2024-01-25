@@ -21,7 +21,9 @@ const Material: React.FC = observer(() => {
   }
 
   const handleValueChange = () => {
-
+    if (store.selectedMaterial) {
+      store.materials.applyPropertyValues(store.selectedMaterial);
+    }
   }
 
   return (
