@@ -70,6 +70,12 @@ class Materials {
       material.setPropertyValues(materialRecord.properties);
     }
   }
+
+  getMaterialName(id: number): string | undefined {
+    const materialRecord = this.materials.find((m) => m.id === id)
+
+    return materialRecord?.name
+  }
 }
 
 export default Materials;

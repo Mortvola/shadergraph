@@ -5,12 +5,28 @@ import { SceneNodeInterface } from '../Renderer/types';
 import { isContainerNode } from '../Renderer/Drawables/SceneNodes/ContainerNode';
 import { isDrawableNode } from '../Renderer/Drawables/SceneNodes/utils';
 import MeshNode from './MeshNode';
+import { runInAction } from 'mobx';
 
 const ModelTree: React.FC = observer(() => {
-  const { mainViewModeler: { model }} = useStores();
+  const { mainViewModeler: { model }, selectedGameObject} = useStores();
 
   if (model === null) {
     return null;
+  }
+
+  const handleMaterialAssignment = (nodeName: string, materialId: number) => {
+    if (selectedGameObject) {
+      runInAction(() => {
+        if (!selectedGameObject.object.materials) {
+          selectedGameObject.object.materials = {}
+        }
+  
+        selectedGameObject.object.materials = {
+          ...selectedGameObject.object.materials,
+          [nodeName]: materialId,
+        }  
+      })
+    }
   }
 
   const renderTree = () => {
@@ -24,7 +40,7 @@ const ModelTree: React.FC = observer(() => {
 
       if (isDrawableNode(node.node)) {
         elements.push(
-          <MeshNode node={node.node} level={node.level} />
+          <MeshNode node={node.node} level={node.level} onMaterialAssignment={handleMaterialAssignment} />
         )  
       }
       else {

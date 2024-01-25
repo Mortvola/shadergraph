@@ -1,6 +1,5 @@
 import React from 'react';
 import Http from './Http/src';
-import styles from './ModelList.module.scss';
 import UploadFileButton from './UploadFileButton';
 import SidebarList from './SidebarList';
 import { ModelRecord } from './State/types';

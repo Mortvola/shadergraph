@@ -1,17 +1,21 @@
 import React from 'react';
 import { DrawableNodeInterface } from '../Renderer/types';
 import { useStores } from '../State/store';
+import { observer } from 'mobx-react-lite';
+import styles from './ModelTree.module.scss';
 
 type PropsType = {
   node: DrawableNodeInterface,
   level: number,
+  onMaterialAssignment: (nodeName: string, materialId: number) => void,
 }
 
-const MeshNode: React.FC<PropsType> = ({
+const MeshNode: React.FC<PropsType> = observer(({
   node,
   level,
+  onMaterialAssignment,
 }) => {
-  const { materials } = useStores();
+  const { materials, selectedGameObject } = useStores();
 
   const handleDragOver: React.DragEventHandler = (event) => {
     event.preventDefault();
@@ -27,18 +31,45 @@ const MeshNode: React.FC<PropsType> = ({
     const data = event.dataTransfer.getData("application/material");
 
     if (data) {
-      console.log(`drop material: ${data}`)
-
-      materials.applyMaterial(parseInt(data), node)
+      const materialId = parseInt(data);
+      materials.applyMaterial(materialId, node)
+      onMaterialAssignment(node.name, materialId)
     }
   }
 
+  const renderMaterial = () => {
+    let name: string | undefined = '';
+
+    if (selectedGameObject && selectedGameObject.object.materials) {
+      const id = selectedGameObject.object.materials[node.name];
+
+      if (id !== undefined) {
+        name = materials.getMaterialName(id);
+      }
+    }
+
+    if (name) {
+      return (
+        <div>{name}</div>
+      )
+    }
+
+    return null;
+  }
+
   return (
-  <div style={{ marginLeft: 16 * level }} onDrop={handleDrop} onDragOver={handleDragOver}>
-    {node.name ? node.name : 'Unnamed'}
-    {'(Mesh)'}
-  </div>
+    <div className={styles.mesh} style={{ marginLeft: 16 * level }} onDrop={handleDrop} onDragOver={handleDragOver}>
+      <div>
+        {node.name ? node.name : 'Unnamed'}
+      </div>
+      <div>
+        {'(Mesh)'}
+      </div>
+      {
+        renderMaterial()
+      }
+    </div>
   )
-}
+})
 
 export default MeshNode;

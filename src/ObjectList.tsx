@@ -4,14 +4,15 @@ import SidebarList from './SidebarList';
 import SelectModel from './SelectModel';
 import ObjectListEntry from './ObjectListEntry';
 import { useStores } from './State/store';
+import { GameObjectRecord, ModelRecord } from './State/types';
 
 const ObjectList: React.FC = () => {
   const store = useStores();
 
-  const [objects, setObjects] = React.useState<{ id: number, name: string }[]>([])
+  const [objects, setObjects] = React.useState<GameObjectRecord[]>([])
 
   const queryList = async () => {
-    const response = await Http.get<{ id: number, name: string }[]>('/game-objects-list');
+    const response = await Http.get<GameObjectRecord[]>('/game-objects-list');
 
     if (response.ok) {
       const list = await response.body()
@@ -24,7 +25,7 @@ const ObjectList: React.FC = () => {
     queryList()
   }, [])
 
-  const handleAdd = async (entry: { id: number, name: string }) => {
+  const handleAdd = async (entry: ModelRecord) => {
     await Http.post('/game-objects', {
       name: entry.name.replace(/\.[^/.]+$/, ''),
       object: { 
@@ -33,12 +34,12 @@ const ObjectList: React.FC = () => {
     })
   }
 
-  const [selection, setSelection] = React.useState<{ id: Number, name: string } | null>(null);
+  const [selection, setSelection] = React.useState<GameObjectRecord | null>(null);
 
-  const handleSelect = (selection: { id: number, name: string }) => {
+  const handleSelect = (selection: GameObjectRecord) => {
     setSelection(selection);
 
-    store.selectObject(selection.id);
+    store.selectObject(selection);
   }
 
   const handleDelete = async (id: number) => {

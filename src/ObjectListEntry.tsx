@@ -1,10 +1,11 @@
 import React from 'react';
 import styles from './ObjectList.module.scss';
 import SidebarListEntry from './SidebarListEntry';
+import { GameObjectRecord } from './State/types';
 
 type PropsType = {
-  object: { id: number, name: string }
-  onSelect: (selection: { id: number, name: string }) => void,
+  object: GameObjectRecord,
+  onSelect: (selection: GameObjectRecord) => void,
   onDelete: (id: number) => void,
   selected: boolean,
 }

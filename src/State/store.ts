@@ -1,7 +1,7 @@
 import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
-import { MaterialRecord, StoreInterface } from "./types";
+import { GameObjectRecord, MaterialRecord, StoreInterface } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
 import Http from "../Http/src";
@@ -30,7 +30,9 @@ class Store implements StoreInterface {
 
   materials: Materials;
 
-  selectedMaterial: MaterialRecord   | null = null;
+  selectedMaterial: MaterialRecord | null = null;
+
+  selectedGameObject: GameObjectRecord | null = null;
 
   private constructor(mainRenderer: Renderer, previewRenderer: Renderer) {
     this.mainView = mainRenderer;
@@ -45,6 +47,7 @@ class Store implements StoreInterface {
       menus: observable,
       graph: observable,
       selectedMaterial: observable,
+      selectedGameObject: observable,
     })
   }
 
@@ -73,13 +76,17 @@ class Store implements StoreInterface {
     return this.dragObject;
   }
 
-  async selectObject(id: number) {
-    let response = await Http.get<{ object: { modelId: number } }>(`/game-objects/${id}`)
+  async selectObject(gameObject: GameObjectRecord) {
+    let response = await Http.get<{ object: { modelId: number } }>(`/game-objects/${gameObject.id}`)
 
     if (response.ok) {
       const object = await response.body();
 
       this.mainViewModeler.loadModel(`/models/${object.object.modelId}`);
+
+      runInAction(() => {
+        this.selectedGameObject = gameObject;
+      })
     }
   }
 
