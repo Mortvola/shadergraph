@@ -1,0 +1,21 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.25rem;
+  user-select: none;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  row-gap: 0.25rem;
+  user-select: none;
+  overflow-y: auto;
+}
+
+.title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-weight: bold;
+}

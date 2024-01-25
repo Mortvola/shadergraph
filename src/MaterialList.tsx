@@ -1,32 +1,23 @@
 import React from 'react';
 import Http from './Http/src';
-// import { useStores } from './State/store';
-import styles from './MaterialList.module.scss';
 import SelectShader from './SelectShader';
 import { MaterialDescriptor } from './Renderer/Materials/MaterialDescriptor';
 import { generateMaterial } from './Renderer/ShaderBuilder/ShaderBuilder';
+import SidebarList from './SidebarList';
+import MaterialListEntry from './MaterialListEntry';
+import { useStores } from './State/store';
+import { MaterialRecord } from './State/types';
 
 const MaterialList: React.FC = () => {
-  // const store = useStores();
-
-  const [material, setMaterials] = React.useState<{ id: number, name: string }[]>([])
-
-  const queryList = async () => {
-    const response = await Http.get<{ id: number, name: string }[]>('/materials-list');
-
-    if (response.ok) {
-      const list = await response.body()
-
-      setMaterials(list);
-    }
-  }
+  const store = useStores();
+  const [material, setMaterials] = React.useState<MaterialRecord[]>([])
 
   React.useEffect(() => {
-    queryList()
-  }, [])
-
-  const handleAddClick = () => {
-  }
+    (async () => {
+      const list = await store.materials.getList();
+      setMaterials(list);  
+    })()
+  }, [store.materials])
 
   const addMaterial = async (values: unknown) => {
     const response = await Http.post<unknown, number>('/materials', values);
@@ -52,16 +43,26 @@ const MaterialList: React.FC = () => {
     }
   }
 
+  const [selection, setSelection] = React.useState<MaterialRecord | null>(null);
+
+  const handleSelect = (selection: MaterialRecord) => {
+    setSelection(selection);
+
+    store.selectMaterial(selection.id);
+  }
+
+  const renderAddButton = () => (
+    <SelectShader onSelection={handleSelection} />
+  )
+
   return (
-    <div className={styles.list}>
-      Materials
-      <SelectShader onSelection={handleSelection} />
+    <SidebarList title="Materials" addButton={renderAddButton()}>
       {
         material.map((m) => (
-          <div key={m.id}>{m.name}</div>
+          <MaterialListEntry material={m} onSelect={handleSelect} selected={m.id === selection?.id} />
         ))
       }              
-    </div>
+    </SidebarList>
   )
 }
 

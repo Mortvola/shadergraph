@@ -9,6 +9,7 @@ import TextureList from './TextureList';
 import Canvas3d from './Canvas3d';
 import { useStores } from './State/store';
 import ObjectList from './ObjectList';
+import Inspector from './Inspector';
 
 type PropsType = {
   onEditShader: (id: number) => void,
@@ -37,7 +38,10 @@ const MainView: React.FC<PropsType> = ({
 
   return (
     <div className={styles.main}>
-      <Canvas3d renderer={mainView} />
+      <div>
+        <Canvas3d renderer={mainView} />
+        <Inspector />
+      </div>
       <div className={styles.sidebar}>
         <TextureList />
         <ShaderList onEdit={handleEditShader} />

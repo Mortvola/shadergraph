@@ -1,9 +1,9 @@
 import React from 'react';
 import Http from './Http/src';
-import styles from './ShaderList.module.scss';
 import ShaderListEntry from './ShaderListEntry';
 import { useStores } from './State/store';
 import Graph from './State/Graph';
+import SidebarList from './SidebarList';
 
 type PropsType = {
   onEdit: (id: number) => void,
@@ -33,16 +33,18 @@ const ShaderList: React.FC<PropsType> = ({
     store.graph = new Graph(store);
   }
 
+  const renderButton = () => (
+    <button type="button" onClick={handleAddClick}>Add</button>
+  )
+
   return (
-    <div className={styles.list}>
-      Shaders
-      <button type="button" onClick={handleAddClick}>Add</button>
+    <SidebarList title="Shaders" addButton={renderButton()}>
       {
         shaders.map((s) => (
           <ShaderListEntry key={s.id} item={s} onEdit={onEdit} />
         ))
-      }              
-    </div>
+      }
+    </SidebarList>
   )
 }
 

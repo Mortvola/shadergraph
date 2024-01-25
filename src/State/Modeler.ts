@@ -1,3 +1,4 @@
+import { makeObservable, observable, runInAction } from "mobx";
 import Mesh from "../Renderer/Drawables/Mesh";
 import ContainerNode, { isContainerNode } from "../Renderer/Drawables/SceneNodes/ContainerNode";
 import DrawableNode from "../Renderer/Drawables/SceneNodes/DrawableNode";
@@ -17,16 +18,29 @@ class Modeler {
 
   constructor(renderer: Renderer) {
     this.renderer = renderer;
+
+    makeObservable(this, {
+      model: observable,
+    })
   }
 
   async loadModel(url: string) {
     if (!this.loading) {
       this.loading = true;
-      this.model = await loadFbx(url);
+      const model = await loadFbx(url);
 
-      if (this.model) {
-        this.renderer.addSceneNode(this.model);
-      }  
+      if (model) {
+        if (this.model) {
+          this.renderer.removeSceneNode(this.model);
+        }
+
+        runInAction(() => {
+          this.model = model;
+          this.renderer.addSceneNode(this.model);
+        })
+      }
+
+      this.loading = false;
     }
   }
 
@@ -78,6 +92,7 @@ export const loadFbx = async (name: string): Promise<SceneNodeInterface | null> 
             // return mesh;
 
             const drawableNode = await DrawableNode.create(mesh, litMaterial);
+            drawableNode.name = child.name;
 
             node.nodes = [
               ...node.nodes.slice(0, i),

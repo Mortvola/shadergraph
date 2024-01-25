@@ -403,7 +403,6 @@ export const loadFbx = async (arrayBuffer: ArrayBuffer): Promise<SceneNodeInterf
 
         // Keep only the visited edges.
         edges = edges.filter((edge) => edge.visited);
-        console.log(`edges removed: ${priorCount - edges.length}`)
         
         const context: Context = {
           totalOOConnections: edges.length,
@@ -447,9 +446,9 @@ export const loadFbx = async (arrayBuffer: ArrayBuffer): Promise<SceneNodeInterf
           }
         }
 
-        for (const [key, value] of Object.entries(context.unhandled)) {
-          console.log(`${key}: ${value}`)
-        }
+        // for (const [key, value] of Object.entries(context.unhandled)) {
+        //   console.log(`${key}: ${value}`)
+        // }
 
         // setPercentComplete(null);
         // setGeoPercent(null);

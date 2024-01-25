@@ -1,9 +1,13 @@
 import React from 'react';
 import Http from './Http/src';
-import styles from './ObjectList.module.scss';
-import UploadFileButton from './UploadFileButton';
+import SidebarList from './SidebarList';
+import SelectModel from './SelectModel';
+import ObjectListEntry from './ObjectListEntry';
+import { useStores } from './State/store';
 
 const ObjectList: React.FC = () => {
+  const store = useStores();
+
   const [objects, setObjects] = React.useState<{ id: number, name: string }[]>([])
 
   const queryList = async () => {
@@ -20,28 +24,35 @@ const ObjectList: React.FC = () => {
     queryList()
   }, [])
 
-  const handleFileSelection: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
-    if (event.target.files && event.target.files[0]) {
-      const formData = new FormData();
-      formData.append('file', event.target.files[0])
-
-      await fetch('/game-objects', {
-        method: 'POST',
-        body: formData
-      })
-    }
+  const handleAdd = async (entry: { id: number, name: string }) => {
+    await Http.post('/game-objects', {
+      name: entry.name.replace(/\.[^/.]+$/, ''),
+      object: { 
+        modelId: entry.id,
+      }
+    })
   }
 
+  const [selection, setSelection] = React.useState<{ id: Number, name: string } | null>(null);
+
+  const handleSelect = (selection: { id: number, name: string }) => {
+    setSelection(selection);
+
+    store.selectObject(selection.id);
+  }
+
+  const renderAddButton = () => (
+    <SelectModel onSelection={handleAdd} />
+  )
+
   return (
-    <div className={styles.list}>
-      Game Objects
-      <UploadFileButton onFileSelection={handleFileSelection} label="Add" />
+    <SidebarList title="Game Objects" addButton={renderAddButton()}>
       {
         objects.map((o) => (
-          <div key={o.id}>{o.name}</div>
+          <ObjectListEntry key={o.id} object={o} onSelect={handleSelect} selected={o.id === selection?.id } />
         ))
       }              
-    </div>
+    </SidebarList>
   )
 }
 

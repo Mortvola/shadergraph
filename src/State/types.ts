@@ -38,3 +38,11 @@ export interface GraphInterface {
 
   createMaterialDescriptor(): MaterialDescriptor;
 }
+
+export type MaterialRecord = {
+  id: number,
+  name: string,
+  shaderId: number,
+  properties: PropertyInterface[],
+}
+

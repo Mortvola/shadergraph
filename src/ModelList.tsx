@@ -2,6 +2,7 @@ import React from 'react';
 import Http from './Http/src';
 import styles from './ModelList.module.scss';
 import UploadFileButton from './UploadFileButton';
+import SidebarList from './SidebarList';
 
 const ModelList: React.FC = () => {
   const [models, setModels] = React.useState<{ id: number, name: string }[]>([])
@@ -32,16 +33,18 @@ const ModelList: React.FC = () => {
     }
   }
 
+  const renderAddButton = () => (
+    <UploadFileButton onFileSelection={handleFileSelection} label="Add" />
+  )
+
   return (
-    <div className={styles.list}>
-      Models
-      <UploadFileButton onFileSelection={handleFileSelection} label="Add" />
+    <SidebarList title="Models" addButton={renderAddButton()}>
       {
         models.map((m) => (
           <div key={m.id}>{m.name}</div>
         ))
       }              
-    </div>
+    </SidebarList>
   )
 }
 

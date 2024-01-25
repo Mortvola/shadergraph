@@ -2,6 +2,7 @@ import React from 'react';
 import Http from './Http/src';
 import styles from './TextureList.module.scss';
 import UploadFileButton from './UploadFileButton';
+import SidebarList from './SidebarList';
 
 const TextureList: React.FC = () => {
   const [textures, setTexturs] = React.useState<{ id: number, name: string }[]>([])
@@ -32,16 +33,18 @@ const TextureList: React.FC = () => {
     }
   }
 
+  const renderAddButton = () => (
+    <UploadFileButton onFileSelection={handleFileSelection} label="Add" />
+  )
+
   return (
-    <div className={styles.list}>
-      Textures
-      <UploadFileButton onFileSelection={handleFileSelection} label="Add" />
+    <SidebarList title="Textures" addButton={renderAddButton()}>
       {
         textures.map((m) => (
           <div key={m.id}>{m.name}</div>
         ))
       }              
-    </div>
+    </SidebarList>
   )
 }
 

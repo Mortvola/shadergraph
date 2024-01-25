@@ -35,7 +35,7 @@ const SelectShader: React.FC<PropsType> = ({
 
       const rect = element.getBoundingClientRect();
 
-      setPostion({ x: rect.left, y: rect.bottom });
+      setPostion({ x: rect.right, y: rect.bottom });
       setShowShaders(true)
     }
   }
@@ -46,7 +46,7 @@ const SelectShader: React.FC<PropsType> = ({
 
   return (
     <>
-      <button ref={ref} type="button" className="save-button" onClick={handleSelectShader}>Add</button>
+      <button ref={ref} type="button" onClick={handleSelectShader}>Add</button>
       <Modal show={showShaders} onHide={handleHideShaders}>
         <div className={styles.list} style={{ left: position.x, top: position.y }}>
           {
