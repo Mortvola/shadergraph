@@ -12,11 +12,12 @@ import Light, { isLight } from './Drawables/Light';
 import CartesianAxes from './Drawables/CartesianAxes';
 import DrawableNode from './Drawables/SceneNodes/DrawableNode';
 import SceneNode from './Drawables/SceneNodes/SceneNode';
-import { WorldInterface, SceneNodeInterface } from './types';
+import { SceneNodeInterface, RendererInterface } from './types';
 import { lineMaterial } from './Materials/Line';
 import { lights } from "./shaders/lights";
 import { gpu } from './Gpu';
 import { bindGroups } from './BindGroups';
+import { pipelineManager } from './Pipelines/PipelineManager';
 
 const requestPostAnimationFrame = (task: (timestamp: number) => void) => {
   requestAnimationFrame((timestamp: number) => {
@@ -34,7 +35,7 @@ type BindGroup = {
   buffer: GPUBuffer[],
 }
 
-class Renderer implements WorldInterface {
+class Renderer implements RendererInterface {
   initialized = false;
 
   frameBindGroup: BindGroup | null = null;
@@ -83,6 +84,9 @@ class Renderer implements WorldInterface {
   }
 
   static async create() {
+    await gpu.ready();
+    await pipelineManager.ready();
+
     const cartesianAxes = await DrawableNode.create(new CartesianAxes(), lineMaterial)
     
     return new Renderer(bindGroups.getBindGroupLayout0(), cartesianAxes);
@@ -177,6 +181,10 @@ class Renderer implements WorldInterface {
 
   addSceneNode(node: SceneNodeInterface) {
     this.scene.addNode(node);
+  }
+
+  removeSceneNode(node: SceneNodeInterface) {
+    this.scene.removeNode(node);
   }
 
   updateFrame = async (timestamp: number) => {
