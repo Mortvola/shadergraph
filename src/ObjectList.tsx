@@ -27,12 +27,18 @@ const ObjectList: React.FC = observer(() => {
   }, [])
 
   const handleAdd = async (entry: ModelRecord) => {
-    await Http.post('/game-objects', {
+    const response = await Http.post<unknown, GameObjectRecord>('/game-objects', {
       name: entry.name.replace(/\.[^/.]+$/, ''),
       object: { 
         modelId: entry.id,
       }
     })
+
+    if (response.ok) {
+      const object = await response.body();
+
+      setObjects((prev) => prev.concat(object))
+    }
   }
 
   const handleSelect = (selection: GameObjectRecord) => {
