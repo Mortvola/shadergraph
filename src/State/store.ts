@@ -5,7 +5,6 @@ import { GameObjectRecord, MaterialRecord, StoreInterface } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
 import Http from "../Http/src";
-import { PropertyInterface } from "../Renderer/ShaderBuilder/Types";
 import Materials from "./Materials";
 
 type OpenMenuItem = {
@@ -38,8 +37,8 @@ class Store implements StoreInterface {
     this.mainView = mainRenderer;
     this.shaderPreview = previewRenderer;
 
-    this.mainViewModeler = new Modeler(this.mainView);
-    this.modeler = new Modeler(previewRenderer);
+    this.mainViewModeler = new Modeler(this.mainView, this);
+    this.modeler = new Modeler(previewRenderer, this);
 
     this.materials = new Materials();
 
@@ -76,18 +75,20 @@ class Store implements StoreInterface {
     return this.dragObject;
   }
 
-  async selectObject(gameObject: GameObjectRecord) {
-    let response = await Http.get<{ object: { modelId: number } }>(`/game-objects/${gameObject.id}`)
+  async selectObject(gameObject: GameObjectRecord | null) {
+    if (gameObject !== null) {
+      let response = await Http.get<GameObjectRecord>(`/game-objects/${gameObject.id}`)
 
-    if (response.ok) {
-      const object = await response.body();
+      if (response.ok) {
+        const object = await response.body();
 
-      this.mainViewModeler.loadModel(`/models/${object.object.modelId}`);
-
-      runInAction(() => {
-        this.selectedGameObject = gameObject;
-      })
+        this.mainViewModeler.loadModel(`/models/${object.object.modelId}`, object.object.materials);
+      }
     }
+
+    runInAction(() => {
+      this.selectedGameObject = gameObject;
+    })
   }
 
   async selectMaterial(materialRecord: MaterialRecord) {

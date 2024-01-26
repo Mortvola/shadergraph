@@ -7,7 +7,7 @@ import styles from './ModelTree.module.scss';
 type PropsType = {
   node: DrawableNodeInterface,
   level: number,
-  onMaterialAssignment: (nodeName: string, materialId: number) => void,
+  onMaterialAssignment: (node: DrawableNodeInterface, materialId: number) => void,
 }
 
 const MeshNode: React.FC<PropsType> = observer(({
@@ -20,7 +20,7 @@ const MeshNode: React.FC<PropsType> = observer(({
   const handleDragOver: React.DragEventHandler = (event) => {
     event.preventDefault();
 
-    if (event.dataTransfer.types) {
+    if (event.dataTransfer.types[0] === 'application/material') {
       event.dataTransfer.dropEffect = 'link';
     }
   }
@@ -32,8 +32,7 @@ const MeshNode: React.FC<PropsType> = observer(({
 
     if (data) {
       const materialId = parseInt(data);
-      materials.applyMaterial(materialId, node)
-      onMaterialAssignment(node.name, materialId)
+      onMaterialAssignment(node, materialId)
     }
   }
 

@@ -8,6 +8,7 @@ import { litMaterial } from "../Renderer/Materials/Lit";
 import Renderer from "../Renderer/Renderer";
 import { DrawableNodeInterface, MaterialInterface, SceneNodeInterface } from "../Renderer/types";
 import { downloadFbx } from "./LoadFbx";
+import { NodeMaterials, StoreInterface } from "./types";
 
 class Modeler {
   model: SceneNodeInterface | null = null;
@@ -16,15 +17,18 @@ class Modeler {
 
   renderer: Renderer;
 
-  constructor(renderer: Renderer) {
+  store: StoreInterface;
+
+  constructor(renderer: Renderer, store: StoreInterface) {
     this.renderer = renderer;
+    this.store = store;
 
     makeObservable(this, {
       model: observable,
     })
   }
 
-  async loadModel(url: string) {
+  async loadModel(url: string, materials?: NodeMaterials) {
     if (!this.loading) {
       this.loading = true;
       const model = await loadFbx(url);
@@ -34,6 +38,11 @@ class Modeler {
           this.renderer.removeSceneNode(this.model);
         }
 
+        // Traverse model tree and assign materials.
+        if (materials) {
+          await this.assignMaterals(model, materials)
+        }
+
         runInAction(() => {
           this.model = model;
           this.renderer.addSceneNode(this.model);
@@ -41,6 +50,26 @@ class Modeler {
       }
 
       this.loading = false;
+    }
+  }
+
+  async assignMaterals(model: SceneNodeInterface, materials: NodeMaterials) {
+    let stack: SceneNodeInterface[] = [model];
+
+    while (stack.length > 0) {
+      const node = stack[0];
+      stack = stack.slice(1);
+
+      if (isDrawableNode(node)) {
+        const id = materials[node.name];
+
+        if (id !== undefined) {
+          await this.store.materials.applyMaterial(id, node);
+        }
+      }
+      else if (isContainerNode(node)) {
+        stack = stack.concat(node.nodes)
+      }
     }
   }
 

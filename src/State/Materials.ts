@@ -3,9 +3,9 @@ import Http from "../Http/src";
 import Material from "../Renderer/Materials/Material";
 import { MaterialDescriptor } from "../Renderer/Materials/MaterialDescriptor";
 import { DrawableNodeInterface } from "../Renderer/types";
-import { MaterialRecord } from "./types";
+import { MaterialRecord, MaterialsInterface } from "./types";
 
-class Materials {
+class Materials implements MaterialsInterface {
   materials: MaterialRecord[] = [];
 
   materialMap: Map<number, Material> = new Map();

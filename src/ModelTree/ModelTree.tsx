@@ -1,20 +1,30 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { useStores } from '../State/store';
-import { SceneNodeInterface } from '../Renderer/types';
+import { DrawableNodeInterface, SceneNodeInterface } from '../Renderer/types';
 import { isContainerNode } from '../Renderer/Drawables/SceneNodes/ContainerNode';
 import { isDrawableNode } from '../Renderer/Drawables/SceneNodes/utils';
 import MeshNode from './MeshNode';
 import { runInAction } from 'mobx';
+import { GameObjectRecord } from '../State/types';
+import Http from '../Http/src';
 
 const ModelTree: React.FC = observer(() => {
-  const { mainViewModeler: { model }, selectedGameObject} = useStores();
+  const { mainViewModeler: { model }, selectedGameObject, materials} = useStores();
 
   if (model === null) {
     return null;
   }
 
-  const handleMaterialAssignment = (nodeName: string, materialId: number) => {
+  const saveGameObject = async (object: GameObjectRecord) => {
+    const response = await Http.patch(`/game-objects/${object.id}`, object);
+
+    if (response.ok) {
+
+    }
+  }
+
+  const handleMaterialAssignment = (node: DrawableNodeInterface, materialId: number) => {
     if (selectedGameObject) {
       runInAction(() => {
         if (!selectedGameObject.object.materials) {
@@ -23,9 +33,13 @@ const ModelTree: React.FC = observer(() => {
   
         selectedGameObject.object.materials = {
           ...selectedGameObject.object.materials,
-          [nodeName]: materialId,
-        }  
+          [node.name]: materialId,
+        }
+
+        saveGameObject(selectedGameObject)
       })
+
+      materials.applyMaterial(materialId, node)
     }
   }
 

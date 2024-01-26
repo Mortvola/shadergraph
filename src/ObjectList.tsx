@@ -5,8 +5,9 @@ import SelectModel from './SelectModel';
 import ObjectListEntry from './ObjectListEntry';
 import { useStores } from './State/store';
 import { GameObjectRecord, ModelRecord } from './State/types';
+import { observer } from 'mobx-react-lite';
 
-const ObjectList: React.FC = () => {
+const ObjectList: React.FC = observer(() => {
   const store = useStores();
 
   const [objects, setObjects] = React.useState<GameObjectRecord[]>([])
@@ -34,11 +35,7 @@ const ObjectList: React.FC = () => {
     })
   }
 
-  const [selection, setSelection] = React.useState<GameObjectRecord | null>(null);
-
   const handleSelect = (selection: GameObjectRecord) => {
-    setSelection(selection);
-
     store.selectObject(selection);
   }
 
@@ -59,8 +56,8 @@ const ObjectList: React.FC = () => {
         return prev;
       })
 
-      if (selection?.id === id) {
-        setSelection(null);
+      if (store.selectedGameObject?.id === id) {
+        store.selectObject(null);
       }
     }
   }
@@ -73,11 +70,17 @@ const ObjectList: React.FC = () => {
     <SidebarList title="Game Objects" addButton={renderAddButton()}>
       {
         objects.map((o) => (
-          <ObjectListEntry key={o.id} object={o} onSelect={handleSelect} onDelete={handleDelete} selected={o.id === selection?.id } />
+          <ObjectListEntry
+            key={o.id}
+            object={o}
+            onSelect={handleSelect}
+            onDelete={handleDelete}
+            selected={o.id === store.selectedGameObject?.id }
+          />
         ))
       }              
     </SidebarList>
   )
-}
+})
 
 export default ObjectList;

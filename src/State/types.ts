@@ -1,8 +1,15 @@
 import { MaterialDescriptor } from "../Renderer/Materials/MaterialDescriptor";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
+import { DrawableNodeInterface } from "../Renderer/types";
 
 export interface StoreInterface {
+  materials: MaterialsInterface;
+
   applyChanges(): Promise<void>;
+}
+
+export interface MaterialsInterface {
+  applyMaterial(id: number, node: DrawableNodeInterface): Promise<void>
 }
 
 export type CullMode = 'back' | 'none' | 'front';
@@ -51,6 +58,7 @@ export type ModelRecord = {
   name: string,
 }
 
+// Record of node names and assigned material id.
 export type NodeMaterials = Record<string, number>;
 
 export type GameObject = {
