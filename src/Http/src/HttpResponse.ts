@@ -1,4 +1,3 @@
-import Http from './Http';
 import { isRouteNotFound, isServerErrorResponse, serverError } from './ServerError';
 
 class HttpResponse<T = void> {
@@ -24,6 +23,10 @@ class HttpResponse<T = void> {
 
   async json (): Promise<T> {
     return this.body();
+  }
+
+  async blob (): Promise<Blob> {
+    return this.response.blob();
   }
 
   async body (): Promise<T> {
@@ -64,9 +67,9 @@ class HttpResponse<T = void> {
       else if (this.response.status === 401) {
         // If the user is not authorized, then send them 
         // back to the signin page.
-        if (Http.unauthorizedHandler) {
-          Http.unauthorizedHandler();
-        }
+        // if (Http.unauthorizedHandler) {
+        //   Http.unauthorizedHandler();
+        // }
       }
       else if (this.response.status === 404) {
         if (isRouteNotFound(responseBody)) {
