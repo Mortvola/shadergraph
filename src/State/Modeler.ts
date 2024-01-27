@@ -2,13 +2,14 @@ import { makeObservable, observable, runInAction } from "mobx";
 import Mesh from "../Renderer/Drawables/Mesh";
 import ContainerNode, { isContainerNode } from "../Renderer/Drawables/SceneNodes/ContainerNode";
 import DrawableNode from "../Renderer/Drawables/SceneNodes/DrawableNode";
-import { isGeometryNode } from "../Renderer/Drawables/SceneNodes/GeometryNode";
 import { isDrawableNode } from "../Renderer/Drawables/SceneNodes/utils";
 import { litMaterial } from "../Renderer/Materials/Lit";
 import Renderer from "../Renderer/Renderer";
 import { DrawableNodeInterface, MaterialInterface, SceneNodeInterface } from "../Renderer/types";
-import { downloadFbx } from "./LoadFbx";
 import { NodeMaterials, StoreInterface } from "./types";
+import { downloadFbx } from "../Fbx/LoadFbx";
+import { FbxNodeInterface, isFbxContainerNode, isFbxGeometryNode } from "../Fbx/types";
+import { MaterialDescriptor } from "../Renderer/Materials/MaterialDescriptor";
 
 class Modeler {
   model: SceneNodeInterface | null = null;
@@ -107,45 +108,78 @@ export const loadFbx = async (name: string): Promise<SceneNodeInterface | null> 
   const result = await downloadFbx(name)
 
   if (result) {
+    return parseFbxModel(result, name);
+  }
+
+  return null;
+}
+
+const parseFbxModel = async (
+  node: FbxNodeInterface,
+  name: string,
+  nodeMaterials?: NodeMaterials,
+): Promise<SceneNodeInterface | null> => {
+  if (isFbxContainerNode(node)) {
     const container = new ContainerNode();
 
-    for (const node of result) {
-      if (isContainerNode(node)) {
-        for (let i = 0; i < node.nodes.length; i += 1) {
-          const child = node.nodes[i];
+    container.scale = node.scale;
+    container.translate = node.translate;
+    container.qRotate = node.qRotate;
+    container.angles = node.angles.map((a) => a);
 
-          if (isGeometryNode(child)) {
-            const mesh = new Mesh(child.mesh, child.vertices, child.normals, child.texcoords, child.indices);
+    for (const n of node.nodes) {
+      const newNode = await parseFbxModel(n, name, nodeMaterials);
 
-            // For now, just return the first mesh found...
-            // return mesh;
-
-            const drawableNode = await DrawableNode.create(mesh, litMaterial);
-            drawableNode.name = child.name;
-
-            node.nodes = [
-              ...node.nodes.slice(0, i),
-              drawableNode,
-              ...node.nodes.slice(i + 1),
-            ]
-          }
-        }
-
-        container.addNode(node);
-      }
-      else if (isGeometryNode(node)) {
-        const mesh = new Mesh(node.mesh, node.vertices, node.normals, node.texcoords, node.indices);
-
-        // For now, just return the first mesh found...
-        // return mesh;
-
-        const drawableNode = await DrawableNode.create(mesh, litMaterial);
-
-        container.addNode(drawableNode);
+      if (newNode) {
+        container.addNode(newNode);          
       }
     }
 
+    if (container.nodes.length === 0) {
+      return null;
+    }
+
+    // if (container.nodes.length === 1) {
+    //   return container.nodes[0];
+    // }
+
     return container;
+  }
+
+  if (isFbxGeometryNode(node)) {
+    // Have we already created this mesh?
+    // let mesh = this.meshes.get(`${name}:${node.name}`)
+
+    // if (!mesh) {
+      // No, create the mesh now.
+      const mesh = new Mesh(node.mesh, node.vertices, node.normals, node.texcoords, node.indices);
+
+    //   this.meshes.set(`${name}:${node.name}`, mesh)
+    // }
+
+    let materialDescriptor: MaterialDescriptor | undefined
+
+    // if (nodeMaterials) {
+    //   const materialId = nodeMaterials[node.name]
+
+    //   if (materialId !== undefined) {
+    //     materialDescriptor = await this.getMaterial(materialId);
+    //   }  
+    // }
+
+    if (!materialDescriptor) {
+      materialDescriptor = litMaterial;
+    }  
+
+    const drawableNode = await DrawableNode.create(mesh, materialDescriptor);
+    
+    drawableNode.name = node.name;
+    drawableNode.scale = node.scale;
+    drawableNode.translate = node.translate;
+    drawableNode.qRotate = node.qRotate;
+    drawableNode.angles = node.angles.map((a) => a);
+
+    return drawableNode;
   }
 
   return null;
