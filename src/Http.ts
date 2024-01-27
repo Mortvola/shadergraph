@@ -6,10 +6,10 @@ class Http {
     Http.refreshToken = refreshToken;
 
     if (refreshToken) {
-      window.localStorage.setItem('token', refreshToken)
+      localStorage.setItem('token', refreshToken)
     }
     else {
-      window.localStorage.removeItem('token');
+      localStorage.removeItem('token');
     }
   }
 
@@ -44,6 +44,10 @@ class Http {
       ...options,
       headers,
     });
+
+    if (Http.refreshToken === null) {
+      Http.refreshToken = localStorage.getItem('token')
+    }
 
     if (!res.ok && res.status === 401 && Http.refreshToken && options) {
       if (!Http.refreshing) {
@@ -159,7 +163,5 @@ class Http {
     )
   }
 }
-
-Http.refreshToken = window.localStorage.getItem('token')
 
 export default Http;
