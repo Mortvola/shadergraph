@@ -36,10 +36,21 @@ const MainView: React.FC<PropsType> = ({
   //   }
   // }
 
+  const handleWheel: React.WheelEventHandler<HTMLDivElement> = (event) => {
+    if (event.ctrlKey) {
+      mainView?.camera.changeOffset(event.deltaY * 0.01);
+    }
+    else {
+      mainView?.camera.changeRotation(event.deltaX * 0.2)
+    }
+
+    event.stopPropagation();
+  }
+
   return (
     <div className={styles.main}>
       <div>
-        <Canvas3d renderer={mainView} />
+        <Canvas3d renderer={mainView} onWheel={handleWheel} />
         <Inspector />
       </div>
       <div className={styles.sidebar}>

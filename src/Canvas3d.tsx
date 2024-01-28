@@ -5,10 +5,12 @@ import Renderer from './Renderer/Renderer';
 
 type PropsType = {
   renderer: Renderer,
+  onWheel?: (event: React.WheelEvent<HTMLDivElement>) => void,
 }
 
 const Canvas3d: React.FC<PropsType> = ({
   renderer,
+  onWheel,
 }) => {
   const { modeler } = useStores();
 
@@ -60,7 +62,7 @@ const Canvas3d: React.FC<PropsType> = ({
   }, []);
   
   return (
-    <div className="canvas-wrapper">
+    <div className="canvas-wrapper" onWheel={onWheel}>
       <canvas
         ref={canvasRef}
       />

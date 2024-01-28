@@ -3,9 +3,10 @@ import Canvas3d from '../Canvas3d';
 import styles from './Preview.module.scss';
 import Draggable from './Draggable';
 import { useStores } from '../State/store';
+import Http from '../Http/src';
 
 const Preview: React.FC = () => {
-  const { shaderPreview } = useStores();
+  const { shaderPreview, models, modeler } = useStores();
 
   type SizeInfo = { x: number, y: number, width: number, height: number };
 
@@ -39,10 +40,34 @@ const Preview: React.FC = () => {
     }
   }, [position]);
 
+  const handleModelChange: React.ChangeEventHandler<HTMLSelectElement> = async (event) => {
+    modeler.loadModel(`/models/${event.target.value}`)
+  }
+
+  const handleWheel: React.WheelEventHandler<HTMLDivElement> = (event) => {
+    if (event.ctrlKey) {
+      shaderPreview?.camera.changeOffset(event.deltaY * 0.01);
+    }
+    else {
+      shaderPreview?.camera.changeRotation(event.deltaX * 0.2) //, event.deltaY * 0.2)
+    }
+
+    event.stopPropagation();
+  }
+
   return (
     <Draggable onMove={handleMove} position={position} onResize={handleResize} resizable >
-      <div className={styles.preview}>
-        <div>Preview</div>
+      <div className={styles.preview} onWheel={handleWheel}>
+        <div>
+          <div>Preview</div>
+          <select onChange={handleModelChange}>
+            {
+              models.map((m) => (
+                <option key={m.id} value={m.id}>{m.name}</option>
+              ))
+            }              
+          </select>
+        </div>
         <Canvas3d renderer={shaderPreview} />
       </div>
     </Draggable>
