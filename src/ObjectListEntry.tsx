@@ -83,7 +83,7 @@ const ObjectListEntry: React.FC<PropsType> = observer(({
       >
         {
           editing
-            ? <input type="text" value={name} onBlur={handleBlur} onChange={handleChange} />
+            ? <input type="text" value={name} onBlur={handleBlur} onChange={handleChange} autoFocus />
             : object.name
         }
       </div>
