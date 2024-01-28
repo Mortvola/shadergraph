@@ -1,7 +1,7 @@
 import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
-import { GameObjectRecord, MaterialRecord, StoreInterface } from "./types";
+import { GameObjectRecord, MaterialRecord, ModelRecord, StoreInterface } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
 import Http from "../Http/src";
@@ -20,6 +20,8 @@ class Store implements StoreInterface {
   modeler: Modeler;
 
   mainViewModeler: Modeler;
+
+  models: ModelRecord[] = [];
 
   menus: OpenMenuItem[] = [];
 
@@ -47,6 +49,7 @@ class Store implements StoreInterface {
       graph: observable,
       selectedMaterial: observable,
       selectedGameObject: observable,
+      models: observable,
     })
   }
 
@@ -55,6 +58,10 @@ class Store implements StoreInterface {
     const previewRenderer = await Renderer.create();
 
     return new Store(mainRenderer, previewRenderer)
+  }
+
+  getModel(id: number): ModelRecord | undefined {
+    return this.models.find((m) => m.id === id);
   }
 
   async applyChanges(): Promise<void> {

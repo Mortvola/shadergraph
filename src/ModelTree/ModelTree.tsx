@@ -10,7 +10,8 @@ import { GameObjectRecord } from '../State/types';
 import Http from '../Http/src';
 
 const ModelTree: React.FC = observer(() => {
-  const { mainViewModeler: { model }, selectedGameObject, materials} = useStores();
+  const store = useStores();
+  const { mainViewModeler: { model }, selectedGameObject, materials} = store;
 
   if (model === null) {
     return null;
@@ -76,13 +77,19 @@ const ModelTree: React.FC = observer(() => {
     return elements;
   }
 
-  return (
-    <>
-      {
-        renderTree()        
-      }
-    </>
-  )
+  if (selectedGameObject) {
+    return (
+      <div>
+        <div>{`Name: ${selectedGameObject.name}`}</div>
+        <div>{`Model: ${store.getModel(selectedGameObject.object.modelId)?.name ?? ''}`}</div>
+        {
+          renderTree()        
+        }
+      </div>
+    )  
+  }
+
+  return null;
 })
 
 export default ModelTree;

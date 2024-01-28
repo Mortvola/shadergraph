@@ -4,9 +4,13 @@ import UploadFileButton from './UploadFileButton';
 import SidebarList from './SidebarList';
 import { ModelRecord } from './State/types';
 import ModelListEntry from './ModelListEntry';
+import { observer } from 'mobx-react-lite';
+import { useStores } from './State/store';
+import { runInAction } from 'mobx';
 
-const ModelList: React.FC = () => {
-  const [models, setModels] = React.useState<ModelRecord[]>([])
+const ModelList: React.FC = observer(() => {
+  const store = useStores();
+  const { models } = store;
 
   const queryList = async () => {
     const response = await Http.get<ModelRecord[]>('/models-list');
@@ -14,7 +18,9 @@ const ModelList: React.FC = () => {
     if (response.ok) {
       const list = await response.body()
 
-      setModels(list);
+      runInAction(() => {
+        store.models = list;
+      })
     }
   }
 
@@ -38,18 +44,16 @@ const ModelList: React.FC = () => {
     const response = await Http.delete(`/models/${id}`)
 
     if (response.ok) {
-      setModels((prev) => {
+      runInAction(() => {
         const index = models.findIndex((m) => m.id === id)
 
         if (index !== -1) {
-          return [
-            ...prev.slice(0, index),
-            ...prev.slice(index + 1),
+          store.models = [
+            ...models.slice(0, index),
+            ...models.slice(index + 1),
           ]
         }
-
-        return prev;
-      })
+      });
     }
   }
 
@@ -66,6 +70,6 @@ const ModelList: React.FC = () => {
       }              
     </SidebarList>
   )
-}
+})
 
 export default ModelList;
