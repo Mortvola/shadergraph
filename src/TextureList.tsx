@@ -2,18 +2,22 @@ import React from 'react';
 import Http from './Http/src';
 import UploadFileButton from './UploadFileButton';
 import SidebarList from './SidebarList';
-import SidebarListEntry from './SidebarListEntry';
+import { useStores } from './State/store';
+import { TextureRecord } from './State/types';
+import TextureListEntry from './TextureListEntry';
+import { observer } from 'mobx-react-lite';
 
-const TextureList: React.FC = () => {
-  const [textures, setTexturs] = React.useState<{ id: number, name: string }[]>([])
+const TextureList: React.FC = observer(() => {
+  const store = useStores();
+  const [textures, setTextures] = React.useState<TextureRecord[]>([])
 
   const queryList = async () => {
-    const response = await Http.get<{ id: number, name: string }[]>('/textures-list');
+    const response = await Http.get<TextureRecord[]>('/textures-list');
 
     if (response.ok) {
       const list = await response.body()
 
-      setTexturs(list);
+      setTextures(list);
     }
   }
 
@@ -37,7 +41,7 @@ const TextureList: React.FC = () => {
     const response = await Http.delete(`/textures/${id}`)
 
     if (response.ok) {
-      setTexturs((prev) => {
+      setTextures((prev) => {
         const index = textures.findIndex((m) => m.id === id)
 
         if (index !== -1) {
@@ -52,6 +56,14 @@ const TextureList: React.FC = () => {
     }
   }
 
+  const handleSelect = (id: number) => {
+    const selection = textures.find((t) => t.id === id)
+
+    if (selection) {
+      store.selectTexture(selection);
+    }
+  }
+
   const renderAddButton = () => (
     <UploadFileButton onFileSelection={handleFileSelection} label="Add" />
   )
@@ -59,14 +71,18 @@ const TextureList: React.FC = () => {
   return (
     <SidebarList title="Textures" addButton={renderAddButton()}>
       {
-        textures.map((m) => (
-          <SidebarListEntry key={m.id} id={m.id} onDelete={handleDelete}>
-            <div key={m.id}>{m.name}</div>
-          </SidebarListEntry>
+        textures.map((t) => (
+          <TextureListEntry
+            key={t.id}
+            texture={t}
+            onDelete={handleDelete}
+            onSelect={handleSelect}
+            selected={store.selectionType === 'Texture' && t.id === store.selectedTexture?.id}
+          />
         ))
       }              
     </SidebarList>
   )
-}
+})
 
 export default TextureList;

@@ -5,7 +5,7 @@ import SidebarListEntry from './SidebarListEntry';
 
 type PropsType = {
   material: MaterialRecord,
-  onSelect: (selection: MaterialRecord) => void,
+  onSelect: (id: number) => void,
   onDelete: (id: number) => void,
   selected: boolean,
 }
@@ -29,15 +29,10 @@ const MaterialListEntry: React.FC<PropsType> = ({
 
   }
 
-  const handleClick = () => {
-    onSelect(material);
-  }
-
   return (
-    <SidebarListEntry id={material.id} onDelete={onDelete}>
+    <SidebarListEntry id={material.id} onDelete={onDelete} selected={selected} onSelect={onSelect} >
       <div
-        className={`${styles.entry} ${selected ? styles.selected : ''}`}
-        onClick={handleClick}
+        className={styles.entry}
         onDragStart={handleDragStart}
         onDrag={handleDrag}
         onDragEnd={handleDragEnd}

@@ -4,19 +4,21 @@ import ShaderListEntry from './ShaderListEntry';
 import { useStores } from './State/store';
 import Graph from './State/Graph';
 import SidebarList from './SidebarList';
+import { ShaderRecord } from './State/types';
+import { observer } from 'mobx-react-lite';
 
 type PropsType = {
   onEdit: (id: number) => void,
 }
 
-const ShaderList: React.FC<PropsType> = ({
+const ShaderList: React.FC<PropsType> = observer(({
   onEdit,
 }) => {
   const store = useStores();
-  const [shaders, setShaders] = React.useState<{ id: number, name: string }[]>([])
+  const [shaders, setShaders] = React.useState<ShaderRecord[]>([])
 
   const queryList = async () => {
-    const response = await Http.get<{ id: number, name: string }[]>('/shader-list');
+    const response = await Http.get<ShaderRecord[]>('/shader-list');
 
     if (response.ok) {
       const list = await response.body()
@@ -56,6 +58,14 @@ const ShaderList: React.FC<PropsType> = ({
     }
   }
 
+  const handleSelect = (id: number) => {
+    const selection = shaders.find((s) => s.id === id)
+
+    if (selection) {
+      store.selectShader(selection)
+    }
+  }
+
   const renderButton = () => (
     <button type="button" onClick={handleAddClick}>Add</button>
   )
@@ -64,11 +74,18 @@ const ShaderList: React.FC<PropsType> = ({
     <SidebarList title="Shaders" addButton={renderButton()}>
       {
         shaders.map((s) => (
-          <ShaderListEntry key={s.id} item={s} onEdit={onEdit} onDelete={handleDelete} />
+          <ShaderListEntry
+            key={s.id}
+            item={s}
+            onEdit={onEdit}
+            onDelete={handleDelete}
+            onSelect={handleSelect}
+            selected={store.selectionType === 'Shader' && s.id === store.selectedShader?.id}
+          />
         ))
       }
     </SidebarList>
   )
-}
+})
 
 export default ShaderList;

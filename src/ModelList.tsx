@@ -57,6 +57,14 @@ const ModelList: React.FC = observer(() => {
     }
   }
 
+  const handleSelect = (id: number) => {
+    const selection = models.find((m) => m.id === id)
+
+    if (selection) {
+      store.selectModel(selection)
+    }
+  }
+
   const renderAddButton = () => (
     <UploadFileButton onFileSelection={handleFileSelection} label="Add" />
   )
@@ -65,7 +73,13 @@ const ModelList: React.FC = observer(() => {
     <SidebarList title="Models" addButton={renderAddButton()}>
       {
         models.map((m) => (
-          <ModelListEntry key={m.id} model={m} onDelete={handleDelete} />
+          <ModelListEntry
+            key={m.id}
+            model={m}
+            onDelete={handleDelete}
+            onSelect={handleSelect}
+            selected={store.selectionType === 'Model' && m.id === store.selectedModel?.id}
+          />
         ))
       }              
     </SidebarList>

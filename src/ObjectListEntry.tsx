@@ -8,7 +8,7 @@ import Http from './Http/src';
 
 type PropsType = {
   object: GameObjectRecord,
-  onSelect: (selection: GameObjectRecord) => void,
+  onSelect: (id: number) => void,
   onDelete: (id: number) => void,
   selected: boolean,
 }
@@ -29,10 +29,6 @@ const ObjectListEntry: React.FC<PropsType> = observer(({
 
   const handleDragEnd = () => {
 
-  }
-
-  const handleClick = () => {
-    onSelect(object);
   }
 
   const saveGameObject = async (object: GameObjectRecord) => {
@@ -70,10 +66,9 @@ const ObjectListEntry: React.FC<PropsType> = observer(({
   }
 
   return (
-    <SidebarListEntry id={object.id} onDelete={onDelete}>
+    <SidebarListEntry id={object.id} onDelete={onDelete} selected={selected} onSelect={onSelect}>
       <div
-        className={`${styles.entry} ${selected ? styles.selected : ''}`}
-        onClick={handleClick}
+        className={styles.entry}
         onDragStart={handleDragStart}
         onDrag={handleDrag}
         onDragEnd={handleDragEnd}

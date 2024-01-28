@@ -32,7 +32,7 @@ const Material: React.FC = observer(() => {
         store.selectedMaterial?.properties
           .filter((p) => p.value.dataType !== 'sampler')
           .map((p) => (
-            <div className={styles.property} >
+            <div key={p.name} className={styles.property} >
               <div>{`${p.name}:`}</div>
               <ValueInput value={p.value} onChange={handleValueChange} />
             </div>

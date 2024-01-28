@@ -1,7 +1,7 @@
 import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
-import { GameObjectRecord, MaterialRecord, ModelRecord, StoreInterface } from "./types";
+import { GameObjectRecord, MaterialRecord, ModelRecord, ShaderRecord, StoreInterface, TextureRecord } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
 import Http from "../Http/src";
@@ -31,9 +31,17 @@ class Store implements StoreInterface {
 
   materials: Materials;
 
+  selectionType: 'Material' | 'Object' | 'Texture' | 'Shader' | 'Model' | null = null;
+
   selectedMaterial: MaterialRecord | null = null;
 
+  selectedTexture: TextureRecord | null = null;
+
   selectedGameObject: GameObjectRecord | null = null;
+
+  selectedShader: ShaderRecord | null = null;
+
+  selectedModel: ModelRecord | null = null;
 
   private constructor(mainRenderer: Renderer, previewRenderer: Renderer) {
     this.mainView = mainRenderer;
@@ -47,8 +55,12 @@ class Store implements StoreInterface {
     makeObservable(this, {
       menus: observable,
       graph: observable,
+      selectionType: observable,
       selectedMaterial: observable,
+      selectedTexture: observable,
       selectedGameObject: observable,
+      selectedShader: observable,
+      selectedModel: observable,
       models: observable,
     })
   }
@@ -94,13 +106,36 @@ class Store implements StoreInterface {
     }
 
     runInAction(() => {
+      this.selectionType = 'Object'
       this.selectedGameObject = gameObject;
     })
   }
 
   async selectMaterial(materialRecord: MaterialRecord) {
     runInAction(() => {
+      this.selectionType = 'Material'
       this.selectedMaterial = materialRecord
+    })
+  }
+
+  async selectTexture(textureRecord: TextureRecord) {
+    runInAction(() => {
+      this.selectionType = 'Texture'
+      this.selectedTexture = textureRecord
+    })
+  }
+
+  async selectShader(shaderRecord: ShaderRecord) {
+    runInAction(() => {
+      this.selectionType = 'Shader'
+      this.selectedShader = shaderRecord
+    })
+  }
+
+  async selectModel(modelRecord: ModelRecord) {
+    runInAction(() => {
+      this.selectionType = 'Model'
+      this.selectedModel = modelRecord
     })
   }
 }

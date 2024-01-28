@@ -71,3 +71,13 @@ export type GameObjectRecord = {
   name: string,
   object: GameObject,
 }
+
+export type TextureRecord = {
+  id: number,
+  name: string,
+}
+
+export type ShaderRecord = {
+  id: number,
+  name: string,
+}

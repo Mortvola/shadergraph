@@ -41,8 +41,12 @@ const ObjectList: React.FC = observer(() => {
     }
   }
 
-  const handleSelect = (selection: GameObjectRecord) => {
-    store.selectObject(selection);
+  const handleSelect = (id: number) => {
+    const selection = objects.find((o) => o.id === id)
+
+    if (selection) {
+      store.selectObject(selection);
+    }
   }
 
   const handleDelete = async (id: number) => {
@@ -81,7 +85,7 @@ const ObjectList: React.FC = observer(() => {
             object={o}
             onSelect={handleSelect}
             onDelete={handleDelete}
-            selected={o.id === store.selectedGameObject?.id }
+            selected={store.selectionType === 'Object' && o.id === store.selectedGameObject?.id }
           />
         ))
       }              
