@@ -279,11 +279,6 @@ class Graph implements GraphInterface {
   }
 
   async generateMaterial(): Promise<MaterialInterface> {
-    // const shaderGraph = new ShaderGraph();
-    // shaderGraph.fragment = new StageGraph();
-    // shaderGraph.fragment.nodes = this.nodes;
-    // shaderGraph.fragment.edges = this.edges;
-
     const materialDescriptor = this.createMaterialDescriptor();
 
     return await Material.create(materialDescriptor);
