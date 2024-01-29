@@ -47,6 +47,7 @@ class Modeler {
         runInAction(() => {
           this.model = model;
           this.renderer.addSceneNode(this.model);
+          this.store.applyChanges();
         })
       }
 
