@@ -1,6 +1,6 @@
 import React from 'react';
-import Http from './Http/src';
-import Modal from './Modal';
+import Http from '../Http/src';
+import Modal from '../Modal';
 import styles from './SelectModel.module.scss';
 import SelectModelEntry from './SelectModelEntry';
 

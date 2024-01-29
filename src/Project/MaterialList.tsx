@@ -1,6 +1,6 @@
 import React from 'react';
 import Http from '../Http/src';
-import SelectShader from '../SelectShader';
+import SelectShader from './SelectShader';
 import { MaterialDescriptor } from '../Renderer/Materials/MaterialDescriptor';
 import { generateMaterial } from '../Renderer/ShaderBuilder/ShaderBuilder';
 import SidebarList from './SidebarList';

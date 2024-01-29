@@ -9,7 +9,7 @@ import TextureList from './Project/TextureList';
 import Canvas3d from './Canvas3d';
 import { useStores } from './State/store';
 import ObjectList from './Project/ObjectList';
-import Inspector from './Inspector';
+import Inspector from './Inspector/Inspector';
 
 type PropsType = {
   onEditShader: (id: number) => void,

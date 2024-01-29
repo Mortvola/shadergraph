@@ -1,6 +1,6 @@
 import React from 'react';
-import { DrawableNodeInterface } from '../Renderer/types';
-import { useStores } from '../State/store';
+import { DrawableNodeInterface } from '../../Renderer/types';
+import { useStores } from '../../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './ModelTree.module.scss';
 

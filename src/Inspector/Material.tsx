@@ -1,8 +1,8 @@
 import React from 'react';
-import { useStores } from './State/store';
+import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
-import { ValueType } from './Renderer/ShaderBuilder/Types';
-import ValueInput from './ShaderEditor/ValueInput';
+import { ValueType } from '../Renderer/ShaderBuilder/Types';
+import ValueInput from '../ShaderEditor/ValueInput';
 import styles from './Material.module.scss';
 
 const Material: React.FC = observer(() => {

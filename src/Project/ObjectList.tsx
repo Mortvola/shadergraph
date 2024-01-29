@@ -1,7 +1,7 @@
 import React from 'react';
 import Http from '../Http/src';
 import SidebarList from './SidebarList';
-import SelectModel from '../SelectModel';
+import SelectModel from './SelectModel';
 import ObjectListEntry from './ObjectListEntry';
 import { useStores } from '../State/store';
 import { GameObjectRecord, ModelRecord } from '../State/types';

@@ -1,13 +1,13 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { useStores } from '../State/store';
-import { DrawableNodeInterface, SceneNodeInterface } from '../Renderer/types';
-import { isContainerNode } from '../Renderer/Drawables/SceneNodes/ContainerNode';
-import { isDrawableNode } from '../Renderer/Drawables/SceneNodes/utils';
+import { useStores } from '../../State/store';
+import { DrawableNodeInterface, SceneNodeInterface } from '../../Renderer/types';
+import { isContainerNode } from '../../Renderer/Drawables/SceneNodes/ContainerNode';
+import { isDrawableNode } from '../../Renderer/Drawables/SceneNodes/utils';
 import MeshNode from './MeshNode';
 import { runInAction } from 'mobx';
-import { GameObjectInterface, GameObjectRecord } from '../State/types';
-import Http from '../Http/src';
+import { GameObjectInterface, GameObjectRecord } from '../../State/types';
+import Http from '../../Http/src';
 
 const ModelTree: React.FC = observer(() => {
   const store = useStores();

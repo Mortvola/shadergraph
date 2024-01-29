@@ -1,6 +1,6 @@
 import React from 'react';
-import Http from './Http/src';
-import Modal from './Modal';
+import Http from '../Http/src';
+import Modal from '../Modal';
 import styles from './SelectShader.module.scss';
 import SelectShaderEntry from './SelectShaderEntry';
 

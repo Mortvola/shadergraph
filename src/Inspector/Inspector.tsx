@@ -1,14 +1,14 @@
 import React from 'react';
 import styles from './Inspector.module.scss'
 import ModelTree from './ModelTree/ModelTree';
-import Tab from './Tabs/Tab';
-import TabPane from './Tabs/TabPane';
+import Tab from '../Tabs/Tab';
+import TabPane from '../Tabs/TabPane';
 import Material from './Material';
-import Tabs from './Tabs/Tabs';
-import { useStores } from './State/store';
+import Tabs from '../Tabs/Tabs';
+import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
-import Http from './Http/src';
+import Http from '../Http/src';
 
 const Inspector: React.FC = observer(() => {
   const store = useStores();
