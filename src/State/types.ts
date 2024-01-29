@@ -75,6 +75,7 @@ export type GameObjectRecord = {
 export type TextureRecord = {
   id: number,
   name: string,
+  flipY: boolean,
 }
 
 export type ShaderRecord = {
