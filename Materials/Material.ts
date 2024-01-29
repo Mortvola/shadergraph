@@ -6,6 +6,9 @@ import { pipelineManager } from "../Pipelines/PipelineManager";
 import { DrawableNodeInterface, MaterialInterface, PipelineInterface, maxInstances } from "../types";
 import { MaterialDescriptor } from "./MaterialDescriptor";
 import { PropertyInterface, ValueType } from "../ShaderBuilder/Types";
+import Http from "../../Http/src";
+
+const downloadedTextures: Map<number, GPUTexture> = new Map();
 
 class Material implements MaterialInterface {
   pipeline: PipelineInterface | null = null;
@@ -32,7 +35,7 @@ class Material implements MaterialInterface {
     materialDescriptor: MaterialDescriptor,
     pipeline: PipelineInterface,
     bindGroupLayout: GPUBindGroupLayout | null,
-    bitmaps: ImageBitmap[],
+    textures: GPUTexture[],
     properties: PropertyInterface[],
     propertiesStructure: StructuredView | null,
     fromGraph: boolean,
@@ -54,27 +57,7 @@ class Material implements MaterialInterface {
       this.color[3] = 1.0;  
     }
 
-    if (fromGraph) {
-      const textures: GPUTexture[] = [];
-
-      for (const bitmap of bitmaps) {
-        const texture = gpu.device.createTexture({
-          format: 'rgba8unorm',
-          size: [bitmap.width, bitmap.height],
-          usage: GPUTextureUsage.TEXTURE_BINDING |
-                GPUTextureUsage.COPY_DST |
-                GPUTextureUsage.RENDER_ATTACHMENT,
-        });
-    
-        gpu.device.queue.copyExternalImageToTexture(
-          { source: bitmap },
-          { texture },
-          { width: bitmap.width, height: bitmap.height },
-        );
-
-        textures.push(texture);
-      }
-  
+    if (fromGraph) {  
       this.colorBuffer = gpu.device.createBuffer({
         label: 'color',
         size: 4 * Float32Array.BYTES_PER_ELEMENT * maxInstances,
@@ -139,44 +122,73 @@ class Material implements MaterialInterface {
   static async create(materialDescriptor: MaterialDescriptor): Promise<Material> {
     const [pipeline, bindGroupLayout, properties, propertiesStructure, fromGraph] = pipelineManager.getPipelineByArgs(materialDescriptor)
 
-    let bitmap: ImageBitmap[] = [];
+    const textures: GPUTexture[] = [];
 
     // Find textures in the properties
     for (const property of properties) {
       if (property.value.dataType === 'texture2D') {
-        let url: string;
+        const textureId = property.value.value as number;
 
-        if (typeof property.value.value === 'string') {
-          url = property.value.value;
-        }
-        else if (typeof property.value.value === 'number') {
-          url = `/textures/${property.value.value}`
-        }
-        else {
-          throw new Error('texture value is unknown type')
+        let flipY = false;
+
+        const response = await Http.get<{ flipY: boolean }>(`/textures/${textureId}`)
+
+        if (response.ok) {
+          flipY = (await response.body()).flipY;
         }
 
-        const res = await fetch(url);
+        const texture = await Material.retrieveTexture(textureId, flipY);
 
-        if (res.ok) {
-          const blob = await res.blob();
-          try {
-            bitmap.push(await createImageBitmap(blob, { colorSpaceConversion: 'none' }));  
-          }
-          catch (error) {
-            console.log(error);
-            throw(error);
-          }  
-        }
-        else {
-          throw new Error('texture failed to download')
-        }
+        textures.push(texture);
       }
     }
 
-    return new Material(materialDescriptor, pipeline, bindGroupLayout, bitmap, properties, propertiesStructure, fromGraph);
+    return new Material(materialDescriptor, pipeline, bindGroupLayout, textures, properties, propertiesStructure, fromGraph);
   }
 
+  static async retrieveTexture(textureId: number, flipY: boolean): Promise<GPUTexture> {
+    let texture = downloadedTextures.get(textureId)
+
+    if (!texture) {
+      const url = `/textures/${textureId}/file`
+
+      const res = await Http.get(url);
+
+      if (res.ok) {
+        const blob = await res.blob();
+
+        try {
+          const image = await createImageBitmap(blob, { colorSpaceConversion: 'none' })
+          
+          texture = gpu.device.createTexture({
+            format: 'rgba8unorm',
+            size: [image.width, image.height],
+            usage: GPUTextureUsage.TEXTURE_BINDING |
+                  GPUTextureUsage.COPY_DST |
+                  GPUTextureUsage.RENDER_ATTACHMENT,
+          });
+      
+          gpu.device.queue.copyExternalImageToTexture(
+            { source: image, flipY },
+            { texture },
+            { width: image.width, height: image.height },
+          );
+  
+          downloadedTextures.set(textureId, texture)
+        }
+        catch (error) {
+          console.log(error);
+          throw(error);
+        }  
+      }
+      else {
+        throw new Error('texture failed to download')
+      }
+    }
+
+    return texture;
+  }
+  
   setPropertyValues(properties: PropertyInterface[]) {
     if (this.uniformsBuffer && this.propertiesStructure) {
       let values: Record<string, unknown> = {};
