@@ -1,44 +1,44 @@
 import React from 'react';
+import { ModelInterface } from '../State/types';
 import SidebarListEntry from './SidebarListEntry';
-import { TextureInterface } from './State/types';
-import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
-import Http from './Http/src';
+import Http from '../Http/src';
+import { observer } from 'mobx-react-lite';
 
 type PropsType = {
-  texture: TextureInterface,
-  onSelect: (id: number) => void,
+  model: ModelInterface,
   onDelete: (id: number) => void,
-  selected: boolean,
+  onSelect: (id: number) => void,
+  selected?: boolean,
 }
 
-const TextureListEntry: React.FC<PropsType> = observer(({
-  texture,
-  onSelect,
+const ModelListEntry: React.FC<PropsType> = observer(({
+  model,
   onDelete,
-  selected,
+  onSelect,
+  selected = false,
 }) => {
   const handleNameChange = async (name: string) => {
-    const response = await Http.patch(`/textures/${texture.id}`, { name });
+    const response = await Http.patch(`/models/${model.id}`, { name });
 
     if (response.ok) {
       runInAction(() => {
-        texture.name = name;
+        model.name = name;
       })  
     }
   }
 
   return (
     <SidebarListEntry
-      entity={texture}
+      entity={model}
       onDelete={onDelete}
       selected={selected}
       onSelect={onSelect}
       onChange={handleNameChange}
     >
-      <div>{texture.name}</div>
+      <div key={model.id}>{model.name}</div>
     </SidebarListEntry>
   )
 })
 
-export default TextureListEntry;
+export default ModelListEntry;

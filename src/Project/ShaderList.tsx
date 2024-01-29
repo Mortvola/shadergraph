@@ -1,12 +1,12 @@
 import React from 'react';
-import Http from './Http/src';
+import Http from '../Http/src';
 import ShaderListEntry from './ShaderListEntry';
-import { useStores } from './State/store';
-import Graph from './State/Graph';
+import { useStores } from '../State/store';
+import Graph from '../State/Graph';
 import SidebarList from './SidebarList';
-import { ShaderRecord } from './State/types';
+import { ShaderRecord } from '../State/types';
 import { observer } from 'mobx-react-lite';
-import Shader from './State/Shader';
+import Shader from '../State/Shader';
 
 type PropsType = {
   onEdit: (id: number) => void,

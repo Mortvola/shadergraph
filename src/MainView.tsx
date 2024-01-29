@@ -1,14 +1,14 @@
 import React from 'react';
-import ShaderList from './ShaderList';
-import ModelList from './ModelList';
-import MaterialList from './MaterialList';
+import ShaderList from './Project/ShaderList';
+import ModelList from './Project/ModelList';
+import MaterialList from './Project/MaterialList';
 import styles from './MainView.module.scss';
 import Toolbar from './ShaderEditor/Toolbar';
 import UploadFileButton from './UploadFileButton';
-import TextureList from './TextureList';
+import TextureList from './Project/TextureList';
 import Canvas3d from './Canvas3d';
 import { useStores } from './State/store';
-import ObjectList from './ObjectList';
+import ObjectList from './Project/ObjectList';
 import Inspector from './Inspector';
 
 type PropsType = {

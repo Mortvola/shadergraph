@@ -1,44 +1,50 @@
 import React from 'react';
-import { ModelInterface } from './State/types';
 import SidebarListEntry from './SidebarListEntry';
+import Http from '../Http/src';
+import { ShaderInterface } from '../State/types';
 import { runInAction } from 'mobx';
-import Http from './Http/src';
 import { observer } from 'mobx-react-lite';
 
 type PropsType = {
-  model: ModelInterface,
+  item: ShaderInterface,
+  onEdit: (id: number) => void,
   onDelete: (id: number) => void,
   onSelect: (id: number) => void,
   selected?: boolean,
 }
 
-const ModelListEntry: React.FC<PropsType> = observer(({
-  model,
+const ShaderListEntry: React.FC<PropsType> = observer(({
+  item,
+  onEdit,
   onDelete,
   onSelect,
   selected = false,
 }) => {
+  const handleEditShader = () => {
+    onEdit(item.id)
+  }
+
   const handleNameChange = async (name: string) => {
-    const response = await Http.patch(`/models/${model.id}`, { name });
+    const response = await Http.patch(`/shader-descriptors/${item.id}`, { name });
 
     if (response.ok) {
       runInAction(() => {
-        model.name = name;
+        item.name = name;
       })  
     }
   }
 
   return (
     <SidebarListEntry
-      entity={model}
+      entity={item}
       onDelete={onDelete}
       selected={selected}
       onSelect={onSelect}
       onChange={handleNameChange}
     >
-      <div key={model.id}>{model.name}</div>
+      <div onDoubleClick={handleEditShader}>{item.name}</div>
     </SidebarListEntry>
   )
 })
 
-export default ModelListEntry;
+export default ShaderListEntry;

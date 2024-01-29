@@ -1,12 +1,12 @@
 import React from 'react';
-import Http from './Http/src';
+import Http from '../Http/src';
 import SidebarList from './SidebarList';
-import SelectModel from './SelectModel';
+import SelectModel from '../SelectModel';
 import ObjectListEntry from './ObjectListEntry';
-import { useStores } from './State/store';
-import { GameObjectRecord, ModelRecord } from './State/types';
+import { useStores } from '../State/store';
+import { GameObjectRecord, ModelRecord } from '../State/types';
 import { observer } from 'mobx-react-lite';
-import GameObject from './State/GameObject';
+import GameObject from '../State/GameObject';
 
 const ObjectList: React.FC = observer(() => {
   const store = useStores();

@@ -1,27 +1,26 @@
 import React from 'react';
-import styles from './MaterialList.module.scss';
-import { MaterialInterface } from './State/types';
+import styles from './ObjectList.module.scss';
 import SidebarListEntry from './SidebarListEntry';
 import { runInAction } from 'mobx';
-import Http from './Http/src';
 import { observer } from 'mobx-react-lite';
+import Http from '../Http/src';
+import { GameObjectInterface } from '../State/types';
 
 type PropsType = {
-  material: MaterialInterface,
+  object: GameObjectInterface,
   onSelect: (id: number) => void,
   onDelete: (id: number) => void,
   selected: boolean,
 }
 
-const MaterialListEntry: React.FC<PropsType> = observer(({
-  material,
+const ObjectListEntry: React.FC<PropsType> = observer(({
+  object,
   onSelect,
   onDelete,
   selected,
 }) => {
-  const handleDragStart: React.DragEventHandler = (event) => {
-    event.dataTransfer.clearData();
-    event.dataTransfer.setData("application/material", material.id.toString());
+  const handleDragStart = () => {
+
   }
 
   const handleDrag = () => {
@@ -33,18 +32,18 @@ const MaterialListEntry: React.FC<PropsType> = observer(({
   }
 
   const handleNameChange = async (name: string) => {
-    const response = await Http.patch(`/materials/${material.id}`, { name });
+    const response = await Http.patch(`/game-objects/${object.id}`, { name });
 
     if (response.ok) {
       runInAction(() => {
-        material.name = name;
+        object.name = name;
       })  
     }
   }
 
   return (
     <SidebarListEntry
-      entity={material}
+      entity={object}
       onDelete={onDelete}
       selected={selected}
       onSelect={onSelect}
@@ -57,10 +56,10 @@ const MaterialListEntry: React.FC<PropsType> = observer(({
         onDragEnd={handleDragEnd}
         draggable
       >
-        {material.name}
+        { object.name }
       </div>
     </SidebarListEntry>
   )
 })
 
-export default MaterialListEntry;
+export default ObjectListEntry;

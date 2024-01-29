@@ -1,12 +1,12 @@
 import React from 'react';
-import Http from './Http/src';
-import UploadFileButton from './UploadFileButton';
+import Http from '../Http/src';
+import UploadFileButton from '../UploadFileButton';
 import SidebarList from './SidebarList';
-import { useStores } from './State/store';
-import { TextureInterface, TextureRecord } from './State/types';
+import { useStores } from '../State/store';
+import { TextureInterface, TextureRecord } from '../State/types';
 import TextureListEntry from './TextureListEntry';
 import { observer } from 'mobx-react-lite';
-import Texture from './State/Texture';
+import Texture from '../State/Texture';
 
 const TextureList: React.FC = observer(() => {
   const store = useStores();

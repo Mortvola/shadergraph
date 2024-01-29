@@ -1,12 +1,12 @@
 import React from 'react';
-import Http from './Http/src';
-import SelectShader from './SelectShader';
-import { MaterialDescriptor } from './Renderer/Materials/MaterialDescriptor';
-import { generateMaterial } from './Renderer/ShaderBuilder/ShaderBuilder';
+import Http from '../Http/src';
+import SelectShader from '../SelectShader';
+import { MaterialDescriptor } from '../Renderer/Materials/MaterialDescriptor';
+import { generateMaterial } from '../Renderer/ShaderBuilder/ShaderBuilder';
 import SidebarList from './SidebarList';
 import MaterialListEntry from './MaterialListEntry';
-import { useStores } from './State/store';
-import { MaterialInterface } from './State/types';
+import { useStores } from '../State/store';
+import { MaterialInterface } from '../State/types';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 
