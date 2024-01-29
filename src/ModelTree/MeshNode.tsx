@@ -39,8 +39,8 @@ const MeshNode: React.FC<PropsType> = observer(({
   const renderMaterial = () => {
     let name: string | undefined = '';
 
-    if (selectedGameObject && selectedGameObject.object.materials) {
-      const id = selectedGameObject.object.materials[node.name];
+    if (selectedGameObject && selectedGameObject.materials) {
+      const id = selectedGameObject.materials[node.name];
 
       if (id !== undefined) {
         name = materials.getMaterialName(id);

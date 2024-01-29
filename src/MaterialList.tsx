@@ -6,7 +6,7 @@ import { generateMaterial } from './Renderer/ShaderBuilder/ShaderBuilder';
 import SidebarList from './SidebarList';
 import MaterialListEntry from './MaterialListEntry';
 import { useStores } from './State/store';
-import { MaterialRecord } from './State/types';
+import { MaterialInterface } from './State/types';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 
@@ -41,7 +41,7 @@ const MaterialList: React.FC = observer(() => {
     }
   }
 
-  const [selection, setSelection] = React.useState<MaterialRecord | null>(null);
+  const [selection, setSelection] = React.useState<MaterialInterface | null>(null);
 
   const handleSelect = (id: number) => {
     const selection = store.materials.materials.find((m) => m.id === id)

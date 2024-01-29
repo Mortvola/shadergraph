@@ -6,6 +6,7 @@ import Graph from './State/Graph';
 import SidebarList from './SidebarList';
 import { ShaderRecord } from './State/types';
 import { observer } from 'mobx-react-lite';
+import Shader from './State/Shader';
 
 type PropsType = {
   onEdit: (id: number) => void,
@@ -15,7 +16,7 @@ const ShaderList: React.FC<PropsType> = observer(({
   onEdit,
 }) => {
   const store = useStores();
-  const [shaders, setShaders] = React.useState<ShaderRecord[]>([])
+  const [shaders, setShaders] = React.useState<Shader[]>([])
 
   const queryList = async () => {
     const response = await Http.get<ShaderRecord[]>('/shader-list');
@@ -23,7 +24,7 @@ const ShaderList: React.FC<PropsType> = observer(({
     if (response.ok) {
       const list = await response.body()
 
-      setShaders(list);
+      setShaders(list.map((s) => new Shader(s.id, s.name)));
     }
   }
 

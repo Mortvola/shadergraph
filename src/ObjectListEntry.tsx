@@ -1,13 +1,13 @@
 import React from 'react';
 import styles from './ObjectList.module.scss';
 import SidebarListEntry from './SidebarListEntry';
-import { GameObjectRecord } from './State/types';
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import Http from './Http/src';
+import { GameObjectInterface } from './State/types';
 
 type PropsType = {
-  object: GameObjectRecord,
+  object: GameObjectInterface,
   onSelect: (id: number) => void,
   onDelete: (id: number) => void,
   selected: boolean,
@@ -31,56 +31,32 @@ const ObjectListEntry: React.FC<PropsType> = observer(({
 
   }
 
-  const saveGameObject = async (object: GameObjectRecord) => {
-    const response = await Http.patch(`/game-objects/${object.id}`, object);
+  const handleNameChange = async (name: string) => {
+    const response = await Http.patch(`/game-objects/${object.id}`, { name });
 
     if (response.ok) {
-
+      runInAction(() => {
+        object.name = name;
+      })  
     }
-  }
-
-  const [editing, setEditing] = React.useState<boolean>(false);
-  const [name, setName] = React.useState<string>(object.name);
-
-  const handleKeyDown: React.KeyboardEventHandler = (event) => {
-    if (event.code === 'Enter') {
-      setEditing((prev) => {
-        if (prev) {
-          object.name = name
-          saveGameObject(object);
-        }
-
-        return !prev
-      });
-    }
-  }
-
-  const handleBlur = () => {
-    setEditing(false);
-  }
-
-  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-    runInAction(() => {
-      setName(event.target.value)
-    })
   }
 
   return (
-    <SidebarListEntry id={object.id} onDelete={onDelete} selected={selected} onSelect={onSelect}>
+    <SidebarListEntry
+      entity={object}
+      onDelete={onDelete}
+      selected={selected}
+      onSelect={onSelect}
+      onChange={handleNameChange}
+    >
       <div
         className={styles.entry}
         onDragStart={handleDragStart}
         onDrag={handleDrag}
         onDragEnd={handleDragEnd}
-        onKeyDown={handleKeyDown}
-        tabIndex={0}
         draggable
       >
-        {
-          editing
-            ? <input type="text" value={name} onBlur={handleBlur} onChange={handleChange} autoFocus />
-            : object.name
-        }
+        { object.name }
       </div>
     </SidebarListEntry>
   )

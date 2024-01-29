@@ -6,7 +6,7 @@ import { isContainerNode } from '../Renderer/Drawables/SceneNodes/ContainerNode'
 import { isDrawableNode } from '../Renderer/Drawables/SceneNodes/utils';
 import MeshNode from './MeshNode';
 import { runInAction } from 'mobx';
-import { GameObjectRecord } from '../State/types';
+import { GameObjectInterface, GameObjectRecord } from '../State/types';
 import Http from '../Http/src';
 
 const ModelTree: React.FC = observer(() => {
@@ -17,8 +17,15 @@ const ModelTree: React.FC = observer(() => {
     return null;
   }
 
-  const saveGameObject = async (object: GameObjectRecord) => {
-    const response = await Http.patch(`/game-objects/${object.id}`, object);
+  const saveGameObject = async (object: GameObjectInterface) => {
+    const response = await Http.patch<GameObjectRecord, void>(`/game-objects/${object.id}`, {
+      id: object.id,
+      name: object.name,
+      object: {
+        modelId: object.modelId,
+        materials: object.materials,
+      }
+    });
 
     if (response.ok) {
 
@@ -28,12 +35,12 @@ const ModelTree: React.FC = observer(() => {
   const handleMaterialAssignment = (node: DrawableNodeInterface, materialId: number) => {
     if (selectedGameObject) {
       runInAction(() => {
-        if (!selectedGameObject.object.materials) {
-          selectedGameObject.object.materials = {}
+        if (!selectedGameObject.materials) {
+          selectedGameObject.materials = {}
         }
   
-        selectedGameObject.object.materials = {
-          ...selectedGameObject.object.materials,
+        selectedGameObject.materials = {
+          ...selectedGameObject.materials,
           [node.name]: materialId,
         }
 
@@ -81,7 +88,7 @@ const ModelTree: React.FC = observer(() => {
     return (
       <div>
         <div>{`Name: ${selectedGameObject.name}`}</div>
-        <div>{`Model: ${store.getModel(selectedGameObject.object.modelId)?.name ?? ''}`}</div>
+        <div>{`Model: ${store.getModel(selectedGameObject.modelId)?.name ?? ''}`}</div>
         {
           renderTree()        
         }

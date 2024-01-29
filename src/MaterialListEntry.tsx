@@ -1,16 +1,19 @@
 import React from 'react';
 import styles from './MaterialList.module.scss';
-import { MaterialRecord } from './State/types';
+import { MaterialInterface } from './State/types';
 import SidebarListEntry from './SidebarListEntry';
+import { runInAction } from 'mobx';
+import Http from './Http/src';
+import { observer } from 'mobx-react-lite';
 
 type PropsType = {
-  material: MaterialRecord,
+  material: MaterialInterface,
   onSelect: (id: number) => void,
   onDelete: (id: number) => void,
   selected: boolean,
 }
 
-const MaterialListEntry: React.FC<PropsType> = ({
+const MaterialListEntry: React.FC<PropsType> = observer(({
   material,
   onSelect,
   onDelete,
@@ -29,8 +32,24 @@ const MaterialListEntry: React.FC<PropsType> = ({
 
   }
 
+  const handleNameChange = async (name: string) => {
+    const response = await Http.patch(`/materials/${material.id}`, { name });
+
+    if (response.ok) {
+      runInAction(() => {
+        material.name = name;
+      })  
+    }
+  }
+
   return (
-    <SidebarListEntry id={material.id} onDelete={onDelete} selected={selected} onSelect={onSelect} >
+    <SidebarListEntry
+      entity={material}
+      onDelete={onDelete}
+      selected={selected}
+      onSelect={onSelect}
+      onChange={handleNameChange}
+    >
       <div
         className={styles.entry}
         onDragStart={handleDragStart}
@@ -42,6 +61,6 @@ const MaterialListEntry: React.FC<PropsType> = ({
       </div>
     </SidebarListEntry>
   )
-}
+})
 
 export default MaterialListEntry;

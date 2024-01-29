@@ -3,10 +3,11 @@ import Http from "../Http/src";
 import Material from "../Renderer/Materials/Material";
 import { MaterialDescriptor } from "../Renderer/Materials/MaterialDescriptor";
 import { DrawableNodeInterface } from "../Renderer/types";
-import { MaterialRecord, MaterialsInterface } from "./types";
+import { MaterialInterface, MaterialRecord, MaterialsInterface } from "./types";
+import MaterialObject from './Material'
 
 class Materials implements MaterialsInterface {
-  materials: MaterialRecord[] = [];
+  materials: MaterialInterface[] = [];
 
   materialMap: Map<number, Material> = new Map();
   
@@ -28,7 +29,7 @@ class Materials implements MaterialsInterface {
         const list = await response.body()
   
         runInAction(() => {
-          this.materials = list;
+          this.materials = list.map((m) => new MaterialObject(m.id, m.name, m.shaderId, m.properties));
           this.queried = true;  
         })
       }
@@ -63,7 +64,7 @@ class Materials implements MaterialsInterface {
     }
   }
 
-  applyPropertyValues(materialRecord: MaterialRecord) {
+  applyPropertyValues(materialRecord: MaterialInterface) {
     let material = this.materialMap.get(materialRecord.id);
 
     if (material) {

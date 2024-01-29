@@ -7,6 +7,7 @@ import ModelListEntry from './ModelListEntry';
 import { observer } from 'mobx-react-lite';
 import { useStores } from './State/store';
 import { runInAction } from 'mobx';
+import Model from './State/Model';
 
 const ModelList: React.FC = observer(() => {
   const store = useStores();
@@ -19,7 +20,7 @@ const ModelList: React.FC = observer(() => {
       const list = await response.body()
 
       runInAction(() => {
-        store.models = list;
+        store.models = list.map((m) => new Model(m.id, m.name));
       })
     }
   }

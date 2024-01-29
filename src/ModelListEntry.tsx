@@ -1,24 +1,44 @@
 import React from 'react';
-import { ModelRecord } from './State/types';
+import { ModelInterface } from './State/types';
 import SidebarListEntry from './SidebarListEntry';
+import { runInAction } from 'mobx';
+import Http from './Http/src';
+import { observer } from 'mobx-react-lite';
 
 type PropsType = {
-  model: ModelRecord,
+  model: ModelInterface,
   onDelete: (id: number) => void,
   onSelect: (id: number) => void,
   selected?: boolean,
 }
 
-const ModelListEntry: React.FC<PropsType> = ({
+const ModelListEntry: React.FC<PropsType> = observer(({
   model,
   onDelete,
   onSelect,
   selected = false,
-}) => (
-  <SidebarListEntry id={model.id} onDelete={onDelete} selected={selected} onSelect={onSelect}>
-    <div key={model.id}>{model.name}</div>
-  </SidebarListEntry>
-)
+}) => {
+  const handleNameChange = async (name: string) => {
+    const response = await Http.patch(`/models/${model.id}`, { name });
 
+    if (response.ok) {
+      runInAction(() => {
+        model.name = name;
+      })  
+    }
+  }
+
+  return (
+    <SidebarListEntry
+      entity={model}
+      onDelete={onDelete}
+      selected={selected}
+      onSelect={onSelect}
+      onChange={handleNameChange}
+    >
+      <div key={model.id}>{model.name}</div>
+    </SidebarListEntry>
+  )
+})
 
 export default ModelListEntry;

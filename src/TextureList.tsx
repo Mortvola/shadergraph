@@ -3,13 +3,14 @@ import Http from './Http/src';
 import UploadFileButton from './UploadFileButton';
 import SidebarList from './SidebarList';
 import { useStores } from './State/store';
-import { TextureRecord } from './State/types';
+import { TextureInterface, TextureRecord } from './State/types';
 import TextureListEntry from './TextureListEntry';
 import { observer } from 'mobx-react-lite';
+import Texture from './State/Texture';
 
 const TextureList: React.FC = observer(() => {
   const store = useStores();
-  const [textures, setTextures] = React.useState<TextureRecord[]>([])
+  const [textures, setTextures] = React.useState<TextureInterface[]>([])
 
   const queryList = async () => {
     const response = await Http.get<TextureRecord[]>('/textures-list');
@@ -17,7 +18,7 @@ const TextureList: React.FC = observer(() => {
     if (response.ok) {
       const list = await response.body()
 
-      setTextures(list);
+      setTextures(list.map((t) => new Texture(t.id, t.name, t.flipY)));
     }
   }
 

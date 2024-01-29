@@ -6,11 +6,12 @@ import ObjectListEntry from './ObjectListEntry';
 import { useStores } from './State/store';
 import { GameObjectRecord, ModelRecord } from './State/types';
 import { observer } from 'mobx-react-lite';
+import GameObject from './State/GameObject';
 
 const ObjectList: React.FC = observer(() => {
   const store = useStores();
 
-  const [objects, setObjects] = React.useState<GameObjectRecord[]>([])
+  const [objects, setObjects] = React.useState<GameObject[]>([])
 
   const queryList = async () => {
     const response = await Http.get<GameObjectRecord[]>('/game-objects-list');
@@ -18,7 +19,7 @@ const ObjectList: React.FC = observer(() => {
     if (response.ok) {
       const list = await response.body()
 
-      setObjects(list);
+      setObjects(list.map((o) => new GameObject(o.id, o.name, o.object.modelId, o.object.materials)));
     }
   }
 
@@ -37,7 +38,7 @@ const ObjectList: React.FC = observer(() => {
     if (response.ok) {
       const object = await response.body();
 
-      setObjects((prev) => prev.concat(object))
+      setObjects((prev) => prev.concat(new GameObject(object.id, object.name, object.object.modelId, object.object.materials)))
     }
   }
 

@@ -82,3 +82,33 @@ export type ShaderRecord = {
   id: number,
   name: string,
 }
+
+export interface EntityInterface {
+  id: number;
+
+  name: string;
+}
+
+export interface GameObjectInterface extends EntityInterface {
+  modelId: number;
+
+  materials?: NodeMaterials;
+}
+
+export interface ShaderInterface extends EntityInterface {
+
+}
+
+export interface MaterialInterface extends EntityInterface {
+  shaderId: number;
+
+  properties: PropertyInterface[];
+}
+
+export interface ModelInterface extends EntityInterface {
+
+}
+
+export interface TextureInterface extends EntityInterface {
+  flipY: boolean,
+}

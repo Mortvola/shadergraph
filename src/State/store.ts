@@ -1,7 +1,9 @@
 import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
-import { GameObjectRecord, MaterialRecord, ModelRecord, ShaderRecord, StoreInterface, TextureRecord } from "./types";
+import {
+  GameObjectInterface, GameObjectRecord, MaterialInterface, ModelInterface, ShaderInterface, StoreInterface, TextureInterface,
+} from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
 import Http from "../Http/src";
@@ -21,7 +23,7 @@ class Store implements StoreInterface {
 
   mainViewModeler: Modeler;
 
-  models: ModelRecord[] = [];
+  models: ModelInterface[] = [];
 
   menus: OpenMenuItem[] = [];
 
@@ -33,15 +35,15 @@ class Store implements StoreInterface {
 
   selectionType: 'Material' | 'Object' | 'Texture' | 'Shader' | 'Model' | null = null;
 
-  selectedMaterial: MaterialRecord | null = null;
+  selectedMaterial: MaterialInterface | null = null;
 
-  selectedTexture: TextureRecord | null = null;
+  selectedTexture: TextureInterface | null = null;
 
-  selectedGameObject: GameObjectRecord | null = null;
+  selectedGameObject: GameObjectInterface | null = null;
 
-  selectedShader: ShaderRecord | null = null;
+  selectedShader: ShaderInterface | null = null;
 
-  selectedModel: ModelRecord | null = null;
+  selectedModel: ModelInterface | null = null;
 
   private constructor(mainRenderer: Renderer, previewRenderer: Renderer) {
     this.mainView = mainRenderer;
@@ -72,7 +74,7 @@ class Store implements StoreInterface {
     return new Store(mainRenderer, previewRenderer)
   }
 
-  getModel(id: number): ModelRecord | undefined {
+  getModel(id: number): ModelInterface | undefined {
     return this.models.find((m) => m.id === id);
   }
 
@@ -94,7 +96,7 @@ class Store implements StoreInterface {
     return this.dragObject;
   }
 
-  async selectObject(gameObject: GameObjectRecord | null) {
+  async selectObject(gameObject: GameObjectInterface | null) {
     if (gameObject !== null) {
       let response = await Http.get<GameObjectRecord>(`/game-objects/${gameObject.id}`)
 
@@ -111,28 +113,28 @@ class Store implements StoreInterface {
     })
   }
 
-  async selectMaterial(materialRecord: MaterialRecord) {
+  async selectMaterial(materialRecord: MaterialInterface) {
     runInAction(() => {
       this.selectionType = 'Material'
       this.selectedMaterial = materialRecord
     })
   }
 
-  async selectTexture(textureRecord: TextureRecord) {
+  async selectTexture(textureRecord: TextureInterface) {
     runInAction(() => {
       this.selectionType = 'Texture'
       this.selectedTexture = textureRecord
     })
   }
 
-  async selectShader(shaderRecord: ShaderRecord) {
+  async selectShader(shaderRecord: ShaderInterface) {
     runInAction(() => {
       this.selectionType = 'Shader'
       this.selectedShader = shaderRecord
     })
   }
 
-  async selectModel(modelRecord: ModelRecord) {
+  async selectModel(modelRecord: ModelInterface) {
     runInAction(() => {
       this.selectionType = 'Model'
       this.selectedModel = modelRecord
