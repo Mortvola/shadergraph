@@ -3,7 +3,13 @@ import Canvas3d from '../Canvas3d';
 import styles from './Preview.module.scss';
 import Draggable from './Draggable';
 import { useStores } from '../State/store';
-import Http from '../Http/src';
+import Mesh from '../Renderer/Drawables/Mesh';
+import { plane as planeShape } from '../Renderer/Drawables/Shapes/plane';
+import DrawableNode from '../Renderer/Drawables/SceneNodes/DrawableNode';
+import { litMaterial } from '../Renderer/Materials/Lit';
+
+const plane = await DrawableNode.create(await Mesh.create(planeShape(1, 1)), litMaterial);
+plane.name = 'Plane';
 
 const Preview: React.FC = () => {
   const { shaderPreview, models, modeler } = useStores();
@@ -41,7 +47,12 @@ const Preview: React.FC = () => {
   }, [position]);
 
   const handleModelChange: React.ChangeEventHandler<HTMLSelectElement> = async (event) => {
-    modeler.loadModel(`/models/${event.target.value}`)
+    if (event.target.value === '-1') {
+      modeler.assignModel(plane);
+    }
+    else {
+      modeler.loadModel(`/models/${event.target.value}`)
+    }
   }
 
   const handleWheel: React.WheelEventHandler<HTMLDivElement> = (event) => {
@@ -62,7 +73,7 @@ const Preview: React.FC = () => {
           <div>Preview</div>
           <select onChange={handleModelChange}>
             {
-              models.map((m) => (
+              models.concat([{ id: -1, name: 'Plane'}]).map((m) => (
                 <option key={m.id} value={m.id}>{m.name}</option>
               ))
             }              

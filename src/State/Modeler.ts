@@ -55,6 +55,18 @@ class Modeler {
     }
   }
 
+  assignModel(model: SceneNodeInterface) {
+    if (this.model) {
+      this.renderer.removeSceneNode(this.model);
+    }
+
+    runInAction(() => {
+      this.model = model;
+      this.renderer.addSceneNode(this.model);
+      this.store.applyChanges();
+    })
+  }
+
   async assignMaterals(model: SceneNodeInterface, materials: NodeMaterials) {
     let stack: SceneNodeInterface[] = [model];
 
