@@ -34,10 +34,18 @@ const ModelList: React.FC = observer(() => {
       const formData = new FormData();
       formData.append('file', event.target.files[0])
 
-      await fetch('/models', {
+      const response = await fetch('/models', {
         method: 'POST',
         body: formData
       })
+
+      if (response.ok) {
+        const model = await response.json() as { id: number, name: string };
+
+        runInAction(() => {
+          store.models = store.models.concat(new Model(model.id, model.name))
+        })
+      }
     }
   }
 
