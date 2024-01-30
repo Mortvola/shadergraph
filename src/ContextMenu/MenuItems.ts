@@ -16,6 +16,7 @@ import Combine from "../Renderer/ShaderBuilder/Nodes/Combine";
 import Split from "../Renderer/ShaderBuilder/Nodes/Split";
 import Twirl from "../Renderer/ShaderBuilder/Nodes/Twirl";
 import Voronoi from "../Renderer/ShaderBuilder/Nodes/Voronoi";
+import Power from "../Renderer/ShaderBuilder/Nodes/Power";
 
 export type MenuItemLike = MenuActionRecord | SubmenutItemRecord;
 
@@ -93,4 +94,5 @@ export const menuItems = (): MenuItemLike[] => ([
   { name: 'Combine', action: (x: number, y: number) => createObject(Combine, x, y) },
   { name: 'Twirl', action: (x: number, y: number) => createObject(Twirl, x, y) },
   { name: 'Voronoi', action: (x: number, y: number) => createObject(Voronoi, x, y) },
+  { name: 'Power', action: (x: number, y: number) => createObject(Power, x, y) },
 ])
