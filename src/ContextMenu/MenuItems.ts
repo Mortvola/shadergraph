@@ -15,6 +15,7 @@ import PhongShading from "../Renderer/ShaderBuilder/Nodes/PhongShading";
 import Combine from "../Renderer/ShaderBuilder/Nodes/Combine";
 import Split from "../Renderer/ShaderBuilder/Nodes/Split";
 import Twirl from "../Renderer/ShaderBuilder/Nodes/Twirl";
+import Voronoi from "../Renderer/ShaderBuilder/Nodes/Voronoi";
 
 export type MenuItemLike = MenuActionRecord | SubmenutItemRecord;
 
@@ -82,4 +83,5 @@ export const menuItems = (): MenuItemLike[] => ([
   { name: 'Split', action: (x: number, y: number) => createObject(Split, x, y) },
   { name: 'Combine', action: (x: number, y: number) => createObject(Combine, x, y) },
   { name: 'Twirl', action: (x: number, y: number) => createObject(Twirl, x, y) },
+  { name: 'Voronoi', action: (x: number, y: number) => createObject(Voronoi, x, y) },
 ])
