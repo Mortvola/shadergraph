@@ -82,6 +82,26 @@ class Folder extends ProjectItem implements FolderInterface {
       })  
     }
   }
+
+  async deleteItem(item: ProjectItemInterface) {
+    const response = await Http.delete(`/folders/${item.id}`)
+
+    if (response.ok) {
+      runInAction(() => {
+        const index = this.items.findIndex((i) => i.id === item.id)
+  
+        if (index !== -1) {
+          // Remove from the parent.
+          this.items = [
+            ...this.items.slice(0, index),
+            ...this.items.slice(index + 1)
+          ]
+  
+          item.parent = null;
+        }
+      })  
+    }
+  }
 }
 
 export default Folder;

@@ -14,6 +14,8 @@ export interface ProjectItemInterface {
   item: GameObjectInterface | null
 
   changeName(name: string): Promise<void>
+
+  delete(): Promise<void>
 }
 
 export interface FolderInterface extends ProjectItemInterface {
@@ -26,6 +28,8 @@ export interface FolderInterface extends ProjectItemInterface {
   removeItem(item: ProjectItemInterface): Promise<void>
 
   isAncestor(item: ProjectItemInterface): boolean
+
+  deleteItem(item: ProjectItemInterface): Promise<void>
 }
 
 export const isFolder = (r: unknown): r is FolderInterface => (

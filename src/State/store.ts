@@ -127,7 +127,7 @@ class Store implements StoreInterface {
     if (response.ok) {
       const rec = await response.body();
 
-      const folder = new ProjectItem(rec.id, rec.name, rec.type, parent, rec.itemId)
+      const folder = new Folder(rec.id, rec.name, parent)
 
       await this.projectItems.addItem(folder);
       // this.projectItems = this.projectItems.concat([folder]);

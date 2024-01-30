@@ -3,6 +3,8 @@ import { ProjectItemInterface } from './Types/types';
 import styles from './ProjectItem.module.scss';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
+import ContextMenu from '../ContextMenu/ContextMenu';
+import { MenuItemLike } from '../ContextMenu/types';
 
 type PropsType = {
   item: ProjectItemInterface,
@@ -64,6 +66,23 @@ const ProjectItem: React.FC<PropsType> = observer(({
     setName(event.target.value)
   }
 
+  const [showMenu, setShowMenu] = React.useState<{ x: number, y: number } | null>(null);
+
+  const menuItems = React.useCallback((): MenuItemLike[] => ([
+    { name: 'Delete', action: () => { item.delete() } },
+  ]), []);
+  
+  const handleContextMenu: React.MouseEventHandler = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    setShowMenu({ x: event.clientX, y: event.clientY })
+  }
+
+  const handleMenuClose = () => {
+    setShowMenu(null);
+  }
+
   return (
     <div
       className={`${styles.item} ${selected ? styles.selected : ''}`}
@@ -74,12 +93,18 @@ const ProjectItem: React.FC<PropsType> = observer(({
       onDragEnd={handleDragEnd}
       onKeyDown={handleKeyDown}
       tabIndex={0}
+      onContextMenu={handleContextMenu}
     >
       {
         editing
           ? <input type="text" value={name} onBlur={handleBlur} onChange={handleChange} autoFocus />
           : `${item.name}`
-      } 
+      }
+      {
+        showMenu
+          ? <ContextMenu menuItems={menuItems} x={showMenu.x} y={showMenu.y} onClose={handleMenuClose} />
+          : null
+      }
     </div>
   )
 })
