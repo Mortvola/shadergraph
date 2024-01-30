@@ -1,15 +1,20 @@
 import React from 'react';
-import ShaderList from './Project/ShaderList';
-import ModelList from './Project/ModelList';
-import MaterialList from './Project/MaterialList';
 import styles from './MainView.module.scss';
-import Toolbar from './ShaderEditor/Toolbar';
-import UploadFileButton from './UploadFileButton';
-import TextureList from './Project/TextureList';
 import Canvas3d from './Canvas3d';
-import { useStores } from './State/store';
-import ObjectList from './Project/ObjectList';
+import { store, useStores } from './State/store';
 import Inspector from './Inspector/Inspector';
+import ContextMenu from './ContextMenu/ContextMenu';
+import { MenuItemLike } from './ContextMenu/types';
+import Project from './Project/Project';
+
+const menuItems = (): MenuItemLike[] => ([
+  { name: 'Import texture...', action: () => {} },
+  { name: 'Import model...', action: () => {} },
+  { name: 'Create shader', action: () => {} },
+  { name: 'Create game object', action: () => {} },
+  { name: 'Create particle system', action: () => {} },
+  { name: 'Create folder', action: () => { store.createFolder() } },
+]);
 
 type PropsType = {
   onEditShader: (id: number) => void,
@@ -24,18 +29,6 @@ const MainView: React.FC<PropsType> = ({
     onEditShader(id);
   }
 
-  // const handleFileSelection: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
-  //   if (event.target.files && event.target.files[0]) {
-  //     const formData = new FormData();
-  //     formData.append('file', event.target.files[0])
-
-  //     await fetch('/models', {
-  //       method: 'POST',
-  //       body: formData
-  //     })
-  //   }
-  // }
-
   const handleWheel: React.WheelEventHandler<HTMLDivElement> = (event) => {
     if (event.ctrlKey) {
       mainView?.camera.changeOffset(event.deltaY * 0.01);
@@ -47,6 +40,25 @@ const MainView: React.FC<PropsType> = ({
     event.stopPropagation();
   }
 
+  const [showMenu, setShowMenu] = React.useState<{ x: number, y: number } | null>(null);
+  const ref = React.useRef<HTMLButtonElement>(null);
+
+  const handleAddClick = () => {
+    if (!showMenu) {
+      const element = ref.current;
+
+      if (element) {
+        const rect = element.getBoundingClientRect();
+
+        setShowMenu({ x: rect.left, y: rect.bottom })
+      }
+    }
+  }
+
+  const handleMenuClose = () => {
+    setShowMenu(null);
+  }
+
   return (
     <div className={styles.main}>
       <div>
@@ -54,11 +66,13 @@ const MainView: React.FC<PropsType> = ({
         <Inspector />
       </div>
       <div className={styles.sidebar}>
-        <TextureList />
-        <ShaderList onEdit={handleEditShader} />
-        <MaterialList />
-        <ModelList />
-        <ObjectList />
+        <button ref={ref} type="button" onClick={handleAddClick}>+</button>
+        {
+          showMenu
+            ? <ContextMenu menuItems={menuItems} x={showMenu.x} y={showMenu.y} onClose={handleMenuClose} />
+            : null
+        }
+        <Project />
       </div>
     </div>
   )

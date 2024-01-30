@@ -112,3 +112,11 @@ export interface ModelInterface extends EntityInterface {
 export interface TextureInterface extends EntityInterface {
   flipY: boolean,
 }
+
+export type ProjectItemRecord = {
+  id: number,
+  parentId: number,
+  name: string,
+  type: string,
+  itemId: number | null,
+}

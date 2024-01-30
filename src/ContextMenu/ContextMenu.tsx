@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './ContextMenu.module.scss';
-import { MenuItemLike } from './MenuItems';
 import Menu from './Menu';
 import { useStores } from '../State/store';
 import { runInAction } from 'mobx';
 import { createPortal } from 'react-dom';
+import { MenuItemLike } from './types';
 
 type PropsType = {
   menuItems: () => MenuItemLike[],

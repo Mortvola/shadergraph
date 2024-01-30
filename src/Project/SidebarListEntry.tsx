@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from './SidebarList.module.scss';
-import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 
 type PropsType = {

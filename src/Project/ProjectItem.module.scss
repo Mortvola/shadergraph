@@ -1,0 +1,9 @@
+.item {
+  // display: flex;
+  // flex-direction: row;
+  // justify-content: space-between;
+
+  &.selected {
+    background-color: lightgray;
+  }
+}

@@ -17,28 +17,7 @@ import Split from "../Renderer/ShaderBuilder/Nodes/Split";
 import Twirl from "../Renderer/ShaderBuilder/Nodes/Twirl";
 import Voronoi from "../Renderer/ShaderBuilder/Nodes/Voronoi";
 import Power from "../Renderer/ShaderBuilder/Nodes/Power";
-
-export type MenuItemLike = MenuActionRecord | SubmenutItemRecord;
-
-export type MenuItemRecord = {
-  name: string,
-}
-
-export type MenuActionRecord = MenuItemRecord & {
-  action: (x: number, y: number) => void,
-}
-
-export const isMenuActionRecord = (r: unknown): r is MenuActionRecord => (
-  (r as MenuActionRecord).action !== undefined
-)
-
-export type SubmenutItemRecord = MenuItemRecord & {
-  submenu: () => MenuItemLike[],
-}
-
-export const isSubmenuItem = (r: unknown): r is SubmenutItemRecord => (
-  (r as SubmenutItemRecord).submenu !== undefined
-)
+import { MenuItemLike } from "../ContextMenu/types";
 
 function addNode(node: GraphNodeInterface, x: number, y: number) {
   node.position = { x, y };

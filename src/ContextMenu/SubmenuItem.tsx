@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './ContextMenu.module.scss';
-import { SubmenutItemRecord } from './MenuItems';
 import Menu from './Menu';
 import { createPortal } from 'react-dom';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
+import { SubmenutItemRecord } from './types';
 
 type PropsType = {
   menuItem: SubmenutItemRecord,

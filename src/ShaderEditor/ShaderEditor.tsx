@@ -6,7 +6,7 @@ import ContextMenu from '../ContextMenu/ContextMenu';
 import Preview from './Preview';
 import Controls from './Controls/Controls';
 import Properties from './Properties';
-import { menuItems } from '../ContextMenu/MenuItems';
+import { menuItems } from './MenuItems';
 import Http from '../Http/src';
 import GraphComponent from './Graph';
 import { GraphInterface } from '../State/types';

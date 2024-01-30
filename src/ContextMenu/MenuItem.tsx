@@ -1,5 +1,5 @@
 import React from 'react';
-import { MenuActionRecord } from './MenuItems';
+import { MenuActionRecord } from './types';
 
 type PropsType = {
   x: number,

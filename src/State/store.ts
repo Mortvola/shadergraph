@@ -2,12 +2,16 @@ import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
 import {
-  GameObjectInterface, GameObjectRecord, MaterialInterface, ModelInterface, ShaderInterface, StoreInterface, TextureInterface,
+  GameObjectInterface, GameObjectRecord, MaterialInterface, ModelInterface, ProjectItemRecord, ShaderInterface, StoreInterface, TextureInterface,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
 import Http from "../Http/src";
 import Materials from "./Materials";
+import { FolderInterface, ProjectItemInterface } from "../Project/Types/types";
+import ProjectItem from "../Project/Types/ProjectItem";
+import GameObject from "./GameObject";
+import Folder from "../Project/Types/Folder";
 
 type OpenMenuItem = {
   menuItem: HTMLElement,
@@ -45,6 +49,12 @@ class Store implements StoreInterface {
 
   selectedModel: ModelInterface | null = null;
 
+  selectedItem: ProjectItemInterface | null = null;
+
+  projectItems = new Folder(-1, '', null)
+
+  draggingItem: ProjectItemInterface | null = null;
+
   private constructor(mainRenderer: Renderer, previewRenderer: Renderer) {
     this.mainView = mainRenderer;
     this.shaderPreview = previewRenderer;
@@ -64,6 +74,8 @@ class Store implements StoreInterface {
       selectedShader: observable,
       selectedModel: observable,
       models: observable,
+      selectedItem: observable,
+      projectItems: observable,
     })
   }
 
@@ -72,6 +84,55 @@ class Store implements StoreInterface {
     const previewRenderer = await Renderer.create();
 
     return new Store(mainRenderer, previewRenderer)
+  }
+
+  getFolder(folder: FolderInterface) {
+    (async () => {
+      const response = await Http.get<ProjectItemRecord[]>(`/folders${ folder.id === -1 ? '' : `/${folder.id}`}`);
+
+      if (response.ok) {
+        const list = await response.body();
+
+        folder.addItems(list.map((i) => {
+          if (i.type === 'folder') {
+            return new Folder(i.id, i.name, folder)
+          }
+
+          return new ProjectItem(i.id, i.name, i.type, folder, i.itemId)
+        }));
+      }
+    })()
+  }
+
+  async createFolder() {
+    let parent: FolderInterface | null = this.projectItems;
+    if (this.selectedItem) {
+      if (this.selectedItem.type === 'folder') {
+        parent = this.selectedItem as FolderInterface
+      }
+      else {
+        parent = this.selectedItem.parent;
+      }
+    }
+
+    let parentId = parent?.id ?? null;
+    if (parentId === -1) {
+      parentId = null;
+    }
+
+    const response = await Http.post<{ name: string, parentId: number | null }, ProjectItemRecord>('/folders', {
+      name: 'New Folder', parentId,
+    });
+
+    if (response.ok) {
+      const rec = await response.body();
+
+      const folder = new ProjectItem(rec.id, rec.name, rec.type, parent, rec.itemId)
+
+      await this.projectItems.addItem(folder);
+      // this.projectItems = this.projectItems.concat([folder]);
+      // this.projectItems.sort((a, b) => a.name.localeCompare(b.name))
+    }
   }
 
   getModel(id: number): ModelInterface | undefined {
@@ -94,6 +155,26 @@ class Store implements StoreInterface {
 
   getDragObject(): unknown | null {
     return this.dragObject;
+  }
+
+  async selectItem(item: ProjectItemInterface) {
+    runInAction(() => {
+      this.selectedItem = item;
+    })
+
+    if (item.item === null) {
+      if (item.type === 'object') {
+        const response = await Http.get<GameObjectRecord>(`/game-objects/${item.itemId}`)
+
+        if (response.ok) {
+          const objectRecord = await response.body();
+
+          item.item = new GameObject(objectRecord.id, objectRecord.name, objectRecord.object.modelId, objectRecord.object.materials)
+        }
+      }
+    }
+
+    this.selectObject(item.item)
   }
 
   async selectObject(gameObject: GameObjectInterface | null) {
