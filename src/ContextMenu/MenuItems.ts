@@ -9,7 +9,7 @@ import Time from "../Renderer/ShaderBuilder/Nodes/Time";
 import UV from "../Renderer/ShaderBuilder/Nodes/UV";
 import Vector from "../Renderer/ShaderBuilder/Nodes/Vector";
 import PropertyNode from "../Renderer/ShaderBuilder/PropertyNode";
-import { GraphNodeInterface } from "../Renderer/ShaderBuilder/Types";
+import { DataType, GraphNodeInterface } from "../Renderer/ShaderBuilder/Types";
 import Value from "../Renderer/ShaderBuilder/Value";
 import PhongShading from "../Renderer/ShaderBuilder/Nodes/PhongShading";
 import Combine from "../Renderer/ShaderBuilder/Nodes/Combine";
@@ -62,7 +62,16 @@ const values = (): MenuItemLike[] => (
   [2, 3, 4].map((v) => ({
     name: `vector${v}`,
     action: (x: number, y: number) => {
-      const node = new Vector(new Value('vec2f', [0, 0]));
+      let dataType: DataType = 'vec2f';
+
+      if (v === 3) {
+        dataType = 'vec3f';
+      }
+      else if (v === 4) {
+        dataType = 'vec4f';
+      }
+
+      const node = new Vector(new Value(dataType, new Array(v).fill(0)));
       addNode(node, x, y);
     },
   }))
