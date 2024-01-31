@@ -44,13 +44,13 @@ const MaterialList: React.FC = observer(() => {
   const [selection, setSelection] = React.useState<MaterialInterface | null>(null);
 
   const handleSelect = (id: number) => {
-    const selection = store.materials.materials.find((m) => m.id === id)
+    // const selection = store.materials.materials.find((m) => m.id === id)
 
-    if (selection) {
-      setSelection(selection);
+    // if (selection) {
+    //   setSelection(selection);
 
-      store.selectMaterial(selection);  
-    }
+    //   store.selectMaterial(selection);  
+    // }
   }
 
   const handleDelete = async (id: number) => {
@@ -80,16 +80,17 @@ const MaterialList: React.FC = observer(() => {
 
   return (
     <SidebarList title="Materials" addButton={renderAddButton()}>
+      <div />
       {
-        store.materials.materials.map((m) => (
-          <MaterialListEntry
-            key={m.id}
-            material={m}
-            onSelect={handleSelect}
-            onDelete={handleDelete}
-            selected={store.selectionType === 'Material' && m.id === store.selectedMaterial?.id}
-          />
-        ))
+        // store.materials.materials.map((m) => (
+        //   <MaterialListEntry
+        //     key={m.id}
+        //     material={m}
+        //     onSelect={handleSelect}
+        //     onDelete={handleDelete}
+        //     selected={store.selectionType === 'Material' && m.id === store.selectedMaterial?.id}
+        //   />
+        // ))
       }              
     </SidebarList>
   )

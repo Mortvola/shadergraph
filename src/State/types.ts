@@ -1,3 +1,4 @@
+import { ProjectItemInterface } from "../Project/Types/types";
 import { MaterialDescriptor } from "../Renderer/Materials/MaterialDescriptor";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
 import { DrawableNodeInterface } from "../Renderer/types";
@@ -6,6 +7,8 @@ export interface StoreInterface {
   materials: MaterialsInterface;
 
   applyChanges(): Promise<void>;
+
+  getItem(id: number, type: string): ProjectItemInterface | undefined;
 }
 
 export interface MaterialsInterface {

@@ -3,7 +3,7 @@ import Http from "../Http/src";
 import Material from "../Renderer/Materials/Material";
 import { MaterialDescriptor } from "../Renderer/Materials/MaterialDescriptor";
 import { DrawableNodeInterface } from "../Renderer/types";
-import { MaterialInterface, MaterialRecord, MaterialsInterface } from "./types";
+import { MaterialInterface, MaterialRecord, MaterialsInterface, StoreInterface } from "./types";
 import MaterialObject from './Material'
 
 class Materials implements MaterialsInterface {
@@ -15,7 +15,11 @@ class Materials implements MaterialsInterface {
 
   queried = false;
 
-  constructor() {
+  store: StoreInterface
+
+  constructor(store: StoreInterface) {
+    this.store = store;
+
     makeObservable(this, {
       materials: observable,
     })
@@ -40,13 +44,31 @@ class Materials implements MaterialsInterface {
     let material = this.materialMap.get(id);
 
     if (!material) {
-      const materialRecord = this.materials.find((m) => m.id === id);
+      const item = this.store.getItem(id, 'material');
 
-      if (materialRecord) {
-        const shaderDescr = this.shaderMap.get(materialRecord.shaderId);
+      if (item) {
+        let materialObject = item.item as MaterialObject;
 
+        if (!materialObject) {
+          const response = await Http.get<MaterialRecord>(`/materials/${item.itemId}`);
+
+          if (response.ok) {
+            const materialRecord = await response.body();
+
+            if (materialRecord) {
+              materialObject = new MaterialObject(materialRecord.id, materialRecord.name, materialRecord.shaderId, materialRecord.properties)
+
+              item.item = materialObject;
+            }      
+          }
+        }
+
+        // const materialRecord = this.materials.find((m) => m.id === id);
+
+        const shaderDescr = this.shaderMap.get(materialObject.shaderId);
+        
         if (!shaderDescr) {
-          const response = await Http.get<{ name: string, descriptor: MaterialDescriptor }>(`/shader-descriptors/${materialRecord.shaderId}`);
+          const response = await Http.get<{ name: string, descriptor: MaterialDescriptor }>(`/shader-descriptors/${materialObject.shaderId}`);
 
           if (response.ok) {
             const descr = await response.body();

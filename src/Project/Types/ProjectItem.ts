@@ -25,6 +25,7 @@ class ProjectItem implements ProjectItemInterface {
 
     makeObservable(this, {
       name: observable,
+      item: observable,
     })
   }
 

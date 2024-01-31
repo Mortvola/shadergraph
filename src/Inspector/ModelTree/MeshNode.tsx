@@ -3,6 +3,7 @@ import { DrawableNodeInterface } from '../../Renderer/types';
 import { useStores } from '../../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './ModelTree.module.scss';
+import { GameObjectInterface } from '../../State/types';
 
 type PropsType = {
   node: DrawableNodeInterface,
@@ -15,7 +16,13 @@ const MeshNode: React.FC<PropsType> = observer(({
   level,
   onMaterialAssignment,
 }) => {
-  const { materials, selectedGameObject } = useStores();
+  const store = useStores()
+  const { materials, selectedItem } = store;
+
+  let gameObject: GameObjectInterface | null = null;
+  if (selectedItem && selectedItem.type === 'object') {
+    gameObject = selectedItem.item as GameObjectInterface
+  }
 
   const handleDragOver: React.DragEventHandler = (event) => {
     event.preventDefault();
@@ -39,11 +46,13 @@ const MeshNode: React.FC<PropsType> = observer(({
   const renderMaterial = () => {
     let name: string | undefined = '';
 
-    if (selectedGameObject && selectedGameObject.materials) {
-      const id = selectedGameObject.materials[node.name];
+    if (gameObject && gameObject.materials) {
+      const id = gameObject.materials[node.name];
 
       if (id !== undefined) {
-        name = materials.getMaterialName(id);
+        const item = store.getItem(id, 'material');
+
+        name = item?.name
       }
     }
 

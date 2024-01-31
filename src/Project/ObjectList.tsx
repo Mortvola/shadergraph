@@ -46,7 +46,7 @@ const ObjectList: React.FC = observer(() => {
     const selection = objects.find((o) => o.id === id)
 
     if (selection) {
-      store.selectObject(selection);
+      // store.selectObject(selection);
     }
   }
 
@@ -67,9 +67,9 @@ const ObjectList: React.FC = observer(() => {
         return prev;
       })
 
-      if (store.selectedGameObject?.id === id) {
-        store.selectObject(null);
-      }
+      // if (store.selectedGameObject?.id === id) {
+      //   store.selectObject(null);
+      // }
     }
   }
 
@@ -80,15 +80,16 @@ const ObjectList: React.FC = observer(() => {
   return (
     <SidebarList title="Game Objects" addButton={renderAddButton()}>
       {
-        objects.map((o) => (
-          <ObjectListEntry
-            key={o.id}
-            object={o}
-            onSelect={handleSelect}
-            onDelete={handleDelete}
-            selected={store.selectionType === 'Object' && o.id === store.selectedGameObject?.id }
-          />
-        ))
+        <div />
+        // objects.map((o) => (
+        //   <ObjectListEntry
+        //     key={o.id}
+        //     object={o}
+        //     onSelect={handleSelect}
+        //     onDelete={handleDelete}
+        //     selected={store.selectionType === 'Object' && o.id === store.selectedGameObject?.id }
+        //   />
+        // ))
       }              
     </SidebarList>
   )

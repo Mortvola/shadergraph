@@ -1,4 +1,6 @@
-import { GameObjectInterface } from "../../State/types";
+import { GameObjectInterface, MaterialInterface } from "../../State/types";
+
+export type ItemLike = GameObjectInterface | MaterialInterface;
 
 export interface ProjectItemInterface {
   id: number
@@ -11,7 +13,7 @@ export interface ProjectItemInterface {
 
   parent: FolderInterface | null
 
-  item: GameObjectInterface | null
+  item: ItemLike | null
 
   changeName(name: string): Promise<void>
 

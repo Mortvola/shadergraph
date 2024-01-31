@@ -11,7 +11,12 @@ import Http from '../../Http/src';
 
 const ModelTree: React.FC = observer(() => {
   const store = useStores();
-  const { mainViewModeler: { model }, selectedGameObject, materials} = store;
+  const { mainViewModeler: { model }, selectedItem, materials} = store;
+
+  let gameObject: GameObjectInterface | null = null;
+  if (selectedItem && selectedItem.type === 'object') {
+    gameObject = selectedItem.item as GameObjectInterface
+  }
 
   if (model === null) {
     return null;
@@ -33,18 +38,20 @@ const ModelTree: React.FC = observer(() => {
   }
 
   const handleMaterialAssignment = (node: DrawableNodeInterface, materialId: number) => {
-    if (selectedGameObject) {
+    if (gameObject) {
       runInAction(() => {
-        if (!selectedGameObject.materials) {
-          selectedGameObject.materials = {}
-        }
-  
-        selectedGameObject.materials = {
-          ...selectedGameObject.materials,
-          [node.name]: materialId,
-        }
+        if (gameObject) {
+          if (!gameObject.materials) {
+            gameObject.materials = {}
+          }
+    
+          gameObject.materials = {
+            ...gameObject.materials,
+            [node.name]: materialId,
+          }
 
-        saveGameObject(selectedGameObject)
+          saveGameObject(gameObject)
+        }
       })
 
       materials.applyMaterial(materialId, node)
@@ -84,11 +91,11 @@ const ModelTree: React.FC = observer(() => {
     return elements;
   }
 
-  if (selectedGameObject) {
+  if (gameObject) {
     return (
       <div>
-        <div>{`Name: ${selectedGameObject.name}`}</div>
-        <div>{`Model: ${store.getModel(selectedGameObject.modelId)?.name ?? ''}`}</div>
+        <div>{`Name: ${gameObject.name}`}</div>
+        <div>{`Model: ${store.getModel(gameObject.modelId)?.name ?? ''}`}</div>
         {
           renderTree()        
         }

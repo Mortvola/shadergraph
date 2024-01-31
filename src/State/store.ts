@@ -2,16 +2,17 @@ import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
 import {
-  GameObjectInterface, GameObjectRecord, MaterialInterface, ModelInterface, ProjectItemRecord, ShaderInterface, StoreInterface, TextureInterface,
+  GameObjectInterface, GameObjectRecord, MaterialRecord, ModelInterface, ProjectItemRecord, ShaderInterface, StoreInterface, TextureInterface,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
 import Http from "../Http/src";
 import Materials from "./Materials";
-import { FolderInterface, ProjectItemInterface } from "../Project/Types/types";
+import { FolderInterface, ProjectItemInterface, isFolder } from "../Project/Types/types";
 import ProjectItem from "../Project/Types/ProjectItem";
 import GameObject from "./GameObject";
 import Folder from "../Project/Types/Folder";
+import Material from "./Material";
 
 type OpenMenuItem = {
   menuItem: HTMLElement,
@@ -39,11 +40,11 @@ class Store implements StoreInterface {
 
   selectionType: 'Material' | 'Object' | 'Texture' | 'Shader' | 'Model' | null = null;
 
-  selectedMaterial: MaterialInterface | null = null;
+  // selectedMaterial: MaterialInterface | null = null;
 
   selectedTexture: TextureInterface | null = null;
 
-  selectedGameObject: GameObjectInterface | null = null;
+  // selectedGameObject: GameObjectInterface | null = null;
 
   selectedShader: ShaderInterface | null = null;
 
@@ -62,15 +63,15 @@ class Store implements StoreInterface {
     this.mainViewModeler = new Modeler(this.mainView, this);
     this.modeler = new Modeler(previewRenderer, this);
 
-    this.materials = new Materials();
+    this.materials = new Materials(this);
 
     makeObservable(this, {
       menus: observable,
       graph: observable,
       selectionType: observable,
-      selectedMaterial: observable,
+      // selectedMaterial: observable,
       selectedTexture: observable,
-      selectedGameObject: observable,
+      // selectedGameObject: observable,
       selectedShader: observable,
       selectedModel: observable,
       models: observable,
@@ -135,6 +136,23 @@ class Store implements StoreInterface {
     }
   }
 
+  getItem(id: number, type: string): ProjectItemInterface | undefined {
+    let stack: ProjectItemInterface[] = [this.projectItems]
+
+    while (stack.length > 0) {
+      const item = stack[0];
+      stack = stack.slice(1);
+
+      if (item.itemId === id && item.type === type) {
+        return item;
+      }
+
+      if (isFolder(item)) {
+        stack = stack.concat(item.items)
+      }
+    }
+  }
+
   getModel(id: number): ModelInterface | undefined {
     return this.models.find((m) => m.id === id);
   }
@@ -162,43 +180,29 @@ class Store implements StoreInterface {
       this.selectedItem = item;
     })
 
-    if (item.item === null) {
-      if (item.type === 'object') {
+    if (item.type === 'object') {
+      if (item.item === null) {
         const response = await Http.get<GameObjectRecord>(`/game-objects/${item.itemId}`)
 
         if (response.ok) {
           const objectRecord = await response.body();
-
+  
           item.item = new GameObject(objectRecord.id, objectRecord.name, objectRecord.object.modelId, objectRecord.object.materials)
-        }
+        }  
       }
+
+      const gameObject = item.item as GameObject;
+      this.mainViewModeler.loadModel(`/models/${gameObject.modelId}`, gameObject.materials);
     }
-
-    this.selectObject(item.item)
-  }
-
-  async selectObject(gameObject: GameObjectInterface | null) {
-    if (gameObject !== null) {
-      let response = await Http.get<GameObjectRecord>(`/game-objects/${gameObject.id}`)
+    else if (item.type === 'material') {
+      const response = await Http.get<MaterialRecord>(`/materials/${item.itemId}`);
 
       if (response.ok) {
-        const object = await response.body();
+        const materialRecord = await response.body();
 
-        this.mainViewModeler.loadModel(`/models/${object.object.modelId}`, object.object.materials);
+        item.item = new Material(materialRecord.id, materialRecord.name, materialRecord.shaderId, materialRecord.properties);
       }
     }
-
-    runInAction(() => {
-      this.selectionType = 'Object'
-      this.selectedGameObject = gameObject;
-    })
-  }
-
-  async selectMaterial(materialRecord: MaterialInterface) {
-    runInAction(() => {
-      this.selectionType = 'Material'
-      this.selectedMaterial = materialRecord
-    })
   }
 
   async selectTexture(textureRecord: TextureInterface) {

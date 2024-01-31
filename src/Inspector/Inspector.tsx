@@ -51,19 +51,30 @@ const Inspector: React.FC = observer(() => {
     )
   }
 
+  const renderView = () => {
+    if (store.selectedItem) {
+      switch (store.selectedItem.type) {
+        case 'object':
+          return (
+            <ModelTree />
+          )
+
+        case 'material':
+          return (
+            <Material />
+          )
+      }
+    }
+
+    return null;
+  }
+
   return (
     <div className={styles.inspector}>
-      <Tabs>
-        <Tab tabKey="Object" onSelect={handleSelect}>Object</Tab>
-        <Tab tabKey="Material" onSelect={handleSelect}>Material</Tab>
-      </Tabs>
       <div>
-        <TabPane tabKey="Object" currentKey={tabKey}>
-          <ModelTree />
-        </TabPane>
-        <TabPane tabKey="Material" currentKey={tabKey}>
-          <Material />
-        </TabPane>
+        {
+          renderView()
+        }
       </div>
     </div>
   )
