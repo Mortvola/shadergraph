@@ -67,11 +67,11 @@ const ModelList: React.FC = observer(() => {
   }
 
   const handleSelect = (id: number) => {
-    const selection = models.find((m) => m.id === id)
+    // const selection = models.find((m) => m.id === id)
 
-    if (selection) {
-      store.selectModel(selection)
-    }
+    // if (selection) {
+    //   store.selectModel(selection)
+    // }
   }
 
   const renderAddButton = () => (
@@ -80,7 +80,8 @@ const ModelList: React.FC = observer(() => {
 
   return (
     <SidebarList title="Models" addButton={renderAddButton()}>
-      {
+      <div />
+      {/* {
         models.map((m) => (
           <ModelListEntry
             key={m.id}
@@ -90,7 +91,7 @@ const ModelList: React.FC = observer(() => {
             selected={store.selectionType === 'Model' && m.id === store.selectedModel?.id}
           />
         ))
-      }              
+      }               */}
     </SidebarList>
   )
 })

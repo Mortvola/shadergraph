@@ -2,7 +2,7 @@ import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
 import {
-  GameObjectRecord, MaterialRecord, ModelInterface, ProjectItemRecord, ShaderInterface, StoreInterface, TextureRecord,
+  GameObjectRecord, MaterialRecord, ModelInterface, ProjectItemRecord, StoreInterface, TextureRecord,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
@@ -39,12 +39,6 @@ class Store implements StoreInterface {
 
   materials: Materials;
 
-  selectionType: 'Material' | 'Object' | 'Texture' | 'Shader' | 'Model' | null = null;
-
-  selectedShader: ShaderInterface | null = null;
-
-  selectedModel: ModelInterface | null = null;
-
   selectedItem: ProjectItemInterface | null = null;
 
   projectItems = new Folder(-1, '', null)
@@ -63,9 +57,6 @@ class Store implements StoreInterface {
     makeObservable(this, {
       menus: observable,
       graph: observable,
-      selectionType: observable,
-      selectedShader: observable,
-      selectedModel: observable,
       models: observable,
       selectedItem: observable,
       projectItems: observable,
@@ -223,19 +214,19 @@ class Store implements StoreInterface {
   //   })
   // }
 
-  async selectShader(shaderRecord: ShaderInterface) {
-    runInAction(() => {
-      this.selectionType = 'Shader'
-      this.selectedShader = shaderRecord
-    })
-  }
+  // async selectShader(shaderRecord: ShaderInterface) {
+  //   runInAction(() => {
+  //     this.selectionType = 'Shader'
+  //     this.selectedShader = shaderRecord
+  //   })
+  // }
 
-  async selectModel(modelRecord: ModelInterface) {
-    runInAction(() => {
-      this.selectionType = 'Model'
-      this.selectedModel = modelRecord
-    })
-  }
+  // async selectModel(modelRecord: ModelInterface) {
+  //   runInAction(() => {
+  //     this.selectionType = 'Model'
+  //     this.selectedModel = modelRecord
+  //   })
+  // }
 }
 
 export const convertType = (type: string) => {

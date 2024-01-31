@@ -60,11 +60,11 @@ const ShaderList: React.FC<PropsType> = observer(({
   }
 
   const handleSelect = (id: number) => {
-    const selection = shaders.find((s) => s.id === id)
+    // const selection = shaders.find((s) => s.id === id)
 
-    if (selection) {
-      store.selectShader(selection)
-    }
+    // if (selection) {
+    //   store.selectShader(selection)
+    // }
   }
 
   const renderButton = () => (
@@ -73,7 +73,8 @@ const ShaderList: React.FC<PropsType> = observer(({
 
   return (
     <SidebarList title="Shaders" addButton={renderButton()}>
-      {
+      <div />
+      {/* {
         shaders.map((s) => (
           <ShaderListEntry
             key={s.id}
@@ -84,7 +85,7 @@ const ShaderList: React.FC<PropsType> = observer(({
             selected={store.selectionType === 'Shader' && s.id === store.selectedShader?.id}
           />
         ))
-      }
+      } */}
     </SidebarList>
   )
 })
