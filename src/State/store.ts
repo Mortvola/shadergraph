@@ -22,7 +22,11 @@ type OpenMenuItem = {
 }
 
 class Store implements StoreInterface {
-  graph: Graph | null = null;
+  get graph(): Graph | null {
+    return this.selectedItem?.type === 'shader' && this.selectedItem?.item
+      ? this.selectedItem?.item as Graph
+      : null
+  }
 
   private dragObject: unknown | null = null;
 
@@ -57,7 +61,7 @@ class Store implements StoreInterface {
 
     makeObservable(this, {
       menus: observable,
-      graph: observable,
+      // graph: observable,
       models: observable,
       selectedItem: observable,
       projectItems: observable,
@@ -340,21 +344,23 @@ class Store implements StoreInterface {
         if (response.ok) {
           const descriptor = await response.body();
 
-          item.item = new Graph(store, descriptor.id, descriptor.name, descriptor.descriptor);    
+          runInAction(() => {
+            item.item = new Graph(store, descriptor.id, descriptor.name, descriptor.descriptor);    
+          })
         }  
       }
 
       runInAction(() => {
-        this.graph = item.item as Graph;
+        // this.graph = item.item as Graph;
         this.applyMaterial()  
       })
     }
 
-    if (item.type !== 'shader') {
-      runInAction(() => {
-        this.graph = null;
-      })
-    }
+    // if (item.type !== 'shader') {
+    //   runInAction(() => {
+    //     this.graph = null;
+    //   })
+    // }
   }
 
   async getModel(item: ProjectItemInterface) {

@@ -13,7 +13,7 @@ import Toolbar from './Toolbar';
 
 type PropsType = {
   graph: GraphInterface,
-  onHide: () => void,
+  onHide?: () => void,
 }
 
 const ShaderEditor: React.FC<PropsType> = observer(({

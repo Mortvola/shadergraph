@@ -43,10 +43,6 @@ const MainView: React.FC = observer(() => {
     setShowMenu(null);
   }
 
-  const handleEditorHide = () => {
-    store.graph = null;
-  }
-
   const textureInputRef = React.useRef<HTMLInputElement>(null);
   const modelInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -90,7 +86,7 @@ const MainView: React.FC = observer(() => {
       <div>
         {
           store.graph
-          ? <ShaderEditor graph={store.graph} onHide={handleEditorHide} />
+          ? <ShaderEditor graph={store.graph} />
           : (
             <>
               <Canvas3d renderer={mainView} onWheel={handleWheel} />
