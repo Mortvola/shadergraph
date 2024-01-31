@@ -1,3 +1,4 @@
+import { makeObservable, observable } from "mobx";
 import Entity from "./Entity";
 import { TextureInterface } from "./types";
 
@@ -8,6 +9,10 @@ class Texture extends Entity implements TextureInterface {
     super(id, name)
 
     this.flipY = flipY;
+
+    makeObservable(this, {
+      flipY: observable,
+    })
   }
 }
 

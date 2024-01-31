@@ -2,7 +2,7 @@ import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
 import {
-  GameObjectInterface, GameObjectRecord, MaterialRecord, ModelInterface, ProjectItemRecord, ShaderInterface, StoreInterface, TextureInterface,
+  GameObjectRecord, MaterialRecord, ModelInterface, ProjectItemRecord, ShaderInterface, StoreInterface, TextureRecord,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
@@ -13,6 +13,7 @@ import ProjectItem from "../Project/Types/ProjectItem";
 import GameObject from "./GameObject";
 import Folder from "../Project/Types/Folder";
 import Material from "./Material";
+import Texture from "./Texture";
 
 type OpenMenuItem = {
   menuItem: HTMLElement,
@@ -40,12 +41,6 @@ class Store implements StoreInterface {
 
   selectionType: 'Material' | 'Object' | 'Texture' | 'Shader' | 'Model' | null = null;
 
-  // selectedMaterial: MaterialInterface | null = null;
-
-  selectedTexture: TextureInterface | null = null;
-
-  // selectedGameObject: GameObjectInterface | null = null;
-
   selectedShader: ShaderInterface | null = null;
 
   selectedModel: ModelInterface | null = null;
@@ -69,9 +64,6 @@ class Store implements StoreInterface {
       menus: observable,
       graph: observable,
       selectionType: observable,
-      // selectedMaterial: observable,
-      selectedTexture: observable,
-      // selectedGameObject: observable,
       selectedShader: observable,
       selectedModel: observable,
       models: observable,
@@ -187,7 +179,9 @@ class Store implements StoreInterface {
         if (response.ok) {
           const objectRecord = await response.body();
   
-          item.item = new GameObject(objectRecord.id, objectRecord.name, objectRecord.object.modelId, objectRecord.object.materials)
+          runInAction(() => {
+            item.item = new GameObject(objectRecord.id, objectRecord.name, objectRecord.object.modelId, objectRecord.object.materials)
+          })
         }  
       }
 
@@ -195,22 +189,39 @@ class Store implements StoreInterface {
       this.mainViewModeler.loadModel(`/models/${gameObject.modelId}`, gameObject.materials);
     }
     else if (item.type === 'material') {
-      const response = await Http.get<MaterialRecord>(`/materials/${item.itemId}`);
+      if (item.item === null) {
+        const response = await Http.get<MaterialRecord>(`/materials/${item.itemId}`);
 
-      if (response.ok) {
-        const materialRecord = await response.body();
+        if (response.ok) {
+          const materialRecord = await response.body();
 
-        item.item = new Material(materialRecord.id, materialRecord.name, materialRecord.shaderId, materialRecord.properties);
+          runInAction(() => {
+            item.item = new Material(materialRecord.id, materialRecord.name, materialRecord.shaderId, materialRecord.properties);
+          })
+        }
+      }
+    }
+    else if (item.type === 'texture') {
+      if (item.item === null) {
+        const response = await Http.get<TextureRecord>(`/textures/${item.itemId}`);
+
+        if (response.ok) {
+          const record = await response.body();
+
+          runInAction(() => {
+            item.item = new Texture(record.id, record.name, record.flipY);
+          })
+        }
       }
     }
   }
 
-  async selectTexture(textureRecord: TextureInterface) {
-    runInAction(() => {
-      this.selectionType = 'Texture'
-      this.selectedTexture = textureRecord
-    })
-  }
+  // async selectTexture(textureRecord: TextureInterface) {
+  //   runInAction(() => {
+  //     this.selectionType = 'Texture'
+  //     this.selectedTexture = textureRecord
+  //   })
+  // }
 
   async selectShader(shaderRecord: ShaderInterface) {
     runInAction(() => {

@@ -58,11 +58,11 @@ const TextureList: React.FC = observer(() => {
   }
 
   const handleSelect = (id: number) => {
-    const selection = textures.find((t) => t.id === id)
+    // const selection = textures.find((t) => t.id === id)
 
-    if (selection) {
-      store.selectTexture(selection);
-    }
+    // if (selection) {
+    //   store.selectTexture(selection);
+    // }
   }
 
   const renderAddButton = () => (
@@ -71,7 +71,8 @@ const TextureList: React.FC = observer(() => {
 
   return (
     <SidebarList title="Textures" addButton={renderAddButton()}>
-      {
+      <div />
+      {/* {
         textures.map((t) => (
           <TextureListEntry
             key={t.id}
@@ -81,7 +82,7 @@ const TextureList: React.FC = observer(() => {
             selected={store.selectionType === 'Texture' && t.id === store.selectedTexture?.id}
           />
         ))
-      }              
+      }               */}
     </SidebarList>
   )
 })
