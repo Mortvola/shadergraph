@@ -9,6 +9,9 @@ export interface StoreInterface {
   applyMaterial(): Promise<void>;
 
   getItem(id: number, type: string): ProjectItemInterface | undefined;
+
+
+  getAllItemsOfType(type: string): ProjectItemInterface[];
 }
 
 export interface MaterialsInterface {

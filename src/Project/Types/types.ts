@@ -1,6 +1,7 @@
+import { SceneNodeInterface } from "../../Renderer/types";
 import { GameObjectInterface, GraphInterface, MaterialInterface, TextureInterface } from "../../State/types";
 
-export type ItemLike = GameObjectInterface | MaterialInterface | TextureInterface | GraphInterface;
+export type ItemLike = GameObjectInterface | MaterialInterface | TextureInterface | GraphInterface | SceneNodeInterface;
 
 export interface ProjectItemInterface {
   id: number

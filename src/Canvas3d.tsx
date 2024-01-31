@@ -1,6 +1,5 @@
 import React from 'react';
 import { gpu } from './Renderer/Gpu';
-import { useStores } from './State/store';
 import Renderer from './Renderer/Renderer';
 
 type PropsType = {
@@ -12,8 +11,6 @@ const Canvas3d: React.FC<PropsType> = ({
   renderer,
   onWheel,
 }) => {
-  const { modeler } = useStores();
-
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
 
   React.useEffect(() => {
@@ -26,10 +23,6 @@ const Canvas3d: React.FC<PropsType> = ({
       })()  
     }
   }, [renderer])
-
-  React.useEffect(() => {
-    modeler.loadModel('./models/SoulerCoaster.fbx')
-  }, [modeler]);
 
   React.useEffect(() => {
     const element = canvasRef.current;

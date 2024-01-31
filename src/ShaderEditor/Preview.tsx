@@ -12,7 +12,8 @@ const plane = await DrawableNode.create(await Mesh.create(planeShape(1, 1)), lit
 plane.name = 'Plane';
 
 const Preview: React.FC = () => {
-  const { shaderPreview, models, modeler } = useStores();
+  const store = useStores();
+  const { shaderPreview, modeler } = store;
 
   type SizeInfo = { x: number, y: number, width: number, height: number };
 
@@ -51,7 +52,15 @@ const Preview: React.FC = () => {
       modeler.assignModel(plane);
     }
     else {
-      modeler.loadModel(`/models/${event.target.value}`)
+      const modelItem = store.getItem(parseInt(event.target.value, 10), 'model')
+
+      if (modelItem) {
+        const model = await store.getModel(modelItem)
+
+        if (model) {
+          modeler.assignModel(model)
+        }
+      }
     }
   }
 
@@ -66,15 +75,22 @@ const Preview: React.FC = () => {
     event.stopPropagation();
   }
 
+  React.useEffect(() => {
+    if (modeler.model === null) {
+      modeler.assignModel(plane);
+    }
+  }, [modeler]);
+
   return (
     <Draggable onMove={handleMove} position={position} onResize={handleResize} resizable >
       <div className={styles.preview} onWheel={handleWheel}>
         <div>
           <div>Preview</div>
           <select onChange={handleModelChange}>
+            <option key={-1} value={-1}>{'Plane'}</option>
             {
-              models.concat([{ id: -1, name: 'Plane'}]).map((m) => (
-                <option key={m.id} value={m.id}>{m.name}</option>
+              store.getAllItemsOfType('model').map((m) => (
+                <option key={m.id} value={m.itemId ?? -1}>{m.name}</option>
               ))
             }              
           </select>

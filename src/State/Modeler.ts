@@ -35,31 +35,23 @@ class Modeler {
       const model = await loadFbx(url);
 
       if (model) {
-        if (this.model) {
-          this.renderer.removeSceneNode(this.model);
-        }
-
-        // Traverse model tree and assign materials.
-        if (materials) {
-          await this.assignMaterals(model, materials)
-        }
-
-        runInAction(() => {
-          this.model = model;
-          this.renderer.addSceneNode(this.model);
-          this.store.applyMaterial();
-        })
+        this.assignModel(model, materials)
       }
 
       this.loading = false;
     }
   }
 
-  assignModel(model: SceneNodeInterface) {
+  async assignModel(model: SceneNodeInterface, materials?: NodeMaterials) {
     if (this.model) {
       this.renderer.removeSceneNode(this.model);
     }
 
+    // Traverse model tree and assign materials.
+    if (materials) {
+      await this.assignMaterals(model, materials)
+    }
+    
     runInAction(() => {
       this.model = model;
       this.renderer.addSceneNode(this.model);

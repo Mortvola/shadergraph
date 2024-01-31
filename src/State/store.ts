@@ -1,8 +1,8 @@
 import React from "react";
 import Graph from "./Graph";
-import Modeler from "./Modeler";
+import Modeler, { loadFbx } from "./Modeler";
 import {
-  GameObjectRecord, GraphInterface, MaterialRecord, ModelInterface, ProjectItemRecord, ShaderRecord, StoreInterface, TextureRecord,
+  GameObjectRecord, MaterialRecord, ModelInterface, ProjectItemRecord, ShaderRecord, StoreInterface, TextureRecord,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
@@ -14,6 +14,7 @@ import GameObject from "./GameObject";
 import Folder from "../Project/Types/Folder";
 import Material from "./Material";
 import Texture from "./Texture";
+import { SceneNodeInterface } from "../Renderer/types";
 
 type OpenMenuItem = {
   menuItem: HTMLElement,
@@ -136,8 +137,24 @@ class Store implements StoreInterface {
     }
   }
 
-  getModel(id: number): ModelInterface | undefined {
-    return this.models.find((m) => m.id === id);
+  getAllItemsOfType(type: string): ProjectItemInterface[] {
+    let stack: ProjectItemInterface[] = [this.projectItems]
+    const items: ProjectItemInterface[] = [];
+
+    while (stack.length > 0) {
+      const item = stack[0];
+      stack = stack.slice(1);
+
+      if (item.type === type) {
+        items.push(item);
+      }
+
+      if (isFolder(item)) {
+        stack = stack.concat(item.items)
+      }
+    }
+
+    return items;
   }
 
   async applyMaterial(): Promise<void> {
@@ -177,7 +194,16 @@ class Store implements StoreInterface {
       }
 
       const gameObject = item.item as GameObject;
-      this.mainViewModeler.loadModel(`/models/${gameObject.modelId}`, gameObject.materials);
+
+      const modelItem = this.getItem(gameObject.modelId, 'model');
+
+      if (modelItem) {
+        const model = await this.getModel(modelItem)
+
+        if (model) {
+          this.mainViewModeler.assignModel(model, gameObject.materials);
+        }
+      }
     }
     else if (item.type === 'material') {
       if (item.item === null) {
@@ -216,14 +242,30 @@ class Store implements StoreInterface {
         }  
       }
 
-      this.graph = item.item as Graph;
-      this.applyMaterial()
+      runInAction(() => {
+        this.graph = item.item as Graph;
+        this.applyMaterial()  
+      })
     }
 
     if (item.type !== 'shader') {
-      this.graph = null;
+      runInAction(() => {
+        this.graph = null;
+      })
     }
   }
+
+  async getModel(item: ProjectItemInterface) {
+    let model: SceneNodeInterface | null = item.item as SceneNodeInterface;
+
+    if (!item.item) {
+      model = await loadFbx(`/models/${item.itemId}`);
+
+      item.item = model;
+    }
+
+    return model
+  }  
 }
 
 const store = await Store.create();
