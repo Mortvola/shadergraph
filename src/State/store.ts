@@ -15,7 +15,6 @@ import Folder from "../Project/Types/Folder";
 import Material from "./Material";
 import Texture from "./Texture";
 import { SceneNodeInterface } from "../Renderer/types";
-import Model from "./Model";
 
 type OpenMenuItem = {
   menuItem: HTMLElement,
@@ -90,7 +89,7 @@ class Store implements StoreInterface {
     })()
   }
 
-  getNewItemParent(): FolderInterface | null {
+  getNewItemParent(): FolderInterface {
     if (this.selectedItem) {
       if (this.selectedItem.type === 'folder') {
         return this.selectedItem as FolderInterface
@@ -107,7 +106,7 @@ class Store implements StoreInterface {
   async createFolder() {
     const parent = this.getNewItemParent()
 
-    let parentId = parent?.id ?? null;
+    let parentId: number | null = parent.id;
     if (parentId === -1) {
       parentId = null;
     }
@@ -130,7 +129,7 @@ class Store implements StoreInterface {
   async importItem(file: File, url: string) {
     let parent = this.getNewItemParent()
 
-    let parentId = parent?.id ?? null;
+    let parentId: number | null = parent.id;
     if (parentId === -1) {
       parentId = null;
     }
@@ -148,7 +147,7 @@ class Store implements StoreInterface {
 
       const item = new ProjectItem(rec.id, rec.name, rec.type, parent, rec.itemId)
 
-      parent?.addItem(item)
+      parent.addItem(item)
 
       runInAction(() => {
         this.selectedItem = item;        
@@ -162,6 +161,65 @@ class Store implements StoreInterface {
 
   importTexture(file: File) {
     this.importItem(file, '/textures')
+  }
+
+  addNewItem(type: string) {
+    let parent = this.getNewItemParent()
+
+    runInAction(() => {
+      parent.newItem = type;
+    })
+  }
+
+  cancelNewItem(folder: FolderInterface) {
+    runInAction(() => {
+      folder.newItem = null;
+    })
+  }
+
+  async createNewItem(name: string, type: string, folder: FolderInterface) {
+    let parentId: number | null = folder.id;
+    if (parentId === -1) {
+      parentId = null;
+    }
+
+    switch (type) {
+      case 'object': {
+        const response = await Http.post<unknown, ProjectItemRecord>(`/game-objects?parentId=${parentId}`, {
+          name,
+          object: {},
+        })
+
+        if (response.ok) {
+          const rec = await response.body();
+
+          const item = new ProjectItem(rec.id, rec.name, rec.type, folder, rec.itemId)
+          folder.addItem(item);
+        }
+
+        break
+      }
+
+      case 'shader': {
+        const response = await Http.post<unknown, ProjectItemRecord>(`/shader-descriptors?parentId=${parentId}`, {
+          name,
+          descriptor: {},
+        })
+
+        if (response.ok) {
+          const rec = await response.body();
+
+          const item = new ProjectItem(rec.id, rec.name, rec.type, folder, rec.itemId)
+          folder.addItem(item);
+        }
+
+        break
+      }
+    }
+
+    runInAction(() => {
+      folder.newItem = null;
+    })
   }
 
   getItem(id: number, type: string): ProjectItemInterface | undefined {

@@ -4,6 +4,7 @@ import ProjectItem from './ProjectItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
+import { runInAction } from 'mobx';
 
 type PropsType = {
   folder: FolderInterface,
@@ -71,6 +72,28 @@ const ProjectFolder: React.FC<PropsType> = observer(({
     }
   }
 
+  const [name, setName] = React.useState<string>('')
+
+  const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
+    if (event.code === 'Escape') {
+      store.cancelNewItem(folder)
+      setName('');
+    }
+    else if (event.code === 'Enter' && name.length > 0) {
+      store.createNewItem(name, folder.newItem!, folder)
+      setName('');
+    }
+  }
+
+  const handleBlur = () => {
+    store.cancelNewItem(folder);
+    setName('');
+  }
+
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+    setName(event.target.value)
+  }
+
   return (
     <div
       className={droppable ? styles.droppable : ''}
@@ -80,8 +103,22 @@ const ProjectFolder: React.FC<PropsType> = observer(({
     >
       { children }
       <div
-        style={{ paddingLeft: level * 16  }}
+        style={{ paddingLeft: level > 0 ? 16 : 0 }}
       >
+        {
+          folder.newItem
+            ? (
+              <input
+                type="text"
+                value={name}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                onBlur={handleBlur}
+                autoFocus
+              />
+            )
+            : null
+        }
         {
           folder.items.map((i) => (
             i.type === 'folder'

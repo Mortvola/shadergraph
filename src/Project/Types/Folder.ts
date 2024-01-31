@@ -9,6 +9,8 @@ class Folder extends ProjectItem implements FolderInterface {
 
   store: StoreInterface
 
+  newItem: string | null = null;
+
   constructor(id: number, name: string, parent: FolderInterface | null, store: StoreInterface) {
     super(id, name, 'folder', parent, null)
 
@@ -16,6 +18,7 @@ class Folder extends ProjectItem implements FolderInterface {
 
     makeObservable(this, {
       items: observable,
+      newItem: observable,
     })
   }
 

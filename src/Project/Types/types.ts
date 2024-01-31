@@ -24,6 +24,8 @@ export interface ProjectItemInterface {
 export interface FolderInterface extends ProjectItemInterface {
   items: ProjectItemInterface[]
 
+  newItem: string | null
+  
   addItem(item: ProjectItemInterface): Promise<void>
 
   addItems(items: ProjectItemInterface[]): void

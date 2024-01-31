@@ -67,9 +67,9 @@ const MainView: React.FC = observer(() => {
         inputElement.click();
       }  
     } },
-    { name: 'Create shader', action: () => {} },
-    { name: 'Create game object', action: () => {} },
-    { name: 'Create particle system', action: () => {} },
+    { name: 'Create shader', action: () => { store.addNewItem('shader') } },
+    { name: 'Create game object', action: () => { store.addNewItem('object') } },
+    { name: 'Create particle system', action: () => { store.addNewItem('particle') } },
     { name: 'Create folder', action: () => { store.createFolder() } },
   ]), []);
   
@@ -100,28 +100,30 @@ const MainView: React.FC = observer(() => {
         }
       </div>
       <div className={styles.sidebar}>
-        <button ref={ref} type="button" onClick={handleAddClick}>+</button>
-        <input
-          ref={textureInputRef}
-          type="file"
-          style={{ display: 'none' }}
-          accept=".png"
-          // multiple={multiple}
-          onChange={handleTextureFileSelection}
-        />
-        <input
-          ref={modelInputRef}
-          type="file"
-          style={{ display: 'none' }}
-          accept=".fbx"
-          // multiple={multiple}
-          onChange={handleModelFileSelection}
-        />
-        {
-          showMenu
-            ? <ContextMenu menuItems={menuItems} x={showMenu.x} y={showMenu.y} onClose={handleMenuClose} />
-            : null
-        }
+        <div>
+          <button ref={ref} type="button" onClick={handleAddClick}>+</button>
+          <input
+            ref={textureInputRef}
+            type="file"
+            style={{ display: 'none' }}
+            accept=".png"
+            // multiple={multiple}
+            onChange={handleTextureFileSelection}
+          />
+          <input
+            ref={modelInputRef}
+            type="file"
+            style={{ display: 'none' }}
+            accept=".fbx"
+            // multiple={multiple}
+            onChange={handleModelFileSelection}
+          />
+          {
+            showMenu
+              ? <ContextMenu menuItems={menuItems} x={showMenu.x} y={showMenu.y} onClose={handleMenuClose} />
+              : null
+          }
+        </div>
         <Project />
       </div>
     </div>
