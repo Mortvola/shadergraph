@@ -70,7 +70,7 @@ const ProjectItem: React.FC<PropsType> = observer(({
 
   const menuItems = React.useCallback((): MenuItemLike[] => ([
     { name: 'Delete', action: () => { item.delete() } },
-  ]), []);
+  ]), [item]);
   
   const handleContextMenu: React.MouseEventHandler = (event) => {
     event.stopPropagation();

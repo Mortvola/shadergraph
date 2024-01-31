@@ -6,6 +6,8 @@ import Inspector from './Inspector/Inspector';
 import ContextMenu from './ContextMenu/ContextMenu';
 import { MenuItemLike } from './ContextMenu/types';
 import Project from './Project/Project';
+import ShaderEditor from './ShaderEditor/ShaderEditor';
+import { observer } from 'mobx-react-lite';
 
 const menuItems = (): MenuItemLike[] => ([
   { name: 'Import texture...', action: () => {} },
@@ -16,19 +18,9 @@ const menuItems = (): MenuItemLike[] => ([
   { name: 'Create folder', action: () => { store.createFolder() } },
 ]);
 
-type PropsType = {
-  onEditShader: (id: number) => void,
-}
-
-const MainView: React.FC<PropsType> = ({
-  onEditShader,
-}) => {
+const MainView: React.FC = observer(() => {
   const { mainView } = useStores();
   
-  const handleEditShader = (id: number) => {
-    onEditShader(id);
-  }
-
   const handleWheel: React.WheelEventHandler<HTMLDivElement> = (event) => {
     if (event.ctrlKey) {
       mainView?.camera.changeOffset(event.deltaY * 0.01);
@@ -59,11 +51,23 @@ const MainView: React.FC<PropsType> = ({
     setShowMenu(null);
   }
 
+  const handleEditorHide = () => {
+    store.graph = null;
+  }
+
   return (
     <div className={styles.main}>
       <div>
-        <Canvas3d renderer={mainView} onWheel={handleWheel} />
-        <Inspector />
+        {
+          store.graph
+          ? <ShaderEditor graph={store.graph} onHide={handleEditorHide} />
+          : (
+            <>
+              <Canvas3d renderer={mainView} onWheel={handleWheel} />
+              <Inspector />
+            </>
+          )
+        }
       </div>
       <div className={styles.sidebar}>
         <button ref={ref} type="button" onClick={handleAddClick}>+</button>
@@ -76,6 +80,6 @@ const MainView: React.FC<PropsType> = ({
       </div>
     </div>
   )
-}
+})
 
 export default MainView;

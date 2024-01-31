@@ -84,6 +84,7 @@ export type TextureRecord = {
 export type ShaderRecord = {
   id: number,
   name: string,
+  descriptor: MaterialDescriptor,
 }
 
 export interface EntityInterface {
@@ -122,4 +123,26 @@ export type ProjectItemRecord = {
   name: string,
   type: string,
   itemId: number | null,
+}
+
+export const convertType = (type: string) => {
+  switch (type) {
+    case 'float':
+      return '1';
+
+    case 'vec2f':
+      return '2';
+
+    case 'vec4f':
+      return '4';
+
+    case 'texture2D':
+      return 'T2';
+
+    case 'sampler':
+      return 'S';
+
+    default:
+      return type;
+  }
 }

@@ -2,7 +2,7 @@ import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
 import {
-  GameObjectRecord, MaterialRecord, ModelInterface, ProjectItemRecord, StoreInterface, TextureRecord,
+  GameObjectRecord, GraphInterface, MaterialRecord, ModelInterface, ProjectItemRecord, ShaderRecord, StoreInterface, TextureRecord,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
@@ -205,49 +205,23 @@ class Store implements StoreInterface {
         }
       }
     }
-  }
+    else if (item.type === 'shader') {
+      if (item.item === null) {
+        const response = await Http.get<ShaderRecord>(`/shader-descriptors/${item.itemId}`)
 
-  // async selectTexture(textureRecord: TextureInterface) {
-  //   runInAction(() => {
-  //     this.selectionType = 'Texture'
-  //     this.selectedTexture = textureRecord
-  //   })
-  // }
+        if (response.ok) {
+          const descriptor = await response.body();
 
-  // async selectShader(shaderRecord: ShaderInterface) {
-  //   runInAction(() => {
-  //     this.selectionType = 'Shader'
-  //     this.selectedShader = shaderRecord
-  //   })
-  // }
+          item.item = new Graph(store, descriptor.id, descriptor.name, descriptor.descriptor);    
+        }  
+      }
 
-  // async selectModel(modelRecord: ModelInterface) {
-  //   runInAction(() => {
-  //     this.selectionType = 'Model'
-  //     this.selectedModel = modelRecord
-  //   })
-  // }
-}
+      this.graph = item.item as Graph;
+    }
 
-export const convertType = (type: string) => {
-  switch (type) {
-    case 'float':
-      return '1';
-
-    case 'vec2f':
-      return '2';
-
-    case 'vec4f':
-      return '4';
-
-    case 'texture2D':
-      return 'T2';
-
-    case 'sampler':
-      return 'S';
-
-    default:
-      return type;
+    if (item.type !== 'shader') {
+      this.graph = null;
+    }
   }
 }
 

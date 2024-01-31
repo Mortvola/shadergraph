@@ -1,6 +1,6 @@
-import { GameObjectInterface, MaterialInterface, TextureInterface } from "../../State/types";
+import { GameObjectInterface, GraphInterface, MaterialInterface, TextureInterface } from "../../State/types";
 
-export type ItemLike = GameObjectInterface | MaterialInterface | TextureInterface;
+export type ItemLike = GameObjectInterface | MaterialInterface | TextureInterface | GraphInterface;
 
 export interface ProjectItemInterface {
   id: number

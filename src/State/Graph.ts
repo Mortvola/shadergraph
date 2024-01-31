@@ -141,7 +141,7 @@ class Graph implements GraphInterface {
     this.store.applyChanges()
   }
 
-  addNode(node: GraphNodeInterface) {
+  addNode(node: GraphNodeInterface): void {
     runInAction(() => {
       this.nodes = this.nodes.concat(node);
       this.changed = true;
@@ -226,7 +226,7 @@ class Graph implements GraphInterface {
     }
   }
 
-  setTransparency = (transparent: boolean) => {
+  setTransparency = (transparent: boolean): void => {
     runInAction(() => {
       this.transparent = transparent;
       this.changed = true;
@@ -234,7 +234,7 @@ class Graph implements GraphInterface {
     })
   }
 
-  setDepthWriteEnabled = (depthWriteEnabled: boolean) => {
+  setDepthWriteEnabled = (depthWriteEnabled: boolean): void => {
     runInAction(() => {
       this.depthWriteEnabled = depthWriteEnabled;
       this.changed = true;
@@ -242,7 +242,7 @@ class Graph implements GraphInterface {
     })
   }
 
-  setLit = (lit: boolean) => {
+  setLit = (lit: boolean): void => {
     runInAction(() => {
       this.lit = lit;
       this.changed = true;
