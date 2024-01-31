@@ -4,7 +4,7 @@ import SelectShader from './SelectShader';
 import { MaterialDescriptor } from '../Renderer/Materials/MaterialDescriptor';
 import { generateMaterial } from '../Renderer/ShaderBuilder/ShaderBuilder';
 import SidebarList from './SidebarList';
-import MaterialListEntry from './MaterialListEntry';
+// import MaterialListEntry from './MaterialListEntry';
 import { useStores } from '../State/store';
 import { MaterialInterface } from '../State/types';
 import { observer } from 'mobx-react-lite';
@@ -13,9 +13,9 @@ import { runInAction } from 'mobx';
 const MaterialList: React.FC = observer(() => {
   const store = useStores();
 
-  React.useEffect(() => {
-    store.materials.query();
-  }, [store.materials])
+  // React.useEffect(() => {
+  //   store.materials.query();
+  // }, [store.materials])
 
   const addMaterial = async (values: unknown) => {
     const response = await Http.post<unknown, number>('/materials', values);
@@ -53,26 +53,26 @@ const MaterialList: React.FC = observer(() => {
     // }
   }
 
-  const handleDelete = async (id: number) => {
-    const response = await Http.delete(`/materials/${id}`)
+  // const handleDelete = async (id: number) => {
+  //   const response = await Http.delete(`/materials/${id}`)
 
-    if (response.ok) {
-      runInAction(() => {
-        const index = store.materials.materials.findIndex((m) => m.id === id)
+  //   if (response.ok) {
+  //     runInAction(() => {
+  //       const index = store.materials.materials.findIndex((m) => m.id === id)
 
-        if (index !== -1) {
-            store.materials.materials = [
-              ...store.materials.materials.slice(0, index),
-              ...store.materials.materials.slice(index + 1),
-            ]  
-        }
-      })
+  //       if (index !== -1) {
+  //           store.materials.materials = [
+  //             ...store.materials.materials.slice(0, index),
+  //             ...store.materials.materials.slice(index + 1),
+  //           ]  
+  //       }
+  //     })
 
-      if (selection?.id === id) {
-        setSelection(null);
-      }
-    }
-  }
+  //     if (selection?.id === id) {
+  //       setSelection(null);
+  //     }
+  //   }
+  // }
 
   const renderAddButton = () => (
     <SelectShader onSelection={handleAdd} />
