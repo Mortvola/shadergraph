@@ -13,7 +13,7 @@ class Folder extends ProjectItem implements FolderInterface {
     super(id, name, 'folder', parent, null)
 
     this.store = store;
-    
+
     makeObservable(this, {
       items: observable,
     })
@@ -38,6 +38,24 @@ class Folder extends ProjectItem implements FolderInterface {
     return false;
   }
 
+  sortItems() {
+    this.items.sort((a, b) => {
+      if (a.type === 'folder') {
+        if (b.type === 'folder') {
+          return a.name.localeCompare(b.name)
+        }
+
+        return -1;
+      }
+
+      if (b.type === 'folder') {
+        return 1;
+      }
+
+      return a.name.localeCompare(b.name)
+    })
+  }
+
   async addItem(item: ProjectItemInterface): Promise<void> {
     if (this.isAncestor(item)) {
       throw new Error('item is an ancestor of the destination')
@@ -50,7 +68,9 @@ class Folder extends ProjectItem implements FolderInterface {
     if (response.ok) {
       runInAction(() => {
         this.items = this.items.concat([item]);
-        this.items.sort((a, b) => a.name.localeCompare(b.name))
+
+        this.sortItems()
+
         item.parent = this;
       })
     }
@@ -59,7 +79,8 @@ class Folder extends ProjectItem implements FolderInterface {
   addItems(items: ProjectItemInterface[]): void {
     runInAction(() => {
       this.items = items;
-      this.items.sort((a, b) => a.name.localeCompare(b.name))
+
+      this.sortItems();
 
       for (const item of this.items) {
         item.parent = this;
