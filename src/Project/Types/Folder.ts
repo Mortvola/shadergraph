@@ -2,13 +2,18 @@ import { makeObservable, observable, runInAction } from "mobx";
 import ProjectItem from "./ProjectItem";
 import { FolderInterface, ProjectItemInterface, isFolder } from "./types";
 import Http from "../../Http/src";
+import { StoreInterface } from "../../State/types";
 
 class Folder extends ProjectItem implements FolderInterface {
   items: ProjectItemInterface[] = []
 
-  constructor(id: number, name: string, parent: FolderInterface | null) {
+  store: StoreInterface
+
+  constructor(id: number, name: string, parent: FolderInterface | null, store: StoreInterface) {
     super(id, name, 'folder', parent, null)
 
+    this.store = store;
+    
     makeObservable(this, {
       items: observable,
     })
@@ -54,6 +59,7 @@ class Folder extends ProjectItem implements FolderInterface {
   addItems(items: ProjectItemInterface[]): void {
     runInAction(() => {
       this.items = items;
+      this.items.sort((a, b) => a.name.localeCompare(b.name))
 
       for (const item of this.items) {
         item.parent = this;
@@ -98,6 +104,10 @@ class Folder extends ProjectItem implements FolderInterface {
           ]
   
           item.parent = null;
+        }
+
+        if (item === this.store.selectedItem) {
+          this.store.selectedItem = null;
         }
       })  
     }

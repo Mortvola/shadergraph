@@ -15,6 +15,7 @@ import Folder from "../Project/Types/Folder";
 import Material from "./Material";
 import Texture from "./Texture";
 import { SceneNodeInterface } from "../Renderer/types";
+import Model from "./Model";
 
 type OpenMenuItem = {
   menuItem: HTMLElement,
@@ -42,7 +43,7 @@ class Store implements StoreInterface {
 
   selectedItem: ProjectItemInterface | null = null;
 
-  projectItems = new Folder(-1, '', null)
+  projectItems = new Folder(-1, '', null, this)
 
   draggingItem: ProjectItemInterface | null = null;
 
@@ -80,7 +81,7 @@ class Store implements StoreInterface {
 
         folder.addItems(list.map((i) => {
           if (i.type === 'folder') {
-            return new Folder(i.id, i.name, folder)
+            return new Folder(i.id, i.name, folder, store)
           }
 
           return new ProjectItem(i.id, i.name, i.type, folder, i.itemId)
@@ -89,16 +90,22 @@ class Store implements StoreInterface {
     })()
   }
 
-  async createFolder() {
-    let parent: FolderInterface | null = this.projectItems;
+  getNewItemParent(): FolderInterface | null {
     if (this.selectedItem) {
       if (this.selectedItem.type === 'folder') {
-        parent = this.selectedItem as FolderInterface
+        return this.selectedItem as FolderInterface
       }
-      else {
-        parent = this.selectedItem.parent;
+
+      if (this.selectedItem.parent) {
+        return this.selectedItem.parent;
       }
     }
+
+    return this.projectItems;
+  }
+
+  async createFolder() {
+    const parent = this.getNewItemParent()
 
     let parentId = parent?.id ?? null;
     if (parentId === -1) {
@@ -112,12 +119,49 @@ class Store implements StoreInterface {
     if (response.ok) {
       const rec = await response.body();
 
-      const folder = new Folder(rec.id, rec.name, parent)
+      const folder = new Folder(rec.id, rec.name, parent, store)
 
       await this.projectItems.addItem(folder);
       // this.projectItems = this.projectItems.concat([folder]);
       // this.projectItems.sort((a, b) => a.name.localeCompare(b.name))
     }
+  }
+
+  async importItem(file: File, url: string) {
+    let parent = this.getNewItemParent()
+
+    let parentId = parent?.id ?? null;
+    if (parentId === -1) {
+      parentId = null;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file)
+
+    const response = await fetch(`${url}?parentId=${parentId}`, {
+      method: 'POST',
+      body: formData
+    })
+
+    if (response.ok) {
+      const rec = await response.json() as ProjectItemRecord
+
+      const item = new ProjectItem(rec.id, rec.name, rec.type, parent, rec.itemId)
+
+      parent?.addItem(item)
+
+      runInAction(() => {
+        this.selectedItem = item;        
+      })
+    }
+  }
+
+  importModel(file: File) {
+    this.importItem(file, '/models')
+  }
+
+  importTexture(file: File) {
+    this.importItem(file, '/textures')
   }
 
   getItem(id: number, type: string): ProjectItemInterface | undefined {

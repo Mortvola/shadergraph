@@ -8,15 +8,7 @@ import { MenuItemLike } from './ContextMenu/types';
 import Project from './Project/Project';
 import ShaderEditor from './ShaderEditor/ShaderEditor';
 import { observer } from 'mobx-react-lite';
-
-const menuItems = (): MenuItemLike[] => ([
-  { name: 'Import texture...', action: () => {} },
-  { name: 'Import model...', action: () => {} },
-  { name: 'Create shader', action: () => {} },
-  { name: 'Create game object', action: () => {} },
-  { name: 'Create particle system', action: () => {} },
-  { name: 'Create folder', action: () => { store.createFolder() } },
-]);
+import ProjectItem from './Project/Types/ProjectItem';
 
 const MainView: React.FC = observer(() => {
   const { mainView } = useStores();
@@ -55,6 +47,44 @@ const MainView: React.FC = observer(() => {
     store.graph = null;
   }
 
+  const textureInputRef = React.useRef<HTMLInputElement>(null);
+  const modelInputRef = React.useRef<HTMLInputElement>(null);
+
+  const menuItems = React.useCallback((): MenuItemLike[] => ([
+    { name: 'Import texture...', action: () => {
+      const inputElement = textureInputRef.current;
+
+      if (inputElement) {
+        inputElement.value = '';
+        inputElement.click();
+      }  
+    } },
+    { name: 'Import model...', action: () => {
+      const inputElement = modelInputRef.current;
+
+      if (inputElement) {
+        inputElement.value = '';
+        inputElement.click();
+      }  
+    } },
+    { name: 'Create shader', action: () => {} },
+    { name: 'Create game object', action: () => {} },
+    { name: 'Create particle system', action: () => {} },
+    { name: 'Create folder', action: () => { store.createFolder() } },
+  ]), []);
+  
+  const handleTextureFileSelection: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
+    if (event.target.files && event.target.files[0]) {
+      store.importTexture(event.target.files[0])
+    }
+  }
+
+  const handleModelFileSelection: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
+    if (event.target.files && event.target.files[0]) {
+      store.importModel(event.target.files[0])
+    }
+  }
+
   return (
     <div className={styles.main}>
       <div>
@@ -71,6 +101,22 @@ const MainView: React.FC = observer(() => {
       </div>
       <div className={styles.sidebar}>
         <button ref={ref} type="button" onClick={handleAddClick}>+</button>
+        <input
+          ref={textureInputRef}
+          type="file"
+          style={{ display: 'none' }}
+          accept=".png"
+          // multiple={multiple}
+          onChange={handleTextureFileSelection}
+        />
+        <input
+          ref={modelInputRef}
+          type="file"
+          style={{ display: 'none' }}
+          accept=".fbx"
+          // multiple={multiple}
+          onChange={handleModelFileSelection}
+        />
         {
           showMenu
             ? <ContextMenu menuItems={menuItems} x={showMenu.x} y={showMenu.y} onClose={handleMenuClose} />
