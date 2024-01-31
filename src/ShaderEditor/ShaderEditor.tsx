@@ -1,5 +1,4 @@
 import React from 'react';
-import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import Canvas2d from './Canvas2d';
 import ContextMenu from '../ContextMenu/ContextMenu';
@@ -21,8 +20,6 @@ const ShaderEditor: React.FC<PropsType> = observer(({
   graph,
   onHide,
 }) => {
-  const store = useStores();
-  
   // Save the grpah every five seconds if there have been changes.
   React.useEffect(() => {
     const timer  = setInterval(() => {
@@ -94,14 +91,6 @@ const ShaderEditor: React.FC<PropsType> = observer(({
     }
   }
 
-  const handleTitleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-    graph.setName(event.target.value);
-  }
-
-  const handleClose = () => {
-    onHide();
-  }
-
   return (
     <div
       ref={ref}
@@ -113,11 +102,6 @@ const ShaderEditor: React.FC<PropsType> = observer(({
     >
       <Toolbar>
         <button type="button" onClick={handleSave}>Save</button>
-        <label>
-          Name:
-          <input value={graph.name} onChange={handleTitleChange} />
-        </label>
-        <button type="button" onClick={handleClose}>Close</button>
       </Toolbar>
       <Canvas2d />
       <GraphComponent parent={ref} />
