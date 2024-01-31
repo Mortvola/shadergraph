@@ -8,6 +8,7 @@ import MeshNode from './MeshNode';
 import { runInAction } from 'mobx';
 import { GameObjectInterface, GameObjectRecord } from '../../State/types';
 import Http from '../../Http/src';
+import Model from '../../State/Model';
 
 const ModelTree: React.FC = observer(() => {
   const store = useStores();
@@ -91,11 +92,17 @@ const ModelTree: React.FC = observer(() => {
     return elements;
   }
 
+  let modelName = ''
+
+  if (gameObject) {
+    modelName = store.getItem(gameObject.modelId, 'model')?.name ?? ''
+  }
+
   if (gameObject) {
     return (
       <div>
         <div>{`Name: ${gameObject.name}`}</div>
-        <div>{`Model: ${store.getModel(gameObject.modelId)?.name ?? ''}`}</div>
+        <div>{`Model: ${modelName}`}</div>
         {
           renderTree()        
         }
