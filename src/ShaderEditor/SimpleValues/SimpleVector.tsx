@@ -17,7 +17,7 @@ const SimpleVector: React.FC<PropsType> = ({
     if (index !== undefined) {
       value[index] = newValue;
       
-      store.applyChanges();
+      store.applyMaterial();
     }
   }
 

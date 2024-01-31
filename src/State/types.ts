@@ -6,7 +6,7 @@ import { DrawableNodeInterface } from "../Renderer/types";
 export interface StoreInterface {
   materials: MaterialsInterface;
 
-  applyChanges(): Promise<void>;
+  applyMaterial(): Promise<void>;
 
   getItem(id: number, type: string): ProjectItemInterface | undefined;
 }

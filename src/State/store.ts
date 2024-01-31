@@ -140,7 +140,7 @@ class Store implements StoreInterface {
     return this.models.find((m) => m.id === id);
   }
 
-  async applyChanges(): Promise<void> {
+  async applyMaterial(): Promise<void> {
     if (this.graph) {
       const material = await this.graph.generateMaterial();
 
@@ -217,6 +217,7 @@ class Store implements StoreInterface {
       }
 
       this.graph = item.item as Graph;
+      this.applyMaterial()
     }
 
     if (item.type !== 'shader') {

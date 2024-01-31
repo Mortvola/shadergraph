@@ -47,7 +47,7 @@ class Modeler {
         runInAction(() => {
           this.model = model;
           this.renderer.addSceneNode(this.model);
-          this.store.applyChanges();
+          this.store.applyMaterial();
         })
       }
 
@@ -63,7 +63,7 @@ class Modeler {
     runInAction(() => {
       this.model = model;
       this.renderer.addSceneNode(this.model);
-      this.store.applyChanges();
+      this.store.applyMaterial();
     })
   }
 

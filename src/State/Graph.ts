@@ -138,7 +138,7 @@ class Graph implements GraphInterface {
 
     this.changed = true;
 
-    this.store.applyChanges()
+    this.store.applyMaterial()
   }
 
   addNode(node: GraphNodeInterface): void {
@@ -230,7 +230,7 @@ class Graph implements GraphInterface {
     runInAction(() => {
       this.transparent = transparent;
       this.changed = true;
-      this.store.applyChanges()
+      this.store.applyMaterial()
     })
   }
 
@@ -238,7 +238,7 @@ class Graph implements GraphInterface {
     runInAction(() => {
       this.depthWriteEnabled = depthWriteEnabled;
       this.changed = true;
-      this.store.applyChanges()
+      this.store.applyMaterial()
     })
   }
 
@@ -246,7 +246,7 @@ class Graph implements GraphInterface {
     runInAction(() => {
       this.lit = lit;
       this.changed = true;
-      this.store.applyChanges()
+      this.store.applyMaterial()
     })
   }
 
@@ -254,7 +254,7 @@ class Graph implements GraphInterface {
     runInAction(() => {
       this.cullMode = mode;
       this.changed = true;
-      this.store.applyChanges()
+      this.store.applyMaterial()
     })
   }
 

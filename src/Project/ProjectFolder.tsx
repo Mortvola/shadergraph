@@ -32,8 +32,6 @@ const ProjectFolder: React.FC<PropsType> = observer(({
     event.stopPropagation();
     event.preventDefault();
 
-    // console.log(`item: ${store.draggingItem} parentId: ${store.draggingItem?.parentId} folderId: ${folder.id}`)
-
     if (
       event.dataTransfer.types[0] === 'application/project-item'
       && store.draggingItem

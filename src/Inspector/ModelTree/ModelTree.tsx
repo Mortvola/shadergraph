@@ -8,7 +8,6 @@ import MeshNode from './MeshNode';
 import { runInAction } from 'mobx';
 import { GameObjectInterface, GameObjectRecord } from '../../State/types';
 import Http from '../../Http/src';
-import Model from '../../State/Model';
 
 const ModelTree: React.FC = observer(() => {
   const store = useStores();
