@@ -12,10 +12,6 @@ export interface StoreInterface {
 
   getItem(id: number, type: string): ProjectItemInterface | undefined;
 
-<<<<<<< HEAD
-
-=======
->>>>>>> ea5d863 (Fixed issues with selecting different models in the shader graph preview.)
   getAllItemsOfType(type: string): ProjectItemInterface[];
 }
 

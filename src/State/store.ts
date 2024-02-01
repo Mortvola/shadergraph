@@ -16,7 +16,6 @@ import Material from "./Material";
 import Texture from "./Texture";
 import { ParticleSystemInterface, SceneNodeInterface } from "../Renderer/types";
 import ParticleSystem from "../Renderer/ParticleSystem";
-import { renderer2d } from "../Main";
 
 type OpenMenuItem = {
   menuItem: HTMLElement,
