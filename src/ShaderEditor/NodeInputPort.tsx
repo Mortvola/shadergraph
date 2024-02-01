@@ -146,7 +146,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
               parent,
             )
           }
-          {
+          { /* Draw the line to the value element */
             createPortal(
               <div
                 className={styles.defaultLine}

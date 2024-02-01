@@ -18,6 +18,8 @@ import Twirl from "../Renderer/ShaderBuilder/Nodes/Twirl";
 import Voronoi from "../Renderer/ShaderBuilder/Nodes/Voronoi";
 import Power from "../Renderer/ShaderBuilder/Nodes/Power";
 import { MenuItemLike } from "../ContextMenu/types";
+import Lerp from "../Renderer/ShaderBuilder/Nodes/Lerp";
+import Subtract from "../Renderer/ShaderBuilder/Nodes/Subtract";
 
 function addNode(node: GraphNodeInterface, x: number, y: number) {
   node.position = { x, y };
@@ -74,4 +76,6 @@ export const menuItems = (): MenuItemLike[] => ([
   { name: 'Twirl', action: (x: number, y: number) => createObject(Twirl, x, y) },
   { name: 'Voronoi', action: (x: number, y: number) => createObject(Voronoi, x, y) },
   { name: 'Power', action: (x: number, y: number) => createObject(Power, x, y) },
+  { name: 'Lerp', action: (x: number, y: number) => createObject(Lerp, x, y) },
+  { name: 'Subtract', action: (x: number, y: number) => createObject(Subtract, x, y) },
 ])
