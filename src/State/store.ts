@@ -2,7 +2,7 @@ import React from "react";
 import Graph from "./Graph";
 import Modeler, { loadFbx } from "./Modeler";
 import {
-  GameObjectRecord, MaterialRecord, ModelInterface, ProjectItemRecord, ShaderRecord, StoreInterface, TextureRecord,
+  GameObjectRecord, MaterialRecord, ModelInterface, ParticleRrecord, ProjectItemRecord, ShaderRecord, StoreInterface, TextureRecord,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
@@ -14,7 +14,9 @@ import GameObject from "./GameObject";
 import Folder from "../Project/Types/Folder";
 import Material from "./Material";
 import Texture from "./Texture";
-import { SceneNodeInterface } from "../Renderer/types";
+import { ParticleSystemInterface, SceneNodeInterface } from "../Renderer/types";
+import ParticleSystem from "../Renderer/ParticleSystem";
+import { renderer2d } from "../Main";
 
 type OpenMenuItem = {
   menuItem: HTMLElement,
@@ -187,43 +189,55 @@ class Store implements StoreInterface {
       parentId = null;
     }
 
+    let url: string | undefined = undefined;
+    let payload: unknown = {};
+
     switch (type) {
       case 'object': {
-        const response = await Http.post<unknown, ProjectItemRecord>(`/game-objects?parentId=${parentId}`, {
+        url = '/game-objects'
+        payload = {
           name,
           object: {},
-        })
-
-        if (response.ok) {
-          const rec = await response.body();
-
-          const item = new ProjectItem(rec.id, rec.name, rec.type, folder, rec.itemId)
-          folder.addItem(item);
         }
 
         break
       }
 
       case 'shader': {
-        const response = await Http.post<unknown, ProjectItemRecord>(`/shader-descriptors?parentId=${parentId}`, {
+        url = '/shader-descriptors'
+        payload = {
           name,
           descriptor: {},
-        })
+        }
 
-        if (response.ok) {
-          const rec = await response.body();
+        break
+      }
 
-          const item = new ProjectItem(rec.id, rec.name, rec.type, folder, rec.itemId)
-          folder.addItem(item);
+      case 'particle': {
+        url = '/particles'
+        payload = {
+          name,
+          descriptor: {},
         }
 
         break
       }
     }
 
-    runInAction(() => {
-      folder.newItem = null;
-    })
+    if (url) {
+      const response = await Http.post<unknown, ProjectItemRecord>(`${url}?parentId=${parentId}`, payload)
+
+      if (response.ok) {
+        const rec = await response.body();
+  
+        const item = new ProjectItem(rec.id, rec.name, rec.type, folder, rec.itemId)
+        folder.addItem(item);
+      }
+  
+      runInAction(() => {
+        folder.newItem = null;
+      })  
+    }
   }
 
   getItem(id: number, type: string): ProjectItemInterface | undefined {
@@ -282,6 +296,14 @@ class Store implements StoreInterface {
   }
 
   async selectItem(item: ProjectItemInterface) {
+    if (this.selectedItem?.type === 'particle') {
+      const particleSystem: ParticleSystem | null = this.selectedItem.getItem()
+
+      if (particleSystem) {
+        this.mainView.removeParticleSystem(particleSystem)
+      }
+    }
+
     runInAction(() => {
       this.selectedItem = item;
     })
@@ -354,6 +376,26 @@ class Store implements StoreInterface {
         // this.graph = item.item as Graph;
         this.applyMaterial()  
       })
+    }
+    else if (item.type === 'particle') {
+      if (item.item === null) {
+        const response = await Http.get<ParticleRrecord>(`/particles/${item.itemId}`)
+
+        if (response.ok) {
+          const rec = await response.body();
+
+          runInAction(() => {
+            item.item = new ParticleSystem(rec.id, rec.descriptor);    
+          })
+        }  
+      }
+
+      const particleSystem: ParticleSystemInterface | null = item.getItem()
+      if (particleSystem) {
+        this.mainView.addParticleSystem(particleSystem)
+      }
+
+      this.mainViewModeler.assignModel(null);
     }
 
     // if (item.type !== 'shader') {

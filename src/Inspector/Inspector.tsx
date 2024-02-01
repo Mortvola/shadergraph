@@ -7,6 +7,8 @@ import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import Http from '../Http/src';
 import Texture from '../State/Texture';
+import Particle from './Particle';
+import ParticleSystem from '../Renderer/ParticleSystem';
 
 const Inspector: React.FC = observer(() => {
   const store = useStores();
@@ -53,6 +55,15 @@ const Inspector: React.FC = observer(() => {
           return (
             <Material />
           )
+
+        case 'particle':
+          const particle: ParticleSystem | null = store.selectedItem.getItem()
+
+          if (particle) {
+            return (
+              <Particle particleSystem={particle} />
+            )  
+          }
       }
     }
 

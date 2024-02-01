@@ -44,6 +44,14 @@ class ProjectItem implements ProjectItemInterface {
   async delete(): Promise<void> {
     return this.parent?.deleteItem(this);
   }
+
+  getItem<T>(): T | null {
+    if (!this.item) {
+      return null
+    }
+
+    return this.item as T
+  }
 }
 
 export default ProjectItem;

@@ -42,20 +42,23 @@ class Modeler {
     }
   }
 
-  async assignModel(model: SceneNodeInterface, materials?: NodeMaterials) {
+  async assignModel(model: SceneNodeInterface | null, materials?: NodeMaterials) {
     if (this.model) {
       this.renderer.removeSceneNode(this.model);
     }
 
     // Traverse model tree and assign materials.
-    if (materials) {
+    if (model && materials) {
       await this.assignMaterals(model, materials)
     }
     
     runInAction(() => {
       this.model = model;
-      this.renderer.addSceneNode(this.model);
-      this.store.applyMaterial();
+
+      if (model) {
+        this.renderer.addSceneNode(model);
+        this.store.applyMaterial();  
+      }
     })
   }
 

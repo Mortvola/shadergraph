@@ -8,7 +8,6 @@ import { MenuItemLike } from './ContextMenu/types';
 import Project from './Project/Project';
 import ShaderEditor from './ShaderEditor/ShaderEditor';
 import { observer } from 'mobx-react-lite';
-import ProjectItem from './Project/Types/ProjectItem';
 
 const MainView: React.FC = observer(() => {
   const { mainView } = useStores();
@@ -18,7 +17,7 @@ const MainView: React.FC = observer(() => {
       mainView?.camera.changeOffset(event.deltaY * 0.01);
     }
     else {
-      mainView?.camera.changeRotation(event.deltaX * 0.2)
+      mainView?.camera.changeRotation(event.deltaX * 0.2, event.deltaY * 0.2)
     }
 
     event.stopPropagation();

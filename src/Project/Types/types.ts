@@ -1,7 +1,8 @@
-import { SceneNodeInterface } from "../../Renderer/types";
+import { ParticleSystemInterface, SceneNodeInterface } from "../../Renderer/types";
 import { GameObjectInterface, GraphInterface, MaterialInterface, TextureInterface } from "../../State/types";
 
-export type ItemLike = GameObjectInterface | MaterialInterface | TextureInterface | GraphInterface | SceneNodeInterface;
+export type ItemLike = GameObjectInterface | MaterialInterface | TextureInterface | GraphInterface | SceneNodeInterface
+  | ParticleSystemInterface;
 
 export interface ProjectItemInterface {
   id: number
@@ -19,6 +20,8 @@ export interface ProjectItemInterface {
   changeName(name: string): Promise<void>
 
   delete(): Promise<void>
+
+  getItem<T>(): T | null
 }
 
 export interface FolderInterface extends ProjectItemInterface {

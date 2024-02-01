@@ -69,7 +69,7 @@ const Preview: React.FC = () => {
       shaderPreview?.camera.changeOffset(event.deltaY * 0.01);
     }
     else {
-      shaderPreview?.camera.changeRotation(event.deltaX * 0.2) //, event.deltaY * 0.2)
+      shaderPreview?.camera.changeRotation(event.deltaX * 0.2, event.deltaY * 0.2)
     }
 
     event.stopPropagation();

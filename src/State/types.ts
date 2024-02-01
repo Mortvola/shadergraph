@@ -95,6 +95,20 @@ export type ShaderRecord = {
   descriptor: MaterialDescriptor,
 }
 
+export type ParticleDescriptor = {
+  maxPoints?: number,
+  rate?: number,
+  angle?: number,
+  lifetime?: [number, number],
+  originRadius?: number,
+  initialVelocity?: number,
+}
+
+export type ParticleRrecord = {
+  id: number,
+  name: string,
+  descriptor: ParticleDescriptor,
+}
 export interface EntityInterface {
   id: number;
 
