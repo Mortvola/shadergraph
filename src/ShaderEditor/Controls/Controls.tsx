@@ -17,8 +17,8 @@ const Controls: React.FC = observer(() => {
 
   const [position, setPosition] = React.useState<SizeInfo>({ x: 100, y: 100 });
 
-  const handleMove = (x: number, y: number) => {
-    setPosition((prev) => ({ x, y }));
+  const handlePositionChange = (deltaX: number, deltaY: number) => {
+    setPosition((prev) => ({ x: prev.x + deltaX, y: prev.y + deltaY }));
   }
 
   React.useEffect(() => {
@@ -51,7 +51,7 @@ const Controls: React.FC = observer(() => {
   }
 
   return (
-    <Draggable onMove={handleMove} position={position} >
+    <Draggable onPositionChange={handlePositionChange} position={position} >
       <div className={styles.wrapper}  onClick={handleClick}>
         <div>Controls</div>
         <div className={styles.controls}>

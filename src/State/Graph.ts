@@ -156,6 +156,14 @@ class Graph implements GraphInterface {
     })
   }
 
+  changeNodePosition(node: GraphNodeInterface, deltaX: number, deltaY: number): void {
+    runInAction(() => {
+      node.position!.x += deltaX;
+      node.position!.y += deltaY;
+      this.changed = true;
+    })
+  }
+
   selectNode(node: GraphNodeInterface | null) {
     runInAction(() => {
       this.selectedNode = node;

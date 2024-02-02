@@ -4,6 +4,7 @@ import { useStores } from '../State/store';
 import { OutputPortInterface } from '../Renderer/ShaderBuilder/Types';
 import { observer } from 'mobx-react-lite';
 import { convertType } from '../State/types';
+import { renderer2d } from '../Main';
 
 type PropsType = {
   port: OutputPortInterface,
@@ -31,8 +32,8 @@ const NodeOutputPort: React.FC<PropsType> = observer(({
     if (element) {
       const rect = element.getBoundingClientRect();
 
-      port.offsetX = rect.right - port.node.position!.x;
-      port.offsetY = rect.top + rect.height / 2 - port.node.position!.y;
+      port.offsetX = rect.right - port.node.position!.x - renderer2d.translate[0];
+      port.offsetY = rect.top + rect.height / 2 - port.node.position!.y - renderer2d.translate[1];
     }
   }, [port]);
 

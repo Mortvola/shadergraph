@@ -19,8 +19,8 @@ const Properties: React.FC<PropsType> = observer(({
   type SizeInfo = { x: number, y: number };
   const [position, setPosition] = React.useState<SizeInfo>({ x: 100, y: 100 });
 
-  const handleMove = (x: number, y: number) => {
-    setPosition((prev) => ({ x, y }));
+  const handlePositionChange = (deltaX: number, deltaY: number) => {
+    setPosition((prev) => ({ x: prev.x + deltaX, y: prev.y + deltaY }));
   }
 
   React.useEffect(() => {
@@ -87,7 +87,7 @@ const Properties: React.FC<PropsType> = observer(({
   }
 
   return (
-    <Draggable onMove={handleMove} position={position} >
+    <Draggable onPositionChange={handlePositionChange} position={position} >
       <div ref={ref} className={styles.wrapper}  onClick={handleClick}>
         <div className={styles.title}>
           <div>

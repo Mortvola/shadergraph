@@ -1,5 +1,6 @@
 import { vec2 } from "wgpu-matrix";
 import { store } from "./State/store";
+import { makeObservable, observable, runInAction } from "mobx";
 
 const requestPostAnimationFrame = (task: (timestamp: number) => void) => {
   requestAnimationFrame((timestamp: number) => {
@@ -16,7 +17,15 @@ class Renderer2d {
 
   scale: [number, number] = [1, 1];
 
+  translate: [number, number] = [0, 0];
+
   started = false;
+
+  constructor() {
+    makeObservable(this, {
+      translate: observable,
+    })
+  }
 
   setCanvas(canvas: HTMLCanvasElement) {
     this.element = canvas;
@@ -34,7 +43,13 @@ class Renderer2d {
 
   setScale(x: number, y: number) {
     this.scale = [x, y];
-    this.ctx?.scale(x, y);
+    this.ctx?.scale(this.scale[0], this.scale[1]);
+  }
+
+  setTranslation(x: number, y: number) {
+    runInAction(() => {
+      this.translate = [x, y]
+    })
   }
 
   updateFrame = () => {
@@ -42,11 +57,11 @@ class Renderer2d {
       this.ctx.clearRect(0, 0, this.element?.width ?? 0, this.element?.height ?? 0);
 
       for (const edge of store.graph.edges) {
-        const startX = edge.output.node.position!.x + edge.output.offsetX;
-        const startY = edge.output.node.position!.y + edge.output.offsetY;
+        const startX = edge.output.node.position!.x + edge.output.offsetX + this.translate[0];
+        const startY = edge.output.node.position!.y + edge.output.offsetY + this.translate[1];
 
-        const endX = edge.input.node.position!.x + edge.input.offsetX;
-        const endY = edge.input.node.position!.y + edge.input.offsetY;
+        const endX = edge.input.node.position!.x + edge.input.offsetX + this.translate[0];
+        const endY = edge.input.node.position!.y + edge.input.offsetY + this.translate[1];
 
         const curveRadius = 20;
 

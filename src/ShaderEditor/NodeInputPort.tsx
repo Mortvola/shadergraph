@@ -9,6 +9,7 @@ import Value from '../Renderer/ShaderBuilder/Value';
 import SimpleUV from './SimpleValues/SimpleUV';
 import SimpleFloat from './SimpleValues/SimpleFloat';
 import { GraphInterface, convertType } from '../State/types';
+import { renderer2d } from '../Main';
 
 type PropsType = {
   graph: GraphInterface,
@@ -30,8 +31,8 @@ const NodeInputPort: React.FC<PropsType> = observer(({
     if (element) {
       const rect = element.getBoundingClientRect();
 
-      port.offsetX = rect.left - port.node.position!.x;
-      port.offsetY = rect.top + (rect.height / 2) - port.node.position!.y;
+      port.offsetX = rect.left - port.node.position!.x - renderer2d.translate[0];
+      port.offsetY = rect.top + (rect.height / 2) - port.node.position!.y - renderer2d.translate[1];
     }
   }, [port]);
 
@@ -135,6 +136,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
                 style={{
                   left: port.node.position!.x + port.offsetX,
                   top: port.node.position!.y + port.offsetY,
+                  transform: `translate(calc(-100% + ${renderer2d.translate[0]}px - 15px),calc(${renderer2d.translate[1]}px - 50%))`
                 }}
               >
                 {
@@ -153,6 +155,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
                 style={{
                   left: port.node.position!.x + port.offsetX,
                   top: port.node.position!.y + port.offsetY,
+                  transform: `translate(calc(${renderer2d.translate[0]}px - 15px),calc(${renderer2d.translate[1]}px))`
                 }}
               />,
               parent,

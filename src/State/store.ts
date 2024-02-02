@@ -16,6 +16,7 @@ import Material from "./Material";
 import Texture from "./Texture";
 import { ParticleSystemInterface, SceneNodeInterface } from "../Renderer/types";
 import ParticleSystem from "../Renderer/ParticleSystem";
+import { renderer2d } from "../Main";
 
 type OpenMenuItem = {
   menuItem: HTMLElement,
@@ -373,6 +374,7 @@ class Store implements StoreInterface {
 
       runInAction(() => {
         // this.graph = item.item as Graph;
+        renderer2d.setTranslation(0, 0)
         this.applyMaterial()  
       })
     }

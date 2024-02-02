@@ -10,17 +10,20 @@ import ValueInput from './ValueInput';
 import Modal from '../Modal';
 import SampleTextureSettings from './SampleTextureSettings';
 import SampleTexture from '../Renderer/ShaderBuilder/Nodes/SampleTexture';
+import { renderer2d } from '../Main';
 
 type PropsType = {
   graph: GraphInterface,
   node: GraphNodeInterface,
   parentRef: React.RefObject<HTMLElement>
+  style?: React.CSSProperties,
 }
 
 const Node: React.FC<PropsType> = observer(({
   graph,
   node,
   parentRef,
+  style,
 }) => {
   const [expanded, setExpanded] = React.useState<boolean>(false);
 
@@ -28,13 +31,12 @@ const Node: React.FC<PropsType> = observer(({
     graph.selectNode(node)
   }
 
-  const handleMove = (x: number, y: number) => {
-    graph?.setNodePosition(node, x, y);
+  const handlePositionChange = (deltaX: number, deltaY: number) => {
+    graph?.changeNodePosition(node, deltaX, deltaY);
   }
 
   const handleExpansionClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     setExpanded((prev) => !prev);
-    console.log(expanded);
     event.stopPropagation();
   }
 
@@ -56,7 +58,9 @@ const Node: React.FC<PropsType> = observer(({
       const rect = element.getBoundingClientRect()
 
 
-      setShowSettings({ right: rect.right, top: rect.bottom });
+      setShowSettings({
+        right: rect.right - renderer2d.translate[0],
+        top: rect.bottom - renderer2d.translate[1] });
     }
   }
 
@@ -127,7 +131,11 @@ const Node: React.FC<PropsType> = observer(({
   }
 
   return (
-    <Draggable position={{ x: node.position!.x, y: node.position!.y }} onMove={handleMove}>
+    <Draggable
+      position={{ x: node.position!.x, y: node.position!.y }}
+      onPositionChange={handlePositionChange}
+      style={style}
+    >
       <div
         className={`${styles.node} ${node === graph.selectedNode ? styles.selected : ''}`}
         onPointerDown={handlePointerDown}
@@ -141,7 +149,7 @@ const Node: React.FC<PropsType> = observer(({
             style={{
               left: showSettings?.right,
               top: showSettings?.top,
-              transform: 'translate(-100%, 0)',
+              transform: `translate(calc(-100% + ${renderer2d.translate[0]}px), ${renderer2d.translate[1]}px)`,
             }}
           />
         </Modal>

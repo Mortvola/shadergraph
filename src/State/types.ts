@@ -40,6 +40,8 @@ export interface GraphInterface {
 
   setNodePosition(node: GraphNodeInterface, x: number, y: number): void;
 
+  changeNodePosition(node: GraphNodeInterface, deltaX: number, deltaY: number): void;
+
   deleteEdge(edge: GraphEdgeInterface): void;
 
   link(outputPort: OutputPortInterface, inputPort: InputPortInterface): void;

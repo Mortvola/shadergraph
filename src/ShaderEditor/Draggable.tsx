@@ -5,17 +5,19 @@ import styles from './Draggable.module.scss';
 type PropsType = {
   position: { x: number, y: number, width?: number, height?: number }
   children: React.ReactNode,
-  onMove: (x: number, y: number) => void,
+  onPositionChange?: (deltaX: number, deltaY: number) => void,
   onResize?: (x: number, y: number, width: number, height: number) => void,
   resizable?: boolean,
+  style?: React.CSSProperties,
 }
 
 const Draggable: React.FC<PropsType> = observer(({
   position,
   children,
-  onMove,
+  onPositionChange,
   resizable = false,
   onResize,
+  style,
 }) => {
   type ResizeDirection = 'E' | 'W' | 'N' | 'S' | 'NW' | 'SW' | 'NE' | 'SE';
 
@@ -175,7 +177,9 @@ const Draggable: React.FC<PropsType> = observer(({
           }
         }
         else {
-          onMove(dragInfo.rect.left + delta.x, dragInfo.rect.top + delta.y)
+          if (onPositionChange) {
+            onPositionChange(event.movementX, event.movementY)
+          }
         }
       }
     }
@@ -235,6 +239,7 @@ const Draggable: React.FC<PropsType> = observer(({
         top: position.y,
         width: position.width,
         height: position.height,
+        ...style,
       }}
       onPointerDown={handlePointerDown}
       onLostPointerCapture={handleLostPointerCapture}

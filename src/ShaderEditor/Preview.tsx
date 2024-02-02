@@ -19,8 +19,8 @@ const Preview: React.FC = () => {
 
   const [position, setPosition] = React.useState<SizeInfo>({ x: 100, y: 100, width: 200, height: 200});
 
-  const handleMove = (x: number, y: number) => {
-    setPosition((prev) => ({ x, y, width: prev.width, height: prev.height }));
+  const handlePositionChange = (deltaX: number, deltaY: number) => {
+    setPosition((prev) => ({ x: prev.x + deltaX, y: prev.y + deltaY, width: prev.width, height: prev.height }));
   }
 
   const handleResize = (x: number, y: number, width: number, height: number) => {
@@ -82,7 +82,7 @@ const Preview: React.FC = () => {
   }, [modeler]);
 
   return (
-    <Draggable onMove={handleMove} position={position} onResize={handleResize} resizable >
+    <Draggable onPositionChange={handlePositionChange} position={position} onResize={handleResize} resizable >
       <div className={styles.preview} onWheel={handleWheel}>
         <div>
           <div>Preview</div>
