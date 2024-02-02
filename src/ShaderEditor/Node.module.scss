@@ -20,19 +20,22 @@ $selected-border-width: 3px;
   }
 
   .title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     height: max-content;
     width: 100%;
     border-bottom: thin black solid;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    padding-left: 0.5rem;
+    padding: 0.5rem;
     overflow: hidden;
+    box-sizing: border-box;
   }
 
   .body {
     // min-height: 5rem;
     height: 100%;
     width: 100%;
+    box-sizing: border-box;
 
     display: grid;
     grid-template-columns: max-content minmax(1rem, 1fr) max-content;

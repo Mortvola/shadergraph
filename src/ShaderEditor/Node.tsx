@@ -7,6 +7,9 @@ import { GraphNodeInterface, isPropertyNode, isValueNode } from '../Renderer/Sha
 import Draggable from './Draggable';
 import { GraphInterface } from '../State/types';
 import ValueInput from './ValueInput';
+import Modal from '../Modal';
+import SampleTextureSettings from './SampleTextureSettings';
+import SampleTexture from '../Renderer/ShaderBuilder/Nodes/SampleTexture';
 
 type PropsType = {
   graph: GraphInterface,
@@ -43,6 +46,24 @@ const Node: React.FC<PropsType> = observer(({
     graph.changed = true;
   }
 
+  const [showSettings, setShowSettings] = React.useState<{ right: number, top: number } | null>(null);
+  const buttonRef = React.useRef<HTMLButtonElement>(null)
+
+  const handleSettingsClick = () => {
+    const element = buttonRef.current
+
+    if (element) {
+      const rect = element.getBoundingClientRect()
+
+
+      setShowSettings({ right: rect.right, top: rect.bottom });
+    }
+  }
+
+  const handleSettingsHide = () => {
+    setShowSettings(null);
+  }
+
   const renderNode = () => {
     if (isPropertyNode(node)) {
       return (
@@ -73,7 +94,16 @@ const Node: React.FC<PropsType> = observer(({
 
     return (
       <>
-        <div className={styles.title}>{node.getName()}</div>
+        <div className={styles.title}>
+          <div>{node.getName()}</div>
+          <div  onPointerDown={handlePointerDown2}>
+            {
+              node.settings
+                ? <button ref={buttonRef} type="button" onClick={handleSettingsClick}>*</button>
+                : null
+            }
+          </div>
+        </div>
         <div className={styles.body}>
           <div className={styles.inputports}>
             {
@@ -105,6 +135,16 @@ const Node: React.FC<PropsType> = observer(({
         {
           renderNode()
         }
+        <Modal show={showSettings !== null} onHide={handleSettingsHide}>
+          <SampleTextureSettings
+            node={node as SampleTexture}
+            style={{
+              left: showSettings?.right,
+              top: showSettings?.top,
+              transform: 'translate(-100%, 0)',
+            }}
+          />
+        </Modal>
       </div>
     </Draggable>
   );
