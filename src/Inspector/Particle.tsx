@@ -45,6 +45,16 @@ const Particle: React.FC<PropsType> = ({
     save()
   }
 
+  const handleInitialSizeChange = (value: number) => {
+    particleSystem.initialeSize = value;
+    save()
+  }
+
+  const handleFinalSizeChange = (value: number) => {
+    particleSystem.finalSize = value;
+    save()
+  }
+
   const save = async () => {
     const response = await Http.patch(`/particles/${particleSystem.id}`, {
       descriptor: particleSystem.getDescriptor(),
@@ -84,6 +94,14 @@ const Particle: React.FC<PropsType> = ({
       <div>
         Max Lifetime:
         <NumberInput value={particleSystem.maxLifetime} onChange={handleMaxLifetimeChange} />
+      </div>
+      <div>
+        Initial Size:
+        <NumberInput value={particleSystem.initialeSize} onChange={handleInitialSizeChange} />
+      </div>
+      <div>
+        Final Size:
+        <NumberInput value={particleSystem.finalSize} onChange={handleFinalSizeChange} />
       </div>
     </div>
   )

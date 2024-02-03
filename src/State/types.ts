@@ -100,6 +100,8 @@ export type ParticleDescriptor = {
   lifetime?: [number, number],
   originRadius?: number,
   initialVelocity?: number,
+  initialSize?: number,
+  finalSize?: number,
 }
 
 export type ParticleRrecord = {
