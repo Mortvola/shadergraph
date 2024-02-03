@@ -10,13 +10,15 @@ import ValueInput from './ValueInput';
 import Modal from '../Modal';
 import SampleTextureSettings from './SampleTextureSettings';
 import SampleTexture from '../Renderer/ShaderBuilder/Nodes/SampleTexture';
-import { renderer2d } from '../Main';
 
 type PropsType = {
   graph: GraphInterface,
   node: GraphNodeInterface,
   parentRef: React.RefObject<HTMLElement>
   style?: React.CSSProperties,
+  translate?: { x: number, y: number },
+  scale?: number,
+  origin?: { x: number, y: number },
 }
 
 const Node: React.FC<PropsType> = observer(({
@@ -24,6 +26,9 @@ const Node: React.FC<PropsType> = observer(({
   node,
   parentRef,
   style,
+  translate = { x: 0, y: 0},
+  scale = 1,
+  origin = { x: 0, y: 0},
 }) => {
   const [expanded, setExpanded] = React.useState<boolean>(false);
 
@@ -59,8 +64,9 @@ const Node: React.FC<PropsType> = observer(({
 
 
       setShowSettings({
-        right: rect.right - renderer2d.translate[0],
-        top: rect.bottom - renderer2d.translate[1] });
+        right: rect.right - translate.x,
+        top: rect.bottom - translate.y,
+      });
     }
   }
 
@@ -76,7 +82,14 @@ const Node: React.FC<PropsType> = observer(({
             <div>{node.getName()}</div>
             {
               node.outputPort.map((p) => (
-                <NodeOutputPort key={p.name} port={p} hideName />
+                <NodeOutputPort
+                  key={p.name}
+                  port={p}
+                  hideName
+                  translate={translate}
+                  scale={scale}
+                  origin={origin}            
+                />
               ))
             }
           </div>
@@ -90,7 +103,14 @@ const Node: React.FC<PropsType> = observer(({
           <div className={styles.value}>
             <ValueInput value={node.value} onChange={handleValueChange} />
             <div onClick={handleExpansionClick} onPointerDown={handlePointerDown2}>V</div>
-            <NodeOutputPort key={node.outputPort[0].name} port={node.outputPort[0]} hideName />
+            <NodeOutputPort
+              key={node.outputPort[0].name}
+              port={node.outputPort[0]}
+              hideName
+              translate={translate}
+              scale={scale}
+              origin={origin}
+            />
           </div>
         </>
       )
@@ -112,7 +132,15 @@ const Node: React.FC<PropsType> = observer(({
           <div className={styles.inputports}>
             {
               node.inputPorts.map((p) => (
-                <NodeInputPort graph={graph} key={p.name} parentRef={parentRef} port={p} />
+                <NodeInputPort
+                  graph={graph}
+                  key={p.name}
+                  parentRef={parentRef}
+                  port={p}
+                  translate={translate}
+                  scale={scale}
+                  origin={origin}            
+                />
               ))
             }
           </div>
@@ -121,7 +149,13 @@ const Node: React.FC<PropsType> = observer(({
           <div className={styles.outputports}>
             {
               node.outputPort.map((p) => (
-                <NodeOutputPort key={p.name} port={p} />
+                <NodeOutputPort
+                  key={p.name}
+                  port={p}
+                  translate={translate}
+                  scale={scale}
+                  origin={origin}
+                />
               ))
             }
           </div>
@@ -130,11 +164,16 @@ const Node: React.FC<PropsType> = observer(({
     )
   }
 
+  // console.log(scale)
+
   return (
     <Draggable
       position={{ x: node.position!.x, y: node.position!.y }}
       onPositionChange={handlePositionChange}
       style={style}
+      translate={translate}
+      scale={scale}
+      origin={origin}
     >
       <div
         className={`${styles.node} ${node === graph.selectedNode ? styles.selected : ''}`}
@@ -149,7 +188,7 @@ const Node: React.FC<PropsType> = observer(({
             style={{
               left: showSettings?.right,
               top: showSettings?.top,
-              transform: `translate(calc(-100% + ${renderer2d.translate[0]}px), ${renderer2d.translate[1]}px)`,
+              transform: `translate(calc(-100% + ${translate.x}px), ${translate.y}px)`,
             }}
           />
         </Modal>

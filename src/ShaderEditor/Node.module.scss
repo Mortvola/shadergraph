@@ -137,6 +137,8 @@ $selected-border-width: 3px;
   transform: translate(calc(-100% - $simple-value-offset), -50%);
   text-align: right;
 
+  transform-origin: top left;
+
   >input {
     width: 1.75rem;
     text-align: right;
@@ -149,4 +151,6 @@ $selected-border-width: 3px;
   border-top: solid white thin;
   transform: translate(-$simple-value-offset, 0);
   width: 20px;
+
+  transform-origin: top left;
 }

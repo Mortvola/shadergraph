@@ -4,16 +4,21 @@ import { useStores } from '../State/store';
 import { OutputPortInterface } from '../Renderer/ShaderBuilder/Types';
 import { observer } from 'mobx-react-lite';
 import { convertType } from '../State/types';
-import { renderer2d } from '../Main';
 
 type PropsType = {
   port: OutputPortInterface,
   hideName?: boolean,
+  translate?: { x: number, y: number },
+  scale?: number,
+  origin?: { x: number, y: number },
 }
 
 const NodeOutputPort: React.FC<PropsType> = observer(({
   port,
   hideName = false,
+  translate = { x: 0, y: 0},
+  scale = 1,
+  origin = { x: 0, y: 0},
 }) => {
   const store = useStores();
   const { graph } = store;
@@ -32,10 +37,10 @@ const NodeOutputPort: React.FC<PropsType> = observer(({
     if (element) {
       const rect = element.getBoundingClientRect();
 
-      port.offsetX = rect.right - port.node.position!.x - renderer2d.translate[0];
-      port.offsetY = rect.top + rect.height / 2 - port.node.position!.y - renderer2d.translate[1];
+      port.offsetX = rect.right - ((port.node.position!.x + translate.x) * scale + (origin.x - origin.x * scale));
+      port.offsetY = rect.top + rect.height / 2 - ((port.node.position!.y + translate.y) * scale + (origin.y - origin.y * scale));
     }
-  }, [port]);
+  }, [origin.x, origin.y, port, scale, translate.x, translate.y]);
 
   const handleDragStart: React.DragEventHandler = (event) => {
     event.dataTransfer.dropEffect = 'link';

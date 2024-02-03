@@ -17,27 +17,55 @@ const NodesContainer: React.FC<PropsType> = observer(({
   const ref = React.useRef<HTMLDivElement>(null)
 
   const handleWheel: React.WheelEventHandler<HTMLDivElement> = (event) => {
-    renderer2d.setTranslation(
-      renderer2d.translate[0] - event.deltaX / 2,
-      renderer2d.translate[1] - event.deltaY / 2,
-    )
+    if (event.ctrlKey) {
+      renderer2d.changeScale(
+        -event.deltaY / 1024,
+      )  
+    }
+    else {
+      renderer2d.setTranslation(
+        renderer2d.translate[0] - event.deltaX / 2,
+        renderer2d.translate[1] - event.deltaY / 2,
+      )  
+    }
   }
 
-  const getTransform = () => ({
-      transform: `translate(${renderer2d.translate[0]}px,${renderer2d.translate[1]}px)`,
-  })
+  React.useEffect(() => {
+    const element = ref.current;
+
+    if (element) {
+      const rect = element.getBoundingClientRect()
+
+      renderer2d.setOrigin({ x: rect.width / 2, y: rect.height / 2 })
+    }
+  }, [])
 
   if (!graph) {
     return null;    
   }
   
   return (
-    <div ref={ref} className={styles.container} onWheel={handleWheel}>
-        {
-          graph.nodes.map((gn) => (
-            <Node graph={graph} key={gn.id} node={gn} parentRef={ref} style={getTransform()} />
-          ))
-        }
+    <div
+      ref={ref}
+      className={styles.container}
+      onWheel={handleWheel}
+    >
+      {
+        graph.nodes.map((gn) => {
+          // console.log(renderer2d.scale)
+          return (
+            <Node
+              graph={graph}
+              key={gn.id}
+              node={gn}
+              parentRef={ref}
+              translate={{ x: renderer2d.translate[0], y: renderer2d.translate[1]}}
+              scale={renderer2d.scale}
+              origin={renderer2d.origin}
+            />
+          )
+        })
+      }
     </div>
   )
 })

@@ -9,18 +9,23 @@ import Value from '../Renderer/ShaderBuilder/Value';
 import SimpleUV from './SimpleValues/SimpleUV';
 import SimpleFloat from './SimpleValues/SimpleFloat';
 import { GraphInterface, convertType } from '../State/types';
-import { renderer2d } from '../Main';
 
 type PropsType = {
   graph: GraphInterface,
   port: InputPortInterface,
   parentRef: React.RefObject<HTMLElement>
+  translate?: { x: number, y: number },
+  scale?: number,
+  origin?: { x: number, y: number },
 }
 
 const NodeInputPort: React.FC<PropsType> = observer(({
   graph,
   port,
   parentRef,
+  translate = { x: 0, y: 0},
+  scale = 1,
+  origin = { x: 0, y: 0},
 }) => {
   const store = useStores();
   const portRef = React.useRef<HTMLDivElement | null>(null);
@@ -31,10 +36,10 @@ const NodeInputPort: React.FC<PropsType> = observer(({
     if (element) {
       const rect = element.getBoundingClientRect();
 
-      port.offsetX = rect.left - port.node.position!.x - renderer2d.translate[0];
-      port.offsetY = rect.top + (rect.height / 2) - port.node.position!.y - renderer2d.translate[1];
+      port.offsetX = rect.left - ((port.node.position!.x + translate.x) * scale + (origin.x - origin.x * scale))
+      port.offsetY = rect.top + (rect.height / 2) - ((port.node.position!.y + translate.y) * scale + (origin.y - origin.y * scale))
     }
-  }, [port]);
+  }, [origin.x, origin.y, port, scale, translate.x, translate.y]);
 
   const handleDragOver: React.DragEventHandler = (event) => {
     event.preventDefault();
@@ -134,9 +139,9 @@ const NodeInputPort: React.FC<PropsType> = observer(({
               <div
                 className={styles.defaults}
                 style={{
-                  left: port.node.position!.x + port.offsetX,
-                  top: port.node.position!.y + port.offsetY,
-                  transform: `translate(calc(-100% + ${renderer2d.translate[0]}px - 15px),calc(${renderer2d.translate[1]}px - 50%))`
+                  left: origin.x - origin.x * scale + (port.node.position!.x + translate.x) * scale + port.offsetX,
+                  top: origin.y - origin.y * scale + (port.node.position!.y + translate.y) * scale + port.offsetY,
+                  transform: `translate(calc(-${100 * scale}% - ${15 * scale}px), -${50 * scale}%)  scale(${scale})`
                 }}
               >
                 {
@@ -153,9 +158,9 @@ const NodeInputPort: React.FC<PropsType> = observer(({
               <div
                 className={styles.defaultLine}
                 style={{
-                  left: port.node.position!.x + port.offsetX,
-                  top: port.node.position!.y + port.offsetY,
-                  transform: `translate(calc(${renderer2d.translate[0]}px - 15px),calc(${renderer2d.translate[1]}px))`
+                  left: ((port.node.position!.x + translate.x) * scale + (origin.x - origin.x * scale)) + port.offsetX,
+                  top: ((port.node.position!.y + translate.y) * scale + (origin.y - origin.y * scale)) + port.offsetY,
+                  transform: `translate(-${15 * scale}px, 0) scale(${scale})`
                 }}
               />,
               parent,

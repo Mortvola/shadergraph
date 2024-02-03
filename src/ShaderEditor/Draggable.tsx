@@ -9,6 +9,9 @@ type PropsType = {
   onResize?: (x: number, y: number, width: number, height: number) => void,
   resizable?: boolean,
   style?: React.CSSProperties,
+  translate?: { x: number, y: number },
+  scale?: number,
+  origin?: { x: number, y: number },
 }
 
 const Draggable: React.FC<PropsType> = observer(({
@@ -18,6 +21,9 @@ const Draggable: React.FC<PropsType> = observer(({
   resizable = false,
   onResize,
   style,
+  translate = { x: 0, y: 0 },
+  scale = 1,
+  origin = { x: 0, y: 0},
 }) => {
   type ResizeDirection = 'E' | 'W' | 'N' | 'S' | 'NW' | 'SW' | 'NE' | 'SE';
 
@@ -178,7 +184,7 @@ const Draggable: React.FC<PropsType> = observer(({
         }
         else {
           if (onPositionChange) {
-            onPositionChange(event.movementX, event.movementY)
+            onPositionChange(event.movementX / scale, event.movementY / scale)
           }
         }
       }
@@ -230,15 +236,18 @@ const Draggable: React.FC<PropsType> = observer(({
     }
   }
 
+  // console.log(scale);
+
   return (
     <div
       ref={dragRef}
       className={`${styles.draggable} ${resizable ? styles.resizable : ''} ${resizeCursor}`}
       style={{
-        left: position.x,
-        top: position.y,
+        left: origin.x - (origin.x - position.x) * scale,
+        top: origin.y - (origin.y - position.y) * scale,
         width: position.width,
         height: position.height,
+        transform: `translate(${translate.x * scale}px, ${translate.y * scale}px) scale(${scale})`,
         ...style,
       }}
       onPointerDown={handlePointerDown}

@@ -15,15 +15,20 @@ class Renderer2d {
 
   ctx: CanvasRenderingContext2D | null = null;
 
-  scale: [number, number] = [1, 1];
+  canvasScale: [number, number] = [1, 1];
+
+  scale = 1;
 
   translate: [number, number] = [0, 0];
+
+  origin: { x: number, y: number } = { x: 0, y: 0}
 
   started = false;
 
   constructor() {
     makeObservable(this, {
       translate: observable,
+      scale: observable,
     })
   }
 
@@ -41,9 +46,22 @@ class Renderer2d {
     }
   }
 
-  setScale(x: number, y: number) {
-    this.scale = [x, y];
-    this.ctx?.scale(this.scale[0], this.scale[1]);
+  setCanvasScale(x: number, y: number) {
+    this.canvasScale = [x, y];
+    this.ctx?.scale(this.canvasScale[0], this.canvasScale[1]);
+  }
+
+  changeScale(delta: number) {
+    runInAction(() => {
+      this.scale += delta;
+
+      if (this.scale > 1) {
+        this.scale = 1
+      }
+      else if (this.scale < 0.5) {
+        this.scale = 0.5
+      }
+    })
   }
 
   setTranslation(x: number, y: number) {
@@ -52,16 +70,22 @@ class Renderer2d {
     })
   }
 
+  setOrigin(origin: { x: number, y: number }) {
+    runInAction(() => {
+      this.origin = origin
+    })
+  }
+
   updateFrame = () => {
     if (this.ctx && store.graph) {
       this.ctx.clearRect(0, 0, this.element?.width ?? 0, this.element?.height ?? 0);
 
       for (const edge of store.graph.edges) {
-        const startX = edge.output.node.position!.x + edge.output.offsetX + this.translate[0];
-        const startY = edge.output.node.position!.y + edge.output.offsetY + this.translate[1];
+        const startX = (edge.output.node.position!.x + this.translate[0]) * this.scale + (this.origin.x - this.origin.x * this.scale) + edge.output.offsetX;
+        const startY = (edge.output.node.position!.y + this.translate[1]) * this.scale + (this.origin.y - this.origin.y * this.scale) + edge.output.offsetY;
 
-        const endX = edge.input.node.position!.x + edge.input.offsetX + this.translate[0];
-        const endY = edge.input.node.position!.y + edge.input.offsetY + this.translate[1];
+        const endX = (edge.input.node.position!.x + this.translate[0]) * this.scale + (this.origin.x - this.origin.x * this.scale) + edge.input.offsetX;
+        const endY = (edge.input.node.position!.y + this.translate[1]) * this.scale + (this.origin.y - this.origin.y * this.scale) + edge.input.offsetY;
 
         const curveRadius = 20;
 

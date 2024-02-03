@@ -33,7 +33,7 @@ const Canvas2d: React.FC = () => {
 
           const rect = canvas.getBoundingClientRect();
 
-          renderer2d.setScale(canvas.width / rect.width, canvas.height / rect.height);
+          renderer2d.setCanvasScale(canvas.width / rect.width, canvas.height / rect.height);
         }
       })
 
