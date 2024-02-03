@@ -102,6 +102,7 @@ export type ParticleDescriptor = {
   initialVelocity?: number,
   initialSize?: number,
   finalSize?: number,
+  initialColor?: number[][],
 }
 
 export type ParticleRrecord = {
