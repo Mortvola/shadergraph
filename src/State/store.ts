@@ -12,7 +12,7 @@ import { FolderInterface, ProjectItemInterface, isFolder } from "../Project/Type
 import ProjectItem from "../Project/Types/ProjectItem";
 import GameObject from "./GameObject";
 import Folder from "../Project/Types/Folder";
-import Material from "./Material";
+import MaterialItem from "./Material";
 import Texture from "./Texture";
 import { ParticleSystemInterface, SceneNodeInterface } from "../Renderer/types";
 import ParticleSystem from "../Renderer/ParticleSystem";
@@ -341,7 +341,7 @@ class Store implements StoreInterface {
           const materialRecord = await response.body();
 
           runInAction(() => {
-            item.item = new Material(materialRecord.id, materialRecord.name, materialRecord.shaderId, materialRecord.properties);
+            item.item = new MaterialItem(materialRecord.id, materialRecord.name, materialRecord.shaderId, materialRecord.properties);
           })
         }
       }
