@@ -2,6 +2,7 @@ import React from 'react';
 import ParticleSystem from '../Renderer/ParticleSystem';
 import NumberInput from './NumberInput';
 import Http from '../Http/src';
+import styles from './Particle.module.scss';
 
 type PropsType = {
   particleSystem: ParticleSystem,
@@ -105,50 +106,50 @@ const Particle: React.FC<PropsType> = ({
   }
 
   return (
-    <div>
-      <div>
+    <div className={styles.particle}>
+      <label>
         Number of Particles:
         <NumberInput value={particleSystem.maxPoints} onChange={handleMaxPointsChange} />
-      </div>
-      <div>
+      </label>
+      <label>
         Emission Rate:
         <NumberInput value={particleSystem.rate} onChange={handleRateChange} />
-      </div>
-      <div>
+      </label>
+      <label>
         Angle:
         <NumberInput value={particleSystem.angle} onChange={handleAngleChange} />
-      </div>
-      <div>
+      </label>
+      <label>
         Radius:
         <NumberInput value={particleSystem.originRadius} onChange={handleRadiusChange} />
-      </div>
-      <div>
+      </label>
+      <label>
         Initial Velocity:
         <NumberInput value={particleSystem.initialVelocity} onChange={handleVelocityChange} />
-      </div>
-      <div>
+      </label>
+      <label>
         Min Lifetime:
         <NumberInput value={particleSystem.minLifetime} onChange={handleMinLifetimeChange} />
-      </div>
-      <div>
+      </label>
+      <label>
         Max Lifetime:
         <NumberInput value={particleSystem.maxLifetime} onChange={handleMaxLifetimeChange} />
-      </div>
-      <div>
+      </label>
+      <label>
         Initial Size:
         <NumberInput value={particleSystem.initialeSize} onChange={handleInitialSizeChange} />
-      </div>
-      <div>
+      </label>
+      <label>
         Final Size:
         <NumberInput value={particleSystem.finalSize} onChange={handleFinalSizeChange} />
-      </div>
-      <div>
+      </label>
+      <label>
         Initial Color:
         <div>
           <input type="color" value={rgbToHex(particleSystem.initialColor[0])} onChange={handleColor1Change} />
           <input type="color" value={rgbToHex(particleSystem.initialColor[1])} onChange={handleColor2Change} />
         </div>
-      </div>
+      </label>
     </div>
   )
 }

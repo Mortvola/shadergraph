@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './NumberInput.module.scss';
 
 type PropsType = {
   value: number,
@@ -22,7 +23,7 @@ const NumberInput: React.FC<PropsType> = ({
   }
 
   return (
-    <input type="text" value={stringValue} onChange={handleChange} />
+    <input type="text" className={styles.input} value={stringValue} onChange={handleChange} />
   )
 }
 
