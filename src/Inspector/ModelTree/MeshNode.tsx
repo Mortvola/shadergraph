@@ -17,7 +17,7 @@ const MeshNode: React.FC<PropsType> = observer(({
   onMaterialAssignment,
 }) => {
   const store = useStores()
-  const { materials, selectedItem } = store;
+  const { selectedItem } = store;
 
   let gameObject: GameObjectInterface | null = null;
   if (selectedItem && selectedItem.type === 'object') {
@@ -26,20 +26,29 @@ const MeshNode: React.FC<PropsType> = observer(({
 
   const handleDragOver: React.DragEventHandler = (event) => {
     event.preventDefault();
+    event.stopPropagation();
 
-    if (event.dataTransfer.types[0] === 'application/material') {
+    
+    if (
+      event.dataTransfer.types[0] === 'application/project-item'
+      && store.draggingItem
+      && store.draggingItem.type === 'material'
+    ) {
       event.dataTransfer.dropEffect = 'link';
     }
   }
 
   const handleDrop: React.DragEventHandler = (event) => {
     event.preventDefault();
+    event.stopPropagation();
 
-    const data = event.dataTransfer.getData("application/material");
-
-    if (data) {
-      const materialId = parseInt(data);
-      onMaterialAssignment(node, materialId)
+    if (
+      event.dataTransfer.types[0] === 'application/project-item'
+      && store.draggingItem
+      && store.draggingItem.type === 'material'
+      && store.draggingItem.itemId !== null
+    ) {
+      onMaterialAssignment(node, store.draggingItem.itemId)
     }
   }
 
