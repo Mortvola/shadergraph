@@ -12,6 +12,10 @@ const NumberInput: React.FC<PropsType> = ({
 }) => {
   const [stringValue, setStringValue] = React.useState<string>(value.toString())
 
+  React.useEffect(() => {
+    setStringValue(value.toString())
+  }, [value])
+
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     setStringValue(event.target.value)
 

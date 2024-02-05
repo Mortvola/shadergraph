@@ -1,0 +1,16 @@
+.color {
+  display: flex;
+  flex-direction: row;
+  column-gap: 0.5rem;
+
+  > label {
+    display: flex;
+    flex-direction: row;
+    column-gap: 0.25rem;
+  }
+}
+
+.sample {
+  width: 16px;
+  height: 16px;
+}
