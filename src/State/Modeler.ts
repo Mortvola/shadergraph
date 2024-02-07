@@ -8,7 +8,7 @@ import { DrawableNodeInterface, MaterialInterface, SceneNodeInterface } from "..
 import { NodeMaterials, StoreInterface } from "./types";
 import { downloadFbx } from "../Fbx/LoadFbx";
 import { FbxNodeInterface, isFbxContainerNode, isFbxGeometryNode } from "../Fbx/types";
-import { MaterialDescriptor } from "../Renderer/Materials/MaterialDescriptor";
+import { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
 
 class Modeler {
   model: SceneNodeInterface | null = null;

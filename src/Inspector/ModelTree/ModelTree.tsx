@@ -11,7 +11,7 @@ import Http from '../../Http/src';
 
 const ModelTree: React.FC = observer(() => {
   const store = useStores();
-  const { mainViewModeler: { model }, selectedItem, materials} = store;
+  const { mainViewModeler: { model }, project: { selectedItem }, materials} = store;
 
   let gameObject: GameObjectInterface | null = null;
   if (selectedItem && selectedItem.type === 'object') {
@@ -94,7 +94,7 @@ const ModelTree: React.FC = observer(() => {
   let modelName = ''
 
   if (gameObject) {
-    modelName = store.getItem(gameObject.modelId, 'model')?.name ?? ''
+    modelName = store.project.getItemByItemId(gameObject.modelId, 'model')?.name ?? ''
   }
 
   if (gameObject) {

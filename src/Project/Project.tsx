@@ -14,9 +14,9 @@ const Project: React.FC = observer(() => {
   return (
     <>
       <ProjectFolder
-        folder={store.projectItems}
+        folder={store.project.projectItems}
         onSelect={handleSelect}
-        selected={store.projectItems.id === store.selectedItem?.id}
+        selected={store.project.projectItems.id === store.project.selectedItem?.id}
         level={0}
       />
     </>

@@ -4,7 +4,7 @@ import GraphEdge from "../Renderer/ShaderBuilder/GraphEdge";
 import Display from "../Renderer/ShaderBuilder/Nodes/Display";
 import { buildGraph, createDescriptor } from "../Renderer/ShaderBuilder/ShaderBuilder";
 import { MaterialInterface } from "../Renderer/types";
-import { MaterialDescriptor } from "../Renderer/Materials/MaterialDescriptor";
+import { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
 import Material from "../Renderer/Materials/Material";
 import { CullMode, GraphInterface, StoreInterface } from "./types";
 import Property from "../Renderer/ShaderBuilder/Property";
@@ -47,7 +47,7 @@ class Graph implements GraphInterface {
 
   store: StoreInterface;
 
-  constructor(store: StoreInterface, id?: number, name?: string, descriptor?: MaterialDescriptor) {
+  constructor(store: StoreInterface, id?: number, name?: string, descriptor?: ShaderDescriptor) {
     this.store = store;
 
     this.id = id ?? null;
@@ -266,8 +266,8 @@ class Graph implements GraphInterface {
     })
   }
 
-  createMaterialDescriptor(): MaterialDescriptor {
-    const materialDescriptor: MaterialDescriptor = {
+  createMaterialDescriptor(): ShaderDescriptor {
+    const materialDescriptor: ShaderDescriptor = {
       type: 'Lit',
       cullMode: this.cullMode === 'front' ? undefined : this.cullMode,
       transparent: this.transparent,

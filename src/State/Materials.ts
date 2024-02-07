@@ -1,14 +1,14 @@
 import Http from "../Http/src";
 import Material from "../Renderer/Materials/Material";
-import { MaterialDescriptor } from "../Renderer/Materials/MaterialDescriptor";
+import { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
 import { DrawableNodeInterface } from "../Renderer/types";
-import { MaterialInterface, MaterialRecord, MaterialsInterface, StoreInterface } from "./types";
-import MaterialObject from './Material'
+import { MaterialInterface, MaterialsInterface, StoreInterface } from "./types";
+import { MaterialRecord } from "../Project/Types/types";
 
 class Materials implements MaterialsInterface {
   materialMap: Map<number, Material> = new Map();
   
-  shaderMap: Map<number, MaterialDescriptor> = new Map();
+  shaderMap: Map<number, ShaderDescriptor> = new Map();
 
   store: StoreInterface
 
@@ -20,32 +20,30 @@ class Materials implements MaterialsInterface {
     let material = this.materialMap.get(id);
 
     if (!material) {
-      const item = this.store.getItem(id, 'material');
+      const item = this.store.project.getItemByItemId(id, 'material');
 
       if (item) {
-        let materialObject = item.item as (MaterialObject | null);
+        let materialRecord = item.item as (MaterialRecord | null);
 
-        if (!materialObject) {
+        if (!materialRecord) {
           const response = await Http.get<MaterialRecord>(`/materials/${item.itemId}`);
 
           if (response.ok) {
-            const materialRecord = await response.body();
+            materialRecord = await response.body();
 
             if (materialRecord) {
-              materialObject = new MaterialObject(materialRecord.id, materialRecord.name, materialRecord.shaderId, materialRecord.properties)
-
-              item.item = materialObject;
+              item.item = materialRecord;
             }      
           }
         }
 
         // const materialRecord = this.materials.find((m) => m.id === id);
 
-        if (materialObject) {
-          const shaderDescr = this.shaderMap.get(materialObject.shaderId);
+        if (materialRecord) {
+          const shaderDescr = this.shaderMap.get(materialRecord.shaderId);
         
           if (!shaderDescr) {
-            const response = await Http.get<{ name: string, descriptor: MaterialDescriptor }>(`/shader-descriptors/${materialObject.shaderId}`);
+            const response = await Http.get<{ name: string, descriptor: ShaderDescriptor }>(`/shader-descriptors/${materialRecord.shaderId}`);
   
             if (response.ok) {
               const descr = await response.body();

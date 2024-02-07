@@ -5,6 +5,7 @@ import Http from '../Http/src';
 import styles from './Particle.module.scss';
 import ColorPicker from './ColorPicker';
 import { useStores } from '../State/store';
+import { materialManager } from '../Renderer/Materials/MaterialManager';
 
 type PropsType = {
   particleSystem: ParticleSystem,
@@ -14,7 +15,6 @@ const Particle: React.FC<PropsType> = ({
   particleSystem,
 }) => {  
   const store = useStores()
-  const { materials } = store
 
   const handleMaxPointsChange = (value: number) => {
     particleSystem.maxPoints = value;
@@ -105,10 +105,11 @@ const Particle: React.FC<PropsType> = ({
       && store.draggingItem.type === 'material'
       && store.draggingItem.itemId !== null
     ) {
-      const material = await materials.getMaterial(store.draggingItem.itemId)
+      const materialDescriptor = await materialManager.getDescriptor(store.draggingItem.itemId)
 
-      if (material) {
-        particleSystem.material = material
+      if (materialDescriptor) {
+        particleSystem.materialId = store.draggingItem.itemId
+        particleSystem.materialDescriptor = materialDescriptor
       }
     }
   }
@@ -162,7 +163,7 @@ const Particle: React.FC<PropsType> = ({
         Material:
         <div>
           {
-            particleSystem.material
+            particleSystem.materialDescriptor
               ? 'yes'
               : 'no'
           }

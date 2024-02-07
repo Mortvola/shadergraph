@@ -1,12 +1,12 @@
 import React from 'react';
-import { FolderInterface, ProjectItemInterface } from './Types/types';
+import { FolderInterface, ProjectItemInterface, ShaderRecord } from './Types/types';
 import styles from './ProjectItem.module.scss';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
 import Http from '../Http/src';
-import { MaterialRecord, ProjectItemRecord, ShaderInterface, ShaderRecord } from '../State/types';
+import { ProjectItemRecord } from '../State/types';
 import Graph from '../State/Graph';
 import { runInAction } from 'mobx';
 import ProjectItemObject from "../Project/Types/ProjectItem";
@@ -119,7 +119,7 @@ const ProjectItem: React.FC<PropsType> = observer(({
     }
     
     return items;
-  }, [item]);
+  }, [item, store]);
   
   const handleContextMenu: React.MouseEventHandler = (event) => {
     event.stopPropagation();

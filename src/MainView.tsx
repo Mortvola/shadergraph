@@ -62,21 +62,21 @@ const MainView: React.FC = observer(() => {
         inputElement.click();
       }  
     } },
-    { name: 'Create shader', action: () => { store.addNewItem('shader') } },
-    { name: 'Create game object', action: () => { store.addNewItem('object') } },
-    { name: 'Create particle system', action: () => { store.addNewItem('particle') } },
-    { name: 'Create folder', action: () => { store.createFolder() } },
+    { name: 'Create shader', action: () => { store.project.addNewItem('shader') } },
+    { name: 'Create game object', action: () => { store.project.addNewItem('object') } },
+    { name: 'Create particle system', action: () => { store.project.addNewItem('particle') } },
+    { name: 'Create folder', action: () => { store.project.createFolder() } },
   ]), []);
   
   const handleTextureFileSelection: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
     if (event.target.files && event.target.files[0]) {
-      store.importTexture(event.target.files[0])
+      store.project.importTexture(event.target.files[0])
     }
   }
 
   const handleModelFileSelection: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
     if (event.target.files && event.target.files[0]) {
-      store.importModel(event.target.files[0])
+      store.project.importModel(event.target.files[0])
     }
   }
 

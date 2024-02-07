@@ -51,7 +51,7 @@ const Preview: React.FC = () => {
       modeler.assignModel(plane);
     }
     else {
-      const modelItem = store.getItem(parseInt(event.target.value, 10), 'model')
+      const modelItem = store.project.getItemByItemId(parseInt(event.target.value, 10), 'model')
 
       if (modelItem) {
         const model = await store.getModel(modelItem)
@@ -88,7 +88,7 @@ const Preview: React.FC = () => {
           <select onChange={handleModelChange}>
             <option key={-1} value={-1}>{'Plane'}</option>
             {
-              store.getAllItemsOfType('model').map((m) => (
+              store.project.getAllItemsOfType('model').map((m) => (
                 <option key={m.id} value={m.itemId ?? -1}>{m.name}</option>
               ))
             }              

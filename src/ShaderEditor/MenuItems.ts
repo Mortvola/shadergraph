@@ -20,6 +20,7 @@ import Power from "../Renderer/ShaderBuilder/Nodes/Power";
 import { MenuItemLike } from "../ContextMenu/types";
 import Lerp from "../Renderer/ShaderBuilder/Nodes/Lerp";
 import Subtract from "../Renderer/ShaderBuilder/Nodes/Subtract";
+import VertexColor from "../Renderer/ShaderBuilder/Nodes/VertexColor";
 
 function addNode(node: GraphNodeInterface, x: number, y: number) {
   node.position = { x, y };
@@ -78,4 +79,5 @@ export const menuItems = (): MenuItemLike[] => ([
   { name: 'Power', action: (x: number, y: number) => createObject(Power, x, y) },
   { name: 'Lerp', action: (x: number, y: number) => createObject(Lerp, x, y) },
   { name: 'Subtract', action: (x: number, y: number) => createObject(Subtract, x, y) },
+  { name: 'Vertex Color', action: (x: number, y: number) => createObject(VertexColor, x, y) },
 ])

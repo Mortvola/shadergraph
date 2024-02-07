@@ -8,11 +8,12 @@ import { MaterialInterface } from '../State/types';
 
 const Material: React.FC = observer(() => {
   const store = useStores();
+  const { project } = store;
 
   let material: MaterialInterface | null = null;
 
-  if (store.selectedItem && store.selectedItem.type === 'material') {
-    material = store.selectedItem.item as MaterialInterface
+  if (project.selectedItem && project.selectedItem.type === 'material') {
+    material = project.selectedItem.item as MaterialInterface
   }
 
   const getValue = (value: ValueType): string => {

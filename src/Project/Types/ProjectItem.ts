@@ -1,7 +1,6 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import Http from "../../Http/src";
-import { GameObjectInterface } from "../../State/types";
-import { FolderInterface, ProjectItemInterface } from "./types";
+import { FolderInterface, ItemLike, ProjectItemInterface } from "./types";
 
 class ProjectItem implements ProjectItemInterface {
   id: number
@@ -14,7 +13,7 @@ class ProjectItem implements ProjectItemInterface {
 
   parent: FolderInterface | null = null;
 
-  item: GameObjectInterface | null = null;
+  item: ItemLike | null = null;
 
   constructor(id: number, name: string, type: string, parent: FolderInterface | null, itemId: number | null) {
     this.id = id;

@@ -17,7 +17,7 @@ const MeshNode: React.FC<PropsType> = observer(({
   onMaterialAssignment,
 }) => {
   const store = useStores()
-  const { selectedItem } = store;
+  const { project: { selectedItem } } = store;
 
   let gameObject: GameObjectInterface | null = null;
   if (selectedItem && selectedItem.type === 'object') {
@@ -59,7 +59,7 @@ const MeshNode: React.FC<PropsType> = observer(({
       const id = gameObject.materials[node.name];
 
       if (id !== undefined) {
-        const item = store.getItem(id, 'material');
+        const item = store.project.getItemByItemId(id, 'material');
 
         name = item?.name
       }

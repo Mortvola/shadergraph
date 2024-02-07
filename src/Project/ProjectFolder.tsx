@@ -4,7 +4,6 @@ import ProjectItem from './ProjectItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
-import { runInAction } from 'mobx';
 
 type PropsType = {
   folder: FolderInterface,
@@ -24,7 +23,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
   const store = useStores();
 
   React.useEffect(() => {
-    store.getFolder(folder);
+    store.project.getFolder(folder);
   }, [folder, store])
 
   const [droppable, setDroppable] = React.useState<boolean>(false);
@@ -73,17 +72,17 @@ const ProjectFolder: React.FC<PropsType> = observer(({
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (event.code === 'Escape') {
-      store.cancelNewItem(folder)
+      store.project.cancelNewItem(folder)
       setName('');
     }
     else if (event.code === 'Enter' && name.length > 0) {
-      store.createNewItem(name, folder.newItem!, folder)
+      store.project.createNewItem(name, folder.newItem!, folder)
       setName('');
     }
   }
 
   const handleBlur = () => {
-    store.cancelNewItem(folder);
+    store.project.cancelNewItem(folder);
     setName('');
   }
 
@@ -124,14 +123,14 @@ const ProjectFolder: React.FC<PropsType> = observer(({
                     key={`children:${i.id}`}
                     folder={i as FolderInterface}
                     onSelect={onSelect}
-                    selected={i.id === store.selectedItem?.id}
+                    selected={i.id === store.project.selectedItem?.id}
                     level={level + 1}
                   >
                     <ProjectItem
                       key={`${i.type}:${i.id}`}
                       item={i}
                       onSelect={onSelect}
-                      selected={i.id === store.selectedItem?.id}
+                      selected={i.id === store.project.selectedItem?.id}
                       draggable
                     />
                   </ProjectFolder>
@@ -141,7 +140,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
                   key={`${i.type}:${i.id}`}
                   item={i}
                   onSelect={onSelect}
-                  selected={i.id === store.selectedItem?.id}
+                  selected={i.id === store.project.selectedItem?.id}
                   draggable
                 />    
               )

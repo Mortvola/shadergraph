@@ -1,18 +1,14 @@
-import { ProjectItemInterface } from "../Project/Types/types";
-import { MaterialDescriptor } from "../Renderer/Materials/MaterialDescriptor";
+import { ProjectInterface } from "../Project/Types/types";
+import { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
 import { DrawableNodeInterface } from "../Renderer/types";
 
 export interface StoreInterface {
   materials: MaterialsInterface;
 
-  selectedItem: ProjectItemInterface | null
-  
+  project: ProjectInterface
+
   applyMaterial(): Promise<void>;
-
-  getItem(id: number, type: string): ProjectItemInterface | undefined;
-
-  getAllItemsOfType(type: string): ProjectItemInterface[];
 }
 
 export interface MaterialsInterface {
@@ -52,14 +48,7 @@ export interface GraphInterface {
 
   deleteProperty(property: PropertyInterface): void;
 
-  createMaterialDescriptor(): MaterialDescriptor;
-}
-
-export type MaterialRecord = {
-  id: number,
-  name: string,
-  shaderId: number,
-  properties: PropertyInterface[],
+  createMaterialDescriptor(): ShaderDescriptor;
 }
 
 export type ModelRecord = {
@@ -87,12 +76,6 @@ export type TextureRecord = {
   flipY: boolean,
 }
 
-export type ShaderRecord = {
-  id: number,
-  name: string,
-  descriptor: MaterialDescriptor,
-}
-
 export type ParticleDescriptor = {
   maxPoints?: number,
   rate?: number,
@@ -103,7 +86,7 @@ export type ParticleDescriptor = {
   initialSize?: number,
   finalSize?: number,
   initialColor?: number[][],
-  material?: number,
+  materialId?: number,
 }
 
 export type ParticleRrecord = {

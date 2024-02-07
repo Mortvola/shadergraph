@@ -11,10 +11,10 @@ import Particle from './Particle';
 import ParticleSystem from '../Renderer/ParticleSystem';
 
 const Inspector: React.FC = observer(() => {
-  const store = useStores();
+  const { project } = useStores();
 
-  if (store.selectedItem?.type === 'texture' && store.selectedItem.item) {
-    const selectedTexture = store.selectedItem.item as Texture;
+  if (project.selectedItem?.type === 'texture' && project.selectedItem.item) {
+    const selectedTexture = project.selectedItem.item as Texture;
 
     const handleFlipYChange: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
       const checked = event.target.checked;
@@ -34,7 +34,7 @@ const Inspector: React.FC = observer(() => {
 
     return (
       <div className={styles.inspector}>
-        <div>{store.selectedItem.name}</div>
+        <div>{project.selectedItem.name}</div>
         <label>
           <input type="checkbox" checked={selectedTexture.flipY} onChange={handleFlipYChange} />
           Flip Y
@@ -44,8 +44,8 @@ const Inspector: React.FC = observer(() => {
   }
 
   const renderView = () => {
-    if (store.selectedItem) {
-      switch (store.selectedItem.type) {
+    if (project.selectedItem) {
+      switch (project.selectedItem.type) {
         case 'object':
           return (
             <ModelTree />
@@ -57,7 +57,7 @@ const Inspector: React.FC = observer(() => {
           )
 
         case 'particle':
-          const particle: ParticleSystem | null = store.selectedItem.getItem()
+          const particle: ParticleSystem | null = project.selectedItem.getItem()
 
           if (particle) {
             return (
