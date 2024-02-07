@@ -54,9 +54,6 @@ const ProjectFolder: React.FC<PropsType> = observer(({
     event.preventDefault();
 
     if (droppable) {
-      // const materialId = parseInt(data);
-      // onMaterialAssignment(node, materialId)
-
       const item = store.draggingItem;
 
       (

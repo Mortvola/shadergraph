@@ -4,6 +4,7 @@ import NumberInput from './NumberInput';
 import Http from '../Http/src';
 import styles from './Particle.module.scss';
 import ColorPicker from './ColorPicker';
+import { useStores } from '../State/store';
 
 type PropsType = {
   particleSystem: ParticleSystem,
@@ -12,6 +13,9 @@ type PropsType = {
 const Particle: React.FC<PropsType> = ({
   particleSystem,
 }) => {  
+  const store = useStores()
+  const { materials } = store
+
   const handleMaxPointsChange = (value: number) => {
     particleSystem.maxPoints = value;
     save()
@@ -77,8 +81,40 @@ const Particle: React.FC<PropsType> = ({
     }
   }
 
+  const handleDragOver: React.DragEventHandler = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    
+    if (
+      event.dataTransfer.types[0] === 'application/project-item'
+      && store.draggingItem
+      && store.draggingItem.type === 'material'
+    ) {
+      event.dataTransfer.dropEffect = 'link';
+    }
+  }
+
+  const handleDrop: React.DragEventHandler = async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (
+      event.dataTransfer.types[0] === 'application/project-item'
+      && store.draggingItem
+      && store.draggingItem.type === 'material'
+      && store.draggingItem.itemId !== null
+    ) {
+      const material = await materials.getMaterial(store.draggingItem.itemId)
+
+      if (material) {
+        particleSystem.material = material
+      }
+    }
+  }
+
   return (
-    <div className={styles.particle}>
+    <div className={styles.particle} onDragOver={handleDragOver} onDrop={handleDrop}>
       <label>
         Number of Particles:
         <NumberInput value={particleSystem.maxPoints} onChange={handleMaxPointsChange} />
@@ -120,6 +156,16 @@ const Particle: React.FC<PropsType> = ({
         <div>
           <ColorPicker value={particleSystem.initialColor[0]} onChange={handleColor1AChange} />
           <ColorPicker value={particleSystem.initialColor[1]} onChange={handleColor2AChange} />
+        </div>
+      </label>
+      <label>
+        Material:
+        <div>
+          {
+            particleSystem.material
+              ? 'yes'
+              : 'no'
+          }
         </div>
       </label>
     </div>

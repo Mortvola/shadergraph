@@ -6,9 +6,8 @@ import { useStores } from '../State/store';
 import Mesh from '../Renderer/Drawables/Mesh';
 import { plane as planeShape } from '../Renderer/Drawables/Shapes/plane';
 import DrawableNode from '../Renderer/Drawables/SceneNodes/DrawableNode';
-import { litMaterial } from '../Renderer/Materials/Lit';
 
-const plane = await DrawableNode.create(await Mesh.create(planeShape(1, 1)), litMaterial);
+const plane = await DrawableNode.create(await Mesh.create(planeShape(1, 1)));
 plane.name = 'Plane';
 
 const Preview: React.FC = () => {

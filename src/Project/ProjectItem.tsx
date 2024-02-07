@@ -1,10 +1,15 @@
 import React from 'react';
-import { ProjectItemInterface } from './Types/types';
+import { FolderInterface, ProjectItemInterface } from './Types/types';
 import styles from './ProjectItem.module.scss';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
+import Http from '../Http/src';
+import { MaterialRecord, ProjectItemRecord, ShaderInterface, ShaderRecord } from '../State/types';
+import Graph from '../State/Graph';
+import { runInAction } from 'mobx';
+import ProjectItemObject from "../Project/Types/ProjectItem";
 
 type PropsType = {
   item: ProjectItemInterface,
@@ -68,9 +73,53 @@ const ProjectItem: React.FC<PropsType> = observer(({
 
   const [showMenu, setShowMenu] = React.useState<{ x: number, y: number } | null>(null);
 
-  const menuItems = React.useCallback((): MenuItemLike[] => ([
-    { name: 'Delete', action: () => { item.delete() } },
-  ]), [item]);
+  const menuItems = React.useCallback((): MenuItemLike[] => {
+    const items = [
+      { name: 'Delete', action: () => { item.delete() } },
+    ];
+
+    if (item.type === 'shader') {
+      items.push({
+        name: 'Create Material',
+        action: async () => {
+          if (!item.item) {
+            const response = await Http.get<ShaderRecord>(`/shader-descriptors/${item.itemId}`)
+
+            if (response.ok) {
+              const descriptor = await response.body();
+    
+              runInAction(() => {
+                item.item = new Graph(store, descriptor.id, descriptor.name, descriptor.descriptor);    
+              })
+            }      
+          }
+
+          if (item.item) {
+            const response = await Http.post<unknown, ProjectItemRecord>('/materials', {
+              name: `${item.name} Material`,
+              shaderId: item.itemId,
+              properties: (item.item as Graph).properties,    
+            })
+
+            if (response) {
+              const rec = await response.json()
+
+              const newItem = new ProjectItemObject(rec.id, rec.name, rec.type, item.parent, rec.itemId);
+
+              (item.parent as FolderInterface).addItem(newItem)
+        
+              runInAction(() => {
+                store.selectItem(newItem);
+              })
+        
+            }
+          }
+        },
+      })      
+    }
+    
+    return items;
+  }, [item]);
   
   const handleContextMenu: React.MouseEventHandler = (event) => {
     event.stopPropagation();

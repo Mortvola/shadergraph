@@ -2,12 +2,12 @@ import { observer } from 'mobx-react-lite';
 import React from 'react';
 import Draggable from './Draggable';
 import styles from './Properties.module.scss';
-import ContextMenu from './PropertyMenu/ContextMenu'
 import PropertyEntry from './PropertyEntry';
 import { PropertyInterface } from '../Renderer/ShaderBuilder/Types';
 import PropertyDialog from './PropertyDialog';
-import { createPortal } from 'react-dom';
 import { GraphInterface } from '../State/types';
+import ContextMenu from '../ContextMenu/ContextMenu';
+import { menuItems } from './PropertyMenu/MenuItems';
 
 type PropsType = {
   graph: GraphInterface,
@@ -87,6 +87,7 @@ const Properties: React.FC<PropsType> = observer(({
   }
 
   return (
+    <>
     <Draggable onPositionChange={handlePositionChange} position={position} >
       <div ref={ref} className={styles.wrapper}  onClick={handleClick}>
         <div className={styles.title}>
@@ -109,16 +110,17 @@ const Properties: React.FC<PropsType> = observer(({
         </div>
       </div>
         {
-          showMenu
-            ? createPortal(<ContextMenu graph={graph} x={showMenu[0]} y={showMenu[1]} onClose={handleMenuClose} />, document.body)
-            : null
-        }
-        {
           showDialog
             ? <PropertyDialog graph={graph} show={!!showDialog} onHide={handleHideDialog} property={showDialog.property} x={showDialog.x} y={showDialog.y} />
             : null
         }
     </Draggable>
+    {
+      showMenu
+        ? <ContextMenu menuItems={menuItems} x={showMenu[0]} y={showMenu[1]} onClose={handleMenuClose} />
+        : null
+    }
+    </>
   )
 })
 

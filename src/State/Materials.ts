@@ -16,14 +16,14 @@ class Materials implements MaterialsInterface {
     this.store = store;
   }
 
-  async applyMaterial(id: number, node: DrawableNodeInterface): Promise<void> {
+  async getMaterial(id: number): Promise<Material | undefined> {
     let material = this.materialMap.get(id);
 
     if (!material) {
       const item = this.store.getItem(id, 'material');
 
       if (item) {
-        let materialObject = item.item as MaterialObject;
+        let materialObject = item.item as (MaterialObject | null);
 
         if (!materialObject) {
           const response = await Http.get<MaterialRecord>(`/materials/${item.itemId}`);
@@ -41,21 +41,29 @@ class Materials implements MaterialsInterface {
 
         // const materialRecord = this.materials.find((m) => m.id === id);
 
-        const shaderDescr = this.shaderMap.get(materialObject.shaderId);
+        if (materialObject) {
+          const shaderDescr = this.shaderMap.get(materialObject.shaderId);
         
-        if (!shaderDescr) {
-          const response = await Http.get<{ name: string, descriptor: MaterialDescriptor }>(`/shader-descriptors/${materialObject.shaderId}`);
-
-          if (response.ok) {
-            const descr = await response.body();
-
-            material = await Material.create(descr.descriptor);
-
-            this.materialMap.set(id, material);
-          }
+          if (!shaderDescr) {
+            const response = await Http.get<{ name: string, descriptor: MaterialDescriptor }>(`/shader-descriptors/${materialObject.shaderId}`);
+  
+            if (response.ok) {
+              const descr = await response.body();
+  
+              material = await Material.create('Mesh', [], descr.descriptor);
+  
+              this.materialMap.set(id, material);
+            }
+          }  
         }
       }
     }
+
+    return material
+  }
+
+  async applyMaterial(id: number, node: DrawableNodeInterface): Promise<void> {
+    const material = await this.getMaterial(id);
 
     if (material) {
       node.material = material;
@@ -66,7 +74,7 @@ class Materials implements MaterialsInterface {
     let material = this.materialMap.get(materialRecord.id);
 
     if (material) {
-      material.setPropertyValues(materialRecord.properties);
+      material.setPropertyValues(GPUShaderStage.FRAGMENT, materialRecord.properties);
     }
   }
 }

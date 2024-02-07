@@ -3,7 +3,6 @@ import Mesh from "../Renderer/Drawables/Mesh";
 import ContainerNode, { isContainerNode } from "../Renderer/Drawables/SceneNodes/ContainerNode";
 import DrawableNode from "../Renderer/Drawables/SceneNodes/DrawableNode";
 import { isDrawableNode } from "../Renderer/Drawables/SceneNodes/utils";
-import { litMaterial } from "../Renderer/Materials/Lit";
 import Renderer from "../Renderer/Renderer";
 import { DrawableNodeInterface, MaterialInterface, SceneNodeInterface } from "../Renderer/types";
 import { NodeMaterials, StoreInterface } from "./types";
@@ -165,7 +164,7 @@ const parseFbxModel = async (
     //   this.meshes.set(`${name}:${node.name}`, mesh)
     // }
 
-    let materialDescriptor: MaterialDescriptor | undefined
+    // let materialDescriptor: MaterialDescriptor | undefined
 
     // if (nodeMaterials) {
     //   const materialId = nodeMaterials[node.name]
@@ -175,11 +174,11 @@ const parseFbxModel = async (
     //   }  
     // }
 
-    if (!materialDescriptor) {
-      materialDescriptor = litMaterial;
-    }  
+    // if (!materialDescriptor) {
+    //   materialDescriptor = litMaterial;
+    // }  
 
-    const drawableNode = await DrawableNode.create(mesh, materialDescriptor);
+    const drawableNode = await DrawableNode.create(mesh);
     
     drawableNode.name = node.name;
     drawableNode.scale = node.scale;

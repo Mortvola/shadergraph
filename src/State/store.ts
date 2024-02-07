@@ -385,8 +385,10 @@ class Store implements StoreInterface {
         if (response.ok) {
           const rec = await response.body();
 
+          const particleSystem = await ParticleSystem.create(rec.id, rec.descriptor);
+
           runInAction(() => {
-            item.item = new ParticleSystem(rec.id, rec.descriptor);    
+            item.item = particleSystem
           })
         }  
       }

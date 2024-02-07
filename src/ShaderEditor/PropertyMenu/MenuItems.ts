@@ -1,5 +1,6 @@
 import { store } from "../../State/store";
 import Property from "../../Renderer/ShaderBuilder/Property";
+import { MenuItemLike } from "../../ContextMenu/types";
 
 export type MenuItemRecord<T> = {
   name: string,
@@ -20,10 +21,10 @@ const createVarName = (basename: string) => {
   }
 }
 
-export const menuItems: MenuItemRecord<Property>[] = [
-  { name: 'Texture2D', property: () => new Property(createVarName('texture'), 'texture2D', './textures/texture.png') },
-  { name: 'Vector2', property: () => new Property(createVarName('property'), 'vec2f', [0, 0])},
-  { name: 'Vector3', property: () => new Property(createVarName('property'), 'vec3f', [0, 0, 0])},
-  { name: 'Vector4', property: () => new Property(createVarName('property'), 'vec4f', [0, 0, 0, 0])},
-  { name: 'Float', property: () => new Property(createVarName('float'), 'float', 0)},
-]
+export const menuItems = (): MenuItemLike[] => ([
+  { name: 'Texture2D', action: (x: number, y: number) => store.graph!.addProperty(new Property(createVarName('texture'), 'texture2D', './textures/texture.png')) },
+  { name: 'Vector2', action: (x: number, y: number) => store.graph!.addProperty(new Property(createVarName('property'), 'vec2f', [0, 0]))},
+  { name: 'Vector3', action: (x: number, y: number) => store.graph!.addProperty(new Property(createVarName('property'), 'vec3f', [0, 0, 0]))},
+  { name: 'Vector4', action: (x: number, y: number) => store.graph!.addProperty(new Property(createVarName('property'), 'vec4f', [0, 0, 0, 0]))},
+  { name: 'Float', action: (x: number, y: number) => store.graph!.addProperty(new Property(createVarName('float'), 'float', 0))},
+])
