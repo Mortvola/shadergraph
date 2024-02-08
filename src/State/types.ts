@@ -1,7 +1,7 @@
 import { ProjectInterface } from "../Project/Types/types";
 import { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
-import { DrawableNodeInterface } from "../Renderer/types";
+import { DrawableNodeInterface, ParticleDescriptor } from "../Renderer/types";
 
 export interface StoreInterface {
   materials: MaterialsInterface;
@@ -73,19 +73,6 @@ export type TextureRecord = {
   id: number,
   name: string,
   flipY: boolean,
-}
-
-export type ParticleDescriptor = {
-  maxPoints?: number,
-  rate?: number,
-  angle?: number,
-  lifetime?: [number, number],
-  originRadius?: number,
-  initialVelocity?: number,
-  initialSize?: number,
-  finalSize?: number,
-  initialColor?: number[][],
-  materialId?: number,
 }
 
 export type ParticleRecord = {
