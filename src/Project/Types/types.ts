@@ -1,19 +1,11 @@
 import { ShaderDescriptor } from "../../Renderer/shaders/ShaderDescriptor";
-import { PropertyInterface } from "../../Renderer/ShaderBuilder/Types";
-import { ParticleSystemInterface, SceneNodeInterface } from "../../Renderer/types";
+import { MaterialRecord, ParticleSystemInterface, SceneNodeInterface } from "../../Renderer/types";
 import { GameObjectInterface, GraphInterface, MaterialInterface, TextureInterface } from "../../State/types";
 
 export type ShaderRecord = {
   id: number,
   name: string,
   descriptor: ShaderDescriptor,
-}
-
-export type MaterialRecord = {
-  id: number,
-  name: string,
-  shaderId: number,
-  properties: PropertyInterface[],
 }
 
 export type MaterialItem = {

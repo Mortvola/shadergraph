@@ -1,9 +1,8 @@
 import Http from "../Http/src";
 import Material from "../Renderer/Materials/Material";
 import { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
-import { DrawableNodeInterface } from "../Renderer/types";
+import { DrawableNodeInterface, MaterialRecord } from "../Renderer/types";
 import { MaterialInterface, MaterialsInterface, StoreInterface } from "./types";
-import { MaterialRecord } from "../Project/Types/types";
 
 class Materials implements MaterialsInterface {
   materialMap: Map<number, Material> = new Map();

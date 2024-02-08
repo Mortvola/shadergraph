@@ -3,10 +3,7 @@ import Http from "../../Http/src";
 import { ProjectItemRecord } from "../../State/types";
 import Folder from "./Folder";
 import ProjectItem from "./ProjectItem";
-import { FolderInterface, MaterialRecord, ProjectInterface, ProjectItemInterface, ShaderRecord, isFolder } from "./types";
-import { MaterialDescriptor } from "../../Renderer/Materials/MaterialDescriptor";
-import { ShaderDescriptor } from "../../Renderer/shaders/ShaderDescriptor";
-import { materialManager } from "../../Renderer/Materials/MaterialManager";
+import { FolderInterface, ProjectInterface, ProjectItemInterface, isFolder } from "./types";
 
 class Project implements ProjectInterface {
   projectItems: Folder
