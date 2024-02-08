@@ -2,7 +2,7 @@ import React from "react";
 import Graph from "./Graph";
 import Modeler, { loadFbx } from "./Modeler";
 import {
-  GameObjectRecord, ModelInterface, ParticleRrecord, StoreInterface, TextureRecord,
+  GameObjectRecord, ModelInterface, ModelItem, ParticleItem, ParticleRecord, StoreInterface, TextureRecord,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
@@ -15,6 +15,7 @@ import { ParticleSystemInterface, SceneNodeInterface } from "../Renderer/types";
 import ParticleSystem from "../Renderer/ParticleSystem";
 import { renderer2d } from "../Main";
 import Project from "../Project/Types/Project";
+import { particleSystemManager } from "./ParticleSystemManager";
 
 type OpenMenuItem = {
   menuItem: HTMLElement,
@@ -113,20 +114,37 @@ class Store implements StoreInterface {
           const objectRecord = await response.body();
   
           runInAction(() => {
-            item.item = new GameObject(objectRecord.id, objectRecord.name, objectRecord.object.modelId, objectRecord.object.materials)
+            item.item = new GameObject(objectRecord.id, objectRecord.name, objectRecord.object.items)
           })
         }  
       }
 
       const gameObject = item.item as GameObject;
 
-      const modelItem = this.project.getItemByItemId(gameObject.modelId, 'model');
+      this.mainViewModeler.assignModel(null)
 
-      if (modelItem) {
-        const model = await this.getModel(modelItem)
+      for (const item  of gameObject.items) {
+        if (item.type === 'model') {
+          const modelEntry = item.item as ModelItem;
 
-        if (model) {
-          this.mainViewModeler.assignModel(model, gameObject.materials);
+          const modelItem = this.project.getItemByItemId(modelEntry.id, 'model');
+
+          if (modelItem) {
+            const model = await this.getModel(modelItem)
+    
+            if (model) {
+              this.mainViewModeler.assignModel(model, modelEntry.materials);
+            }
+          }    
+        }
+        else if (item.type === 'particle') {
+          const particleEntry = item.item as ParticleItem;
+
+          const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
+  
+          if (particleSystem) {
+            this.mainView.addParticleSystem(particleSystem)
+          }
         }
       }
     }
@@ -177,17 +195,13 @@ class Store implements StoreInterface {
     }
     else if (item.type === 'particle') {
       if (item.item === null) {
-        const response = await Http.get<ParticleRrecord>(`/particles/${item.itemId}`)
+        const particleSystem = await particleSystemManager.getParticleSystem(item.itemId!)
 
-        if (response.ok) {
-          const rec = await response.body();
-
-          const particleSystem = await ParticleSystem.create(rec.id, rec.descriptor);
-
+        if (particleSystem) {
           runInAction(() => {
             item.item = particleSystem
-          })
-        }  
+          })  
+        }
       }
 
       const particleSystem: ParticleSystemInterface | null = item.getItem()
@@ -206,12 +220,12 @@ class Store implements StoreInterface {
   }
 
   async getModel(item: ProjectItemInterface) {
-    let model: SceneNodeInterface | null = item.item as SceneNodeInterface;
+    let model: SceneNodeInterface | undefined = item.item as SceneNodeInterface;
 
     if (!item.item) {
-      model = await loadFbx(`/models/${item.itemId}`);
+      model = await this.modeler.getModel(`/models/${item.itemId}`);
 
-      item.item = model;
+      item.item = model ?? null;
     }
 
     return model

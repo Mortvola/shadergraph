@@ -60,8 +60,7 @@ export type ModelRecord = {
 export type NodeMaterials = Record<string, number>;
 
 export type GameObject = {
-  modelId: number,
-  materials?: NodeMaterials,
+  items: GameObjectItem[],
 }
 
 export type GameObjectRecord = {
@@ -89,7 +88,7 @@ export type ParticleDescriptor = {
   materialId?: number,
 }
 
-export type ParticleRrecord = {
+export type ParticleRecord = {
   id: number,
   name: string,
   descriptor: ParticleDescriptor,
@@ -100,10 +99,21 @@ export interface EntityInterface {
   name: string;
 }
 
-export interface GameObjectInterface extends EntityInterface {
-  modelId: number;
+export type ModelItem = {
+  id: number,
+  materials: Record<string, number>,
+}
 
-  materials?: NodeMaterials;
+export type ParticleItem = {
+  id: number,
+}
+
+export type GameObjectItem = { item: ModelItem | ParticleItem, type: 'model' | 'particle' }
+
+export interface GameObjectInterface extends EntityInterface {
+  items: GameObjectItem[]
+
+  save(): Promise<void>
 }
 
 export interface ShaderInterface extends EntityInterface {

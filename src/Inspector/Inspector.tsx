@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from './Inspector.module.scss'
-import ModelTree from './ModelTree/ModelTree';
 import Material from './Material';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
@@ -9,6 +8,8 @@ import Http from '../Http/src';
 import Texture from '../State/Texture';
 import Particle from './Particle';
 import ParticleSystem from '../Renderer/ParticleSystem';
+import GameObject from './GameObject';
+import { GameObjectInterface } from '../State/types';
 
 const Inspector: React.FC = observer(() => {
   const { project } = useStores();
@@ -48,7 +49,9 @@ const Inspector: React.FC = observer(() => {
       switch (project.selectedItem.type) {
         case 'object':
           return (
-            <ModelTree />
+            project.selectedItem.item
+              ? <GameObject gameObject={project.selectedItem.item as GameObjectInterface} />
+              : null
           )
 
         case 'material':
@@ -56,14 +59,14 @@ const Inspector: React.FC = observer(() => {
             <Material />
           )
 
-        case 'particle':
-          const particle: ParticleSystem | null = project.selectedItem.getItem()
+        // case 'particle':
+        //   const particle: ParticleSystem | null = project.selectedItem.getItem()
 
-          if (particle) {
-            return (
-              <Particle particleSystem={particle} />
-            )  
-          }
+        //   if (particle) {
+        //     return (
+        //       <Particle particleSystem={particle} />
+        //     )  
+        //   }
       }
     }
 

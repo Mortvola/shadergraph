@@ -8,16 +8,17 @@ import { DrawableNodeInterface, MaterialInterface, SceneNodeInterface } from "..
 import { NodeMaterials, StoreInterface } from "./types";
 import { downloadFbx } from "../Fbx/LoadFbx";
 import { FbxNodeInterface, isFbxContainerNode, isFbxGeometryNode } from "../Fbx/types";
-import { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
 
 class Modeler {
   model: SceneNodeInterface | null = null;
 
-  loading = false;
+  loading: Promise<SceneNodeInterface | undefined> | null = null;
 
   renderer: Renderer;
 
   store: StoreInterface;
+
+  modelMap: Map<string, SceneNodeInterface> = new Map()
 
   constructor(renderer: Renderer, store: StoreInterface) {
     this.renderer = renderer;
@@ -28,20 +29,30 @@ class Modeler {
     })
   }
 
-  async loadModel(url: string, materials?: NodeMaterials) {
-    if (!this.loading) {
-      this.loading = true;
-      const model = await loadFbx(url);
+  async getModel(url: string, materials?: NodeMaterials) {
+    let model = this.modelMap.get(url);
 
-      if (model) {
-        this.assignModel(model, materials)
+    if (!model) {
+      if (!this.loading) {
+        this.loading = loadFbx(url);
+
+        model = await this.loading
+
+        if (model) {
+          this.modelMap.set(url, model)
+        }  
+      }
+      else {
+        model = await this.loading
       }
 
-      this.loading = false;
+      this.loading = null;
     }
+
+    return model;
   }
 
-  async assignModel(model: SceneNodeInterface | null, materials?: NodeMaterials) {
+  async   assignModel(model: SceneNodeInterface | null, materials?: NodeMaterials) {
     if (this.model) {
       this.renderer.removeSceneNode(this.model);
     }
@@ -111,21 +122,19 @@ class Modeler {
 
 export default Modeler;
 
-export const loadFbx = async (name: string): Promise<SceneNodeInterface | null> => {
+export const loadFbx = async (name: string): Promise<SceneNodeInterface | undefined> => {
   const result = await downloadFbx(name)
 
   if (result) {
     return parseFbxModel(result, name);
   }
-
-  return null;
 }
 
 const parseFbxModel = async (
   node: FbxNodeInterface,
   name: string,
   nodeMaterials?: NodeMaterials,
-): Promise<SceneNodeInterface | null> => {
+): Promise<SceneNodeInterface | undefined> => {
   if (isFbxContainerNode(node)) {
     const container = new ContainerNode();
 
@@ -143,7 +152,7 @@ const parseFbxModel = async (
     }
 
     if (container.nodes.length === 0) {
-      return null;
+      return undefined;
     }
 
     // if (container.nodes.length === 1) {
@@ -189,5 +198,5 @@ const parseFbxModel = async (
     return drawableNode;
   }
 
-  return null;
+  return undefined;
 }

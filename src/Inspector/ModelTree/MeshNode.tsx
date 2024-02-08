@@ -3,7 +3,7 @@ import { DrawableNodeInterface } from '../../Renderer/types';
 import { useStores } from '../../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './ModelTree.module.scss';
-import { GameObjectInterface } from '../../State/types';
+import { GameObjectInterface, ModelItem } from '../../State/types';
 
 type PropsType = {
   node: DrawableNodeInterface,
@@ -55,20 +55,29 @@ const MeshNode: React.FC<PropsType> = observer(({
   const renderMaterial = () => {
     let name: string | undefined = '';
 
-    if (gameObject && gameObject.materials) {
-      const id = gameObject.materials[node.name];
+    if (gameObject) {
+    
+      const item = gameObject.items.find((o) => o.type === 'model');
 
-      if (id !== undefined) {
-        const item = store.project.getItemByItemId(id, 'material');
+      if (item) {
+        const modelItem = item.item as ModelItem;
 
-        name = item?.name
+        if (modelItem.materials) {
+          const id = modelItem.materials[node.name];
+    
+          if (id !== undefined) {
+            const item = store.project.getItemByItemId(id, 'material');
+    
+            name = item?.name
+          }
+        }
+    
+        if (name) {
+          return (
+            <div>{name}</div>
+          )
+        }    
       }
-    }
-
-    if (name) {
-      return (
-        <div>{name}</div>
-      )
     }
 
     return null;

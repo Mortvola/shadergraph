@@ -6,15 +6,33 @@ import styles from './Particle.module.scss';
 import ColorPicker from './ColorPicker';
 import { useStores } from '../State/store';
 import { materialManager } from '../Renderer/Materials/MaterialManager';
+import { ParticleItem } from '../State/types';
+import { particleSystemManager } from '../State/ParticleSystemManager';
 
 type PropsType = {
-  particleSystem: ParticleSystem,
+  particleItem: ParticleItem,
 }
 
 const Particle: React.FC<PropsType> = ({
-  particleSystem,
+  particleItem,
 }) => {  
   const store = useStores()
+
+  const [particleSystem, setParticleSystem] = React.useState<ParticleSystem | null>(null)
+
+  React.useEffect(() => {
+    (async () => {
+      const ps = await particleSystemManager.getParticleSystem(particleItem.id)
+
+      if (ps) {
+        setParticleSystem(ps);
+      }
+    })()
+  }, [particleItem.id])
+
+  if (particleSystem === null) {
+    return null
+  }
 
   const handleMaxPointsChange = (value: number) => {
     particleSystem.maxPoints = value;

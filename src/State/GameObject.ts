@@ -1,17 +1,35 @@
+import { makeObservable, observable } from "mobx";
 import Entity from "./Entity";
-import { GameObjectInterface, NodeMaterials } from "./types";
+import { GameObjectInterface, GameObjectItem, GameObjectRecord } from "./types";
+import Http from "../Http/src";
 
 class GameObject extends Entity implements GameObjectInterface {
-  modelId: number;
+  items: GameObjectItem[] = []
 
-  materials?: NodeMaterials;
-
-  constructor(id: number, name: string, modelId: number, materials?: NodeMaterials) {
+  constructor(id: number, name: string, items: GameObjectItem[] ) {
     super(id, name)
+    
+    this.items = items;
 
-    this.modelId = modelId;
-    this.materials = materials;
+    makeObservable(this, {
+      items: observable,
+    })
   }
+
+  async save(): Promise<void> {
+    const response = await Http.patch<GameObjectRecord, void>(`/game-objects/${this.id}`, {
+      id: this.id,
+      name: this.name,
+      object: {
+        items: this.items,
+      }
+    });
+
+    if (response.ok) {
+
+    }
+  }
+
 }
 
 export default GameObject;
