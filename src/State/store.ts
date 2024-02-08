@@ -1,17 +1,17 @@
 import React from "react";
 import Graph from "./Graph";
-import Modeler, { loadFbx } from "./Modeler";
+import Modeler from "./Modeler";
 import {
-  GameObjectRecord, ModelInterface, ModelItem, ParticleItem, ParticleRecord, StoreInterface, TextureRecord,
+  GameObjectRecord, ModelInterface, ModelItem, ParticleItem, StoreInterface, TextureRecord,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
 import Http from "../Http/src";
 import Materials from "./Materials";
-import { ProjectItemInterface, ShaderRecord } from "../Project/Types/types";
+import { ProjectItemInterface } from "../Project/Types/types";
 import GameObject from "./GameObject";
 import Texture from "./Texture";
-import { MaterialRecord, ParticleSystemInterface, SceneNodeInterface } from "../Renderer/types";
+import { MaterialRecord, ParticleSystemInterface, SceneNodeInterface, ShaderRecord } from "../Renderer/types";
 import ParticleSystem from "../Renderer/ParticleSystem";
 import { renderer2d } from "../Main";
 import Project from "../Project/Types/Project";

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FolderInterface, ProjectItemInterface, ShaderRecord } from './Types/types';
+import { FolderInterface, ProjectItemInterface } from './Types/types';
 import styles from './ProjectItem.module.scss';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
@@ -10,6 +10,7 @@ import { ProjectItemRecord } from '../State/types';
 import Graph from '../State/Graph';
 import { runInAction } from 'mobx';
 import ProjectItemObject from "../Project/Types/ProjectItem";
+import { ShaderRecord } from '../Renderer/types';
 
 type PropsType = {
   item: ProjectItemInterface,
