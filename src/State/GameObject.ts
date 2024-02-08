@@ -1,7 +1,8 @@
 import { makeObservable, observable } from "mobx";
 import Entity from "./Entity";
-import { GameObjectInterface, GameObjectItem, GameObjectRecord } from "./types";
+import { GameObjectInterface } from "./types";
 import Http from "../Http/src";
+import { GameObjectItem, GameObjectRecord } from "../Renderer/types";
 
 class GameObject extends Entity implements GameObjectInterface {
   items: GameObjectItem[] = []

@@ -12,7 +12,7 @@ import { FbxNodeInterface, isFbxContainerNode, isFbxGeometryNode } from "../Fbx/
 class Modeler {
   model: SceneNodeInterface | null = null;
 
-  loading: Promise<SceneNodeInterface | undefined> | null = null;
+  loading: Record<number, Promise<SceneNodeInterface | undefined>> = {}
 
   renderer: Renderer;
 
@@ -29,24 +29,28 @@ class Modeler {
     })
   }
 
-  async getModel(url: string, materials?: NodeMaterials) {
+  async getModel(id: number, materials?: NodeMaterials) {
+    const url = `/models/${id}`;
+
     let model = this.modelMap.get(url);
 
     if (!model) {
-      if (!this.loading) {
-        this.loading = loadFbx(url);
+      const promise = this.loading[id]
 
-        model = await this.loading
+      if (promise === undefined) {
+        this.loading[id] = loadFbx(url);
+
+        model = await this.loading[id]
 
         if (model) {
           this.modelMap.set(url, model)
         }  
       }
       else {
-        model = await this.loading
+        model = await this.loading[id]
       }
 
-      this.loading = null;
+      delete this.loading[id]
     }
 
     return model;

@@ -1,29 +1,28 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { useStores } from '../../State/store';
-import { DrawableNodeInterface, SceneNodeInterface } from '../../Renderer/types';
+import { DrawableNodeInterface, ModelItem, SceneNodeInterface } from '../../Renderer/types';
 import { isContainerNode } from '../../Renderer/Drawables/SceneNodes/ContainerNode';
 import { isDrawableNode } from '../../Renderer/Drawables/SceneNodes/utils';
 import MeshNode from './MeshNode';
-import { runInAction } from 'mobx';
-import { GameObjectInterface, GameObjectRecord, ModelItem } from '../../State/types';
-import Http from '../../Http/src';
 
 type PropsType = {
   modelItem: ModelItem,
+  onChange: (model: ModelItem) => void,
 }
 
 const ModelTree: React.FC<PropsType> = observer(({
   modelItem,
+  onChange,
 }) => {
   const store = useStores();
-  const { project: { selectedItem }, materials} = store;
+  // const { project: { selectedItem }, materials} = store;
 
   const [model, setModel] = React.useState<SceneNodeInterface | null>(null)
 
   React.useEffect(() => {
     (async () => {
-      const m = await store.modeler.getModel(`/models/${modelItem.id}`)
+      const m = await store.modeler.getModel(modelItem.id)
 
       if (m) {
         setModel(m)
@@ -31,49 +30,12 @@ const ModelTree: React.FC<PropsType> = observer(({
     })()
   }, [modelItem.id, store.modeler])
 
-  // let gameObject: GameObjectInterface | null = null;
-  // if (selectedItem && selectedItem.type === 'object') {
-  //   gameObject = selectedItem.item as GameObjectInterface
-  // }
-
-  // if (model === null) {
-  //   return null;
-  // }
-
-  // const saveGameObject = async (object: GameObjectInterface) => {
-  //   const response = await Http.patch<GameObjectRecord, void>(`/game-objects/${object.id}`, {
-  //     id: object.id,
-  //     name: object.name,
-  //     object: {
-  //       modelId: object.modelId,
-  //       materials: object.materials,
-  //     }
-  //   });
-
-  //   if (response.ok) {
-
-  //   }
-  // }
-
   const handleMaterialAssignment = (node: DrawableNodeInterface, materialId: number) => {
-    // if (gameObject) {
-    //   runInAction(() => {
-    //     if (gameObject) {
-    //       if (!gameObject.materials) {
-    //         gameObject.materials = {}
-    //       }
-    
-    //       gameObject.materials = {
-    //         ...gameObject.materials,
-    //         [node.name]: materialId,
-    //       }
+    let materials: Record<string, number> = { ...modelItem.materials }
 
-    //       saveGameObject(gameObject)
-    //     }
-    //   })
+    materials[node.name] = materialId;
 
-    //   materials.applyMaterial(materialId, node)
-    // }
+    onChange({ id: modelItem.id, materials })
   }
 
   const renderTree = () => {
@@ -111,28 +73,16 @@ const ModelTree: React.FC<PropsType> = observer(({
     return elements;
   }
 
-  let modelName = ''
+  let modelName = store.project.getItemByItemId(modelItem.id, 'model')?.name ?? ''
 
-  // if (gameObject) {
-  //   const item = gameObject.items.find((o) => o.type === 'model');
-
-  //   if (item) {
-      modelName = store.project.getItemByItemId(modelItem.id, 'model')?.name ?? ''
-  //   }
-  // }
-
-  // if (gameObject) {
-    return (
-      <div>
-        <div>{`Model: ${modelName}`}</div>
-        {
-          renderTree()        
-        }
-      </div>
-    )  
-  // }
-
-  // return null;
+  return (
+    <div>
+      <div>{`Model: ${modelName}`}</div>
+      {
+        renderTree()        
+      }
+    </div>
+  )  
 })
 
 export default ModelTree;

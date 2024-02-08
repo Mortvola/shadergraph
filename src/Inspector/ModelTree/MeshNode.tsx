@@ -1,9 +1,9 @@
 import React from 'react';
-import { DrawableNodeInterface } from '../../Renderer/types';
+import { DrawableNodeInterface, ModelItem } from '../../Renderer/types';
 import { useStores } from '../../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './ModelTree.module.scss';
-import { GameObjectInterface, ModelItem } from '../../State/types';
+import { GameObjectInterface } from '../../State/types';
 
 type PropsType = {
   node: DrawableNodeInterface,
@@ -27,7 +27,6 @@ const MeshNode: React.FC<PropsType> = observer(({
   const handleDragOver: React.DragEventHandler = (event) => {
     event.preventDefault();
     event.stopPropagation();
-
     
     if (
       event.dataTransfer.types[0] === 'application/project-item'

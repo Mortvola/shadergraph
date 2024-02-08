@@ -2,7 +2,7 @@ import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
 import {
-  GameObjectRecord, ModelInterface, ModelItem, ParticleItem, StoreInterface, TextureRecord,
+  ModelInterface, StoreInterface, TextureRecord,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
@@ -11,7 +11,7 @@ import Materials from "./Materials";
 import { ProjectItemInterface } from "../Project/Types/types";
 import GameObject from "./GameObject";
 import Texture from "./Texture";
-import { MaterialRecord, ParticleSystemInterface, SceneNodeInterface, ShaderRecord } from "../Renderer/types";
+import { GameObjectRecord, MaterialRecord, ModelItem, ParticleItem, ParticleSystemInterface, SceneNodeInterface, ShaderRecord } from "../Renderer/types";
 import ParticleSystem from "../Renderer/ParticleSystem";
 import { renderer2d } from "../Main";
 import Project from "../Project/Types/Project";
@@ -222,8 +222,8 @@ class Store implements StoreInterface {
   async getModel(item: ProjectItemInterface) {
     let model: SceneNodeInterface | undefined = item.item as SceneNodeInterface;
 
-    if (!item.item) {
-      model = await this.modeler.getModel(`/models/${item.itemId}`);
+    if (!item.item && item.itemId) {
+      model = await this.modeler.getModel(item.itemId);
 
       item.item = model ?? null;
     }

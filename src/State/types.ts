@@ -1,7 +1,7 @@
 import { ProjectInterface } from "../Project/Types/types";
 import { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
-import { DrawableNodeInterface, ParticleDescriptor } from "../Renderer/types";
+import { DrawableNodeInterface, GameObjectItem, ParticleDescriptor } from "../Renderer/types";
 
 export interface StoreInterface {
   materials: MaterialsInterface;
@@ -59,16 +59,6 @@ export type ModelRecord = {
 // Record of node names and assigned material id.
 export type NodeMaterials = Record<string, number>;
 
-export type GameObject = {
-  items: GameObjectItem[],
-}
-
-export type GameObjectRecord = {
-  id: number,
-  name: string,
-  object: GameObject,
-}
-
 export type TextureRecord = {
   id: number,
   name: string,
@@ -85,17 +75,6 @@ export interface EntityInterface {
 
   name: string;
 }
-
-export type ModelItem = {
-  id: number,
-  materials: Record<string, number>,
-}
-
-export type ParticleItem = {
-  id: number,
-}
-
-export type GameObjectItem = { item: ModelItem | ParticleItem, type: 'model' | 'particle' }
 
 export interface GameObjectInterface extends EntityInterface {
   items: GameObjectItem[]
