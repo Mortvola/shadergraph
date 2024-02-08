@@ -15,7 +15,7 @@ import { GameObjectRecord, MaterialRecord, ModelItem, ParticleItem, ParticleSyst
 import ParticleSystem from "../Renderer/ParticleSystem";
 import { renderer2d } from "../Main";
 import Project from "../Project/Types/Project";
-import { particleSystemManager } from "./ParticleSystemManager";
+import { particleSystemManager } from "../Renderer/ParticleSystemManager";
 
 type OpenMenuItem = {
   menuItem: HTMLElement,

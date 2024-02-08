@@ -65,11 +65,6 @@ export type TextureRecord = {
   flipY: boolean,
 }
 
-export type ParticleRecord = {
-  id: number,
-  name: string,
-  descriptor: ParticleDescriptor,
-}
 export interface EntityInterface {
   id: number;
 

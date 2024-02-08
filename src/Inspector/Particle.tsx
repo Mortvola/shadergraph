@@ -6,7 +6,7 @@ import styles from './Particle.module.scss';
 import ColorPicker from './ColorPicker';
 import { useStores } from '../State/store';
 import { materialManager } from '../Renderer/Materials/MaterialManager';
-import { particleSystemManager } from '../State/ParticleSystemManager';
+import { particleSystemManager } from '../Renderer/ParticleSystemManager';
 import { ParticleItem } from '../Renderer/types';
 
 type PropsType = {
