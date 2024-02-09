@@ -6,6 +6,7 @@ import PropertyFloat from './PropertyFloat';
 import { runInAction } from 'mobx';
 import { ValueInterface } from '../Renderer/ShaderBuilder/Types';
 import { observer } from 'mobx-react-lite';
+import PropertyColor from './PropertyColor';
 
 type PropsType = {
   value: ValueInterface,
@@ -58,7 +59,10 @@ const ValueInput: React.FC<PropsType> = observer(({
     case 'vec4f':
       return <PropertyVector node={value} onChange={handleVectorChange} />
 
-      case 'float':
+    case 'color':
+      return <PropertyColor node={value} onChange={handleVectorChange} />
+
+    case 'float':
       return <PropertyFloat node={value} onChange={handleNumberChange} />
   }
 
