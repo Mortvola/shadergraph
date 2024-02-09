@@ -29,8 +29,10 @@ class Trajectory extends Drawable {
   trajectoryBindGroup: GPUBindGroup;
 
   constructor(trajectoryData: TrajectoryData) {
-    super();
+    super('Billboard');
   
+    this.name = 'Trajectory';
+    
     this.trajectoryData = trajectoryData;
 
     this.trajectoryBuffer = gpu.device.createBuffer({

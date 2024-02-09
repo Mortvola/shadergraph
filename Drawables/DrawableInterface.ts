@@ -1,7 +1,11 @@
 import { Vec4, Mat4 } from 'wgpu-matrix';
+import { DrawableType } from '../types';
+import { PropertyInterface } from '../ShaderBuilder/Types';
 
 interface DrawableInterface {
   drawable: boolean;
+
+  type: DrawableType;
 
   uuid: string;
 
@@ -13,25 +17,23 @@ interface DrawableInterface {
   
   modelMatrixBuffer: GPUBuffer;
 
-  // color: Float32Array;
+  instanceColor: Float32Array;
 
-  // colorBuffer: GPUBuffer;
+  instanceColorBuffer: GPUBuffer;
 
   bindGroup: GPUBindGroup;
 
   numInstances: number;
 
+  vertexProperties: PropertyInterface[];
+
   render(passEncoder: GPURenderPassEncoder, numInstances: number): void;
-
-  setColor(color: Vec4): void;
-
-  getColor(): Float32Array;
 
   hitTest(origin: Vec4, vector: Vec4): { point: Vec4, t: number, drawable: DrawableInterface} | null;
 
   computeCentroid(): Vec4;
 
-  addInstanceTransform(mat4: Mat4): void;
+  addInstanceInfo(mat4: Mat4, color: Vec4): void;
 }
 
 export const isDrawableInterface = (r: unknown): r is DrawableInterface => (

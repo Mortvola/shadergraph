@@ -2,10 +2,11 @@ import { Vec3, Vec4, Mat4, Quat } from 'wgpu-matrix';
 import { StructuredView } from 'webgpu-utils';
 import DrawableInterface from './Drawables/DrawableInterface';
 import { PropertyInterface, ValueType } from './ShaderBuilder/Types';
+import { ShaderDescriptor } from './shaders/ShaderDescriptor';
 
-export const maxInstances = 16;
+export const maxInstances = 1000;
 
-export interface ContainerNodeInterface {
+export interface ContainerNodeInterface extends SceneNodeInterface {
   addNode(node: SceneNodeInterface): void;
 
   removeNode(node: SceneNodeInterface): void;
@@ -21,6 +22,8 @@ export interface RendererInterface {
   mainRenderPass: RenderPassInterface;
 
   transparentPass: RenderPassInterface;
+
+  addParticleSystem(particleSystem: ParticleSystemInterface): void;
 }
 
 export interface SceneNodeInterface {
@@ -43,6 +46,8 @@ export interface SceneNodeInterface {
   setFromAngles(x: number, y: number, z: number): void;
 }
 
+export type DrawableType = 'Mesh' | 'Billboard' | 'Circle' | 'Line'
+
 export interface MaterialInterface {
   pipeline: PipelineInterface | null;
 
@@ -50,19 +55,13 @@ export interface MaterialInterface {
 
   drawables: DrawableInterface[];
 
-  colorBuffer: GPUBuffer;
-
-  uniformsBuffer: GPUBuffer | null;
-
-  textureAttributesBuffer: GPUBuffer | null;
-  
-  bindGroup: GPUBindGroup;
-
   transparent: boolean;
+
+  setBindGroups(passEncoder: GPURenderPassEncoder): void;
 
   addDrawable(drawableNode: DrawableNodeInterface): void;
 
-  updateProperty(name: string, value: ValueType): void;
+  updateProperty(stage: GPUShaderStageFlags, name: string, value: ValueType): void;
 }
 
 export interface DrawableNodeInterface extends SceneNodeInterface {
@@ -70,11 +69,13 @@ export interface DrawableNodeInterface extends SceneNodeInterface {
 
   material: MaterialInterface;
   
+  color: Float32Array;
+
   hitTest(origin: Vec4, vector: Vec4): { point: Vec4, t: number, drawable: DrawableInterface} | null;
 }
 
 export interface PipelineInterface {
-  pipeline: GPURenderPipeline | null;
+  pipeline: GPURenderPipeline;
 
   // drawables: DrawableInterface[];
   materials: MaterialInterface[];
@@ -90,8 +91,78 @@ export type PipelineAttributes = {
 
 }
 
+export type StageBindings = {
+  binding: number,
+  layout: GPUBindGroupLayout | null,
+  properties: PropertyInterface[],
+  structuredView: StructuredView | null,
+}
+
 export interface PipelineManagerInterface {
-  getPipelineByArgs(
-    args: PipelineAttributes,
-  ): [PipelineInterface, GPUBindGroupLayout | null, PropertyInterface[], StructuredView | null, boolean];
+  getPipeline(
+    drawableType: DrawableType,
+    vertexProperties: PropertyInterface[],
+    args: ShaderDescriptor,
+  ): [PipelineInterface, StageBindings | null, StageBindings | null, boolean];
+}
+
+export interface ParticleSystemInterface {
+  angle: number
+
+  update(time: number, elapsedTime: number, scene: ContainerNodeInterface): Promise<void>
+
+  removePoints(scene: ContainerNodeInterface): void
+}
+
+export type MaterialRecord = {
+  id: number,
+  name: string,
+  shaderId: number,
+  properties: PropertyInterface[],
+}
+
+export type ShaderRecord = {
+  id: number,
+  name: string,
+  descriptor: ShaderDescriptor,
+}
+
+export type ParticleDescriptor = {
+  maxPoints?: number,
+  rate?: number,
+  angle?: number,
+  lifetime?: [number, number],
+  originRadius?: number,
+  initialVelocity?: number,
+  initialSize?: number,
+  finalSize?: number,
+  initialColor?: number[][],
+  materialId?: number,
+}
+
+export type ModelItem = {
+  id: number,
+  materials: Record<string, number>,
+}
+
+export type ParticleItem = {
+  id: number,
+}
+
+export type GameObjectItem = { item: ModelItem | ParticleItem, type: 'model' | 'particle' }
+
+export type GameObject = {
+  items: GameObjectItem[],
+}
+
+export type GameObjectRecord = {
+  id: number,
+  name: string,
+  object: GameObject,
+}
+
+export type ParticleRecord = {
+  id: number,
+  name: string,
+  descriptor: ParticleDescriptor,
 }

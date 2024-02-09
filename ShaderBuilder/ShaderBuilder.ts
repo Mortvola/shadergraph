@@ -1,27 +1,41 @@
 import { gpu } from "../Gpu";
-import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
+import { ShaderDescriptor } from "../shaders/ShaderDescriptor";
+import { bloom } from "../RenderSetings";
 import { common } from "../shaders/common";
+import { getFragmentStage } from "../shaders/fragmentStage";
 import { phongFunction } from "../shaders/phongFunction";
+import { twirlFunction } from '../shaders/twirlFunction';
+import { getVertexStage } from "../shaders/vertexStage";
+import { voronoiFunction } from "../shaders/voronoiFunction";
+import { DrawableType } from "../types";
 import { GraphDescriptor, GraphStageDescriptor, PropertyDescriptor, ValueDescriptor } from "./GraphDescriptor";
 import GraphEdge from "./GraphEdge";
 import { setNextVarid } from "./GraphNode";
 import Add from "./Nodes/Add";
+import Combine from "./Nodes/Combine";
 import Output from "./Nodes/Display";
 import Fraction from "./Nodes/Fraction";
+import Lerp from "./Nodes/Lerp";
 import Multiply from "./Nodes/Multiply";
 import PhongShading from "./Nodes/PhongShading";
+import Power from "./Nodes/Power";
 import SampleTexture from "./Nodes/SampleTexture";
+import Split from "./Nodes/Split";
+import Subtract from "./Nodes/Subtract";
 import TileAndScroll from "./Nodes/TileAndScroll";
 import Time from "./Nodes/Time";
+import Twirl from "./Nodes/Twirl";
 import UV from "./Nodes/UV";
 import Vector from "./Nodes/Vector";
+import Voronoi from "./Nodes/Voronoi";
 import Property from "./Property";
 import PropertyNode from "./PropertyNode";
 import ShaderGraph from "./ShaderGraph";
 import StageGraph from "./StageGraph";
-import { DataType, GraphEdgeInterface, GraphNodeInterface, getLength, isPropertyNode, isValueNode } from "./Types";
+import { DataType, GraphEdgeInterface, GraphNodeInterface, PropertyInterface, getLength, isPropertyNode } from "./Types";
 import Value from "./Value";
 import ValueNode from "./ValueNode";
+import VertexColor from "./Nodes/VertexColor";
 
 export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Property[]): StageGraph => {
   let nodes: GraphNodeInterface[] = [];
@@ -46,7 +60,7 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Pr
 
     switch (nodeDescr.type) {
       case 'SampleTexture':
-        node = new SampleTexture(nodeDescr.id)
+        node = new SampleTexture(nodeDescr)
         break;
 
       case 'property': 
@@ -91,7 +105,39 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Pr
       case 'PhongShading':
         node = new PhongShading(nodeDescr.id);
         break;
+
+      case 'Split':
+        node = new Split(nodeDescr.id);
+        break;
   
+      case 'Combine':
+        node = new Combine(nodeDescr.id);
+        break;
+
+      case 'Power':
+        node = new Power(nodeDescr.id);
+        break;
+  
+      case 'Twirl':
+        node = new Twirl(nodeDescr.id);
+        break;
+
+      case 'Voronoi':
+        node = new Voronoi(nodeDescr.id);
+        break;
+
+      case 'Lerp':
+        node = new Lerp(nodeDescr.id);
+        break;
+
+      case 'Subtract':
+        node = new Subtract(nodeDescr.id);
+        break;
+      
+      case 'VertexColor':
+        node = new VertexColor(nodeDescr.id);
+        break;
+      
       case 'value': {
         const vnode = nodeDescr as ValueDescriptor;
 
@@ -120,7 +166,12 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Pr
               case 'vec3f':
               case 'vec4f':
                 if (Array.isArray(portValue.value)) {
+                  const originalLength = portValue.value.length;
                   portValue.value.length = getLength(port.dataType)
+
+                  for (let i = originalLength; i < portValue.value.length; i += 1) {
+                    portValue.value[i] = 0;
+                  }
                 }
     
                 port.value = new Value(port.dataType, portValue.value)
@@ -199,7 +250,7 @@ export const generateStageShaderCode = (graph: StageGraph): [string, Property[]]
           const sampleTexture = (node as SampleTexture);
           const sampler = properties.find((p) => (
             p.value.dataType === 'sampler'
-            && JSON.stringify(p.value.value) === JSON.stringify(sampleTexture.sampler)
+            && JSON.stringify(p.value.value) === JSON.stringify(sampleTexture.settings)
           ))
 
           if (sampler) {
@@ -208,7 +259,7 @@ export const generateStageShaderCode = (graph: StageGraph): [string, Property[]]
           else {
             // Property was not found. Create a new property and add it to the
             // property binding list.
-            const prop = new Property(`sampler${nextSamplerId}`, 'sampler', sampleTexture.sampler);
+            const prop = new Property(`sampler${nextSamplerId}`, 'sampler', sampleTexture.settings);
             nextSamplerId += 1;
             properties.push(prop);
             sampleTexture.samplerName = prop.name;
@@ -276,121 +327,141 @@ const space = (dataType: DataType) => {
   return '';
 }
 
-export const generateShaderCode = (graph: ShaderGraph, lit: boolean): [string, Property[]] => {
+export const generateShaderCode = (
+  graph: ShaderGraph | null,
+  drawableType: DrawableType,
+  vertProperties: PropertyInterface[],
+  lit: boolean,
+): [string, Property[], Property[]] => {
   let body = '';
 
-  let bindings = '';
-  let uniforms = '';
-  let numBindings = 0;
-  let properties: Property[] = [];
+  let vertBindings = '';
+  let fragBindings = '';
+  let vertUniforms = '';
+  let fragUniforms = '';
+  let fragProperties: PropertyInterface[] = [];
 
-  if (graph.fragment) {
-    [body, properties] = generateStageShaderCode(graph.fragment);
+  let numVertBindings = 0;
+  let numFragBindings = 0;
+  let group = 2;
 
-    for (let i = 0; i < properties.length; i += 1) {
-      if (properties[i].value.dataType === 'texture2D' || properties[i].value.dataType === 'sampler') {
-        bindings = bindings.concat(
-          `@group(2) @binding(${numBindings}) var${space(properties[i].value.dataType)} ${properties[i].name}: ${bindingType(properties[i].value.dataType)};\n`
-        )  
+  for (let i = 0; i < vertProperties.length; i += 1) {
+    vertUniforms = vertUniforms.concat(
+      `${vertProperties[i].name}: ${bindingType(vertProperties[i].value.dataType)},`
+    )    
+  }
 
-        numBindings += 1;
-      }
-      else {
-        uniforms = uniforms.concat(
-          `${properties[i].name}: ${bindingType(properties[i].value.dataType)},`
-        )  
-      }
-    }
+  if (vertUniforms !== '') {
+    vertBindings = vertBindings.concat(
+      `@group(${group}) @binding(${numVertBindings}) var<uniform> vertProperties: VertProperties;`
+    )
+    group += 1;
+    numVertBindings += 1;
+
+    vertUniforms = `struct VertProperties { ${vertUniforms} }\n`
+  }
+
+  if (graph && graph.fragment) {
+    [body, fragProperties] = generateStageShaderCode(graph.fragment);
 
     console.log(body);
   }
 
-  if (uniforms !== '') {
-    bindings = bindings.concat(
-      `@group(2) @binding(${numBindings}) var<uniform> properties: Properties;`
-    )
-    numBindings += 1;
+  for (let i = 0; i < fragProperties.length; i += 1) {
+    if (fragProperties[i].value.dataType === 'texture2D' || fragProperties[i].value.dataType === 'sampler') {
+      fragBindings = fragBindings.concat(
+        `@group(${group}) @binding(${numFragBindings}) var${space(fragProperties[i].value.dataType)} ${fragProperties[i].name}: ${bindingType(fragProperties[i].value.dataType)};\n`
+      )  
 
-    uniforms = `struct Properties { ${uniforms} }\n`
+      numFragBindings += 1;
+    }
+    else {
+      fragUniforms = fragUniforms.concat(
+        `${fragProperties[i].name}: ${bindingType(fragProperties[i].value.dataType)},`
+      )  
+    }
+  }
+
+  if (fragUniforms !== '') {
+    fragBindings = fragBindings.concat(
+      `@group(${group}) @binding(${numFragBindings}) var<uniform> fragProperties: FragProperties;`
+    )
+    group += 1;
+    numFragBindings += 1;
+
+    fragUniforms = `struct FragProperties { ${fragUniforms} }\n`
   }
 
   return [
-    `
-    struct Vertex {
-      @location(0) position: vec4f,
-      @location(1) normal: vec4f,
-      @location(2) texcoord: vec2f,
-    }
-    
-    struct VertexOut {
-      @builtin(position) position : vec4f,
-      @location(0) texcoord: vec2f,
-      ${lit ? '@location(1) fragPos: vec4f,\n@location(2) normal: vec4f,' : ''}    
-    }
-        
+    `    
     ${common}
-  
-    @vertex
-    fn vs(
-      @builtin(instance_index) instanceIndex: u32,
-      vert: Vertex,
-    ) -> VertexOut
-    {
-      var output: VertexOut;
-    
-      output.position = projectionMatrix * viewMatrix * modelMatrix[instanceIndex] * vert.position;
-      output.texcoord = vert.texcoord;
-    
-      ${lit
-        ? `
-        output.fragPos = viewMatrix * modelMatrix[0] * vert.position;
-        output.normal = viewMatrix * modelMatrix[0] * vert.normal;          
-        `
-        : ''
-      }
-    
-      return output;
-    }
 
-    ${uniforms}
+    ${vertUniforms}
 
-    ${bindings}
+    ${vertBindings}
+
+    ${fragUniforms}
+
+    ${fragBindings}
     
+    ${getVertexStage(drawableType, lit)}
+
     ${lit ? phongFunction : ''}
 
-    @fragment
-    fn fs(vertexOut: VertexOut) -> @location(0) vec4f
-    {
-      ${body}
-    }
+    ${twirlFunction}
+
+    ${voronoiFunction}
+
+    ${getFragmentStage(body, bloom)}
     `,
-    properties,
+    vertProperties,
+    fragProperties,
   ]
 }
 
-export const generateMaterial = (materialDescriptor: MaterialDescriptor): [string, Property[]] => {
+export const generateCode = (
+  drawableType: DrawableType,
+  vertexProperties: PropertyInterface[],
+  materialDescriptor?: ShaderDescriptor,
+): [string, Property[], Property[]] => {
   let props: Property[] = [];
 
-  if (materialDescriptor.properties) {
-    props = materialDescriptor.properties.map((p) => (
+  if (materialDescriptor?.properties) {
+    props = props.concat(materialDescriptor.properties.map((p) => (
       new Property(p.name, p.dataType, p.value)
-    ))
+    )))
   }
 
-  const graph = buildGraph(materialDescriptor.graph!, props);
+  let graph: ShaderGraph | null = null;
 
-  return  generateShaderCode(graph, materialDescriptor.lit ?? false);
+  if (materialDescriptor?.graph) {
+    graph = buildGraph(materialDescriptor.graph!, props);
+  }
+
+  return generateShaderCode(graph, drawableType, vertexProperties, materialDescriptor?.lit ?? false);
 }
 
-export const generateShaderModule = (materialDescriptor: MaterialDescriptor): [GPUShaderModule, Property[], string] => {
-  const [code, properties] = generateMaterial(materialDescriptor);
+export const generateShaderModule = (
+  drawableType: DrawableType,
+  vertexProperties: PropertyInterface[],
+  materialDescriptor?: ShaderDescriptor,
+): [GPUShaderModule, Property[], Property[], string] => {
+  const [code, vertProperties, fragProperties] = generateCode(drawableType, vertexProperties, materialDescriptor);
   
-  const shaderModule = gpu.device.createShaderModule({
-    label: 'custom shader',
-    code: code,
-  })
+  let shaderModule: GPUShaderModule
+  try {
+    shaderModule = gpu.device.createShaderModule({
+      label: 'custom shader',
+      code: code,
+    })  
+  }
+  catch (error) {
+    console.log(code)
+    console.log(error);
+    throw error;
+  }
 
-  return [shaderModule, properties, code];
+  return [shaderModule, vertProperties, fragProperties, code];
 }
 
 export const createDescriptor = (nodes: GraphNodeInterface[], edges: GraphEdgeInterface[]): GraphDescriptor => {
@@ -401,38 +472,7 @@ export const createDescriptor = (nodes: GraphNodeInterface[], edges: GraphEdgeIn
     },
 
     fragment: {
-      nodes: nodes.map((n) => {
-        if (isPropertyNode(n)) {
-          return ({
-            id: n.id,
-            name: n.property.name,
-            type: n.type,  
-            x: n.position?.x,
-            y: n.position?.y,
-          })
-        }
-
-        if (isValueNode(n)) {
-          return ({
-            id: n.id,
-            type: n.type,
-            x: n.position?.x,
-            y: n.position?.y,
-            dataType: n.value.dataType,
-            value: n.value.value,
-          })
-        }
-
-        return ({
-          id: n.id,
-          type: n.type,
-          x: n.position?.x,
-          y: n.position?.y,
-          portValues: n.inputPorts
-            .filter((p) => !p.edge && p.value)
-            .map((p) => ({ port: p.name, value: p.value!.value })),
-        })
-      }),
+      nodes: nodes.map((n) => n.createDescriptor()),
 
       edges: edges.map((e) => (
         [{ id: e.output.node.id, port: e.output.name}, { id: e.input.node.id, port: e.input.name}]

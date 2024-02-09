@@ -5,11 +5,7 @@ import { gpu } from '../Gpu';
 import { maxInstances } from '../types';
 
 class CartesianAxes extends Drawable {
-  drawable = true;
-  
   vertexBuffer: GPUBuffer;
-
-  tag = '';
 
   vertices = [
     -2000, 0, 0, 1,
@@ -30,7 +26,9 @@ class CartesianAxes extends Drawable {
   numInstances = 0;
 
   constructor() {
-    super();
+    super('Mesh');
+    
+    this.name = 'CartesianAxes';
     
     const gridLineColor = [0.3, 0.3, 0.3, 1];
 
@@ -91,13 +89,6 @@ class CartesianAxes extends Drawable {
 
   computeCentroid(): Vec4 {
     throw new Error('not implemented')
-  }
-
-  setColor(color: Vec4) {
-  }
-
-  getColor(): Float32Array {
-    throw new Error('not implemented');
   }
 }
 

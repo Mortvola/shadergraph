@@ -1,5 +1,5 @@
 import InputPort from "../Ports/InputPort";
-import { ValueInterface } from "../Types";
+import { DataType, ValueInterface } from "../Types";
 import ValueNode from "../ValueNode";
 
 class Vector extends ValueNode {
@@ -19,15 +19,16 @@ class Vector extends ValueNode {
     }
   }
 
-  getExpression(): string {
+  getExpression(): [string, DataType] {
     let expression = '';
 
     for (const port of this.inputPorts) {
-      expression += `${port.getValue()},`
+      const [value] = port.getValue()
+      expression += `${value},`
     }
 
     // TODO: fix this for other vector sizes.
-    return `vec2f(${expression})`;
+    return [`vec2f(${expression})`, this.getDataType()];
   }
 }
 

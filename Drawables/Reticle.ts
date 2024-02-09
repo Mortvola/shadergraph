@@ -3,8 +3,6 @@ import Drawable from './Drawable';
 import { bindGroups } from '../BindGroups';
 import { gpu } from '../Gpu';
 
-const label = 'reticle';
-
 class Reticle extends Drawable {
   radius = new Float32Array(1);
 
@@ -13,8 +11,10 @@ class Reticle extends Drawable {
   uniformBuffer3: GPUBuffer;
 
   private constructor(radius: number) {
-    super()
+    super('Billboard')
 
+    this.name = 'Reticle';
+    
     this.radius[0] = radius;
 
     this.uniformBuffer3 = gpu.device.createBuffer({

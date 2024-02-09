@@ -1,23 +1,34 @@
-import { Mat4, Vec4, mat4, vec4 } from "wgpu-matrix";
+import { Vec4, mat4, vec4 } from "wgpu-matrix";
 import DrawableInterface from "../DrawableInterface";
 import SceneNode from "./SceneNode";
 import { DrawableNodeInterface, MaterialInterface } from "../../types";
-import { MaterialDescriptor } from "../../Materials/MaterialDescriptor";
+import { ShaderDescriptor } from "../../shaders/ShaderDescriptor";
 import Material from "../../Materials/Material";
+
+const materialsMap: Map<string, Material> = new Map()
 
 class DrawableNode extends SceneNode implements DrawableNodeInterface {
   drawable: DrawableInterface;
 
   material: MaterialInterface;
 
+  color = new Float32Array(4);
+
   private constructor(drawable: DrawableInterface, material: MaterialInterface) {
     super();
     this.drawable = drawable;
     this.material = material;
+    this.color = material.color.slice();
   }
 
-  static async create(drawable: DrawableInterface, materialDescriptor: MaterialDescriptor): Promise<DrawableNode> {
-    const material = await Material.create(materialDescriptor);
+  static async create(drawable: DrawableInterface, materialDescriptor?: ShaderDescriptor): Promise<DrawableNode> {
+    const key = JSON.stringify({ type: drawable.type, descriptor: materialDescriptor });
+    let material = materialsMap.get(key)
+
+    if (!material) {
+      material = await Material.create(drawable.type, drawable.vertexProperties, materialDescriptor);
+      materialsMap.set(key, material)
+    }
 
     return new DrawableNode(drawable, material);
   }
@@ -43,7 +54,7 @@ class DrawableNode extends SceneNode implements DrawableNodeInterface {
   computeTransform(transform = mat4.identity(), prepend = true): void {
     super.computeTransform(transform, prepend);
 
-    this.drawable.addInstanceTransform(this.transform);
+    this.drawable.addInstanceInfo(this.transform, this.color);
   }
 
 }

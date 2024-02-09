@@ -1,6 +1,7 @@
+import { ValueDescriptor } from "./GraphDescriptor";
 import GraphNode from "./GraphNode";
 import OutputPort from "./Ports/OutputPort";
-import { ValueInterface, ValueNodeInterface } from "./Types";
+import { DataType, ValueInterface, ValueNodeInterface } from "./Types";
 
 class ValueNode extends GraphNode implements ValueNodeInterface {
   value: ValueInterface;
@@ -13,8 +14,19 @@ class ValueNode extends GraphNode implements ValueNodeInterface {
     this.value = value;
   }
 
-  getExpression(): string {
-    return this.value.getValueString() ?? '';
+  createDescriptor(): ValueDescriptor {
+    return ({
+      id: this.id,
+      type: this.type,
+      x: this.position?.x,
+      y: this.position?.y,
+      dataType: this.value.dataType,
+      value: this.value.value,
+    })
+  }
+
+  getExpression(): [string, DataType] {
+    return this.value.getValueString() ?? ['', this.getDataType()];
   }
 }
 

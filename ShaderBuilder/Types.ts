@@ -1,10 +1,12 @@
+import { GraphNodeDescriptor } from "./GraphDescriptor";
+
 export type DataType = 'float' | 'vec2f' | 'vec3f' | 'vec4f' | 'texture2D' | 'sampler' | 'rgba' | 'string' | 'uv';
 
 export type NodeType =
   'property' | 'value'
   | 'uv' | 'time'  | 'time'
-  | 'Add' | 'display' | 'Fraction' | 'Multiply' | 'SampleTexture' | 'TileAndScroll'
-  | 'PhongShading';
+  | 'Add' | 'Combine' | 'display' | 'Fraction' | 'Lerp' | 'Multiply' | 'Power' | 'SampleTexture' | 'Split' | 'Subtract' | 'TileAndScroll'
+  | 'PhongShading' | 'Twirl' | 'VertexColor' | 'Voronoi';
 
 export type SamplerDescriptor = {};
 
@@ -33,9 +35,9 @@ export interface InputPortInterface extends PortInterface {
 
   value?: ValueInterface;
 
-  getVarName(): string;
+  getVarName(): [string, DataType];
 
-  getValue(): string;
+  getValue(): [string, DataType];
 };
 
 export const isInputPort = (r: unknown): r is InputPortInterface => (
@@ -45,9 +47,9 @@ export const isInputPort = (r: unknown): r is InputPortInterface => (
 export interface OutputPortInterface extends PortInterface {
   edges: GraphEdgeInterface[];
   
-  getVarName(): string;
+  getVarName(): [string, DataType];
 
-  getValue(): string;
+  getValue(): [string, DataType];
 };
 
 export interface GraphNodeInterface {
@@ -59,11 +61,15 @@ export interface GraphNodeInterface {
 
   outputPort: OutputPortInterface[];
 
-  getVarName(): string | null;
+  settings?: unknown;
+
+  createDescriptor(): GraphNodeDescriptor
+
+  getVarName(): [string, DataType];
 
   setVarName(name: string | null): void;
 
-  getValue(): string;
+  getValue(): [string, DataType];
 
   position: { x: number, y: number };
 
@@ -101,11 +107,11 @@ export interface GraphEdgeInterface {
 
   input: InputPortInterface;
 
-  getVarName(): string;
+  getVarName(): [string, DataType];
 
   setVarName(name: string): void;
 
-  getValue(): string;
+  getValue(): [string, DataType];
 }
 
 export interface ValueInterface {
@@ -113,7 +119,7 @@ export interface ValueInterface {
 
   value: ValueType;
 
-  getValueString(): string;
+  getValueString(): [string, DataType];
 }
 
 export interface PropertyInterface {
