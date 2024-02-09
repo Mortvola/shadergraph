@@ -1,9 +1,8 @@
 import React from 'react';
 import styles from './Node.module.scss';
 import { useStores } from '../State/store';
-import { OutputPortInterface } from '../Renderer/ShaderBuilder/Types';
+import { OutputPortInterface, convertType } from '../Renderer/ShaderBuilder/Types';
 import { observer } from 'mobx-react-lite';
-import { convertType } from '../State/types';
 
 type PropsType = {
   port: OutputPortInterface,
@@ -84,8 +83,8 @@ const NodeOutputPort: React.FC<PropsType> = observer(({
     >
       {
         !hideName
-          ? <div>{ `${port.name} (${convertType(port.dataType)})` }</div>
-          : <div>{ convertType(port.dataType) }</div>
+          ? <div>{ `${port.name} (${convertType(port.getDataType())})` }</div>
+          : <div>{ convertType(port.getDataType()) }</div>
       }
       <div
         className={`${styles.connector} ${port.edges.length > 0 ? styles.connected : ''}`}

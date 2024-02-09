@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './Node.module.scss';
-import { InputPortInterface, OutputPortInterface, getLength } from '../Renderer/ShaderBuilder/Types';
+import { InputPortInterface, OutputPortInterface, convertType, getLength } from '../Renderer/ShaderBuilder/Types';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import { createPortal } from 'react-dom';
@@ -8,7 +8,7 @@ import SimpleVector from './SimpleValues/SimpleVector';
 import Value from '../Renderer/ShaderBuilder/Value';
 import SimpleUV from './SimpleValues/SimpleUV';
 import SimpleFloat from './SimpleValues/SimpleFloat';
-import { GraphInterface, convertType } from '../State/types';
+import { GraphInterface } from '../State/types';
 
 type PropsType = {
   graph: GraphInterface,
@@ -185,7 +185,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
         onDragEnd={handleDragEnd}
         draggable={port.edge !== null}
       />
-      <div>{ `${port.name} (${convertType(port.dataType)})` }</div>
+      <div>{ `${port.name} (${convertType(port.getDataType())})` }</div>
       {
         !port.edge && parentRef.current
           ? renderSimpleValues()
