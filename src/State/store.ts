@@ -138,7 +138,6 @@ class Store implements StoreInterface {
           const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
   
           if (particleSystem) {
-            particleSystem.reset()
             this.mainView.addParticleSystem(particleSystem)
           }
         }
@@ -207,12 +206,6 @@ class Store implements StoreInterface {
 
       this.mainViewModeler.assignModel(null);
     }
-
-    // if (item.type !== 'shader') {
-    //   runInAction(() => {
-    //     this.graph = null;
-    //   })
-    // }
   }
 
   async getModel(item: ProjectItemInterface) {
