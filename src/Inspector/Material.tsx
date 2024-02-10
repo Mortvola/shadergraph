@@ -31,7 +31,7 @@ const Material: React.FC = observer(() => {
 
   const handleValueChange = () => {
     if (material) {
-      materialManager.applyPropertyValues(material.id, 'Mesh', [], material.properties)
+      materialManager.applyPropertyValues(material.id, material.properties)
     }
   }
 
