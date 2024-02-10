@@ -4,16 +4,17 @@ import { observer } from 'mobx-react-lite';
 import { ValueType } from '../Renderer/ShaderBuilder/Types';
 import ValueInput from '../ShaderEditor/ValueInput';
 import styles from './Material.module.scss';
-import { MaterialInterface } from '../State/types';
+import { MaterialItemInterface } from '../State/types';
+import { materialManager } from '../Renderer/Materials/MaterialManager';
 
 const Material: React.FC = observer(() => {
   const store = useStores();
   const { project } = store;
 
-  let material: MaterialInterface | null = null;
+  let material: MaterialItemInterface | null = null;
 
   if (project.selectedItem && project.selectedItem.type === 'material') {
-    material = project.selectedItem.item as MaterialInterface
+    material = project.selectedItem.item as MaterialItemInterface
   }
 
   const getValue = (value: ValueType): string => {
@@ -30,7 +31,7 @@ const Material: React.FC = observer(() => {
 
   const handleValueChange = () => {
     if (material) {
-      store.materials.applyPropertyValues(material);
+      materialManager.applyPropertyValues(material.id, 'Mesh', [], material.properties)
     }
   }
 

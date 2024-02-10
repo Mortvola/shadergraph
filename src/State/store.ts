@@ -7,7 +7,6 @@ import {
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
 import Http from "../Http/src";
-import Materials from "./Materials";
 import { ProjectItemInterface } from "../Project/Types/types";
 import GameObject from "./GameObject";
 import Texture from "./Texture";
@@ -43,8 +42,6 @@ class Store implements StoreInterface {
 
   shaderPreview: Renderer;
 
-  materials: Materials;
-
   project = new Project();
 
   // projectItems = new Folder(-1, '', null, this)
@@ -57,8 +54,6 @@ class Store implements StoreInterface {
 
     this.mainViewModeler = new Modeler(this.mainView, this);
     this.modeler = new Modeler(previewRenderer, this);
-
-    this.materials = new Materials(this);
 
     makeObservable(this, {
       menus: observable,
@@ -143,6 +138,7 @@ class Store implements StoreInterface {
           const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
   
           if (particleSystem) {
+            particleSystem.reset()
             this.mainView.addParticleSystem(particleSystem)
           }
         }
@@ -156,7 +152,7 @@ class Store implements StoreInterface {
           const materialRecord = await response.body();
 
           runInAction(() => {
-            item.item = materialRecord; // new MaterialItem(materialRecord.id, materialRecord.name, materialRecord.shaderId, materialRecord.properties);
+            item.item = materialRecord;
           })
         }
       }

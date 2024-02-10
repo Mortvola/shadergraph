@@ -8,6 +8,7 @@ import { DrawableNodeInterface, MaterialInterface, SceneNodeInterface } from "..
 import { NodeMaterials, StoreInterface } from "./types";
 import { downloadFbx } from "../Fbx/LoadFbx";
 import { FbxNodeInterface, isFbxContainerNode, isFbxGeometryNode } from "../Fbx/types";
+import { materialManager } from "../Renderer/Materials/MaterialManager";
 
 class Modeler {
   model: SceneNodeInterface | null = null;
@@ -87,7 +88,11 @@ class Modeler {
         const id = materials[node.name];
 
         if (id !== undefined) {
-          await this.store.materials.applyMaterial(id, node);
+          const material = await materialManager.get(id, 'Mesh', []);
+
+          if (material) {
+            node.material = material;
+          }
         }
       }
       else if (isContainerNode(node)) {

@@ -123,7 +123,7 @@ const Particle: React.FC<PropsType> = ({
       && store.draggingItem.type === 'material'
       && store.draggingItem.itemId !== null
     ) {
-      const materialDescriptor = await materialManager.getDescriptor(store.draggingItem.itemId)
+      const materialDescriptor = await materialManager.getDescriptor(store.draggingItem.itemId, false)
 
       if (materialDescriptor) {
         particleSystem.materialId = store.draggingItem.itemId

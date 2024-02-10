@@ -289,7 +289,7 @@ class Graph implements GraphInterface {
   async generateMaterial(): Promise<MaterialInterface> {
     const materialDescriptor = this.createMaterialDescriptor();
 
-    return await Material.create('Mesh', [], materialDescriptor);
+    return await Material.create('Mesh', [], { shaderDescriptor: materialDescriptor });
   }
 }
 

@@ -1,11 +1,7 @@
-import { MaterialRecord, ParticleSystemInterface, SceneNodeInterface, ShaderRecord } from "../../Renderer/types";
-import { GameObjectInterface, GraphInterface, MaterialInterface, TextureInterface } from "../../State/types";
+import { ParticleSystemInterface, SceneNodeInterface, ShaderRecord } from "../../Renderer/types";
+import { GameObjectInterface, GraphInterface, MaterialItemInterface, TextureInterface } from "../../State/types";
 
-export type MaterialItem = {
-  record: MaterialRecord,
-}
-
-export type ItemLike = GameObjectInterface | MaterialInterface | TextureInterface | GraphInterface | SceneNodeInterface
+export type ItemLike = GameObjectInterface | MaterialItemInterface | TextureInterface | GraphInterface | SceneNodeInterface
   | ParticleSystemInterface | ShaderRecord;
 
 export interface ProjectInterface {

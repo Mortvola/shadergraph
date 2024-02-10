@@ -1,18 +1,15 @@
 import { ProjectInterface } from "../Project/Types/types";
 import { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
-import { DrawableNodeInterface, GameObjectItem, ParticleDescriptor } from "../Renderer/types";
+import { GameObjectItem } from "../Renderer/types";
 
 export interface StoreInterface {
-  materials: MaterialsInterface;
-
   project: ProjectInterface
 
   applyMaterial(): Promise<void>;
 }
 
 export interface MaterialsInterface {
-  applyMaterial(id: number, node: DrawableNodeInterface): Promise<void>
 }
 
 export type CullMode = 'back' | 'none' | 'front';
@@ -81,7 +78,11 @@ export interface ShaderInterface extends EntityInterface {
 
 }
 
-export interface MaterialInterface extends EntityInterface {
+export interface MaterialItemInterface extends EntityInterface {
+  id: number,
+
+  name: string,
+
   shaderId: number;
 
   properties: PropertyInterface[];
