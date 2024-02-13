@@ -46,7 +46,7 @@ export interface SceneNodeInterface {
   setFromAngles(x: number, y: number, z: number): void;
 }
 
-export type DrawableType = 'Mesh' | 'Billboard' | 'Circle' | 'Line'
+export type DrawableType = 'Mesh' | 'Billboard' | 'Circle' | 'Line' | '2D'
 
 export interface MaterialInterface {
   pipeline: PipelineInterface | null;
@@ -61,6 +61,8 @@ export interface MaterialInterface {
 
   addDrawable(drawableNode: DrawableNodeInterface): void;
 
+  setPropertyValues(stage: GPUShaderStageFlags, properties: PropertyInterface[]): void;
+  
   updateProperty(stage: GPUShaderStageFlags, name: string, value: ValueType): void;
 }
 
@@ -76,6 +78,10 @@ export interface DrawableNodeInterface extends SceneNodeInterface {
 
 export interface PipelineInterface {
   pipeline: GPURenderPipeline;
+
+  vertexStageBindings: StageBindings | null
+
+  fragmentStageBindings: StageBindings | null
 
   // drawables: DrawableInterface[];
   materials: MaterialInterface[];
@@ -103,7 +109,7 @@ export interface PipelineManagerInterface {
     drawableType: DrawableType,
     vertexProperties: PropertyInterface[],
     args: ShaderDescriptor,
-  ): [PipelineInterface, StageBindings | null, StageBindings | null, boolean];
+  ): Promise<PipelineInterface>
 }
 
 export interface ParticleSystemInterface {
@@ -112,6 +118,8 @@ export interface ParticleSystemInterface {
   update(time: number, elapsedTime: number, scene: ContainerNodeInterface): Promise<void>
 
   removePoints(scene: ContainerNodeInterface): void
+
+  reset(): void
 }
 
 export type MaterialRecord = {
