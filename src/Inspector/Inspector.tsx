@@ -6,8 +6,6 @@ import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import Http from '../Http/src';
 import Texture from '../State/Texture';
-import Particle from './Particle';
-import ParticleSystem from '../Renderer/ParticleSystem';
 import GameObject from './GameObject';
 import { GameObjectInterface } from '../State/types';
 

@@ -64,6 +64,7 @@ const MainView: React.FC = observer(() => {
     } },
     { name: 'Create shader', action: () => { store.project.addNewItem('shader') } },
     { name: 'Create game object', action: () => { store.project.addNewItem('object') } },
+    { name: 'Create 2D game object', action: () => { store.project.addNewItem('object2D') } },
     { name: 'Create particle system', action: () => { store.project.addNewItem('particle') } },
     { name: 'Create folder', action: () => { store.project.createFolder() } },
   ]), []);

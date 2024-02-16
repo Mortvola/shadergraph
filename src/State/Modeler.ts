@@ -57,7 +57,7 @@ class Modeler {
     return model;
   }
 
-  async assignModel(model: SceneNodeInterface | null, materials?: NodeMaterials) {
+  async   assignModel(model: SceneNodeInterface | null, materials?: NodeMaterials) {
     if (this.model) {
       this.renderer.removeSceneNode(this.model);
     }

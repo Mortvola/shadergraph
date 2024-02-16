@@ -144,6 +144,21 @@ class Project implements ProjectInterface {
         break
       }
 
+      case 'object2D': {
+        url = '/game-objects'
+        payload = {
+          name,
+          object: {
+            x: -0.1 / 2,
+            y: 0.1 / 2,
+            width: 0.1,
+            height: 0.1
+          },
+        }
+
+        break
+      }
+
       case 'shader': {
         url = '/shader-descriptors'
         payload = {

@@ -2,7 +2,7 @@ import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
 import {
-  ModelInterface, StoreInterface, TextureRecord,
+  ModelInterface, StoreInterface, TextureRecord, isGameObject2D,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
@@ -10,11 +10,16 @@ import Http from "../Http/src";
 import { ProjectItemInterface } from "../Project/Types/types";
 import GameObject from "./GameObject";
 import Texture from "./Texture";
-import { GameObjectRecord, MaterialRecord, ModelItem, ParticleItem, ParticleSystemInterface, SceneNodeInterface, ShaderRecord } from "../Renderer/types";
+import { GameObject2DRecord, GameObjectRecord, MaterialRecord, ModelItem, ParticleItem, ParticleSystemInterface, SceneNodeInterface, ShaderRecord } from "../Renderer/types";
 import ParticleSystem from "../Renderer/ParticleSystem";
 import { renderer2d } from "../Main";
 import Project from "../Project/Types/Project";
 import { particleSystemManager } from "../Renderer/ParticleSystemManager";
+import GameObject2D from "./GameObject2D";
+import SceneNode2d from "../Renderer/Drawables/SceneNodes/SceneNode2d";
+import Material from "../Renderer/Materials/Material";
+import { materialManager } from "../Renderer/Materials/MaterialManager";
+import Property from "../Renderer/ShaderBuilder/Property";
 
 type OpenMenuItem = {
   menuItem: HTMLElement,
@@ -109,38 +114,57 @@ class Store implements StoreInterface {
           const objectRecord = await response.body();
   
           runInAction(() => {
-            item.item = new GameObject(objectRecord.id, objectRecord.name, objectRecord.object.items)
+            if (isGameObject2D(objectRecord.object)) {
+              item.item = new GameObject2D(objectRecord.id, objectRecord.name, objectRecord as GameObject2DRecord)
+            }
+            else {
+              item.item = new GameObject(objectRecord.id, objectRecord.name, objectRecord.object.items)
+            }
           })
         }  
       }
 
-      const gameObject = item.item as GameObject;
+      if (!isGameObject2D(item.item)) {
+        const gameObject = item.item as GameObject;
 
-      this.mainViewModeler.assignModel(null)
+        this.mainViewModeler.assignModel(null)
 
-      for (const item  of gameObject.items) {
-        if (item.type === 'model') {
-          const modelEntry = item.item as ModelItem;
+        for (const item  of gameObject.items) {
+          if (item.type === 'model') {
+            const modelEntry = item.item as ModelItem;
 
-          const modelItem = this.project.getItemByItemId(modelEntry.id, 'model');
+            const modelItem = this.project.getItemByItemId(modelEntry.id, 'model');
 
-          if (modelItem) {
-            const model = await this.getModel(modelItem)
+            if (modelItem) {
+              const model = await this.getModel(modelItem)
+      
+              if (model) {
+                this.mainViewModeler.assignModel(model, modelEntry.materials);
+              }
+            }    
+          }
+          else if (item.type === 'particle') {
+            const particleEntry = item.item as ParticleItem;
+
+            const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
     
-            if (model) {
-              this.mainViewModeler.assignModel(model, modelEntry.materials);
+            if (particleSystem) {
+              this.mainView.addParticleSystem(particleSystem)
             }
-          }    
-        }
-        else if (item.type === 'particle') {
-          const particleEntry = item.item as ParticleItem;
-
-          const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
-  
-          if (particleSystem) {
-            this.mainView.addParticleSystem(particleSystem)
           }
         }
+      }
+      else {
+        this.mainViewModeler.assignModel(null);
+
+        const test = new SceneNode2d()
+        test.x = item.item.x;
+        test.y = item.item.y;
+        test.width = item.item.width
+        test.height = item.item.height
+        test.material = await materialManager.get(item.item.material!, '2D', [])
+
+        this.mainView.scene2d.nodes.push(test)
       }
     }
     else if (item.type === 'material') {

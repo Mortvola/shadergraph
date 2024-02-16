@@ -30,7 +30,6 @@ class GameObject extends Entity implements GameObjectInterface {
 
     }
   }
-
 }
 
 export default GameObject;

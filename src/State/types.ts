@@ -74,6 +74,29 @@ export interface GameObjectInterface extends EntityInterface {
   save(): Promise<void>
 }
 
+export interface GameObject2DInterface extends EntityInterface {
+  width: number
+
+  height: number
+
+  x: number
+
+  y: number
+
+  material: number | null
+
+  nodes: GameObject2DInterface[]
+
+  save(): Promise<void>
+}
+
+export const isGameObject2D = (r: unknown): r is GameObject2DInterface => (
+  (r as GameObject2DInterface).x !== undefined
+  && (r as GameObject2DInterface).y !== undefined
+  && (r as GameObject2DInterface).width !== undefined
+  && (r as GameObject2DInterface).height !== undefined
+)
+
 export interface ShaderInterface extends EntityInterface {
 
 }

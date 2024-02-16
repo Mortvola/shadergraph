@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameObjectInterface } from '../State/types';
+import { GameObjectInterface, isGameObject2D } from '../State/types';
 import ModelTree from './ModelTree/ModelTree';
 import { useStores } from '../State/store';
 import styles from './Inspector.module.scss'
@@ -7,6 +7,7 @@ import Particle from './Particle';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import { GameObjectItem, ModelItem, ParticleItem } from '../Renderer/types';
+import GameObject2D from './GameObject2d';
 
 type PropsType = {
   gameObject: GameObjectInterface
@@ -110,13 +111,17 @@ const GameObject: React.FC<PropsType> = observer(({
     <div className={styles.gameObject} onDragOver={handleDragOver} onDrop={handleDrop}>
       <div>{`Name: ${gameObject.name}`}</div>
       {
-        gameObject.items.map((item) => (
-          <div className={styles.item} key={`${item.item.id}:${item.type}`} >
-            <button type="button" onClick={() => handleDelete(item)}>X</button>
-            {
-              renderItem(item)
-            }
-          </div>
+        isGameObject2D(gameObject)
+          ? (
+            <GameObject2D gameObject={gameObject} />
+          )
+          : gameObject.items.map((item) => (
+              <div className={styles.item} key={`${item.item.id}:${item.type}`} >
+                <button type="button" onClick={() => handleDelete(item)}>X</button>
+                {
+                  renderItem(item)
+                }
+              </div>
         ))
       }
     </div>
