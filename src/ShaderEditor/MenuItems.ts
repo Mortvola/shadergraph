@@ -26,6 +26,8 @@ import Clamp from "../Renderer/ShaderBuilder/Nodes/Clamp";
 import Float from "../Renderer/ShaderBuilder/Nodes/Float";
 import Min from "../Renderer/ShaderBuilder/Nodes/Min";
 import Max from "../Renderer/ShaderBuilder/Nodes/Max";
+import FWidth from "../Renderer/ShaderBuilder/Nodes/FWidth";
+import Divide from "../Renderer/ShaderBuilder/Nodes/Divide";
 
 function addNode(node: GraphNodeInterface, x: number, y: number) {
   node.position = { x, y };
@@ -68,25 +70,27 @@ const values = (): MenuItemLike[] => (
 export const menuItems = (): MenuItemLike[] => ([
   { name: 'Properties', submenu: propertyMenu },
   { name: 'Values', submenu: values },
-  { name: 'SampleTexture', action: (x: number, y: number) => createObject(SampleTexture, x, y) },
-  { name: 'TileAndScroll', action: (x: number, y: number) => createObject(TileAndScroll, x, y) },
-  { name: 'Display', action: (x: number, y: number) => createObject(Display, x, y) },
-  { name: 'Fraction', action: (x: number, y: number) => createObject(Fraction, x, y) },
   { name: 'Add', action: (x: number, y: number) => createObject(Add, x, y) },
   { name: 'Clamp', action: (x: number, y: number) => createObject(Clamp, x, y) },
+  { name: 'Combine', action: (x: number, y: number) => createObject(Combine, x, y) },
+  { name: 'Display', action: (x: number, y: number) => createObject(Display, x, y) },
+  { name: 'Divide', action: (x: number, y: number) => createObject(Divide, x, y) },
+  { name: 'Fraction', action: (x: number, y: number) => createObject(Fraction, x, y) },
+  { name: 'FWidth', action: (x: number, y: number) => createObject(FWidth, x, y) },  
+  { name: 'Lerp', action: (x: number, y: number) => createObject(Lerp, x, y) },
   { name: 'Max', action: (x: number, y: number) => createObject(Max, x, y) },
   { name: 'Min', action: (x: number, y: number) => createObject(Min, x, y) },
   { name: 'Multiply', action: (x: number, y: number) => createObject(Multiply, x, y) },
-  { name: 'Time', action: (x: number, y: number) => createObject(Time, x, y) },
-  { name: 'UV', action: (x: number, y: number) => createObject(UV, x, y) },
   { name: 'Phong Shading', action: (x: number, y: number) => createObject(PhongShading, x, y) },
-  { name: 'Split', action: (x: number, y: number) => createObject(Split, x, y) },
-  { name: 'Combine', action: (x: number, y: number) => createObject(Combine, x, y) },
-  { name: 'Twirl', action: (x: number, y: number) => createObject(Twirl, x, y) },
-  { name: 'Voronoi', action: (x: number, y: number) => createObject(Voronoi, x, y) },
   { name: 'Power', action: (x: number, y: number) => createObject(Power, x, y) },
-  { name: 'Lerp', action: (x: number, y: number) => createObject(Lerp, x, y) },
-  { name: 'Subtract', action: (x: number, y: number) => createObject(Subtract, x, y) },
+  { name: 'SampleTexture', action: (x: number, y: number) => createObject(SampleTexture, x, y) },
+  { name: 'Split', action: (x: number, y: number) => createObject(Split, x, y) },
   { name: 'Step', action: (x: number, y: number) => createObject(Step, x, y) },
+  { name: 'Subtract', action: (x: number, y: number) => createObject(Subtract, x, y) },
+  { name: 'TileAndScroll', action: (x: number, y: number) => createObject(TileAndScroll, x, y) },
+  { name: 'Time', action: (x: number, y: number) => createObject(Time, x, y) },
+  { name: 'Twirl', action: (x: number, y: number) => createObject(Twirl, x, y) },
+  { name: 'UV', action: (x: number, y: number) => createObject(UV, x, y) },
   { name: 'Vertex Color', action: (x: number, y: number) => createObject(VertexColor, x, y) },
+  { name: 'Voronoi', action: (x: number, y: number) => createObject(Voronoi, x, y) },
 ])
