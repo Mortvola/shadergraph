@@ -24,6 +24,8 @@ import VertexColor from "../Renderer/ShaderBuilder/Nodes/VertexColor";
 import Step from "../Renderer/ShaderBuilder/Nodes/Step";
 import Clamp from "../Renderer/ShaderBuilder/Nodes/Clamp";
 import Float from "../Renderer/ShaderBuilder/Nodes/Float";
+import Min from "../Renderer/ShaderBuilder/Nodes/Min";
+import Max from "../Renderer/ShaderBuilder/Nodes/Max";
 
 function addNode(node: GraphNodeInterface, x: number, y: number) {
   node.position = { x, y };
@@ -72,6 +74,8 @@ export const menuItems = (): MenuItemLike[] => ([
   { name: 'Fraction', action: (x: number, y: number) => createObject(Fraction, x, y) },
   { name: 'Add', action: (x: number, y: number) => createObject(Add, x, y) },
   { name: 'Clamp', action: (x: number, y: number) => createObject(Clamp, x, y) },
+  { name: 'Max', action: (x: number, y: number) => createObject(Max, x, y) },
+  { name: 'Min', action: (x: number, y: number) => createObject(Min, x, y) },
   { name: 'Multiply', action: (x: number, y: number) => createObject(Multiply, x, y) },
   { name: 'Time', action: (x: number, y: number) => createObject(Time, x, y) },
   { name: 'UV', action: (x: number, y: number) => createObject(UV, x, y) },
