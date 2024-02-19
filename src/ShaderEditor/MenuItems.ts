@@ -21,6 +21,9 @@ import { MenuItemLike } from "../ContextMenu/types";
 import Lerp from "../Renderer/ShaderBuilder/Nodes/Lerp";
 import Subtract from "../Renderer/ShaderBuilder/Nodes/Subtract";
 import VertexColor from "../Renderer/ShaderBuilder/Nodes/VertexColor";
+import Step from "../Renderer/ShaderBuilder/Nodes/Step";
+import Clamp from "../Renderer/ShaderBuilder/Nodes/Clamp";
+import Float from "../Renderer/ShaderBuilder/Nodes/Float";
 
 function addNode(node: GraphNodeInterface, x: number, y: number) {
   node.position = { x, y };
@@ -42,19 +45,19 @@ const propertyMenu = (): MenuItemLike[] => (
 )
 
 const values = (): MenuItemLike[] => (
-  [2, 3, 4].map((v) => ({
-    name: `vector${v}`,
+  [1, 2, 3, 4].map((v) => ({
+    name: v === 1 ? 'float' : `vector${v}`,
     action: (x: number, y: number) => {
-      let dataType: DataType = 'vec2f';
+      let node: GraphNodeInterface | undefined = undefined
 
-      if (v === 3) {
-        dataType = 'vec3f';
+      if (v === 1) {
+        node = new Float();
       }
-      else if (v === 4) {
-        dataType = 'vec4f';
+      else {
+        const types: DataType[] = ['vec2f', 'vec3f', 'vec4f']
+        node = new Vector(new Value(types[v - 1], new Array(v).fill(0)));
       }
 
-      const node = new Vector(new Value(dataType, new Array(v).fill(0)));
       addNode(node, x, y);
     },
   }))
@@ -68,6 +71,7 @@ export const menuItems = (): MenuItemLike[] => ([
   { name: 'Display', action: (x: number, y: number) => createObject(Display, x, y) },
   { name: 'Fraction', action: (x: number, y: number) => createObject(Fraction, x, y) },
   { name: 'Add', action: (x: number, y: number) => createObject(Add, x, y) },
+  { name: 'Clamp', action: (x: number, y: number) => createObject(Clamp, x, y) },
   { name: 'Multiply', action: (x: number, y: number) => createObject(Multiply, x, y) },
   { name: 'Time', action: (x: number, y: number) => createObject(Time, x, y) },
   { name: 'UV', action: (x: number, y: number) => createObject(UV, x, y) },
@@ -79,5 +83,6 @@ export const menuItems = (): MenuItemLike[] => ([
   { name: 'Power', action: (x: number, y: number) => createObject(Power, x, y) },
   { name: 'Lerp', action: (x: number, y: number) => createObject(Lerp, x, y) },
   { name: 'Subtract', action: (x: number, y: number) => createObject(Subtract, x, y) },
+  { name: 'Step', action: (x: number, y: number) => createObject(Step, x, y) },
   { name: 'Vertex Color', action: (x: number, y: number) => createObject(VertexColor, x, y) },
 ])
