@@ -30,7 +30,7 @@ const Node: React.FC<PropsType> = observer(({
   scale = 1,
   origin = { x: 0, y: 0},
 }) => {
-  const [expanded, setExpanded] = React.useState<boolean>(false);
+  const [expanded, setExpanded] = React.useState<boolean>(node.inputPorts.some((ip) => ip.edge));
 
   const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {
     graph.selectNode(node)
