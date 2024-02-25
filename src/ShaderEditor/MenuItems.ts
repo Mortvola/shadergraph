@@ -28,6 +28,9 @@ import Min from "../Renderer/ShaderBuilder/Nodes/Min";
 import Max from "../Renderer/ShaderBuilder/Nodes/Max";
 import FWidth from "../Renderer/ShaderBuilder/Nodes/FWidth";
 import Divide from "../Renderer/ShaderBuilder/Nodes/Divide";
+import TextureSize from "../Renderer/ShaderBuilder/Nodes/TextureSize";
+import Inverse from "../Renderer/ShaderBuilder/Nodes/Inverse";
+import Distance from "../Renderer/ShaderBuilder/Nodes/Distance";
 
 function addNode(node: GraphNodeInterface, x: number, y: number) {
   node.position = { x, y };
@@ -59,7 +62,7 @@ const values = (): MenuItemLike[] => (
       }
       else {
         const types: DataType[] = ['vec2f', 'vec3f', 'vec4f']
-        node = new Vector(new Value(types[v - 1], new Array(v).fill(0)));
+        node = new Vector(new Value(types[v - 2], new Array(v).fill(0)));
       }
 
       addNode(node, x, y);
@@ -74,9 +77,11 @@ export const menuItems = (): MenuItemLike[] => ([
   { name: 'Clamp', action: (x: number, y: number) => createObject(Clamp, x, y) },
   { name: 'Combine', action: (x: number, y: number) => createObject(Combine, x, y) },
   { name: 'Display', action: (x: number, y: number) => createObject(Display, x, y) },
+  { name: 'Distance', action: (x: number, y: number) => createObject(Distance, x, y) },
   { name: 'Divide', action: (x: number, y: number) => createObject(Divide, x, y) },
   { name: 'Fraction', action: (x: number, y: number) => createObject(Fraction, x, y) },
   { name: 'FWidth', action: (x: number, y: number) => createObject(FWidth, x, y) },  
+  { name: 'Inverse', action: (x: number, y: number) => createObject(Inverse, x, y) },  
   { name: 'Lerp', action: (x: number, y: number) => createObject(Lerp, x, y) },
   { name: 'Max', action: (x: number, y: number) => createObject(Max, x, y) },
   { name: 'Min', action: (x: number, y: number) => createObject(Min, x, y) },
@@ -89,6 +94,7 @@ export const menuItems = (): MenuItemLike[] => ([
   { name: 'Subtract', action: (x: number, y: number) => createObject(Subtract, x, y) },
   { name: 'TileAndScroll', action: (x: number, y: number) => createObject(TileAndScroll, x, y) },
   { name: 'Time', action: (x: number, y: number) => createObject(Time, x, y) },
+  { name: 'TextureSize', action: (x: number, y: number) => createObject(TextureSize, x, y) },
   { name: 'Twirl', action: (x: number, y: number) => createObject(Twirl, x, y) },
   { name: 'UV', action: (x: number, y: number) => createObject(UV, x, y) },
   { name: 'Vertex Color', action: (x: number, y: number) => createObject(VertexColor, x, y) },
