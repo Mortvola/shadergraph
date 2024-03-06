@@ -1,8 +1,7 @@
 import { bindGroups } from "../BindGroups";
-import DrawableInterface from "../Drawables/DrawableInterface";
 import { gpu } from "../Gpu";
 import { pipelineManager } from "../Pipelines/PipelineManager";
-import { DrawableNodeInterface, DrawableType, MaterialInterface, PipelineInterface, StageBindings } from "../types";
+import { DrawableType, MaterialInterface, PipelineInterface, StageBindings } from "../types";
 import { PropertyInterface, ValueType } from "../ShaderBuilder/Types";
 import Http from "../../Http/src";
 import { MaterialDescriptor } from "./MaterialDescriptor";
@@ -27,7 +26,7 @@ class Material implements MaterialInterface {
 
   fragBindings: MaterialBindings | null = null;
 
-  drawables: DrawableInterface[] = [];
+  lit: boolean;
 
   transparent: boolean;
 
@@ -45,6 +44,7 @@ class Material implements MaterialInterface {
     this.color[2] = shaderDescriptor?.color ? shaderDescriptor.color[2] : 0.5;
     this.color[3] = shaderDescriptor?.color ? shaderDescriptor.color[3] : 1;
     
+    this.lit = shaderDescriptor?.lit ?? false;
     this.transparent = shaderDescriptor?.transparent ?? false;
 
     if (pipeline.vertexStageBindings) {
@@ -85,6 +85,8 @@ class Material implements MaterialInterface {
     vertexProperties: PropertyInterface[],
     materialDescriptor?: MaterialDescriptor,
   ): Promise<Material> {
+    await gpu.ready()
+    
     let shaderDescriptor: ShaderDescriptor | undefined
 
     if (typeof materialDescriptor?.shaderDescriptor === 'number') {
@@ -181,7 +183,7 @@ class Material implements MaterialInterface {
       uniformsBuffer,
       gpu.device.createBindGroup({
         label: 'material',
-        layout: bindings.layout ?? bindGroups.getBindGroupLayout2(),
+        layout: bindings.layout!,
         entries,
       }),
     ]
@@ -203,7 +205,7 @@ class Material implements MaterialInterface {
           
           texture = gpu.device.createTexture({
             format: 'rgba8unorm',
-            size: [image.width, image.height],
+            size: { width: image.width, height: image.height },
             usage: GPUTextureUsage.TEXTURE_BINDING |
                   GPUTextureUsage.COPY_DST |
                   GPUTextureUsage.RENDER_ATTACHMENT,
@@ -289,14 +291,6 @@ class Material implements MaterialInterface {
 
       bindings.stageBindings.structuredView.set(values);
       gpu.device.queue.writeBuffer(bindings.uniformsBuffer, 0, bindings.stageBindings.structuredView.arrayBuffer);  
-    }
-  }
-
-  addDrawable(drawableNode: DrawableNodeInterface): void {
-    let entry = this.drawables.find((d) => d === drawableNode.drawable);
-
-    if (!entry) {
-      this.drawables.push(drawableNode.drawable);
     }
   }
 }
