@@ -57,7 +57,7 @@ const ValueInput: React.FC<PropsType> = observer(({
     case 'vec2f':
     case 'vec3f':
     case 'vec4f':
-      return <PropertyVector node={value} onChange={handleVectorChange} />
+      return <PropertyVector value={value.value} onChange={handleVectorChange} />
 
     case 'color':
       return <PropertyColor node={value} onChange={handleVectorChange} />

@@ -62,6 +62,7 @@ const MainView: React.FC = observer(() => {
         inputElement.click();
       }  
     } },
+    { name: 'Create material', action: () => { store.project.addNewItem('material') } },
     { name: 'Create shader', action: () => { store.project.addNewItem('shader') } },
     { name: 'Create game object', action: () => { store.project.addNewItem('object') } },
     { name: 'Create 2D game object', action: () => { store.project.addNewItem('object2D') } },

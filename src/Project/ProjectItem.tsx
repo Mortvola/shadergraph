@@ -11,6 +11,7 @@ import Graph from '../State/Graph';
 import { runInAction } from 'mobx';
 import ProjectItemObject from "../Project/Types/ProjectItem";
 import { ShaderRecord } from '../Renderer/types';
+import { shaderManager } from '../Renderer/shaders/ShaderManager';
 
 type PropsType = {
   item: ProjectItemInterface,
@@ -83,16 +84,12 @@ const ProjectItem: React.FC<PropsType> = observer(({
       items.push({
         name: 'Create Material',
         action: async () => {
-          if (!item.item) {
-            const response = await Http.get<ShaderRecord>(`/shader-descriptors/${item.itemId}`)
+          if (!item.item && item.itemId) {
+            const descriptor = await shaderManager.getDescriptor(item.itemId)
 
-            if (response.ok) {
-              const descriptor = await response.body();
-    
-              runInAction(() => {
-                item.item = new Graph(store, descriptor.id, descriptor.name, descriptor.descriptor);    
-              })
-            }      
+            runInAction(() => {
+              item.item = new Graph(store, item.itemId!, item.name, descriptor);    
+            })
           }
 
           if (item.item) {

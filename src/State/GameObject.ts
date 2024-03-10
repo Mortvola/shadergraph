@@ -10,7 +10,10 @@ class GameObject extends Entity implements GameObjectInterface {
   constructor(id: number, name: string, items: GameObjectItem[] ) {
     super(id, name)
     
-    this.items = items;
+    this.items = items.map((i, index) => ({
+      ...i,
+      key: index,
+    }));
 
     makeObservable(this, {
       items: observable,
@@ -22,7 +25,11 @@ class GameObject extends Entity implements GameObjectInterface {
       id: this.id,
       name: this.name,
       object: {
-        items: this.items,
+        items: this.items.map((i) => {
+          const { key, ...rest } = i;
+
+          return rest;
+        }),
       }
     });
 

@@ -2,14 +2,15 @@ import React from 'react';
 import { ValueType } from '../Renderer/ShaderBuilder/Types';
 import Float from './Float';
 import styles from './Properties.module.scss'
+import { observer } from 'mobx-react-lite';
 
 type PropsType = {
-  node: { value: ValueType },
+  value: ValueType,
   onChange: (v: number, index?: number) => void,
 }
 
-const PropertyVector: React.FC<PropsType> = ({
-  node,
+const PropertyVector: React.FC<PropsType> = observer(({
+  value,
   onChange,
 }) => {
   const getLabel = (i: number) => (
@@ -31,12 +32,16 @@ const PropertyVector: React.FC<PropsType> = ({
   return (
     <div className={styles.vector} onClick={handleClick} onPointerDown={handlePointerDown} onKeyDown={handleKeyDown}>
         {
-          Array.isArray(node.value) && node.value.map((v, i) => (
-            <Float key={i} value={v} onChange={onChange} label={getLabel(i)} index={i} />
-          ))
+          Array.isArray(value)
+            ? (
+              value.map((v, i) => (
+                <Float key={i} value={v} onChange={onChange} label={getLabel(i)} index={i} />
+              ))
+            )
+            : null
         }
     </div>
   )
-}
+})
 
 export default PropertyVector;

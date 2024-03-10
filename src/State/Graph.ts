@@ -268,7 +268,7 @@ class Graph implements GraphInterface {
 
   createMaterialDescriptor(): ShaderDescriptor {
     const materialDescriptor: ShaderDescriptor = {
-      type: 'Lit',
+      // type: 'Lit',
       cullMode: this.cullMode === 'front' ? undefined : this.cullMode,
       transparent: this.transparent,
       depthWriteEnabled: this.depthWriteEnabled,

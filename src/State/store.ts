@@ -10,16 +10,20 @@ import Http from "../Http/src";
 import { ProjectItemInterface } from "../Project/Types/types";
 import GameObject from "./GameObject";
 import Texture from "./Texture";
-import { GameObject2DRecord, GameObjectRecord, MaterialRecord, ModelItem, ParticleItem, ParticleSystemInterface, SceneNodeInterface, ShaderRecord } from "../Renderer/types";
+import { DecalItem, GameObject2DRecord, GameObjectRecord, MaterialRecord, ModelItem, ParticleItem, ParticleSystemInterface, SceneNodeInterface, ShaderRecord } from "../Renderer/types";
 import ParticleSystem from "../Renderer/ParticleSystem";
 import { renderer2d } from "../Main";
 import Project from "../Project/Types/Project";
 import { particleSystemManager } from "../Renderer/ParticleSystemManager";
 import GameObject2D from "./GameObject2D";
 import SceneNode2d from "../Renderer/Drawables/SceneNodes/SceneNode2d";
-import Material from "../Renderer/Materials/Material";
-import { materialManager } from "../Renderer/Materials/MaterialManager";
+import Mesh from "../Renderer/Drawables/Mesh";
+import { box } from "../Renderer/Drawables/Shapes/box";
+import DrawableNode from "../Renderer/Drawables/SceneNodes/DrawableNode";
+import { vec3 } from "wgpu-matrix";
+import { feetToMeters } from "../Renderer/Math";
 import Property from "../Renderer/ShaderBuilder/Property";
+import { shaderManager } from "../Renderer/shaders/ShaderManager";
 
 type OpenMenuItem = {
   menuItem: HTMLElement,
@@ -152,6 +156,18 @@ class Store implements StoreInterface {
               this.mainView.addParticleSystem(particleSystem)
             }
           }
+          else if (item.type === 'decal') {
+            const decal = item.item as DecalItem;
+
+            const drawable = await DrawableNode.create(
+              await Mesh.create(box(1, 1, 1)),
+              decal.materialId,
+            )
+
+            drawable.scale = vec3.create(decal.width ?? 1, 1, decal.height ?? 1)
+
+            this.mainView.scene.addNode(drawable)
+          }
         }
       }
       else {
@@ -162,9 +178,9 @@ class Store implements StoreInterface {
         test.y = item.item.y;
         test.width = item.item.width
         test.height = item.item.height
-        test.material = await materialManager.get(item.item.material!, '2D', [])
+        // test.material = await materialManager.get(item.item.material!, '2D', [])
 
-        this.mainView.scene2d.nodes.push(test)
+        this.mainView.scene2d.scene2d.nodes.push(test)
       }
     }
     else if (item.type === 'material') {

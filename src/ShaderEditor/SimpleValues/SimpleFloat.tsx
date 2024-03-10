@@ -1,11 +1,11 @@
 import React from 'react';
 import Float from '../Float';
-import Value from '../../Renderer/ShaderBuilder/Value';
 import { GraphInterface } from '../../State/types';
+import { ValueInterface } from '../../Renderer/ShaderBuilder/Types';
 
 type PropsType = {
   graph: GraphInterface,
-  value: Value,
+  value: ValueInterface,
 }
 
 const SimpleFloat: React.FC<PropsType> = ({

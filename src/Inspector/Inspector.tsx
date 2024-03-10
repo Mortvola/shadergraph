@@ -7,7 +7,7 @@ import { runInAction } from 'mobx';
 import Http from '../Http/src';
 import Texture from '../State/Texture';
 import GameObject from './GameObject';
-import { GameObjectInterface } from '../State/types';
+import { GameObjectInterface, MaterialItemInterface } from '../State/types';
 
 const Inspector: React.FC = observer(() => {
   const { project } = useStores();
@@ -54,7 +54,7 @@ const Inspector: React.FC = observer(() => {
 
         case 'material':
           return (
-            <Material />
+            <Material materialItem={project.selectedItem.item as MaterialItemInterface} />
           )
 
         // case 'particle':

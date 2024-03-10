@@ -1,11 +1,10 @@
 import React from 'react';
 import styles from './Node.module.scss';
-import { InputPortInterface, OutputPortInterface, convertType, getLength } from '../Renderer/ShaderBuilder/Types';
+import { InputPortInterface, OutputPortInterface, ValueInterface, convertType, getLength } from '../Renderer/ShaderBuilder/Types';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import { createPortal } from 'react-dom';
 import SimpleVector from './SimpleValues/SimpleVector';
-import Value from '../Renderer/ShaderBuilder/Value';
 import SimpleUV from './SimpleValues/SimpleUV';
 import SimpleFloat from './SimpleValues/SimpleFloat';
 import { GraphInterface } from '../State/types';
@@ -110,7 +109,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
     setDragKey(null);
   }
 
-  const simpleValue = (value: Value) => {
+  const simpleValue = (value: ValueInterface) => {
     switch (value.dataType) {
       case 'float':
         return <SimpleFloat graph={graph} value={value} />

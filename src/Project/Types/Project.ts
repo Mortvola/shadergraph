@@ -169,6 +169,17 @@ class Project implements ProjectInterface {
         break
       }
 
+      case 'material': {
+        url = '/materials'
+
+        payload = {
+          name,
+          shaderId: -1,
+          properties: [],
+        }
+        break;
+      }
+
       case 'particle': {
         url = '/particles'
         payload = {

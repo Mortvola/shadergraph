@@ -7,7 +7,7 @@
     height: 100%;
     overflow-y: auto;
 
-    &> div {
+    &> div, > label {
       padding: 0.5rem;
     }
   }
@@ -16,15 +16,25 @@
 .gameObject {
   height: 100%;
   width: 100%;
+  box-sizing: border-box;
 }
 
 .item {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   column-gap: 0.25rem;
 
   > button {
     width: max-content;
     height: max-content;
+  }
+
+  > div:first-child {
+    background-color: darkgray;
+    border: solid black thin;
+  }
+
+  > div:nth-child(2) {
+    padding-left: 1rem;
   }
 }

@@ -42,20 +42,23 @@ const ModelTree: React.FC<PropsType> = observer(({
     const elements: JSX.Element[] = [];
 
     if (model) {
+      let key = 0;
       let stack: { level: number, node: SceneNodeInterface }[] = [{ level: 0, node: model }];
 
       while (stack.length > 0) {
+        key += 1;
+
         const node = stack[0];
         stack = stack.slice(1);
 
         if (isDrawableNode(node.node)) {
           elements.push(
-            <MeshNode node={node.node} level={node.level} onMaterialAssignment={handleMaterialAssignment} />
+            <MeshNode key={key} node={node.node} level={node.level} onMaterialAssignment={handleMaterialAssignment} />
           )  
         }
         else {
           elements.push(
-            <div style={{ marginLeft: 16 * node.level }}>
+            <div key={key} style={{ marginLeft: 16 * node.level }}>
               {node.node.name ? node.node.name : 'Unnamed'}
             </div>
           )  
