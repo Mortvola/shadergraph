@@ -21,9 +21,6 @@ import Mesh from "../Renderer/Drawables/Mesh";
 import { box } from "../Renderer/Drawables/Shapes/box";
 import DrawableNode from "../Renderer/Drawables/SceneNodes/DrawableNode";
 import { vec3 } from "wgpu-matrix";
-import { feetToMeters } from "../Renderer/Math";
-import Property from "../Renderer/ShaderBuilder/Property";
-import { shaderManager } from "../Renderer/shaders/ShaderManager";
 
 type OpenMenuItem = {
   menuItem: HTMLElement,
@@ -160,7 +157,7 @@ class Store implements StoreInterface {
             const decal = item.item as DecalItem;
 
             const drawable = await DrawableNode.create(
-              await Mesh.create(box(1, 1, 1)),
+              await Mesh.create(box(1, 1, 1), 1),
               decal.materialId,
             )
 

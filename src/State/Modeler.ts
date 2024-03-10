@@ -57,7 +57,7 @@ class Modeler {
     return model;
   }
 
-  async   assignModel(model: SceneNodeInterface | null, materials?: NodeMaterials) {
+  async assignModel(model: SceneNodeInterface | null, materials?: NodeMaterials) {
     if (this.model) {
       this.renderer.removeSceneNode(this.model);
     }
@@ -177,7 +177,7 @@ const parseFbxModel = async (
 
     // if (!mesh) {
       // No, create the mesh now.
-      const mesh = new Mesh(node.mesh, node.vertices, node.normals, node.texcoords, node.indices);
+      const mesh = new Mesh(node.mesh, node.vertices, node.normals, node.texcoords, node.indices, 1);
 
     //   this.meshes.set(`${name}:${node.name}`, mesh)
     // }
