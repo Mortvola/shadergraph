@@ -1,6 +1,5 @@
 import React from 'react';
 import { DecalItem } from '../Renderer/types';
-import TextureSelector from '../TextureSelector';
 import styles from './Decal.module.scss';
 import NumberInput from './NumberInput';
 import { useStores } from '../State/store';

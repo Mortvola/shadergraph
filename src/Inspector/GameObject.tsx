@@ -6,11 +6,12 @@ import styles from './Inspector.module.scss'
 import Particle from './Particle';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
-import { DecalItem, GameObjectItem, ModelItem, ParticleItem } from '../Renderer/types';
+import { ComponentType, DecalItem, GameObjectItem, LightItem, ModelItem, ParticleItem } from '../Renderer/types';
 import GameObject2D from './GameObject2d';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
 import Decal from './Decal';
+import Light from './Light';
 
 type PropsType = {
   gameObject: GameObjectInterface
@@ -101,6 +102,22 @@ const GameObject: React.FC<PropsType> = observer(({
     })
   }
 
+  const handleLightChange = (light: LightItem) => {
+    runInAction(() => {
+      const index = gameObject.items.findIndex((item) => item.item === light)
+
+      if (index !== -1) {
+        gameObject.items = [
+          ...gameObject.items.slice(0, index),
+          { item: light, type: 'light' },
+          ...gameObject.items.slice(index + 1),
+        ]
+  
+        gameObject.save()
+      }  
+    })
+  }
+
   const handleDelete = (item: GameObjectItem) => {
     const index = gameObject.items.findIndex((i) => i.key === item.key)
 
@@ -124,6 +141,9 @@ const GameObject: React.FC<PropsType> = observer(({
 
       case 'decal':
         return <Decal decalItem={item.item as DecalItem} onChange={handleDecalChange} />
+
+      case 'light':
+        return <Light light={item.item as LightItem} onChange={handleLightChange} />  
     }
 
     return null;
@@ -139,6 +159,9 @@ const GameObject: React.FC<PropsType> = observer(({
 
       case 'decal':
         return 'Decal';
+
+      case 'light':
+        return 'Light';
     }
   }
 
@@ -161,11 +184,36 @@ const GameObject: React.FC<PropsType> = observer(({
     setShowMenu(null);
   }
 
+  const addComponent = React.useCallback((type: ComponentType) => {
+    switch (type) {
+      case 'decal':
+        gameObject.items.push({ item: {}, type: 'decal' })
+        gameObject.save()
+        break;
+
+      case 'light':
+        gameObject.items.push({ item: { color: [1, 1, 1, 1], constant: 1, linear: 0.09, quadratic: 0.032 }, type: 'light' })
+        gameObject.save()
+        break;
+
+      case 'model':
+        gameObject.items.push({ item: { id: 0 }, type: 'model' }) 
+        gameObject.save()
+        break;
+
+      case 'particle':
+        gameObject.items.push({ item: { id: 0 }, type: 'particle' })
+        gameObject.save()
+        break;
+    }
+  }, [gameObject])
+
   const menuItems = React.useCallback((): MenuItemLike[] => ([
-    { name: 'Model', action: () => { gameObject.items.push({ item: { id: 0 }, type: 'model' }) } },
-    { name: 'Particle System', action: () => { gameObject.items.push({ item: { id: 0 }, type: 'particle' }) } },
-    { name: 'Decal', action: () => { gameObject.items.push({ item: {}, type: 'decal' })  } },
-  ]), [gameObject.items]);
+    { name: 'Model', action: () => { addComponent('model')} },
+    { name: 'Particle System', action: () => { addComponent('particle') } },
+    { name: 'Decal', action: () => {  addComponent('decal') } },
+    { name: 'Light', action: () => { addComponent('light') } },
+  ]), [addComponent]);
 
   return (
     <div className={styles.gameObject} onDragOver={handleDragOver} onDrop={handleDrop}>
