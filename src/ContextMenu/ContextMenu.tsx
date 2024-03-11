@@ -44,10 +44,25 @@ const ContextMenu: React.FC<PropsType> = ({
     }
   }
 
+  const [menuPosition, setMenuPosition] = React.useState<{ x: number, y: number }>({ x, y })
+
+  const handleContextMenu: React.MouseEventHandler = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+
+    setMenuPosition({ x: event.clientX, y: event.clientY })
+  }
+
   return (
     createPortal(
-      <div ref={ref} className={styles.wrapper} onClick={onClose} onMouseMove={handleMouseMove}>
-        <Menu wrapperRef={ref} menuItems={menuItems} x={x} y={y} onClose={onClose} />
+      <div
+        ref={ref}
+        className={styles.wrapper}
+        onClick={onClose}
+        onContextMenu={handleContextMenu}
+        onMouseMove={handleMouseMove}
+      >
+        <Menu wrapperRef={ref} menuItems={menuItems} x={menuPosition.x} y={menuPosition.y} onClose={onClose} />
       </div>,
       document.body,
     )

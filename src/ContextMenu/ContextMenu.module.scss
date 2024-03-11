@@ -13,7 +13,11 @@
 
   border: thin black solid;
 
-  >div {
+  max-height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  
+  >div >div {
     height: max-content;
     padding-left: 1rem;
     padding-right: 1rem;
@@ -25,6 +29,10 @@
       background-color: gray;
     }
   }
+}
+
+.above {
+  transform: translateY(-100%);
 }
 
 .wrapper {

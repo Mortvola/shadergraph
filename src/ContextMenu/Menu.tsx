@@ -57,13 +57,43 @@ const Menu: React.FC<PropsType> = ({
     }
   }, [parentRef, store])
 
-  return (
-    <div ref={ref} className={styles.contextmenu} style={{ left: x, top: y }}>
-      {
-        menuItems().map((m) => (
-          renderMenuItem(m)
-        ))
+  const [yOffset, setYOffset] = React.useState<{ offset: number, scroll: boolean, visible: boolean }>(
+    { offset: 0, scroll: false, visible: false },
+  );
+
+  React.useEffect(() => {
+    const wrapperElement = wrapperRef.current;
+    const menuElement = ref.current;
+
+    if (wrapperElement && menuElement) {
+      const wrapperRect = wrapperElement.getBoundingClientRect();
+      const menuRect = menuElement.getBoundingClientRect();
+
+      const height = menuRect.bottom - menuRect.top;
+
+      if (y + height > wrapperRect.bottom) {
+        if (y - height < 0) {
+          setYOffset({ offset: -y, scroll: false, visible: true });
+        }
+        else {
+          setYOffset({ offset: -height, scroll: false, visible: true });
+        }
       }
+      else {
+        setYOffset((prev) => ({ ...prev, visible: true }))
+      }
+    }
+  }, [wrapperRef, y])
+
+  return (
+    <div ref={ref} className={styles.contextmenu} style={{ left: x, top: y + yOffset.offset, visibility: yOffset.visible ? 'visible' : 'hidden' }}>
+      <div>
+        {
+          menuItems().map((m) => (
+            renderMenuItem(m)
+          ))
+        }
+      </div>
     </div>
   )
 }
