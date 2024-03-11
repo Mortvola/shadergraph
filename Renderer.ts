@@ -52,8 +52,6 @@ type BindGroup = {
 }
 
 class Renderer implements RendererInterface {
-  initialized = false;
-
   frameBindGroup: BindGroup | null = null;
 
   render = true;
@@ -137,23 +135,23 @@ class Renderer implements RendererInterface {
     light.translate[1] = 3;
     light.translate[2] = 0;
     
-    this.lights.push(light)
+    this.scene.addNode(light);
 
     light = new Light()
     light.translate[0] = 15;
     light.translate[1] = 4;
     light.translate[2] = -15;
 
-    this.lights.push(light)
+    this.scene.addNode(light)
 
     light = new Light()
     light.translate[0] = -15;
     light.translate[1] = 5;
     light.translate[2] = -15;
 
-    this.lights.push(light)
+    this.scene.addNode(light)
 
-    this.scene.updateTransforms(this);
+    this.scene.updateTransforms(null);
   }
 
   static async create() {
@@ -190,8 +188,6 @@ class Renderer implements RendererInterface {
     this.camera.computeViewTransform();
 
     this.scene2d.setCanvasDimensions(canvas.width, canvas.height);
-
-    this.initialized = true;
   }
 
   createCameraBindGroups(frameBindGroupLayout: GPUBindGroupLayout) {
@@ -418,6 +414,8 @@ class Renderer implements RendererInterface {
     gpu.device.queue.writeBuffer(this.frameBindGroup.buffer[3], 0, cameraPosition as Float32Array);
     gpu.device.queue.writeBuffer(this.frameBindGroup.buffer[4], 0, this.aspectRatio as Float32Array);
 
+    const lights = this.scene.getLights()
+
     // Update the light information
     lightsStructure.set({
       numDirectional: 0,
@@ -428,16 +426,16 @@ class Renderer implements RendererInterface {
         ),
         color: vec4.create(1, 1, 1, 1),
       }],
-      numPointLights: this.lights.length,
-      pointLights: this.lights.map((light) => ({
+      numPointLights: lights.length,
+      pointLights: lights.map((light) => ({
         position: vec4.transformMat4(
-          vec4.create(light.translate[0], light.translate[1], light.translate[2], 1),
+          light.worldPosition,
           inverseViewtransform,
         ),
         color: light.lightColor,
-        attConstant: 1.0,
-        attLinear: 0.09,
-        attQuadratic: 0.032,
+        attConstant: light.constant,
+        attLinear: light.linear,
+        attQuadratic: light.quadratic,
       })),
     });
 
@@ -503,6 +501,7 @@ class Renderer implements RendererInterface {
         this.unlitRenderPass!.render(
           this.screenTextureView!,
           bloomView!,
+          false,
           this.depthTextureView!,
           commandEncoder,
           this.frameBindGroup.bindGroup,
@@ -511,6 +510,7 @@ class Renderer implements RendererInterface {
         this.transparentPass!.render(
           this.screenTextureView!,
           bloomView!,
+          true,
           this.depthTextureView!,
           commandEncoder,
           this.frameBindGroup.bindGroup,

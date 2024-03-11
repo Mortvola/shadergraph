@@ -4,6 +4,7 @@ import DrawableInterface from './Drawables/DrawableInterface';
 import { PropertyInterface, ValueType } from './ShaderBuilder/Types';
 import { ShaderDescriptor } from './shaders/ShaderDescriptor';
 import SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
+import { SceneObjectInterface } from '../types';
 
 export const maxInstances = 1000;
 
@@ -26,6 +27,10 @@ export interface SceneGraphInterface {
   addNode(node: SceneNodeInterface): void;
 
   removeNode(node: SceneNodeInterface): void;
+
+  addSceneObject(object: SceneObjectInterface): void;
+
+  removeSceneObject(object: SceneObjectInterface): void;
 }
 
 export interface RendererInterface {
@@ -170,10 +175,19 @@ export type DecalItem = {
   height?: number,
 }
 
+export type LightItem = {
+  color: number[],
+  constant: number,
+  linear: number,
+  quadratic: number,
+}
+
+export type ComponentType = 'model' | 'particle' | 'decal' | 'light';
+
 export type GameObjectItem = {
   key?: number,
-  type: 'model' | 'particle' | 'decal',
-  item: ModelItem | ParticleItem | DecalItem,
+  type: ComponentType,
+  item: ModelItem | ParticleItem | DecalItem | LightItem,
 }
 
 export type GameObject = {
