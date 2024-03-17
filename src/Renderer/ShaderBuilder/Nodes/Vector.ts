@@ -1,5 +1,6 @@
 import InputPort from "../Ports/InputPort";
 import { DataType, ValueInterface } from "../Types";
+import Value from "../Value";
 import ValueNode from "../ValueNode";
 
 class Vector extends ValueNode {
@@ -12,9 +13,10 @@ class Vector extends ValueNode {
       )
     
       for (let i = 0; i < value.value.length; i += 1) {
-        this.inputPorts.push(
-          new InputPort(this, 'float', getLabel(i)),
-        )
+        const port = new InputPort(this, 'float', getLabel(i));
+        port.value = new Value('float',  value.value[i]);
+
+        this.inputPorts.push(port)
       }  
     }
   }
