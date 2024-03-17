@@ -21,6 +21,10 @@ class Combine extends OperationNode {
     ]
   }
 
+  getDataType(): DataType {
+    return 'vec4f';
+  }
+
   getExpression(): [string, DataType] {
     const [r] = this.inputPorts[0].getValue();
     const [g] = this.inputPorts[1].getValue();
