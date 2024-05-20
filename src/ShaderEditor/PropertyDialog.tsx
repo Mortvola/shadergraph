@@ -54,7 +54,10 @@ const PropertyDialog: React.FC<PropsType> = observer(({
   const handleValueChange = () => {
     graph.changed = true;
 
-    store.applyMaterial()
+    if (store.graph && store.modeler.model) {
+      const drawable = store.modeler.getDrawableNode(store.modeler.model);
+      drawable?.material.setPropertyValues(GPUShaderStage.FRAGMENT, [property])
+    }
   }
 
   return (
