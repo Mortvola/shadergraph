@@ -47,7 +47,7 @@ import TextureSize from "./Nodes/TextureSize";
 import Inverse from "./Nodes/Inverse";
 import Distance from "./Nodes/Distance";
 
-export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: PropertyInterface[]): StageGraph => {
+const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: PropertyInterface[]): StageGraph => {
   let nodes: GraphNodeInterface[] = [];
   let edges: GraphEdgeInterface[] = [];
 
@@ -256,7 +256,7 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Pr
   return { nodes, edges };
 }
 
-export const generateStageShaderCode = (graph: StageGraph): [string, PropertyInterface[]] => {
+const generateStageShaderCode = (graph: StageGraph): [string, PropertyInterface[]] => {
   // Clear the node priorities
   for (const node of graph.nodes) {
     node.priority = null;
@@ -377,7 +377,7 @@ const space = (dataType: DataType) => {
   return '';
 }
 
-export const generateShaderCode = (
+const generateShaderCode = (
   graph: ShaderGraph | null,
   drawableType: DrawableType,
   vertProperties: PropertyInterface[],
@@ -475,7 +475,7 @@ export const generateShaderCode = (
   ]
 }
 
-export const generateCode = (
+const generateCode = (
   drawableType: DrawableType,
   vertexProperties: PropertyInterface[],
   shaderDescriptor?: ShaderDescriptor,

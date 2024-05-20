@@ -6,6 +6,7 @@ import { runInAction } from 'mobx';
 import Modal from '../Modal';
 import { GraphInterface } from '../State/types';
 import ValueInput from './ValueInput';
+import { useStores } from '../State/store';
 
 type PropsType = {
   graph: GraphInterface,
@@ -24,6 +25,8 @@ const PropertyDialog: React.FC<PropsType> = observer(({
   show,
   onHide,
 }) => {
+  const store = useStores();
+
   const handlePointerDown: React.PointerEventHandler = (event) => {
     event.stopPropagation();
   }
@@ -50,6 +53,8 @@ const PropertyDialog: React.FC<PropsType> = observer(({
 
   const handleValueChange = () => {
     graph.changed = true;
+
+    store.applyMaterial()
   }
 
   return (

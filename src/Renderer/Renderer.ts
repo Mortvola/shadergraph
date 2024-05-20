@@ -154,15 +154,19 @@ class Renderer implements RendererInterface {
     this.scene.updateTransforms(null);
   }
 
-  static async create() {
+  static async create(withFloor = true) {
     await gpu.ready();
     await pipelineManager.ready();
 
     const cartesianAxes = await DrawableNode.create(new CartesianAxes(), { shaderDescriptor: lineMaterial })
     
-    const quad = await Mesh.create(plane(50, 50, [1, 1, 1, 1]), 0)
-    const floor = await DrawableNode.create(quad, { shaderDescriptor: { lit: true }})
-    floor.postTransforms.push(mat4.fromQuat(quat.fromEuler(degToRad(270), 0, 0, "xyz")))
+    let floor: DrawableNode | undefined = undefined;
+
+    if (withFloor) {
+      const quad = await Mesh.create(plane(50, 50, [1, 1, 1, 1]), 0)
+      floor = await DrawableNode.create(quad, { shaderDescriptor: { lit: true }})
+      floor.postTransforms.push(mat4.fromQuat(quat.fromEuler(degToRad(270), 0, 0, "xyz")))  
+    }
 
     return new Renderer(bindGroups.getBindGroupLayout0(), cartesianAxes, floor);
   }

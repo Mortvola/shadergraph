@@ -55,7 +55,7 @@ class InputPort extends Port implements InputPortInterface {
       return this.edge.getValue();
     }
 
-    if (this.value) {
+    if (this.value !== undefined) {
       return this.value.getValueString();
     }
 

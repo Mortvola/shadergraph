@@ -71,7 +71,7 @@ class Store implements StoreInterface {
 
   static async create() {
     const mainRenderer = await Renderer.create();
-    const previewRenderer = await Renderer.create();
+    const previewRenderer = await Renderer.create(false);
 
     return new Store(mainRenderer, previewRenderer)
   }

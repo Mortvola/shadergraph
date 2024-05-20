@@ -12,6 +12,8 @@ $selected-border-width: 3px;
   border-radius: 8px;
   background-color: white;
 
+  overflow: hidden;
+  
   margin: calc($selected-border-width - $unselected-border-width);
 
   &.selected {
@@ -29,6 +31,7 @@ $selected-border-width: 3px;
     padding: 0.5rem;
     overflow: hidden;
     box-sizing: border-box;
+    background-color: lightblue;
   }
 
   .body {
