@@ -1,11 +1,12 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 import { DataType } from "../Types";
 
 class TileAndScroll extends OperationNode {
-  constructor(id?: number) {
-    super('TileAndScroll', 'TileAndScroll', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('TileAndScroll', 'TileAndScroll', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'uv', 'uv'),

@@ -1,3 +1,4 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import AlphaPort from "../Ports/AlphaPort";
 import BluePort from "../Ports/BluePort";
@@ -7,8 +8,8 @@ import RedPort from "../Ports/RedPort";
 import { DataType } from "../Types";
 
 class Split extends OperationNode {
-  constructor(id?: number) {
-    super('Split', 'Split', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('Split', 'Split', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'vec4f', 'input'),

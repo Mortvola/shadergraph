@@ -1,11 +1,12 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 import { DataType } from "../Types";
 
 class Voronoi extends OperationNode {
-  constructor(id?: number) {
-    super('Voronoi', 'Voronoi', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('Voronoi', 'Voronoi', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'vec2f', 'uv'),

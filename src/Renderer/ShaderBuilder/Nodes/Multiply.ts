@@ -1,8 +1,9 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import BinaryOp from "./BinaryOp";
 
 class Multiply extends BinaryOp {
-  constructor(id?: number) {
-    super('Multiply', 'Multiply', '*', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('Multiply', 'Multiply', '*', nodeDescriptor?.id)
   }
 }
 

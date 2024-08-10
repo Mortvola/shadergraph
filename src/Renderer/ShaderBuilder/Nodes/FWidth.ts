@@ -1,11 +1,12 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 import { DataType } from "../Types";
 
 class FWidth extends OperationNode {
-  constructor(id?: number) {
-    super('FWidth', 'FWidth', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('FWidth', 'FWidth', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'vec2f', 'input'),

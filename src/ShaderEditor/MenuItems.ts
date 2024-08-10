@@ -37,8 +37,8 @@ function addNode(node: GraphNodeInterface, x: number, y: number) {
   store.graph?.addNode(node)  
 }
 
-function createObject<T>(o: new () => T, x: number, y: number) {
-  const node = new o() as GraphNodeInterface;
+function createObject<T extends GraphNodeInterface>(o: new () => T, x: number, y: number) {
+  const node = new o();
   addNode(node, x, y);
 }
 

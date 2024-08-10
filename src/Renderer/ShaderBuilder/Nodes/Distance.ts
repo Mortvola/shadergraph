@@ -1,11 +1,12 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 import { DataType } from "../Types";
 
 class Distance extends OperationNode {
-  constructor(id?: number) {
-    super('Distance', 'Distance', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('Distance', 'Distance', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'vec2f', 'A'),

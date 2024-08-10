@@ -1,3 +1,4 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import AlphaPort from "../Ports/AlphaPort";
 import BluePort from "../Ports/BluePort";
@@ -12,8 +13,8 @@ class PhongShading extends OperationNode {
 
   samplerName: string | null = null;
 
-  constructor(id?: number) {
-    super('PhongShading', 'Phong Shading', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('PhongShading', 'Phong Shading', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'vec4f', 'rgba'),

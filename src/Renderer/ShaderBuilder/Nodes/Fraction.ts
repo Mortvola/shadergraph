@@ -1,11 +1,12 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 import { DataType } from "../Types";
 
 class Fraction extends OperationNode {
-  constructor(id?: number) {
-    super('Fraction', 'Fraction', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('Fraction', 'Fraction', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'vec2f', 'input'),

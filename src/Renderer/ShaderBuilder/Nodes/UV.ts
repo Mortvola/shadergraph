@@ -1,10 +1,11 @@
 import BuiltIn from "../BuiltInNode";
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OutputPort from "../Ports/OutputPort";
 import { DataType } from "../Types";
 
 class UV extends BuiltIn {
-  constructor(id?: number) {
-    super('uv', 'UV', false, id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('uv', 'UV', false, nodeDescriptor?.id)
 
     this.outputPort = [new OutputPort(this, 'vec2f', 'uv')];
     this.setVarName('vertexOut.texcoord');

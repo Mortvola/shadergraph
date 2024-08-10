@@ -1,10 +1,11 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import { DataType } from "../Types";
 
 class Display extends OperationNode {
-  constructor(id?: number) {
-    super('display', 'Display', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('display', 'Display', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'vec4f', 'rgb'),

@@ -1,11 +1,12 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 import { DataType } from "../Types";
 
 class Clamp extends OperationNode {
-  constructor(id?: number) {
-    super('Clamp', 'Clamp', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('Clamp', 'Clamp', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'vec4f', 'A'),

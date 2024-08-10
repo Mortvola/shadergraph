@@ -27,8 +27,10 @@ export type ValueDescriptor = GraphNodeDescriptor & {
   value: ValueType,
 }
 
+export type NodeDescriptor = GraphNodeDescriptor | PropertyDescriptor | ValueDescriptor;
+
 export type GraphStageDescriptor = {
-  nodes: (GraphNodeDescriptor | PropertyDescriptor | ValueDescriptor)[],
+  nodes: NodeDescriptor[],
   edges: GraphEdgeDescriptor[],
 }
 

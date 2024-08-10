@@ -1,11 +1,12 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 import { DataType } from "../Types";
 
 class Step extends OperationNode {
-  constructor(id?: number) {
-    super('Step', 'Step', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('Step', 'Step', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'vec4f', 'A'),

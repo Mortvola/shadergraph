@@ -1,11 +1,12 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 import { DataType } from "../Types";
 
 class Power extends OperationNode {
-  constructor(id?: number) {
-    super('Power', 'Power', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('Power', 'Power', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'vec2f', 'A'),

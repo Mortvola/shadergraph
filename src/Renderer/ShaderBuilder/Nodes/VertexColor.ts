@@ -1,9 +1,10 @@
 import BuiltIn from "../BuiltInNode";
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OutputPort from "../Ports/OutputPort";
 
 class VertexColor extends BuiltIn {
-  constructor(id?: number) {
-    super('VertexColor', 'Vertex Color', false, id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('VertexColor', 'Vertex Color', false, nodeDescriptor?.id)
 
     this.outputPort = [new OutputPort(this, 'vec4f', 'out')];
     this.setVarName('time');

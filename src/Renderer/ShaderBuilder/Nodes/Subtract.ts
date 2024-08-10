@@ -1,8 +1,9 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import BinaryOp from "./BinaryOp";
 
 class Subtract extends BinaryOp {
-  constructor(id?: number) {
-    super('Subtract', 'Subtract', '-', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('Subtract', 'Subtract', '-', nodeDescriptor?.id)
   }
 }
 

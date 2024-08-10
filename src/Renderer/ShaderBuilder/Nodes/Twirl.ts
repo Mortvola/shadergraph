@@ -1,11 +1,12 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 import { DataType } from "../Types";
 
 class Twirl extends OperationNode {
-  constructor(id?: number) {
-    super('Twirl', 'Twirl', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('Twirl', 'Twirl', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'vec2f', 'uv'),

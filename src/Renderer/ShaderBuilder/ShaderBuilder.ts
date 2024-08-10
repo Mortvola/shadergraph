@@ -8,12 +8,12 @@ import { twirlFunction } from '../shaders/twirlFunction';
 import { getVertexStage } from "../shaders/vertexStage";
 import { voronoiFunction } from "../shaders/voronoiFunction";
 import { DrawableType } from "../types";
-import { GraphDescriptor, GraphStageDescriptor, PropertyDescriptor, ValueDescriptor } from "./GraphDescriptor";
+import { GraphDescriptor, GraphNodeDescriptor, GraphStageDescriptor, PropertyDescriptor, ValueDescriptor } from "./GraphDescriptor";
 import GraphEdge from "./GraphEdge";
 import { setNextVarid } from "./GraphNode";
 import Add from "./Nodes/Add";
 import Combine from "./Nodes/Combine";
-import Output from "./Nodes/Display";
+import Display from "./Nodes/Display";
 import Fraction from "./Nodes/Fraction";
 import Lerp from "./Nodes/Lerp";
 import Multiply from "./Nodes/Multiply";
@@ -48,6 +48,18 @@ import Inverse from "./Nodes/Inverse";
 import Distance from "./Nodes/Distance";
 import { resetContanstNames } from "./Ports/InputPort";
 
+interface NodeConstructor {
+  new (nodeDescriptor: GraphNodeDescriptor): GraphNodeInterface
+}
+
+const nodeTable: NodeConstructor[] = [
+  SampleTexture, Display, Distance, Divide, UV, Time,
+  TileAndScroll, Fraction, FWidth, Inverse, Max,
+  Min, Multiply, Add,
+  PhongShading, Split, Clamp, Combine, Power, Twirl, Voronoi, Lerp, Step, Subtract,
+  TextureSize, VertexColor,
+]
+
 const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: PropertyInterface[]): StageGraph => {
   let nodes: GraphNodeInterface[] = [];
   let edges: GraphEdgeInterface[] = [];
@@ -71,133 +83,50 @@ const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: PropertyI
 
     let node: GraphNodeInterface | null = null;
 
-    switch (nodeDescr.type) {
-      case 'SampleTexture':
-        node = new SampleTexture(nodeDescr)
-        break;
+    // TODO: The database entries should be updated so that these old names are updated to the new names.
+    if (nodeDescr.type === 'display') {
+      nodeDescr.type = 'Display';
+    }
+    else if (nodeDescr.type === 'time') {
+      nodeDescr.type = 'Time'
+    }
+    else if (nodeDescr.type === 'uv') {
+      nodeDescr.type = 'UV'
+    }
 
-      case 'property': 
-        const propertyNode = nodeDescr as PropertyDescriptor;
+    const tableEntry = nodeTable.find((entry) => entry.name === nodeDescr.type);
 
-        // Find property in property table
-        const prop = properties.find((p) => p.name === propertyNode.name);
+    if (tableEntry) {
+      node = new tableEntry(nodeDescr)
+    }
+    else {
+      switch (nodeDescr.type) {
+        case 'property': 
+          const propertyNode = nodeDescr as PropertyDescriptor;
 
-        if (prop) {
-          node = new PropertyNode(prop, nodeDescr.id)
-        }
-        break;
+          // Find property in property table
+          const prop = properties.find((p) => p.name === propertyNode.name);
 
-      case 'display':
-        node = new Output(nodeDescr.id);
-        break;
+          if (prop) {
+            node = new PropertyNode(prop, nodeDescr.id)
+          }
+          break;
 
-      case 'Distance':
-        node = new Distance(nodeDescr.id);
-        break;
-  
-      case 'Divide':
-        node = new Divide(nodeDescr.id);
-        break;
-  
-      case 'uv':
-        node = new UV(nodeDescr.id)
-        break;
+        case 'value': {
+          const vnode = nodeDescr as ValueDescriptor;
 
-      case 'time':
-        node = new Time(nodeDescr.id);
-        break;
-
-      case 'TileAndScroll':
-        node = new TileAndScroll(nodeDescr.id);
-        break;
-
-      case 'Fraction':
-        node = new Fraction(nodeDescr.id);
-        break;
-
-      case 'FWidth':
-        node = new FWidth(nodeDescr.id);
-        break;
-
-      case 'Inverse':
-        node = new Inverse(nodeDescr.id);
-        break;
-  
-      case 'Max':
-        node = new Max(nodeDescr.id);
-        break;
-
-      case 'Min':
-        node = new Min(nodeDescr.id);
-        break;
-    
-      case 'Multiply':
-        node = new Multiply(nodeDescr.id);
-        break;
-
-      case 'Add':
-        node = new Add(nodeDescr.id);
-        break;
-
-      case 'PhongShading':
-        node = new PhongShading(nodeDescr.id);
-        break;
-
-      case 'Split':
-        node = new Split(nodeDescr.id);
-        break;
-  
-      case 'Clamp':
-        node = new Clamp(nodeDescr.id);
-        break;
-
-      case 'Combine':
-        node = new Combine(nodeDescr.id);
-        break;
-
-      case 'Power':
-        node = new Power(nodeDescr.id);
-        break;
-  
-      case 'Twirl':
-        node = new Twirl(nodeDescr.id);
-        break;
-
-      case 'Voronoi':
-        node = new Voronoi(nodeDescr.id);
-        break;
-
-      case 'Lerp':
-        node = new Lerp(nodeDescr.id);
-        break;
-
-      case 'Step':
-        node = new Step(nodeDescr.id);
-        break;
-  
-      case 'Subtract':
-        node = new Subtract(nodeDescr.id);
-        break;
-        
-      case 'TextureSize':
-        node = new TextureSize(nodeDescr.id);
-        break;
-
-      case 'VertexColor':
-        node = new VertexColor(nodeDescr.id);
-        break;
+          if (['vec2f', 'vec3f', 'vec4f'].includes(vnode.dataType)) {
+            node = new Vector(new Value(vnode.dataType, vnode.value), vnode.id)
+          }
+          else {
+            node = new ValueNode(new Value(vnode.dataType, vnode.value), nodeDescr.id);
+          }
       
-      case 'value': {
-        const vnode = nodeDescr as ValueDescriptor;
+          break;
+        }
 
-        if (['vec2f', 'vec3f', 'vec4f'].includes(vnode.dataType)) {
-          node = new Vector(new Value(vnode.dataType, vnode.value), vnode.id)
-        }
-        else {
-          node = new ValueNode(new Value(vnode.dataType, vnode.value), nodeDescr.id);
-        }
-    
-        break;
+        default:
+          console.log(`node type not found: ${nodeDescr.type}`)
       }
     }
 

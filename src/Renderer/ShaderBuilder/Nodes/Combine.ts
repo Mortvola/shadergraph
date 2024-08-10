@@ -1,3 +1,4 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
@@ -5,8 +6,8 @@ import RGBPort from "../Ports/RGBPort";
 import { DataType } from "../Types";
 
 class Combine extends OperationNode {
-  constructor(id?: number) {
-    super('Combine', 'Combine', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('Combine', 'Combine', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'float', 'r'),

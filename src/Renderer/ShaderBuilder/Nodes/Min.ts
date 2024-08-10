@@ -1,3 +1,4 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
@@ -5,8 +6,8 @@ import { DataType } from "../Types";
 import { convertType } from '../Types'
 
 class Min extends OperationNode {
-  constructor(id?: number) {
-    super('Min', 'Min', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('Min', 'Min', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'vec2f', 'A'),

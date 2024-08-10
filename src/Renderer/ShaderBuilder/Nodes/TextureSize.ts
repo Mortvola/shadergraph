@@ -1,11 +1,12 @@
+import { GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 import { DataType } from "../Types";
 
 class TextureSize extends OperationNode {
-  constructor(id?: number) {
-    super('TextureSize', 'TextureSize', id)
+  constructor(nodeDescriptor?: GraphNodeDescriptor) {
+    super('TextureSize', 'TextureSize', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'texture2D', 'texture'),
