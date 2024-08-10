@@ -62,7 +62,7 @@ class MaterialManager {
         descriptor = id
       }
 
-      const material = await Material.create(drawableType, vertexProperties, descriptor)
+      const material = await Material.create(drawableType, vertexProperties, false, descriptor)
 
       const map: Map<string, Material> = new Map()
 
@@ -85,7 +85,7 @@ class MaterialManager {
         descriptor = id
       }
 
-      material = await Material.create(drawableType, vertexProperties, descriptor)
+      material = await Material.create(drawableType, vertexProperties, false, descriptor)
 
       map.set(subKey, material)
     }

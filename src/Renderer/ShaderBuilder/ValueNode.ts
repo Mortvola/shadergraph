@@ -29,7 +29,7 @@ class ValueNode extends GraphNode implements ValueNodeInterface {
     return this.value.dataType
   }
 
-  getExpression(): [string, DataType] {
+  getExpression(editMode: boolean): [string, DataType] {
     return this.value.getValueString() ?? ['', this.getDataType()];
   }
 }

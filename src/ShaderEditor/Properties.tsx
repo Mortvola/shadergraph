@@ -111,7 +111,16 @@ const Properties: React.FC<PropsType> = observer(({
       </div>
         {
           showDialog
-            ? <PropertyDialog graph={graph} show={!!showDialog} onHide={handleHideDialog} property={showDialog.property} x={showDialog.x} y={showDialog.y} />
+            ? (
+              <PropertyDialog
+                graph={graph}
+                show={!!showDialog}
+                onHide={handleHideDialog}
+                property={showDialog.property}
+                x={showDialog.x}
+                y={showDialog.y}
+              />
+            )
             : null
         }
     </Draggable>

@@ -86,25 +86,27 @@ class GraphNode implements GraphNodeInterface {
     return '';
   }
 
-  getExpression(): [string, DataType] {
+  getExpression(editMode: boolean): [string, DataType] {
     return ['', this.getDataType()];
   }
 
-  getValue(): [string, DataType] {
+  getValue(editMode: boolean): [string, DataType] {
+    // If there is more than one edge that references this node
+    // then output the variable name instead of the expression.
     if (this.getNumOutputEdges() > 1) {
       return this.getVarName() ?? ['', 'float'];
     }
 
-    return this.getExpression();
+    return this.getExpression(editMode);
   }
 
-  output(): string { 
+  output(editMode: boolean): string { 
     if (this.getNumOutputEdges() <= 1) {
       return '';
     }
 
     const [lhs] = this.getVarName();
-    const [rhs] = this.getExpression();
+    const [rhs] = this.getExpression(editMode);
 
     return `var ${lhs} = ${rhs};\n`;
   }

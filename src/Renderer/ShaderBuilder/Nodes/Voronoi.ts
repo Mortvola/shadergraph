@@ -17,9 +17,9 @@ class Voronoi extends OperationNode {
     ]
   }
 
-  getExpression(): [string, DataType] {
-    const [uv] = this.inputPorts[0].getValue();
-    const [density] = this.inputPorts[1].getValue();
+  getExpression(editMode: boolean): [string, DataType] {
+    const [uv] = this.inputPorts[0].getValue(editMode);
+    const [density] = this.inputPorts[1].getValue(editMode);
 
     return [`voronoi(${uv}, ${density})`, 'float'];
   }

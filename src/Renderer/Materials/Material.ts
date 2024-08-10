@@ -85,6 +85,7 @@ class Material implements MaterialInterface {
   static async create(
     drawableType: DrawableType,
     vertexProperties: PropertyInterface[],
+    editMode: boolean,
     materialDescriptor?: MaterialDescriptor,
   ): Promise<Material> {
     await gpu.ready()
@@ -98,7 +99,7 @@ class Material implements MaterialInterface {
       shaderDescriptor = materialDescriptor?.shaderDescriptor
     }
 
-    const pipeline = await pipelineManager.getPipeline(drawableType, vertexProperties, shaderDescriptor)
+    const pipeline = await pipelineManager.getPipeline(drawableType, vertexProperties, editMode, shaderDescriptor)
 
     const textures: GPUTexture[] = [];
 

@@ -19,9 +19,9 @@ class Distance extends OperationNode {
     return 'float'
   }
 
-  getExpression(): [string, DataType] {
-    const [varA] = this.inputPorts[0].getValue();
-    const [varB] = this.inputPorts[1].getValue();
+  getExpression(editMode: boolean): [string, DataType] {
+    const [varA] = this.inputPorts[0].getValue(editMode);
+    const [varB] = this.inputPorts[1].getValue(editMode);
 
     return [`distance(${varA}, ${varB})`, 'float'];
   }

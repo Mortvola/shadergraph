@@ -77,13 +77,11 @@ class Store implements StoreInterface {
   }
 
   async applyMaterial(): Promise<void> {
-    if (this.graph) {
-      const material = await this.graph.generateMaterial();
+    const material = await this.graph?.generateMaterial();
 
-      if (material) {
-        this.modeler.applyMaterial(material);
-      }  
-    }
+    if (material) {
+      this.modeler.applyMaterial(material);
+    }  
   }
 
   setDragObject(object: unknown | null) {

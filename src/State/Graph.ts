@@ -61,8 +61,8 @@ class Graph implements GraphInterface {
         ))
       }
 
-      if (descriptor.graph) {
-        const graph = buildGraph(descriptor.graph, this.properties);
+      if (descriptor.graphDescriptor) {
+        const graph = buildGraph(descriptor.graphDescriptor, this.properties);
 
         if (graph.fragment) {
           this.nodes = graph.fragment.nodes;
@@ -280,7 +280,7 @@ class Graph implements GraphInterface {
         value: p.value.value,
       })),
 
-      graph: createDescriptor(this.nodes, this.edges),
+      graphDescriptor: createDescriptor(this.nodes, this.edges),
     }
 
     return materialDescriptor;
@@ -289,7 +289,7 @@ class Graph implements GraphInterface {
   async generateMaterial(): Promise<MaterialInterface> {
     const materialDescriptor = this.createMaterialDescriptor();
 
-    return await Material.create('Mesh', [], { shaderDescriptor: materialDescriptor });
+    return await Material.create('Mesh', [], true, { shaderDescriptor: materialDescriptor });
   }
 }
 

@@ -3,10 +3,26 @@ import { DataType, GraphEdgeInterface, GraphNodeInterface, InputPortInterface } 
 import Port from "./Port";
 import Value from "../Value";
 
+let constantNameId = 0;
+
+const getConstantName = (): string => {
+  const name = `const${constantNameId}`
+
+  constantNameId += 1;
+
+  return name;
+}
+
+export const resetContanstNames = () => {
+  constantNameId = 0;
+}
+
 class InputPort extends Port implements InputPortInterface {
   edge: GraphEdgeInterface | null = null;
 
   value?: Value;
+
+  constantName = getConstantName(); // used for temporary var names for the "constants" attached to an input port
 
   constructor(node: GraphNodeInterface, dataType: DataType, name: string) {
     super(node, dataType, name);
@@ -50,12 +66,16 @@ class InputPort extends Port implements InputPortInterface {
     return this.edge?.getVarName() ?? ['', this.dataType];
   }
 
-  getValue(): [string, DataType] {
+  getValue(editMode: boolean): [string, DataType] {
     if (this.edge) {
-      return this.edge.getValue();
+      return this.edge.getValue(editMode);
     }
 
     if (this.value !== undefined) {
+      if (editMode && this.value.dataType !== 'uv') {
+        return [`fragProperties.${this.constantName}`, this.dataType];
+      }
+
       return this.value.getValueString();
     }
 

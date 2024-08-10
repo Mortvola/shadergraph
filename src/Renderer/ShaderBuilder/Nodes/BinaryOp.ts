@@ -38,9 +38,9 @@ class BinaryOp extends OperationNode {
     return 'vec2f'
   }
 
-  getExpression(): [string, DataType] {
-    const [varA, dataTypeA] = this.inputPorts[0].getValue();
-    const [varB] = this.inputPorts[1].getValue();
+  getExpression(editMode: boolean): [string, DataType] {
+    const [varA, dataTypeA] = this.inputPorts[0].getValue(editMode);
+    const [varB] = this.inputPorts[1].getValue(editMode);
 
     return [`${varA} ${this.operator} (${varB})`, dataTypeA];
   }

@@ -18,10 +18,10 @@ class Twirl extends OperationNode {
     ]
   }
 
-  getExpression(): [string, DataType] {
-    const [uv] = this.inputPorts[0].getValue();
-    const [strength] = this.inputPorts[1].getValue();
-    const [offset] = this.inputPorts[2].getValue();
+  getExpression(editMode: boolean): [string, DataType] {
+    const [uv] = this.inputPorts[0].getValue(editMode);
+    const [strength] = this.inputPorts[1].getValue(editMode);
+    const [offset] = this.inputPorts[2].getValue(editMode);
 
     return [`twirl(${uv}, ${strength}, ${offset})`, 'vec2f'];
   }

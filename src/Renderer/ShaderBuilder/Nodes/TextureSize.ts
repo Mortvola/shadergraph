@@ -20,8 +20,8 @@ class TextureSize extends OperationNode {
     return 'vec2f'
   }
   
-  getExpression(): [string, DataType] {
-    const [texture] = this.inputPorts[0].getValue();
+  getExpression(editMode: boolean): [string, DataType] {
+    const [texture] = this.inputPorts[0].getValue(editMode);
     return [`vec2f(textureDimensions(${texture}))`, 'vec2f'];
   }
 }

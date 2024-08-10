@@ -18,5 +18,5 @@ export type ShaderDescriptor = {
 
   properties?: { name: string, dataType: DataType, value: ValueType }[],
 
-  graph?: GraphDescriptor,
+  graphDescriptor?: GraphDescriptor,
 }

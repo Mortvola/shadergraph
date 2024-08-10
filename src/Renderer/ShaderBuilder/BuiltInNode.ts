@@ -17,7 +17,7 @@ class BuiltIn extends GraphNode {
     return this.name;
   }
 
-  getExpression(): [string, DataType] {
+  getExpression(editMode: boolean): [string, DataType] {
     return this.getVarName() ?? ['', 'float'];
   }
 }

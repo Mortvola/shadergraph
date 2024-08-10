@@ -21,11 +21,11 @@ class Vector extends ValueNode {
     }
   }
 
-  getExpression(): [string, DataType] {
+  getExpression(editMode: boolean): [string, DataType] {
     let expression = '';
 
     for (const port of this.inputPorts) {
-      const [value] = port.getValue()
+      const [value] = port.getValue(editMode)
       expression += `${value},`
     }
 

@@ -7,7 +7,7 @@ import { gpu } from "./Gpu";
 import TextBox, { isTextBox } from "./Drawables/SceneNodes/TextBox";
 import ElementNode, { isElementNode } from "./Drawables/SceneNodes/ElementNode";
 
-const defaultMaterial = await Material.create('Mesh2D', [])
+const defaultMaterial = await Material.create('Mesh2D', [], false)
 
 type MapEntry = {
   firstIndex: number,

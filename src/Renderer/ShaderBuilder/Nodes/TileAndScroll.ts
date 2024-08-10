@@ -16,10 +16,10 @@ class TileAndScroll extends OperationNode {
     this.outputPort = [new OutputPort(this, 'vec2f', 'result')]
   }
 
-  getExpression(): [string, DataType] {
-    const [uv] = this.inputPorts[0].getValue();
-    const [tile] = this.inputPorts[1].getValue();
-    const [scroll] = this.inputPorts[2].getValue();
+  getExpression(editMode: boolean): [string, DataType] {
+    const [uv] = this.inputPorts[0].getValue(editMode);
+    const [tile] = this.inputPorts[1].getValue(editMode);
+    const [scroll] = this.inputPorts[2].getValue(editMode);
 
     return [`(${uv}) * (${tile}) + ${scroll}`, 'vec2f']
   }

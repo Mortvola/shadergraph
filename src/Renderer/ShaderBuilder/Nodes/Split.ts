@@ -22,8 +22,8 @@ class Split extends OperationNode {
     ]
   }
 
-  getExpression(): [string, DataType] {
-    const [rgba] = this.inputPorts[0].getValue();
+  getExpression(editMode: boolean): [string, DataType] {
+    const [rgba] = this.inputPorts[0].getValue(editMode);
 
     return [`${rgba}`, 'vec4f'];
   }

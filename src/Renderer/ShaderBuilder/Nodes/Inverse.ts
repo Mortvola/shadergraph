@@ -18,8 +18,8 @@ class Inverse extends OperationNode {
     return this.inputPorts[0].getDataType()
   }
 
-  getExpression(): [string, DataType] {
-    const [varA, dataTypeA] = this.inputPorts[0].getValue();
+  getExpression(editMode: boolean): [string, DataType] {
+    const [varA, dataTypeA] = this.inputPorts[0].getValue(editMode);
 
     return [`1 / (${varA})`, dataTypeA];
   }

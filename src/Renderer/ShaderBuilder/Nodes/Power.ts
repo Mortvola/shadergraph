@@ -15,9 +15,9 @@ class Power extends OperationNode {
     this.outputPort = [new OutputPort(this, 'float', 'result')]
   }
 
-  getExpression(): [string, DataType] {
-    const [varA, dataTypeA] = this.inputPorts[0].getValue();
-    const [varB] = this.inputPorts[1].getValue();
+  getExpression(editMode: boolean): [string, DataType] {
+    const [varA, dataTypeA] = this.inputPorts[0].getValue(editMode);
+    const [varB] = this.inputPorts[1].getValue(editMode);
 
     return [`pow(${varA}, ${varB})`, dataTypeA];
   }

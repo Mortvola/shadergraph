@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './Node.module.scss';
-import { InputPortInterface, OutputPortInterface, ValueInterface, convertType, getLength } from '../Renderer/ShaderBuilder/Types';
+import { InputPortInterface, OutputPortInterface, convertType, getLength } from '../Renderer/ShaderBuilder/Types';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import { createPortal } from 'react-dom';
@@ -109,19 +109,28 @@ const NodeInputPort: React.FC<PropsType> = observer(({
     setDragKey(null);
   }
 
-  const simpleValue = (value: ValueInterface) => {
-    switch (value.dataType) {
-      case 'float':
-        return <SimpleFloat graph={graph} value={value} />
+  const handleValueChange = () => {
+    if (store.graph && store.modeler.model) {
+      const drawable = store.modeler.getDrawableNode(store.modeler.model);
+      drawable?.material.setPropertyValues(GPUShaderStage.FRAGMENT, [{ name: port.constantName, value: port.value!, builtin: false }])
+    }
+  }
 
-      case 'vec2f':
-      case 'vec3f':
-      case 'vec4f':
-        return Array.isArray(value.value)
-        ? <SimpleVector value={value.value as number[]} length={getLength(value.dataType)} />
-        : null
-      case 'uv':
-        return <SimpleUV />
+  const simpleValue = () => {
+    if (port.value !== null && port.value !== undefined) {
+      switch (port.value.dataType) {
+        case 'float':
+          return <SimpleFloat graph={graph} value={port.value} onChange={handleValueChange} />
+
+        case 'vec2f':
+        case 'vec3f':
+        case 'vec4f':
+          return Array.isArray(port.value.value)
+          ? <SimpleVector value={port.value.value as number[]} length={getLength(port.value.dataType)} />
+          : null
+        case 'uv':
+          return <SimpleUV />
+      }      
     }
 
     return null;
@@ -130,7 +139,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
   const renderSimpleValues = () => {
     const parent = parentRef.current;
 
-    if (parent) {
+    if (!port.edge && parent) {
       return (
         <>
           {
@@ -144,9 +153,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
                 }}
               >
                 {
-                  port.value
-                  ? simpleValue(port.value)
-                  : null
+                  simpleValue()
                 }
               </div>,
               parent,
@@ -168,6 +175,8 @@ const NodeInputPort: React.FC<PropsType> = observer(({
         </>
       )
     }
+
+    return null;
   }
 
   return (
@@ -186,9 +195,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
       />
       <div>{ `${port.name} (${convertType(port.getDataType())})` }</div>
       {
-        !port.edge && parentRef.current
-          ? renderSimpleValues()
-          : null
+        renderSimpleValues()
       }
     </div>
   )

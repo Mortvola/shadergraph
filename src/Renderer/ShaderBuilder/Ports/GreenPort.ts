@@ -10,9 +10,9 @@ class GreenPort extends OutputPort {
     return ['', this.dataType];
   }
 
-  getValue(): [string, DataType] {
-    if (this.node.getValue()) {
-      const [varA] = this.node.getValue()
+  getValue(editMode: boolean): [string, DataType] {
+    if (this.node.getValue(editMode)) {
+      const [varA] = this.node.getValue(editMode)
 
       return [`(${varA}).g`, this.dataType]
     }

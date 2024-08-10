@@ -14,8 +14,8 @@ class FWidth extends OperationNode {
     this.outputPort = [new OutputPort(this, 'vec2f', 'result')]
   }
 
-  getExpression(): [string, DataType] {
-    const [value, dataType] = this.inputPorts[0].getValue();
+  getExpression(editMode: boolean): [string, DataType] {
+    const [value, dataType] = this.inputPorts[0].getValue(editMode);
 
     return [`fwidth(${value})`, dataType];
   }

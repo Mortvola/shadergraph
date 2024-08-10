@@ -46,10 +46,13 @@ import Divide from "./Nodes/Divide";
 import TextureSize from "./Nodes/TextureSize";
 import Inverse from "./Nodes/Inverse";
 import Distance from "./Nodes/Distance";
+import { resetContanstNames } from "./Ports/InputPort";
 
 const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: PropertyInterface[]): StageGraph => {
   let nodes: GraphNodeInterface[] = [];
   let edges: GraphEdgeInterface[] = [];
+
+  resetContanstNames();
 
   // Create the nodes
   for (const nodeDescr of graphDescr.nodes) {
@@ -256,7 +259,7 @@ const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: PropertyI
   return { nodes, edges };
 }
 
-const generateStageShaderCode = (graph: StageGraph): [string, PropertyInterface[]] => {
+const generateStageShaderCode = (graph: StageGraph, editMode: boolean): [string, PropertyInterface[]] => {
   // Clear the node priorities
   for (const node of graph.nodes) {
     node.priority = null;
@@ -281,11 +284,11 @@ const generateStageShaderCode = (graph: StageGraph): [string, PropertyInterface[
       const node = stack[0];
       stack = stack.slice(1)
 
-      if (node.type === 'property') {
-        if (isPropertyNode(node)) {
-          if (!properties.some((p) => p === node.property)) {
-            properties.push(node.property);
-          }
+      if (isPropertyNode(node)) {
+        // If we have not added this property to the properties array
+        // then add it.
+        if (!properties.some((p) => p === node.property)) {
+          properties.push(node.property);
         }
       }
       else {
@@ -316,6 +319,8 @@ const generateStageShaderCode = (graph: StageGraph): [string, PropertyInterface[
         // and generate variables.
         for (const input of node.inputPorts) {
           if (input.edge) {
+            // The node priority is used to determine the order of the
+            // node operations during the output phase.
             // Update the node priority if it is lower than 
             // the current node's priority plus 1.
             if (input.edge.output.node.priority ?? 0 < (node.priority ?? 0) + 1) {
@@ -324,19 +329,30 @@ const generateStageShaderCode = (graph: StageGraph): [string, PropertyInterface[
 
             stack.push(input.edge.output.node);
           }
+          else if (
+            editMode &&
+            input.value !== undefined &&
+            input.dataType !== 'uv' &&
+            !properties.some((p) => p.name === input.constantName)
+          ) {
+            properties.push({ name: input.constantName, value: input.value, builtin: false });
+          }
         }
       }
     }
   }
 
-  const visitedNodes = graph.nodes.filter((n) => n.priority !== null);
+  // Generate the code
 
+  // Only consider nodes that have had their priority set and
+  // output their operations in priority order.
+  const visitedNodes = graph.nodes.filter((n) => n.priority !== null);
   visitedNodes.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0))
 
   let body = '';
 
   for (const node of visitedNodes) {
-    const text = node.output();
+    const text = node.output(editMode);
     body = text.concat(body);
   }
 
@@ -382,6 +398,7 @@ const generateShaderCode = (
   drawableType: DrawableType,
   vertProperties: PropertyInterface[],
   lit: boolean,
+  editMode: boolean,
 ): [string, PropertyInterface[], PropertyInterface[]] => {
   let fragmentBody = '';
 
@@ -412,7 +429,7 @@ const generateShaderCode = (
   }
 
   if (graph && graph.fragment) {
-    [fragmentBody, fragProperties] = generateStageShaderCode(graph.fragment);
+    [fragmentBody, fragProperties] = generateStageShaderCode(graph.fragment, editMode);
 
     console.log(fragmentBody);
   }
@@ -478,6 +495,7 @@ const generateShaderCode = (
 const generateCode = (
   drawableType: DrawableType,
   vertexProperties: PropertyInterface[],
+  editMode: boolean,
   shaderDescriptor?: ShaderDescriptor,
 ): [string, PropertyInterface[], PropertyInterface[]] => {
   let props: Property[] = [];
@@ -490,19 +508,30 @@ const generateCode = (
 
   let graph: ShaderGraph | null = null;
 
-  if (shaderDescriptor?.graph) {
-    graph = buildGraph(shaderDescriptor.graph!, props);
+  if (shaderDescriptor?.graphDescriptor) {
+    graph = buildGraph(shaderDescriptor.graphDescriptor!, props);
   }
 
-  return generateShaderCode(graph, drawableType, vertexProperties, shaderDescriptor?.lit ?? false);
+  return generateShaderCode(graph, drawableType, vertexProperties, shaderDescriptor?.lit ?? false, editMode);
+}
+
+export const updateCode = (
+  graph: ShaderGraph,
+  drawableType: DrawableType,
+  vertexProperties: PropertyInterface[],
+  editMode: boolean,
+  lit?: boolean,
+): [string, PropertyInterface[], PropertyInterface[]] => {
+  return generateShaderCode(graph, drawableType, vertexProperties, lit ?? false, editMode);
 }
 
 export const generateShaderModule = (
   drawableType: DrawableType,
   vertexProperties: PropertyInterface[],
+  editMode: boolean,
   shaderDescriptor?: ShaderDescriptor,
 ): [GPUShaderModule, PropertyInterface[], PropertyInterface[], string] => {
-  const [code, vertProperties, fragProperties] = generateCode(drawableType, vertexProperties, shaderDescriptor);
+  const [code, vertProperties, fragProperties] = generateCode(drawableType, vertexProperties, editMode, shaderDescriptor);
   
   let shaderModule: GPUShaderModule
   try {

@@ -37,9 +37,11 @@ export interface InputPortInterface extends PortInterface {
 
   value?: ValueInterface;
 
+  constantName: string; // used for temporary var names for the "constants" attached to an input port
+  
   getVarName(): [string, DataType];
 
-  getValue(): [string, DataType];
+  getValue(editMode: boolean): [string, DataType];
 
   getDataType(): DataType;
 };
@@ -53,7 +55,7 @@ export interface OutputPortInterface extends PortInterface {
   
   getVarName(): [string, DataType];
 
-  getValue(): [string, DataType];
+  getValue(editMode: boolean): [string, DataType];
 
   getDataType(): DataType;
 };
@@ -77,7 +79,7 @@ export interface GraphNodeInterface {
 
   setVarName(name: string | null): void;
 
-  getValue(): [string, DataType];
+  getValue(editMode: boolean): [string, DataType];
 
   position: { x: number, y: number };
 
@@ -85,7 +87,7 @@ export interface GraphNodeInterface {
 
   getName(): string;
 
-  output(): string;
+  output(editMode: boolean): string;
 
   setPosition(x: number, y: number): void;
 }
@@ -103,7 +105,8 @@ export interface ValueNodeInterface extends GraphNodeInterface {
 }
 
 export const isPropertyNode = (r: unknown): r is PropertyNodeInterface => (
-  (r as PropertyNodeInterface).property !== undefined
+  (r as PropertyNodeInterface).type === 'property'
+  && (r as PropertyNodeInterface).property !== undefined
 )
 
 export const isValueNode = (r: unknown): r is ValueNodeInterface => (
@@ -119,7 +122,7 @@ export interface GraphEdgeInterface {
 
   setVarName(name: string): void;
 
-  getValue(): [string, DataType];
+  getValue(editMode: boolean): [string, DataType];
 
   getDataType(): DataType;
 }

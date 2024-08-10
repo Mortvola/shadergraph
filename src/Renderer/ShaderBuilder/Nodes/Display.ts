@@ -12,16 +12,16 @@ class Display extends OperationNode {
     ]
   }
 
-  getExpression(): [string, DataType] {
-    const [alpha] = this.inputPorts[1].getValue()
+  getExpression(editMode: boolean): [string, DataType] {
+    const [alpha] = this.inputPorts[1].getValue(editMode)
 
     if (this.inputPorts[1].edge) {
-      const [varA] = this.inputPorts[0].getValue()
+      const [varA] = this.inputPorts[0].getValue(editMode)
 
       return [`vec4f((${varA}).rgb, ${alpha})`, 'vec4f'];
     }
 
-    const [varA, dataType] = this.inputPorts[0].getValue();
+    const [varA, dataType] = this.inputPorts[0].getValue(editMode);
 
     if (dataType === 'vec2f') {
       return [`vec4f(${varA}, 0, ${alpha})`, 'vec4f'];
@@ -34,8 +34,8 @@ class Display extends OperationNode {
     return [`${varA}`, 'vec4f'];
   }
 
-  output(): string {
-    const [value] = this.getExpression()
+  output(editMode: boolean): string {
+    const [value] = this.getExpression(editMode)
 
     return `var fragOut = ${value};`;
   }

@@ -70,10 +70,10 @@ class SampleTexture extends OperationNode {
     return descriptor
   }
 
-  getExpression(): [string, DataType] {
-    const [texture] = this.inputPorts[0].getValue();
+  getExpression(editMode: boolean): [string, DataType] {
+    const [texture] = this.inputPorts[0].getValue(editMode);
     const sampler = this.samplerName;
-    const [textCoord] = this.inputPorts[1].getValue();
+    const [textCoord] = this.inputPorts[1].getValue(editMode);
     return [`textureSample(${texture}, ${sampler}, ${textCoord})`, 'vec4f'];
   }
 }

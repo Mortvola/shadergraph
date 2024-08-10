@@ -25,11 +25,11 @@ class Combine extends OperationNode {
     return 'vec4f';
   }
 
-  getExpression(): [string, DataType] {
-    const [r] = this.inputPorts[0].getValue();
-    const [g] = this.inputPorts[1].getValue();
-    const [b] = this.inputPorts[2].getValue();
-    const [a] = this.inputPorts[3].getValue();
+  getExpression(editMode: boolean): [string, DataType] {
+    const [r] = this.inputPorts[0].getValue(editMode);
+    const [g] = this.inputPorts[1].getValue(editMode);
+    const [b] = this.inputPorts[2].getValue(editMode);
+    const [a] = this.inputPorts[3].getValue(editMode);
 
     return [`vec4f(${r}, ${g}, ${b}, ${a})`, 'vec4f'];
   }
