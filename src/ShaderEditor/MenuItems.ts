@@ -70,28 +70,32 @@ const values = (): MenuItemLike[] => (
   }))
 )
 
-export const menuItems = (): MenuItemLike[] => ([
-  { name: 'Properties', submenu: propertyMenu },
-  { name: 'Values', submenu: values },
+const math = (): MenuItemLike[] => ([
   { name: 'Add', action: (x: number, y: number) => createObject(Add, x, y) },
-  { name: 'Clamp', action: (x: number, y: number) => createObject(Clamp, x, y) },
-  { name: 'Combine', action: (x: number, y: number) => createObject(Combine, x, y) },
-  { name: 'Display', action: (x: number, y: number) => createObject(Display, x, y) },
-  { name: 'Distance', action: (x: number, y: number) => createObject(Distance, x, y) },
+  { name: 'Subtract', action: (x: number, y: number) => createObject(Subtract, x, y) },
+  { name: 'Multiply', action: (x: number, y: number) => createObject(Multiply, x, y) },
   { name: 'Divide', action: (x: number, y: number) => createObject(Divide, x, y) },
-  { name: 'Fraction', action: (x: number, y: number) => createObject(Fraction, x, y) },
-  { name: 'FWidth', action: (x: number, y: number) => createObject(FWidth, x, y) },  
+  { name: 'Power', action: (x: number, y: number) => createObject(Power, x, y) },
   { name: 'Inverse', action: (x: number, y: number) => createObject(Inverse, x, y) },  
   { name: 'Lerp', action: (x: number, y: number) => createObject(Lerp, x, y) },
   { name: 'Max', action: (x: number, y: number) => createObject(Max, x, y) },
   { name: 'Min', action: (x: number, y: number) => createObject(Min, x, y) },
-  { name: 'Multiply', action: (x: number, y: number) => createObject(Multiply, x, y) },
+])
+
+export const menuItems = (): MenuItemLike[] => ([
+  { name: 'Properties', submenu: propertyMenu },
+  { name: 'Values', submenu: values },
+  { name: 'Math', submenu: math },
+  { name: 'Clamp', action: (x: number, y: number) => createObject(Clamp, x, y) },
+  { name: 'Combine', action: (x: number, y: number) => createObject(Combine, x, y) },
+  { name: 'Display', action: (x: number, y: number) => createObject(Display, x, y) },
+  { name: 'Distance', action: (x: number, y: number) => createObject(Distance, x, y) },
+  { name: 'Fraction', action: (x: number, y: number) => createObject(Fraction, x, y) },
+  { name: 'FWidth', action: (x: number, y: number) => createObject(FWidth, x, y) },  
   { name: 'Phong Shading', action: (x: number, y: number) => createObject(PhongShading, x, y) },
-  { name: 'Power', action: (x: number, y: number) => createObject(Power, x, y) },
   { name: 'SampleTexture', action: (x: number, y: number) => createObject(SampleTexture, x, y) },
   { name: 'Split', action: (x: number, y: number) => createObject(Split, x, y) },
   { name: 'Step', action: (x: number, y: number) => createObject(Step, x, y) },
-  { name: 'Subtract', action: (x: number, y: number) => createObject(Subtract, x, y) },
   { name: 'TileAndScroll', action: (x: number, y: number) => createObject(TileAndScroll, x, y) },
   { name: 'Time', action: (x: number, y: number) => createObject(Time, x, y) },
   { name: 'TextureSize', action: (x: number, y: number) => createObject(TextureSize, x, y) },
