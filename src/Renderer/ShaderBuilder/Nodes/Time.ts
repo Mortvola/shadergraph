@@ -4,7 +4,7 @@ import OutputPort from "../Ports/OutputPort";
 
 class Time extends BuiltIn {
   constructor(nodeDescriptor?: GraphNodeDescriptor) {
-    super('time', 'Time', false,  nodeDescriptor?.id)
+    super('Time', 'Time', false,  nodeDescriptor?.id)
 
     this.outputPort = [new OutputPort(this, 'float', 'time')];
     this.setVarName('time');

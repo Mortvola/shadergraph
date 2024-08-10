@@ -7,7 +7,7 @@ class VertexColor extends BuiltIn {
     super('VertexColor', 'Vertex Color', false, nodeDescriptor?.id)
 
     this.outputPort = [new OutputPort(this, 'vec4f', 'out')];
-    this.setVarName('time');
+    this.setVarName('vertexOut.color');
   }
 
   setVarName(varName: string | null): void {

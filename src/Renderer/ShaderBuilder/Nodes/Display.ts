@@ -5,7 +5,7 @@ import { DataType } from "../Types";
 
 class Display extends OperationNode {
   constructor(nodeDescriptor?: GraphNodeDescriptor) {
-    super('display', 'Display', nodeDescriptor?.id)
+    super('Display', 'Display', nodeDescriptor?.id)
 
     this.inputPorts = [
       new InputPort(this, 'vec4f', 'rgb'),

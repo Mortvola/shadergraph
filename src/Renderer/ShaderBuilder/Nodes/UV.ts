@@ -5,7 +5,7 @@ import { DataType } from "../Types";
 
 class UV extends BuiltIn {
   constructor(nodeDescriptor?: GraphNodeDescriptor) {
-    super('uv', 'UV', false, nodeDescriptor?.id)
+    super('UV', 'UV', false, nodeDescriptor?.id)
 
     this.outputPort = [new OutputPort(this, 'vec2f', 'uv')];
     this.setVarName('vertexOut.texcoord');

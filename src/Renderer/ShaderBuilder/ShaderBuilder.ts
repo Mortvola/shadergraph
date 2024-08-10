@@ -198,7 +198,7 @@ const generateStageShaderCode = (graph: StageGraph, editMode: boolean): [string,
   const properties: PropertyInterface[] = [];
 
   // Find the output node
-  const outputNode = graph.nodes.find((n) => n.type === 'display');
+  const outputNode = graph.nodes.find((n) => n.type === 'Display');
 
   if (outputNode) {
     setNextVarid(0);
