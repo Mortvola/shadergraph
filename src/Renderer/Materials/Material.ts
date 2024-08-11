@@ -100,12 +100,15 @@ class Material implements MaterialInterface {
       shaderDescriptor = materialDescriptor?.shaderDescriptor
     }
 
-    let graph: ShaderGraph | null = null;
+    let graph: ShaderGraph;
 
     if (materialDescriptor?.graph !== undefined) {
       graph = materialDescriptor?.graph
     } else if (shaderDescriptor) {
       graph = new ShaderGraph(shaderDescriptor);
+    }
+    else {
+      graph = new ShaderGraph();
     }
 
     const pipeline = await pipelineManager.getPipeline(drawableType, vertexProperties, graph)

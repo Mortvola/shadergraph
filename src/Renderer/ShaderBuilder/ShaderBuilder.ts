@@ -216,7 +216,7 @@ const space = (dataType: DataType) => {
 }
 
 const generateShaderCode = (
-  graph: ShaderGraph | null,
+  graph: ShaderGraph,
   drawableType: DrawableType,
   vertProperties: PropertyInterface[],
 ): [string, PropertyInterface[], PropertyInterface[]] => {
@@ -248,11 +248,9 @@ const generateShaderCode = (
     vertUniforms = `struct VertProperties { ${vertUniforms} }\n`
   }
 
-  if (graph && graph.fragment) {
-    [fragmentBody, fragProperties] = graph.fragment.generateStageShaderCode(graph.editMode);
+  [fragmentBody, fragProperties] = graph.fragment.generateStageShaderCode(graph.editMode);
 
-    console.log(fragmentBody);
-  }
+  console.log(fragmentBody);
 
   for (let i = 0; i < fragProperties.length; i += 1) {
     if (fragProperties[i].value.dataType === 'texture2D' || fragProperties[i].value.dataType === 'sampler') {
@@ -297,15 +295,15 @@ const generateShaderCode = (
 
     ${fragBindings}
     
-    ${getVertexStage(drawableType, graph?.lit ?? false)}
+    ${getVertexStage(drawableType, graph.lit)}
 
-    ${(graph?.lit ?? false) ? phongFunction : ''}
+    ${(graph.lit) ? phongFunction : ''}
 
     ${twirlFunction}
 
     ${voronoiFunction}
 
-    ${getFragmentStage(fragmentBody, graph?.lit ?? false, bloom)}
+    ${getFragmentStage(fragmentBody, graph.lit, bloom)}
     `,
     vertProperties,
     fragProperties,
@@ -313,7 +311,7 @@ const generateShaderCode = (
 }
 
 export const generateShaderModule = (
-  graph: ShaderGraph | null = null,
+  graph: ShaderGraph,
   drawableType: DrawableType,
   vertexProperties: PropertyInterface[],
 ): [GPUShaderModule, PropertyInterface[], PropertyInterface[], string] => {

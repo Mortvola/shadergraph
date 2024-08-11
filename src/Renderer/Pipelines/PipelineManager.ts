@@ -82,14 +82,14 @@ class PipelineManager implements PipelineManagerInterface {
   async getPipeline(
     drawableType: DrawableType,
     vertexProperties: PropertyInterface[],
-    graph: ShaderGraph | null = null,
+    graph: ShaderGraph,
   ): Promise<PipelineInterface> {
     let vertStageBindings: StageBindings | null = null;
     let fragStageBindings: StageBindings | null = null;
 
     const key = JSON.stringify({
       drawableType,
-      shaderDescriptor: graph?.createShaderDescriptor(),
+      shaderDescriptor: graph.createShaderDescriptor(),
     });
 
     let pipelineEntry: PipelineMapEntry | undefined = this.pipelineMap.get(key);
@@ -100,8 +100,8 @@ class PipelineManager implements PipelineManagerInterface {
 
     let pipeline: PipelineInterface;
 
-    if (graph && graph.fragment.nodes.length === 0 && graph.type) {
-      const entry = this.pipelines.find((pipeline) => pipeline.type === graph!.type);
+    if (graph.fragment.nodes.length === 0 && graph.type) {
+      const entry = this.pipelines.find((pipeline) => pipeline.type === graph.type);
 
       if (!entry) {
         throw new Error('pipeline not found')
@@ -188,7 +188,7 @@ class PipelineManager implements PipelineManagerInterface {
 
       const targets: GPUColorTargetState[] = [];
 
-      if (graph?.transparent) {
+      if (graph.transparent) {
         targets.push({
           format: outputFormat,
           blend: {
@@ -210,7 +210,7 @@ class PipelineManager implements PipelineManagerInterface {
           },
         )
 
-        if (graph?.lit) {
+        if (graph.lit) {
           targets.push(
             {
               format: outputFormat,
@@ -222,7 +222,7 @@ class PipelineManager implements PipelineManagerInterface {
         }
       }
 
-      if (!graph?.lit && bloom && drawableType !== 'Mesh2D') {
+      if (!graph.lit && bloom && drawableType !== 'Mesh2D') {
         targets.push({
           format: outputFormat,
         })
@@ -276,7 +276,7 @@ class PipelineManager implements PipelineManagerInterface {
       });
 
       const pipelineDescriptor: GPURenderPipelineDescriptor = {
-        label: `${drawableType}${graph?.transparent ? ' transparent' : ''}${bloom ? ' bloom' : ''} pipeline`,
+        label: `${drawableType}${graph.transparent ? ' transparent' : ''}${bloom ? ' bloom' : ''} pipeline`,
         vertex: {
           module: shaderModule,
           entryPoint: "vs",
@@ -289,12 +289,12 @@ class PipelineManager implements PipelineManagerInterface {
         },
         primitive: {
           topology: "triangle-list",
-          cullMode: graph?.cullMode ?? 'none',
+          cullMode: graph.cullMode ?? 'none',
           frontFace: "ccw",
         },
         depthStencil: {
-          depthWriteEnabled: graph?.depthWriteEnabled ?? true,
-          depthCompare: (graph?.transparent ?? false) ? 'less-equal' : 'less',
+          depthWriteEnabled: graph.depthWriteEnabled ?? true,
+          depthCompare: (graph.transparent ?? false) ? 'less-equal' : 'less',
           format: "depth24plus"
         },
         layout: pipelineLayout,
