@@ -12,7 +12,7 @@ plane.name = 'Plane';
 
 const Preview: React.FC = () => {
   const store = useStores();
-  const { shaderPreview, modeler } = store;
+  const { shaderPreview, previewModeler } = store;
 
   type SizeInfo = { x: number, y: number, width: number, height: number };
 
@@ -48,7 +48,7 @@ const Preview: React.FC = () => {
 
   const handleModelChange: React.ChangeEventHandler<HTMLSelectElement> = async (event) => {
     if (event.target.value === '-1') {
-      modeler.assignModel(plane);
+      previewModeler.assignModel(plane);
     }
     else {
       const modelItem = store.project.getItemByItemId(parseInt(event.target.value, 10), 'model')
@@ -57,7 +57,7 @@ const Preview: React.FC = () => {
         const model = await store.getModel(modelItem)
 
         if (model) {
-          modeler.assignModel(model)
+          previewModeler.assignModel(model)
         }
       }
     }
@@ -75,10 +75,10 @@ const Preview: React.FC = () => {
   }
 
   React.useEffect(() => {
-    if (modeler.model === null) {
-      modeler.assignModel(plane);
+    if (previewModeler.model === null) {
+      previewModeler.assignModel(plane);
     }
-  }, [modeler]);
+  }, [previewModeler]);
 
   return (
     <Draggable onPositionChange={handlePositionChange} position={position} onResize={handleResize} resizable >

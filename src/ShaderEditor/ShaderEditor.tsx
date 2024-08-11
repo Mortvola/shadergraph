@@ -24,7 +24,7 @@ const ShaderEditor: React.FC<PropsType> = observer(({
   React.useEffect(() => {
     const timer  = setInterval(() => {
       if (graph.changed) {
-        const descriptor = graph.createMaterialDescriptor();
+        const descriptor = graph.createShaderDescriptor();
         localStorage.setItem('material', JSON.stringify(descriptor))
         graph.changed = false;  
       }
@@ -69,7 +69,7 @@ const ShaderEditor: React.FC<PropsType> = observer(({
   }
 
   const handleSave = async () => {
-    const descriptor = graph.createMaterialDescriptor();
+    const descriptor = graph.createShaderDescriptor();
 
     if (graph.id !== null) {
       await Http.patch<unknown, void>(`/shader-descriptors/${graph.id}`, {

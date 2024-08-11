@@ -1,5 +1,4 @@
 import { gpu } from "../Gpu";
-import { ShaderDescriptor } from "../shaders/ShaderDescriptor";
 import { bloom } from "../RenderSetings";
 import { common } from "../shaders/common";
 import { getFragmentStage } from "../shaders/fragmentStage";
@@ -47,6 +46,7 @@ import TextureSize from "./Nodes/TextureSize";
 import Inverse from "./Nodes/Inverse";
 import Distance from "./Nodes/Distance";
 import { resetContanstNames } from "./Ports/InputPort";
+import { ShaderDescriptor } from "../shaders/ShaderDescriptor";
 
 interface NodeConstructor {
   new (nodeDescriptor: GraphNodeDescriptor): GraphNodeInterface
@@ -288,12 +288,14 @@ const generateStageShaderCode = (graph: StageGraph, editMode: boolean): [string,
   return [body, properties];
 }
 
-export const buildGraph = (graphDescriptor: GraphDescriptor, properties: PropertyInterface[]): ShaderGraph => {
+export const buildGraph = (shaderDescriptor: ShaderDescriptor, properties: PropertyInterface[]): ShaderGraph => {
   const graph = new ShaderGraph();
 
-  if (graphDescriptor?.fragment) {
-    graph.fragment = buildStageGraph(graphDescriptor?.fragment, properties);
+  if (shaderDescriptor.graphDescriptor?.fragment) {
+    graph.fragment = buildStageGraph(shaderDescriptor.graphDescriptor?.fragment, properties);
   }
+
+  graph.lit = shaderDescriptor.lit ?? false;
 
   return graph;
 }
@@ -326,7 +328,6 @@ const generateShaderCode = (
   graph: ShaderGraph | null,
   drawableType: DrawableType,
   vertProperties: PropertyInterface[],
-  lit: boolean,
   editMode: boolean,
 ): [string, PropertyInterface[], PropertyInterface[]] => {
   let fragmentBody = '';
@@ -406,42 +407,19 @@ const generateShaderCode = (
 
     ${fragBindings}
     
-    ${getVertexStage(drawableType, lit)}
+    ${getVertexStage(drawableType, graph?.lit ?? false)}
 
-    ${lit ? phongFunction : ''}
+    ${(graph?.lit ?? false) ? phongFunction : ''}
 
     ${twirlFunction}
 
     ${voronoiFunction}
 
-    ${getFragmentStage(fragmentBody, lit, bloom)}
+    ${getFragmentStage(fragmentBody, graph?.lit ?? false, bloom)}
     `,
     vertProperties,
     fragProperties,
   ]
-}
-
-const generateCode = (
-  drawableType: DrawableType,
-  vertexProperties: PropertyInterface[],
-  editMode: boolean,
-  shaderDescriptor?: ShaderDescriptor,
-): [string, PropertyInterface[], PropertyInterface[]] => {
-  let props: Property[] = [];
-
-  if (shaderDescriptor?.properties) {
-    props = props.concat(shaderDescriptor.properties.map((p) => (
-      new Property(p.name, p.dataType, p.value)
-    )))
-  }
-
-  let graph: ShaderGraph | null = null;
-
-  if (shaderDescriptor?.graphDescriptor) {
-    graph = buildGraph(shaderDescriptor.graphDescriptor!, props);
-  }
-
-  return generateShaderCode(graph, drawableType, vertexProperties, shaderDescriptor?.lit ?? false, editMode);
 }
 
 export const updateCode = (
@@ -451,17 +429,17 @@ export const updateCode = (
   editMode: boolean,
   lit?: boolean,
 ): [string, PropertyInterface[], PropertyInterface[]] => {
-  return generateShaderCode(graph, drawableType, vertexProperties, lit ?? false, editMode);
+  return generateShaderCode(graph, drawableType, vertexProperties, editMode);
 }
 
 export const generateShaderModule = (
   drawableType: DrawableType,
   vertexProperties: PropertyInterface[],
   editMode: boolean,
-  shaderDescriptor?: ShaderDescriptor,
+  graph: ShaderGraph | null = null,
 ): [GPUShaderModule, PropertyInterface[], PropertyInterface[], string] => {
-  const [code, vertProperties, fragProperties] = generateCode(drawableType, vertexProperties, editMode, shaderDescriptor);
-  
+  const [code, vertProperties, fragProperties] = generateShaderCode(graph, drawableType, vertexProperties, editMode);
+
   let shaderModule: GPUShaderModule
   try {
     shaderModule = gpu.device.createShaderModule({

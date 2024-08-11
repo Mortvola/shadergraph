@@ -36,7 +36,7 @@ class Store implements StoreInterface {
 
   private dragObject: unknown | null = null;
 
-  modeler: Modeler;
+  previewModeler: Modeler;
 
   mainViewModeler: Modeler;
 
@@ -59,7 +59,7 @@ class Store implements StoreInterface {
     this.shaderPreview = previewRenderer;
 
     this.mainViewModeler = new Modeler(this.mainView, this);
-    this.modeler = new Modeler(previewRenderer, this);
+    this.previewModeler = new Modeler(previewRenderer, this);
 
     makeObservable(this, {
       menus: observable,
@@ -80,7 +80,7 @@ class Store implements StoreInterface {
     const material = await this.graph?.generateMaterial();
 
     if (material) {
-      this.modeler.applyMaterial(material);
+      this.previewModeler.applyMaterial(material);
     }  
   }
 
@@ -247,7 +247,7 @@ class Store implements StoreInterface {
     let model: SceneNodeInterface | undefined = item.item as SceneNodeInterface;
 
     if (!item.item && item.itemId) {
-      model = await this.modeler.getModel(item.itemId);
+      model = await this.previewModeler.getModel(item.itemId);
 
       item.item = model ?? null;
     }

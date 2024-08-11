@@ -6,6 +6,9 @@ import Http from "../../Http/src";
 import { MaterialDescriptor } from "./MaterialDescriptor";
 import { shaderManager } from "../shaders/ShaderManager";
 import { ShaderDescriptor } from "../shaders/ShaderDescriptor";
+import Property from "../ShaderBuilder/Property";
+import ShaderGraph from "../ShaderBuilder/ShaderGraph";
+import { buildGraph } from "../ShaderBuilder/ShaderBuilder";
 
 const downloadedTextures: Map<number, GPUTexture> = new Map();
 const texturePromises: Map<number, Promise<GPUTexture>> = new Map();
@@ -99,7 +102,21 @@ class Material implements MaterialInterface {
       shaderDescriptor = materialDescriptor?.shaderDescriptor
     }
 
-    const pipeline = await pipelineManager.getPipeline(drawableType, vertexProperties, editMode, shaderDescriptor)
+    let props: Property[] = [];
+
+    if (shaderDescriptor?.properties) {
+      props = props.concat(shaderDescriptor.properties.map((p) => (
+        new Property(p.name, p.dataType, p.value)
+      )))
+    }
+  
+    let graph: ShaderGraph | null = null;
+
+    if (shaderDescriptor) {
+      graph = buildGraph(shaderDescriptor, props);
+    }
+
+    const pipeline = await pipelineManager.getPipeline(drawableType, vertexProperties, editMode, shaderDescriptor, graph)
 
     const textures: GPUTexture[] = [];
 

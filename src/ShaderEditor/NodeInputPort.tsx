@@ -110,8 +110,8 @@ const NodeInputPort: React.FC<PropsType> = observer(({
   }
 
   const handleValueChange = () => {
-    if (store.graph && store.modeler.model) {
-      const drawable = store.modeler.getDrawableNode(store.modeler.model);
+    if (store.graph && store.previewModeler.model) {
+      const drawable = store.previewModeler.getDrawableNode(store.previewModeler.model);
       drawable?.material.setPropertyValues(GPUShaderStage.FRAGMENT, [{ name: port.constantName, value: port.value!, builtin: false }])
     }
   }

@@ -45,7 +45,7 @@ export interface GraphInterface {
 
   deleteProperty(property: PropertyInterface): void;
 
-  createMaterialDescriptor(): ShaderDescriptor;
+  createShaderDescriptor(): ShaderDescriptor;
 }
 
 export type ModelRecord = {

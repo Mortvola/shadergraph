@@ -29,7 +29,7 @@ class Graph implements GraphInterface {
 
   edges: GraphEdge[] = [];
 
-  defaultEdges: InputPortInterface[] = [];
+  // defaultEdges: InputPortInterface[] = [];
 
   cullMode: CullMode = 'none';
 
@@ -62,7 +62,7 @@ class Graph implements GraphInterface {
       }
 
       if (descriptor.graphDescriptor) {
-        const graph = buildGraph(descriptor.graphDescriptor, this.properties);
+        const graph = buildGraph(descriptor, this.properties);
 
         if (graph.fragment) {
           this.nodes = graph.fragment.nodes;
@@ -266,8 +266,8 @@ class Graph implements GraphInterface {
     })
   }
 
-  createMaterialDescriptor(): ShaderDescriptor {
-    const materialDescriptor: ShaderDescriptor = {
+  createShaderDescriptor(): ShaderDescriptor {
+    const shaderDescriptor: ShaderDescriptor = {
       // type: 'Lit',
       cullMode: this.cullMode === 'front' ? undefined : this.cullMode,
       transparent: this.transparent,
@@ -283,13 +283,13 @@ class Graph implements GraphInterface {
       graphDescriptor: createDescriptor(this.nodes, this.edges),
     }
 
-    return materialDescriptor;
+    return shaderDescriptor;
   }
 
   async generateMaterial(): Promise<MaterialInterface> {
-    const materialDescriptor = this.createMaterialDescriptor();
+    const shaderDescriptor = this.createShaderDescriptor();
 
-    return await Material.create('Mesh', [], true, { shaderDescriptor: materialDescriptor });
+    return await Material.create('Mesh', [], true, { shaderDescriptor });
   }
 }
 

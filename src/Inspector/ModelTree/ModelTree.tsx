@@ -22,13 +22,13 @@ const ModelTree: React.FC<PropsType> = observer(({
 
   React.useEffect(() => {
     (async () => {
-      const m = await store.modeler.getModel(modelItem.id)
+      const m = await store.previewModeler.getModel(modelItem.id)
 
       if (m) {
         setModel(m)
       }
     })()
-  }, [modelItem.id, store.modeler])
+  }, [modelItem.id, store.previewModeler])
 
   const handleMaterialAssignment = (node: DrawableNodeInterface, materialId: number) => {
     let materials: Record<string, number> = { ...modelItem.materials }

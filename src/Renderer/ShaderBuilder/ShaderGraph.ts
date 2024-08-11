@@ -1,8 +1,8 @@
 import StageGraph from "./StageGraph";
 
 class ShaderGraph {
-  vertex: StageGraph | null = null;
-
+  lit = false;
+  
   fragment: StageGraph | null = null;
 }
 

@@ -10,8 +10,8 @@ import Pipeline from "./Pipeline";
 import TrajectoryPipeline from "./TrajectoryPipeline";
 import { generateShaderModule } from "../ShaderBuilder/ShaderBuilder";
 import { bloom, outputFormat } from "../RenderSetings";
-import { shaderManager } from "../shaders/ShaderManager";
 import DecalPipeline from "./DecalPipeline";
+import ShaderGraph from "../ShaderBuilder/ShaderGraph";
 
 export type PipelineType =
   'Line'| 'reticle' | 'Trajectory' | 'Decal';
@@ -84,14 +84,15 @@ class PipelineManager implements PipelineManagerInterface {
     drawableType: DrawableType,
     vertexProperties: PropertyInterface[],
     editMode: boolean,
-    shaderDescr?: ShaderDescriptor | number,
+    shaderDescriptor?: ShaderDescriptor,
+    graph: ShaderGraph | null = null,
   ): Promise<PipelineInterface> {
     let vertStageBindings: StageBindings | null = null;
     let fragStageBindings: StageBindings | null = null;
 
     const key = JSON.stringify({
       drawableType,
-      shaderDescr
+      shaderDescriptor
     });
 
     let pipelineEntry: PipelineMapEntry | undefined = this.pipelineMap.get(key);
@@ -100,14 +101,14 @@ class PipelineManager implements PipelineManagerInterface {
       return pipelineEntry.pipeline
     }
 
-    let shaderDescriptor: ShaderDescriptor | undefined
+    // let shaderDescriptor: ShaderDescriptor | undefined
 
-    if (typeof shaderDescr === 'number') {
-      shaderDescriptor = await shaderManager.getDescriptor(shaderDescr)
-    }
-    else {
-      shaderDescriptor = shaderDescr
-    }
+    // if (typeof shaderDescr === 'number') {
+    //   shaderDescriptor = await shaderManager.getDescriptor(shaderDescr)
+    // }
+    // else {
+    //   shaderDescriptor = shaderDescr
+    // }
 
     let pipeline: PipelineInterface;
 
@@ -131,7 +132,21 @@ class PipelineManager implements PipelineManagerInterface {
       let shaderModule: GPUShaderModule;
       let code: string;
 
-      [shaderModule, vertProperties, fragProperties, code] = generateShaderModule(drawableType, vertexProperties, editMode, shaderDescriptor);
+      // let props: Property[] = [];
+
+      // if (shaderDescriptor?.properties) {
+      //   props = props.concat(shaderDescriptor.properties.map((p) => (
+      //     new Property(p.name, p.dataType, p.value)
+      //   )))
+      // }
+    
+      // let graph: ShaderGraph | null = null;
+
+      // if (shaderDescriptor?.graphDescriptor) {
+      //   graph = buildGraph(shaderDescriptor.graphDescriptor!, props);
+      // }
+    
+      [shaderModule, vertProperties, fragProperties, code] = generateShaderModule(drawableType, vertexProperties, editMode, graph);
 
       if (drawableType === 'Mesh') {
         vertexBufferLayout = [
@@ -221,7 +236,7 @@ class PipelineManager implements PipelineManagerInterface {
           },
         )
 
-        if (shaderDescriptor?.lit) {
+        if (graph?.lit) {
           targets.push(
             {
               format: outputFormat,
@@ -233,7 +248,7 @@ class PipelineManager implements PipelineManagerInterface {
         }
       }
 
-      if (!shaderDescriptor?.lit && bloom && drawableType !== 'Mesh2D') {
+      if (!graph?.lit && bloom && drawableType !== 'Mesh2D') {
         targets.push({
           format: outputFormat,
         })
