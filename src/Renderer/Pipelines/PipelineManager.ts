@@ -7,7 +7,6 @@ import LinePipeline from "./LinePipeline";
 import Pipeline from "./Pipeline";
 // import ReticlePipeline from "./ReticlePipeline";
 import TrajectoryPipeline from "./TrajectoryPipeline";
-import { generateShaderModule } from "../ShaderBuilder/ShaderBuilder";
 import { bloom, outputFormat } from "../RenderSetings";
 import DecalPipeline from "./DecalPipeline";
 import ShaderGraph from "../ShaderBuilder/ShaderGraph";
@@ -120,7 +119,7 @@ class PipelineManager implements PipelineManagerInterface {
       let shaderModule: GPUShaderModule;
       let code: string;
     
-      [shaderModule, vertProperties, fragProperties, code] = generateShaderModule(graph, drawableType, vertexProperties);
+      [shaderModule, vertProperties, fragProperties, code] = graph.generateShaderModule(drawableType, vertexProperties);
 
       if (drawableType === 'Mesh') {
         vertexBufferLayout = [
