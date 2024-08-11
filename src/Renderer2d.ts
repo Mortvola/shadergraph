@@ -80,7 +80,7 @@ class Renderer2d {
     if (this.ctx && store.graph) {
       this.ctx.clearRect(0, 0, this.element?.width ?? 0, this.element?.height ?? 0);
 
-      for (const edge of store.graph.edges) {
+      for (const edge of store.graph.graph.fragment.edges) {
         const startX = (edge.output.node.position!.x + this.translate[0]) * this.scale + (this.origin.x - this.origin.x * this.scale) + edge.output.offsetX;
         const startY = (edge.output.node.position!.y + this.translate[1]) * this.scale + (this.origin.y - this.origin.y * this.scale) + edge.output.offsetY;
 

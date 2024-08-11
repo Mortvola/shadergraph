@@ -51,7 +51,7 @@ const NodesContainer: React.FC<PropsType> = observer(({
       onWheel={handleWheel}
     >
       {
-        graph.nodes.map((gn) => {
+        graph.graph.fragment.nodes.map((gn) => {
           // console.log(renderer2d.scale)
           return (
             <Node

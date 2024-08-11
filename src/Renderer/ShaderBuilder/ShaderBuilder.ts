@@ -7,7 +7,7 @@ import { twirlFunction } from '../shaders/twirlFunction';
 import { getVertexStage } from "../shaders/vertexStage";
 import { voronoiFunction } from "../shaders/voronoiFunction";
 import { DrawableType } from "../types";
-import { GraphDescriptor, GraphNodeDescriptor, GraphStageDescriptor, PropertyDescriptor, ValueDescriptor } from "./GraphDescriptor";
+import { GraphNodeDescriptor, GraphStageDescriptor, PropertyDescriptor, ValueDescriptor } from "./GraphDescriptor";
 import GraphEdge from "./GraphEdge";
 import { setNextVarid } from "./GraphNode";
 import Add from "./Nodes/Add";
@@ -46,7 +46,6 @@ import TextureSize from "./Nodes/TextureSize";
 import Inverse from "./Nodes/Inverse";
 import Distance from "./Nodes/Distance";
 import { resetContanstNames } from "./Ports/InputPort";
-import { ShaderDescriptor } from "../shaders/ShaderDescriptor";
 
 interface NodeConstructor {
   new (nodeDescriptor: GraphNodeDescriptor): GraphNodeInterface
@@ -60,9 +59,11 @@ const nodeTable: NodeConstructor[] = [
   TextureSize, VertexColor,
 ]
 
-const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: PropertyInterface[]): StageGraph => {
+export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: PropertyInterface[]): StageGraph => {
   let nodes: GraphNodeInterface[] = [];
   let edges: GraphEdgeInterface[] = [];
+
+  console.log('build graph');
 
   resetContanstNames();
 
@@ -185,7 +186,11 @@ const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: PropertyI
     }
   }
 
-  return { nodes, edges };
+  const result = new StageGraph();
+  result.nodes = nodes;
+  result.edges = edges;
+
+  return result;
 }
 
 const generateStageShaderCode = (graph: StageGraph, editMode: boolean): [string, PropertyInterface[]] => {
@@ -286,18 +291,6 @@ const generateStageShaderCode = (graph: StageGraph, editMode: boolean): [string,
   }
 
   return [body, properties];
-}
-
-export const buildGraph = (shaderDescriptor: ShaderDescriptor, properties: PropertyInterface[]): ShaderGraph => {
-  const graph = new ShaderGraph();
-
-  if (shaderDescriptor.graphDescriptor?.fragment) {
-    graph.fragment = buildStageGraph(shaderDescriptor.graphDescriptor?.fragment, properties);
-  }
-
-  graph.lit = shaderDescriptor.lit ?? false;
-
-  return graph;
 }
 
 const bindingType = (dataType: DataType) => {  
@@ -454,23 +447,4 @@ export const generateShaderModule = (
   }
 
   return [shaderModule, vertProperties, fragProperties, code];
-}
-
-export const createDescriptor = (nodes: GraphNodeInterface[], edges: GraphEdgeInterface[]): GraphDescriptor => {
-  const descriptor: GraphDescriptor = {
-    vertex: {
-      nodes: [],
-      edges: [],
-    },
-
-    fragment: {
-      nodes: nodes.map((n) => n.createDescriptor()),
-
-      edges: edges.map((e) => (
-        [{ id: e.output.node.id, port: e.output.name}, { id: e.input.node.id, port: e.input.name}]
-      ))
-    }
-  }
-
-  return descriptor;
 }

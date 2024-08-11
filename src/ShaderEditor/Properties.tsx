@@ -103,7 +103,7 @@ const Properties: React.FC<PropsType> = observer(({
         </div>
         <div className={styles.properties}>
           {
-            graph.properties.map((p) => (
+            graph.graph.properties.map((p) => (
               <PropertyEntry key={p.name} property={p} onEdit={handleEdit} />
             ))
           }

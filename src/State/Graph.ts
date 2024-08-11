@@ -2,12 +2,11 @@ import { makeObservable, observable, runInAction } from "mobx";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
 import GraphEdge from "../Renderer/ShaderBuilder/GraphEdge";
 import Display from "../Renderer/ShaderBuilder/Nodes/Display";
-import { buildGraph, createDescriptor } from "../Renderer/ShaderBuilder/ShaderBuilder";
 import { MaterialInterface } from "../Renderer/types";
 import { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
 import Material from "../Renderer/Materials/Material";
 import { CullMode, GraphInterface, StoreInterface } from "./types";
-import Property from "../Renderer/ShaderBuilder/Property";
+import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
 
 let nextShaderName = 0;
 
@@ -23,23 +22,9 @@ class Graph implements GraphInterface {
 
   name = '';
   
-  nodes: GraphNodeInterface[] = [];
+  graph: ShaderGraph;
 
   dragConnector: [number, number][] | null = null;
-
-  edges: GraphEdge[] = [];
-
-  // defaultEdges: InputPortInterface[] = [];
-
-  cullMode: CullMode = 'none';
-
-  transparent = false;
-
-  depthWriteEnabled = true;
-
-  lit = false;
-
-  properties: PropertyInterface[] = [];
 
   changed = false;
 
@@ -54,49 +39,30 @@ class Graph implements GraphInterface {
     
     this.name = name ?? getNextShaderName();
 
-    if (descriptor) {
-      if (descriptor.properties) {
-        this.properties = descriptor.properties.map((p) => (
-          new Property(p.name, p.dataType, p.value)
-        ))
-      }
+    this.graph = new ShaderGraph(descriptor);
 
-      if (descriptor.graphDescriptor) {
-        const graph = buildGraph(descriptor, this.properties);
-
-        if (graph.fragment) {
-          this.nodes = graph.fragment.nodes;
-          this.edges = graph.fragment.edges;  
-        }  
-      }
-
-      this.cullMode = descriptor.cullMode ?? 'front';
-
-      this.transparent = descriptor.transparent ?? false;
-
-      this.depthWriteEnabled = descriptor.depthWriteEnabled ?? true;
-
-      this.lit = descriptor.lit ?? false;
-    }
-
-    if (this.nodes.length === 0) {
-      this.nodes = [
+    if (this.graph.fragment.nodes.length === 0) {
+      this.graph.fragment.nodes = [
         new Display(),
       ];
-
-      this.edges = [];
     }
 
     makeObservable(this, {
       name: observable,
-      nodes: observable,
       selectedNode: observable,
-      transparent: observable,
-      depthWriteEnabled: observable,
+    });
+
+    makeObservable(this.graph, {
       lit: observable,
       cullMode: observable,
+      transparent: observable,
+      depthWriteEnabled: observable,
       properties: observable,
-    });
+    })
+
+    makeObservable(this.graph.fragment, {
+      nodes: observable,
+    })
   }
 
   setName(name: string): void {
@@ -111,19 +77,19 @@ class Graph implements GraphInterface {
 
   addProperty(property: PropertyInterface): void {
     runInAction(() => {
-      this.properties.push(property);
+      this.graph.properties.push(property);
       this.changed = true;  
     })
   }
 
   deleteProperty(property: PropertyInterface): void {
-    const index = this.properties.findIndex((p) => p === property);
+    const index = this.graph.properties.findIndex((p) => p === property);
 
     if (index !== -1) {
       runInAction(() => {
-        this.properties = [
-          ...this.properties.slice(0, index),
-          ...this.properties.slice(index + 1),
+        this.graph.properties = [
+          ...this.graph.properties.slice(0, index),
+          ...this.graph.properties.slice(index + 1),
         ];
 
         this.changed = true;  
@@ -134,7 +100,7 @@ class Graph implements GraphInterface {
   link(outputPort: OutputPortInterface, inputPort: InputPortInterface): void {
     const edge = new GraphEdge(outputPort, inputPort);
 
-    this.edges.push(edge);
+    this.graph.fragment.edges.push(edge);
 
     this.changed = true;
 
@@ -143,7 +109,7 @@ class Graph implements GraphInterface {
 
   addNode(node: GraphNodeInterface): void {
     runInAction(() => {
-      this.nodes = this.nodes.concat(node);
+      this.graph.fragment.nodes = this.graph.fragment.nodes.concat(node);
       this.changed = true;
     })
   }
@@ -183,12 +149,12 @@ class Graph implements GraphInterface {
     edge.input.edge = null;
 
     // Find the edge in the edge list and remove eit
-    index = this.edges.findIndex((e) => e === edge);
+    index = this.graph.fragment.edges.findIndex((e) => e === edge);
     
     if (index !== -1) {
-      this.edges = [
-        ...this.edges.slice(0, index),
-        ...this.edges.slice(index + 1),
+      this.graph.fragment.edges = [
+        ...this.graph.fragment.edges.slice(0, index),
+        ...this.graph.fragment.edges.slice(index + 1),
       ];
 
       this.changed = true;
@@ -202,11 +168,11 @@ class Graph implements GraphInterface {
   }
 
   deleteNode(node: GraphNodeInterface): void {
-    const index = this.nodes.findIndex((n) => n === node);
+    const index = this.graph.fragment.nodes.findIndex((n) => n === node);
     
     if (index !== -1) {
       runInAction(() => {
-        const node = this.nodes[index];
+        const node = this.graph.fragment.nodes[index];
 
         // Delete any connected input edges
         for (const inputPort of node.inputPorts) {
@@ -224,9 +190,9 @@ class Graph implements GraphInterface {
           }
         }
 
-        this.nodes = [
-          ...this.nodes.slice(0, index),
-          ...this.nodes.slice(index + 1),
+        this.graph.fragment.nodes = [
+          ...this.graph.fragment.nodes.slice(0, index),
+          ...this.graph.fragment.nodes.slice(index + 1),
         ];
 
         this.changed = true;    
@@ -236,7 +202,7 @@ class Graph implements GraphInterface {
 
   setTransparency = (transparent: boolean): void => {
     runInAction(() => {
-      this.transparent = transparent;
+      this.graph.transparent = transparent;
       this.changed = true;
       this.store.applyMaterial()
     })
@@ -244,7 +210,7 @@ class Graph implements GraphInterface {
 
   setDepthWriteEnabled = (depthWriteEnabled: boolean): void => {
     runInAction(() => {
-      this.depthWriteEnabled = depthWriteEnabled;
+      this.graph.depthWriteEnabled = depthWriteEnabled;
       this.changed = true;
       this.store.applyMaterial()
     })
@@ -252,7 +218,7 @@ class Graph implements GraphInterface {
 
   setLit = (lit: boolean): void => {
     runInAction(() => {
-      this.lit = lit;
+      this.graph.lit = lit;
       this.changed = true;
       this.store.applyMaterial()
     })
@@ -260,36 +226,16 @@ class Graph implements GraphInterface {
 
   setCullMode(mode: CullMode): void {
     runInAction(() => {
-      this.cullMode = mode;
+      this.graph.cullMode = mode;
       this.changed = true;
       this.store.applyMaterial()
     })
   }
 
-  createShaderDescriptor(): ShaderDescriptor {
-    const shaderDescriptor: ShaderDescriptor = {
-      // type: 'Lit',
-      cullMode: this.cullMode === 'front' ? undefined : this.cullMode,
-      transparent: this.transparent,
-      depthWriteEnabled: this.depthWriteEnabled,
-      lit: this.lit,
-      
-      properties: this.properties.map((p) => ({
-        name: p.name,
-        dataType: p.value.dataType,
-        value: p.value.value,
-      })),
-
-      graphDescriptor: createDescriptor(this.nodes, this.edges),
-    }
-
-    return shaderDescriptor;
-  }
-
   async generateMaterial(): Promise<MaterialInterface> {
-    const shaderDescriptor = this.createShaderDescriptor();
+    const shaderDescriptor = this.graph.createShaderDescriptor();
 
-    return await Material.create('Mesh', [], true, { shaderDescriptor });
+    return await Material.create('Mesh', [], true, { shaderDescriptor, graph: this.graph });
   }
 }
 

@@ -10,7 +10,6 @@ import { ProjectItemRecord } from '../State/types';
 import Graph from '../State/Graph';
 import { runInAction } from 'mobx';
 import ProjectItemObject from "../Project/Types/ProjectItem";
-import { ShaderRecord } from '../Renderer/types';
 import { shaderManager } from '../Renderer/shaders/ShaderManager';
 
 type PropsType = {
@@ -96,7 +95,7 @@ const ProjectItem: React.FC<PropsType> = observer(({
             const response = await Http.post<unknown, ProjectItemRecord>('/materials', {
               name: `${item.name} Material`,
               shaderId: item.itemId,
-              properties: (item.item as Graph).properties,    
+              properties: (item.item as Graph).graph.properties,    
             })
 
             if (response) {

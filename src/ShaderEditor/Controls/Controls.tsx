@@ -46,7 +46,6 @@ const Controls: React.FC = observer(() => {
   }
 
   const handleCullChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    console.log(event.target.value)
     graph?.setCullMode(event.target.value as CullMode)
   }
 
@@ -55,12 +54,12 @@ const Controls: React.FC = observer(() => {
       <div className={styles.wrapper}  onClick={handleClick}>
         <div>Controls</div>
         <div className={styles.controls}>
-          <Checkbox value={graph.transparent} label="Transparent" onChange={graph.setTransparency} />
-          <Checkbox value={graph.depthWriteEnabled} label="Depth Write Enabled" onChange={graph.setDepthWriteEnabled} />
-          <Checkbox value={graph.lit} label="Lit" onChange={graph.setLit} />
+          <Checkbox value={graph.graph.transparent} label="Transparent" onChange={graph.setTransparency} />
+          <Checkbox value={graph.graph.depthWriteEnabled} label="Depth Write Enabled" onChange={graph.setDepthWriteEnabled} />
+          <Checkbox value={graph.graph.lit} label="Lit" onChange={graph.setLit} />
           <label>
             Cull Mode
-            <select value={graph.cullMode} onChange={handleCullChange}>
+            <select value={graph.graph.cullMode} onChange={handleCullChange}>
               <option value="none">None</option>
               <option value="back">Back</option>
               <option value="front">Front</option>

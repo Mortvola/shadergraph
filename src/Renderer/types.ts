@@ -4,6 +4,7 @@ import DrawableInterface from './Drawables/DrawableInterface';
 import { PropertyInterface, ValueType } from './ShaderBuilder/Types';
 import { ShaderDescriptor } from './shaders/ShaderDescriptor';
 import SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
+import ShaderGraph from './ShaderBuilder/ShaderGraph';
 
 export const maxInstances = 1000;
 
@@ -126,7 +127,7 @@ export interface PipelineManagerInterface {
     drawableType: DrawableType,
     vertexProperties: PropertyInterface[],
     editMode: boolean,
-    args: ShaderDescriptor,
+    graph: ShaderGraph | null,
   ): Promise<PipelineInterface>
 }
 

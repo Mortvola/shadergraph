@@ -1,8 +1,10 @@
 import { GraphDescriptor } from "../ShaderBuilder/GraphDescriptor";
 import { ValueType, DataType } from "../ShaderBuilder/Types";
 
+export type ShaderType = 'Line' | 'Trajectory' | 'Decal';
+
 export type ShaderDescriptor = {
-  type?: 'Line' | 'Trajectory' | 'Decal';
+  type?: ShaderType;
 
   cullMode?: 'back' | 'none',
 

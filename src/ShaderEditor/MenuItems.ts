@@ -43,7 +43,7 @@ function createObject<T extends GraphNodeInterface>(o: new () => T, x: number, y
 }
 
 const propertyMenu = (): MenuItemLike[] => (
-  store.graph?.properties.map((p) => ({
+  store.graph?.graph.properties.map((p) => ({
     name: p.name, action: (x: number, y: number) => {
       const node = new PropertyNode(p)
       addNode(node, x, y);

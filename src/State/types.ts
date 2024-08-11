@@ -1,7 +1,7 @@
 import { ProjectInterface } from "../Project/Types/types";
-import { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
 import { GameObjectItem } from "../Renderer/types";
+import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
 
 export interface StoreInterface {
   project: ProjectInterface
@@ -21,7 +21,7 @@ export interface GraphInterface {
 
   changed: boolean;
 
-  properties: PropertyInterface[];
+  graph: ShaderGraph;
 
   selectedNode: GraphNodeInterface | null;
   
@@ -44,8 +44,6 @@ export interface GraphInterface {
   addProperty(property: PropertyInterface): void;
 
   deleteProperty(property: PropertyInterface): void;
-
-  createShaderDescriptor(): ShaderDescriptor;
 }
 
 export type ModelRecord = {

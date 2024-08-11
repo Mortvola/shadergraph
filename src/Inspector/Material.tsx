@@ -9,7 +9,6 @@ import { ShaderDescriptor } from '../Renderer/shaders/ShaderDescriptor';
 import { shaderManager } from '../Renderer/shaders/ShaderManager';
 import Value from '../Renderer/ShaderBuilder/Value';
 import { runInAction } from 'mobx';
-import { ValueInterface } from '../Renderer/ShaderBuilder/Types';
 
 type PropsType = {
   materialItem: MaterialItemInterface | null,

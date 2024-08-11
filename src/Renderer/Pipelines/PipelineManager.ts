@@ -1,7 +1,6 @@
 import { makeShaderDataDefinitions, makeStructuredView } from "webgpu-utils";
 import { bindGroups } from "../BindGroups";
 import { gpu } from "../Gpu";
-import { ShaderDescriptor } from "../shaders/ShaderDescriptor";
 import { PropertyInterface } from "../ShaderBuilder/Types";
 import { DrawableType, PipelineInterface, PipelineManagerInterface, StageBindings } from "../types";
 import LinePipeline from "./LinePipeline";
@@ -84,7 +83,6 @@ class PipelineManager implements PipelineManagerInterface {
     drawableType: DrawableType,
     vertexProperties: PropertyInterface[],
     editMode: boolean,
-    shaderDescriptor?: ShaderDescriptor,
     graph: ShaderGraph | null = null,
   ): Promise<PipelineInterface> {
     let vertStageBindings: StageBindings | null = null;
@@ -92,7 +90,7 @@ class PipelineManager implements PipelineManagerInterface {
 
     const key = JSON.stringify({
       drawableType,
-      shaderDescriptor
+      shaderDescriptor: graph?.createShaderDescriptor(),
     });
 
     let pipelineEntry: PipelineMapEntry | undefined = this.pipelineMap.get(key);
@@ -101,19 +99,10 @@ class PipelineManager implements PipelineManagerInterface {
       return pipelineEntry.pipeline
     }
 
-    // let shaderDescriptor: ShaderDescriptor | undefined
-
-    // if (typeof shaderDescr === 'number') {
-    //   shaderDescriptor = await shaderManager.getDescriptor(shaderDescr)
-    // }
-    // else {
-    //   shaderDescriptor = shaderDescr
-    // }
-
     let pipeline: PipelineInterface;
 
-    if (shaderDescriptor && !shaderDescriptor.graphDescriptor && shaderDescriptor.type) {
-      const entry = this.pipelines.find((pipeline) => pipeline.type === shaderDescriptor!.type);
+    if (graph && graph.fragment.nodes.length === 0 && graph.type) {
+      const entry = this.pipelines.find((pipeline) => pipeline.type === graph!.type);
 
       if (!entry) {
         throw new Error('pipeline not found')
@@ -131,20 +120,6 @@ class PipelineManager implements PipelineManagerInterface {
 
       let shaderModule: GPUShaderModule;
       let code: string;
-
-      // let props: Property[] = [];
-
-      // if (shaderDescriptor?.properties) {
-      //   props = props.concat(shaderDescriptor.properties.map((p) => (
-      //     new Property(p.name, p.dataType, p.value)
-      //   )))
-      // }
-    
-      // let graph: ShaderGraph | null = null;
-
-      // if (shaderDescriptor?.graphDescriptor) {
-      //   graph = buildGraph(shaderDescriptor.graphDescriptor!, props);
-      // }
     
       [shaderModule, vertProperties, fragProperties, code] = generateShaderModule(drawableType, vertexProperties, editMode, graph);
 
@@ -214,7 +189,7 @@ class PipelineManager implements PipelineManagerInterface {
 
       const targets: GPUColorTargetState[] = [];
 
-      if (shaderDescriptor?.transparent) {
+      if (graph?.transparent) {
         targets.push({
           format: outputFormat,
           blend: {
@@ -302,7 +277,7 @@ class PipelineManager implements PipelineManagerInterface {
       });
 
       const pipelineDescriptor: GPURenderPipelineDescriptor = {
-        label: `${drawableType}${shaderDescriptor?.transparent ? ' transparent' : ''}${bloom ? ' bloom' : ''} pipeline`,
+        label: `${drawableType}${graph?.transparent ? ' transparent' : ''}${bloom ? ' bloom' : ''} pipeline`,
         vertex: {
           module: shaderModule,
           entryPoint: "vs",
@@ -315,12 +290,12 @@ class PipelineManager implements PipelineManagerInterface {
         },
         primitive: {
           topology: "triangle-list",
-          cullMode: shaderDescriptor?.cullMode ?? 'none',
+          cullMode: graph?.cullMode ?? 'none',
           frontFace: "ccw",
         },
         depthStencil: {
-          depthWriteEnabled: shaderDescriptor?.depthWriteEnabled ?? true,
-          depthCompare: (shaderDescriptor?.transparent ?? false) ? 'less-equal' : 'less',
+          depthWriteEnabled: graph?.depthWriteEnabled ?? true,
+          depthCompare: (graph?.transparent ?? false) ? 'less-equal' : 'less',
           format: "depth24plus"
         },
         layout: pipelineLayout,
