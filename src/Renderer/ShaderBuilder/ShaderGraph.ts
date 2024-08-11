@@ -21,7 +21,9 @@ class ShaderGraph {
 
   properties: PropertyInterface[] = [];
 
-  constructor(shaderDescriptor?: ShaderDescriptor) {
+  editMode = false;
+
+  constructor(shaderDescriptor?: ShaderDescriptor, editMode = false) {
     if (shaderDescriptor?.properties) {
       this.properties = shaderDescriptor.properties.map((p) => (
         new Property(p.name, p.dataType, p.value)
@@ -37,6 +39,8 @@ class ShaderGraph {
     this.cullMode = shaderDescriptor?.cullMode ?? 'none';
     this.transparent = shaderDescriptor?.transparent ?? false;
     this.depthWriteEnabled = shaderDescriptor?.depthWriteEnabled ?? true;
+
+    this.editMode = editMode;
   }
 
   createShaderDescriptor(): ShaderDescriptor {

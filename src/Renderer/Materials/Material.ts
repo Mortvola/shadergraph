@@ -108,7 +108,7 @@ class Material implements MaterialInterface {
       graph = new ShaderGraph(shaderDescriptor);
     }
 
-    const pipeline = await pipelineManager.getPipeline(drawableType, vertexProperties, editMode, graph)
+    const pipeline = await pipelineManager.getPipeline(drawableType, vertexProperties, graph)
 
     const textures: GPUTexture[] = [];
 

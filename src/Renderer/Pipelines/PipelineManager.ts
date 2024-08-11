@@ -82,7 +82,6 @@ class PipelineManager implements PipelineManagerInterface {
   async getPipeline(
     drawableType: DrawableType,
     vertexProperties: PropertyInterface[],
-    editMode: boolean,
     graph: ShaderGraph | null = null,
   ): Promise<PipelineInterface> {
     let vertStageBindings: StageBindings | null = null;
@@ -121,7 +120,7 @@ class PipelineManager implements PipelineManagerInterface {
       let shaderModule: GPUShaderModule;
       let code: string;
     
-      [shaderModule, vertProperties, fragProperties, code] = generateShaderModule(drawableType, vertexProperties, editMode, graph);
+      [shaderModule, vertProperties, fragProperties, code] = generateShaderModule(graph, drawableType, vertexProperties);
 
       if (drawableType === 'Mesh') {
         vertexBufferLayout = [

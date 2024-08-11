@@ -126,7 +126,6 @@ export interface PipelineManagerInterface {
   getPipeline(
     drawableType: DrawableType,
     vertexProperties: PropertyInterface[],
-    editMode: boolean,
     graph: ShaderGraph | null,
   ): Promise<PipelineInterface>
 }

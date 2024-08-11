@@ -39,7 +39,7 @@ class Graph implements GraphInterface {
     
     this.name = name ?? getNextShaderName();
 
-    this.graph = new ShaderGraph(descriptor);
+    this.graph = new ShaderGraph(descriptor, true);
 
     if (this.graph.fragment.nodes.length === 0) {
       this.graph.fragment.nodes = [

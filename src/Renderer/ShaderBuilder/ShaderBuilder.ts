@@ -9,7 +9,6 @@ import { voronoiFunction } from "../shaders/voronoiFunction";
 import { DrawableType } from "../types";
 import { GraphNodeDescriptor, GraphStageDescriptor, PropertyDescriptor, ValueDescriptor } from "./GraphDescriptor";
 import GraphEdge from "./GraphEdge";
-import { setNextVarid } from "./GraphNode";
 import Add from "./Nodes/Add";
 import Combine from "./Nodes/Combine";
 import Display from "./Nodes/Display";
@@ -27,11 +26,10 @@ import Twirl from "./Nodes/Twirl";
 import UV from "./Nodes/UV";
 import Vector from "./Nodes/Vector";
 import Voronoi from "./Nodes/Voronoi";
-import Property from "./Property";
 import PropertyNode from "./PropertyNode";
 import ShaderGraph from "./ShaderGraph";
 import StageGraph from "./StageGraph";
-import { DataType, GraphEdgeInterface, GraphNodeInterface, PropertyInterface, getLength, isPropertyNode } from "./Types";
+import { DataType, GraphEdgeInterface, GraphNodeInterface, PropertyInterface, getLength } from "./Types";
 import Value from "./Value";
 import ValueNode from "./ValueNode";
 import VertexColor from "./Nodes/VertexColor";
@@ -193,106 +191,6 @@ export const buildStageGraph = (graphDescr: GraphStageDescriptor, properties: Pr
   return result;
 }
 
-const generateStageShaderCode = (graph: StageGraph, editMode: boolean): [string, PropertyInterface[]] => {
-  // Clear the node priorities
-  for (const node of graph.nodes) {
-    node.priority = null;
-    node.setVarName(null);
-  }
-
-  const properties: PropertyInterface[] = [];
-
-  // Find the output node
-  const outputNode = graph.nodes.find((n) => n.type === 'Display');
-
-  if (outputNode) {
-    setNextVarid(0);
-    let nextSamplerId = 0;
-
-    outputNode.priority = 0;
-
-    // Output the instructions.
-    let stack: GraphNodeInterface[] = [outputNode];
-
-    while (stack.length > 0) {
-      const node = stack[0];
-      stack = stack.slice(1)
-
-      if (isPropertyNode(node)) {
-        // If we have not added this property to the properties array
-        // then add it.
-        if (!properties.some((p) => p === node.property)) {
-          properties.push(node.property);
-        }
-      }
-      else {
-        // For SamplerTexure nodes, find the property in the property list
-        // that matches its sampler descriptor. If one is not found then
-        // create a property for that sampler descriptor.
-        if (node.type === 'SampleTexture') {
-          const sampleTexture = (node as SampleTexture);
-          const sampler = properties.find((p) => (
-            p.value.dataType === 'sampler'
-            && JSON.stringify(p.value.value) === JSON.stringify(sampleTexture.settings)
-          ))
-
-          if (sampler) {
-            sampleTexture.samplerName = sampler.name;
-          }
-          else {
-            // Property was not found. Create a new property and add it to the
-            // property binding list.
-            const prop = new Property(`sampler${nextSamplerId}`, 'sampler', sampleTexture.settings);
-            nextSamplerId += 1;
-            properties.push(prop);
-            sampleTexture.samplerName = prop.name;
-          }
-        }
-
-        // Push the input nodes onto the stack
-        // and generate variables.
-        for (const input of node.inputPorts) {
-          if (input.edge) {
-            // The node priority is used to determine the order of the
-            // node operations during the output phase.
-            // Update the node priority if it is lower than 
-            // the current node's priority plus 1.
-            if (input.edge.output.node.priority ?? 0 < (node.priority ?? 0) + 1) {
-              input.edge.output.node.priority = (node.priority ?? 0) + 1;
-            }
-
-            stack.push(input.edge.output.node);
-          }
-          else if (
-            editMode &&
-            input.value !== undefined &&
-            input.dataType !== 'uv' &&
-            !properties.some((p) => p.name === input.constantName)
-          ) {
-            properties.push({ name: input.constantName, value: input.value, builtin: false });
-          }
-        }
-      }
-    }
-  }
-
-  // Generate the code
-
-  // Only consider nodes that have had their priority set and
-  // output their operations in priority order.
-  const visitedNodes = graph.nodes.filter((n) => n.priority !== null);
-  visitedNodes.sort((a, b) => (a.priority ?? 0) - (b.priority ?? 0))
-
-  let body = '';
-
-  for (const node of visitedNodes) {
-    const text = node.output(editMode);
-    body = text.concat(body);
-  }
-
-  return [body, properties];
-}
-
 const bindingType = (dataType: DataType) => {  
   if (dataType === 'texture2D') {
     return 'texture_2d<f32>';
@@ -321,7 +219,6 @@ const generateShaderCode = (
   graph: ShaderGraph | null,
   drawableType: DrawableType,
   vertProperties: PropertyInterface[],
-  editMode: boolean,
 ): [string, PropertyInterface[], PropertyInterface[]] => {
   let fragmentBody = '';
 
@@ -352,7 +249,7 @@ const generateShaderCode = (
   }
 
   if (graph && graph.fragment) {
-    [fragmentBody, fragProperties] = generateStageShaderCode(graph.fragment, editMode);
+    [fragmentBody, fragProperties] = graph.fragment.generateStageShaderCode(graph.editMode);
 
     console.log(fragmentBody);
   }
@@ -415,23 +312,12 @@ const generateShaderCode = (
   ]
 }
 
-export const updateCode = (
-  graph: ShaderGraph,
-  drawableType: DrawableType,
-  vertexProperties: PropertyInterface[],
-  editMode: boolean,
-  lit?: boolean,
-): [string, PropertyInterface[], PropertyInterface[]] => {
-  return generateShaderCode(graph, drawableType, vertexProperties, editMode);
-}
-
 export const generateShaderModule = (
+  graph: ShaderGraph | null = null,
   drawableType: DrawableType,
   vertexProperties: PropertyInterface[],
-  editMode: boolean,
-  graph: ShaderGraph | null = null,
 ): [GPUShaderModule, PropertyInterface[], PropertyInterface[], string] => {
-  const [code, vertProperties, fragProperties] = generateShaderCode(graph, drawableType, vertexProperties, editMode);
+  const [code, vertProperties, fragProperties] = generateShaderCode(graph, drawableType, vertexProperties);
 
   let shaderModule: GPUShaderModule
   try {
