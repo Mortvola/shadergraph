@@ -31,6 +31,7 @@ import Divide from "../Renderer/ShaderBuilder/Nodes/Divide";
 import TextureSize from "../Renderer/ShaderBuilder/Nodes/TextureSize";
 import Inverse from "../Renderer/ShaderBuilder/Nodes/Inverse";
 import Distance from "../Renderer/ShaderBuilder/Nodes/Distance";
+import Preview from "../Renderer/ShaderBuilder/Nodes/Preview";
 
 function addNode(node: GraphNodeInterface, x: number, y: number) {
   node.position = { x, y };
@@ -103,4 +104,5 @@ export const menuItems = (): MenuItemLike[] => ([
   { name: 'UV', action: (x: number, y: number) => createObject(UV, x, y) },
   { name: 'Vertex Color', action: (x: number, y: number) => createObject(VertexColor, x, y) },
   { name: 'Voronoi', action: (x: number, y: number) => createObject(Voronoi, x, y) },
+  { name: 'Preview', action: (x: number, y: number) => createObject(Preview, x, y) },
 ])

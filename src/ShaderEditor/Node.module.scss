@@ -41,8 +41,9 @@ $selected-border-width: 3px;
     box-sizing: border-box;
 
     display: grid;
-    grid-template-columns: max-content minmax(1rem, 1fr) max-content;
+    grid-template-columns: max-content max-content;
     grid-template-rows: minmax(0, 1fr);
+    column-gap: 1rem;
 
     .inputports {
       display: flex;

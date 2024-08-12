@@ -25,10 +25,6 @@ class GraphEdge implements GraphEdgeInterface {
     return this.output.getVarName() ?? ['', 'float'];
   }
 
-  setVarName(name: string | null): void {
-    this.output.node.setVarName(name);
-  }
-
   getValue(editMode: boolean): [string, DataType] {
     return this.output.getValue(editMode) ?? ['', 'float'];
   }

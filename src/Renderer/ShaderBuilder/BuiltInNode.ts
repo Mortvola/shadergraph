@@ -20,6 +20,10 @@ class BuiltIn extends GraphNode {
   getExpression(editMode: boolean): [string, DataType] {
     return this.getVarName() ?? ['', 'float'];
   }
+
+  output(editMode: boolean): string {
+    return '';
+  }
 }
 
 export default BuiltIn;

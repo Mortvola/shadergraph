@@ -7,7 +7,8 @@ export type NodeType =
   | 'uv' | 'UV' | 'time' | 'Time'
   | 'Add' | 'Clamp' | 'Combine' | 'display' | 'Display' | 'Distance' | 'Divide' | 'Fraction' | 'FWidth' | 'Inverse' | 'Lerp' | 'Max' | 'Min' | 'Multiply' | 'Power'
   | 'SampleTexture' | 'Split' | 'Subtract' | 'Step' | 'TileAndScroll'
-  | 'PhongShading' | 'TextureSize' | 'Twirl' | 'VertexColor' | 'Voronoi';
+  | 'PhongShading' | 'TextureSize' | 'Twirl' | 'VertexColor' | 'Voronoi'
+  | 'Preview';
 
 export type SamplerDescriptor = {};
 
@@ -119,8 +120,6 @@ export interface GraphEdgeInterface {
   input: InputPortInterface;
 
   getVarName(): [string, DataType];
-
-  setVarName(name: string): void;
 
   getValue(editMode: boolean): [string, DataType];
 

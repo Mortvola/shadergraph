@@ -13,7 +13,7 @@ const getConstantName = (): string => {
   return name;
 }
 
-export const resetContanstNames = () => {
+export const resetConstantNames = () => {
   constantNameId = 0;
 }
 

@@ -16,6 +16,7 @@ import Min from "./Nodes/Min";
 import Multiply from "./Nodes/Multiply";
 import PhongShading from "./Nodes/PhongShading";
 import Power from "./Nodes/Power";
+import Preview from "./Nodes/Preview";
 import SampleTexture from "./Nodes/SampleTexture";
 import Split from "./Nodes/Split";
 import Step from "./Nodes/Step";
@@ -28,7 +29,7 @@ import UV from "./Nodes/UV";
 import Vector from "./Nodes/Vector";
 import VertexColor from "./Nodes/VertexColor";
 import Voronoi from "./Nodes/Voronoi";
-import { resetContanstNames } from "./Ports/InputPort";
+import { resetConstantNames } from "./Ports/InputPort";
 import Property from "./Property";
 import PropertyNode from "./PropertyNode";
 import { getLength, GraphEdgeInterface, GraphNodeInterface, isPropertyNode, PropertyInterface } from "./Types";
@@ -44,7 +45,7 @@ const nodeTable: NodeConstructor[] = [
   TileAndScroll, Fraction, FWidth, Inverse, Max,
   Min, Multiply, Add,
   PhongShading, Split, Clamp, Combine, Power, Twirl, Voronoi, Lerp, Step, Subtract,
-  TextureSize, VertexColor,
+  TextureSize, VertexColor, Preview,
 ]
 
 class StageGraph {
@@ -58,7 +59,7 @@ class StageGraph {
   
     console.log('build graph');
   
-    resetContanstNames();
+    resetConstantNames();
   
     // Create the nodes
     for (const nodeDescr of graphDescr.nodes) {

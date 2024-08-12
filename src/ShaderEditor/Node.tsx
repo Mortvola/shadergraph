@@ -145,8 +145,6 @@ const Node: React.FC<PropsType> = observer(({
               ))
             }
           </div>
-          <div>
-          </div>
           <div className={styles.outputports}>
             {
               node.outputPort.map((p) => (
@@ -160,7 +158,7 @@ const Node: React.FC<PropsType> = observer(({
               ))
             }
           </div>
-        </div>    
+        </div>
       </>      
     )
   }
