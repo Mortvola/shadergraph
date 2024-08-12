@@ -76,14 +76,6 @@ class Store implements StoreInterface {
     return new Store(mainRenderer, previewRenderer)
   }
 
-  async applyMaterial(): Promise<void> {
-    const material = await this.graph?.generateMaterial();
-
-    if (material) {
-      this.previewModeler.applyMaterial(material);
-    }  
-  }
-
   setDragObject(object: unknown | null) {
     this.dragObject = object;
   }
@@ -220,7 +212,7 @@ class Store implements StoreInterface {
       runInAction(() => {
         // this.graph = item.item as Graph;
         renderer2d.setTranslation(0, 0)
-        this.applyMaterial()  
+        this.graph?.applyMaterial()  
       })
     }
     else if (item.type === 'particle') {

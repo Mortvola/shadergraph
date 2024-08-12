@@ -1,12 +1,18 @@
 import { ProjectInterface } from "../Project/Types/types";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
-import { GameObjectItem } from "../Renderer/types";
+import { GameObjectItem, MaterialInterface } from "../Renderer/types";
 import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
+
+export interface ModelerInterface {
+  applyMaterial(material: MaterialInterface): void
+}
 
 export interface StoreInterface {
   project: ProjectInterface
 
-  applyMaterial(): Promise<void>;
+  // applyMaterial(): Promise<void>;
+
+  previewModeler: ModelerInterface;
 }
 
 export interface MaterialsInterface {

@@ -5,12 +5,12 @@ import DrawableNode from "../Renderer/Drawables/SceneNodes/DrawableNode";
 import { isDrawableNode } from "../Renderer/Drawables/SceneNodes/utils";
 import Renderer from "../Renderer/Renderer";
 import { DrawableNodeInterface, MaterialInterface, SceneNodeInterface } from "../Renderer/types";
-import { NodeMaterials, StoreInterface } from "./types";
+import { ModelerInterface, NodeMaterials, StoreInterface } from "./types";
 import { downloadFbx } from "../Fbx/LoadFbx";
 import { FbxNodeInterface, isFbxContainerNode, isFbxGeometryNode } from "../Fbx/types";
 import { materialManager } from "../Renderer/Materials/MaterialManager";
 
-class Modeler {
+class Modeler implements ModelerInterface {
   model: SceneNodeInterface | null = null;
 
   loading: Record<number, Promise<SceneNodeInterface | undefined>> = {}
@@ -72,7 +72,7 @@ class Modeler {
 
       if (model) {
         this.renderer.addSceneNode(model);
-        this.store.applyMaterial();  
+        // this.store.applyMaterial();  
       }
     })
   }

@@ -104,7 +104,7 @@ class Graph implements GraphInterface {
 
     this.changed = true;
 
-    this.store.applyMaterial()
+    this.applyMaterial()
   }
 
   addNode(node: GraphNodeInterface): void {
@@ -204,7 +204,7 @@ class Graph implements GraphInterface {
     runInAction(() => {
       this.graph.transparent = transparent;
       this.changed = true;
-      this.store.applyMaterial()
+      this.applyMaterial()
     })
   }
 
@@ -212,7 +212,7 @@ class Graph implements GraphInterface {
     runInAction(() => {
       this.graph.depthWriteEnabled = depthWriteEnabled;
       this.changed = true;
-      this.store.applyMaterial()
+      this.applyMaterial()
     })
   }
 
@@ -220,7 +220,7 @@ class Graph implements GraphInterface {
     runInAction(() => {
       this.graph.lit = lit;
       this.changed = true;
-      this.store.applyMaterial()
+      this.applyMaterial()
     })
   }
 
@@ -228,14 +228,25 @@ class Graph implements GraphInterface {
     runInAction(() => {
       this.graph.cullMode = mode;
       this.changed = true;
-      this.store.applyMaterial()
+      this.applyMaterial()
     })
+  }
+
+  async applyMaterial(): Promise<void> {
+    const material = await this.generateMaterial();
+
+    if (material) {
+      this.store.previewModeler.applyMaterial(material);
+    }  
   }
 
   async generateMaterial(): Promise<MaterialInterface> {
     const shaderDescriptor = this.graph.createShaderDescriptor();
 
-    return await Material.create('Mesh', [], true, { shaderDescriptor, graph: this.graph });
+    // Find a preview node.
+    const preview = this.graph.fragment.nodes.find((n) => n.type === 'Preview');
+
+    return await Material.create('Mesh', [], { shaderDescriptor, graph: this.graph, root: preview });
   }
 }
 

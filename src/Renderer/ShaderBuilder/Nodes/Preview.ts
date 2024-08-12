@@ -15,12 +15,16 @@ class Preview extends OperationNode {
   getExpression(editMode: boolean): [string, DataType] {
     const [varA, dataType] = this.inputPorts[0].getValue(editMode);
 
+    if (dataType === 'float') {
+      return [`vec4f(${varA}, 0.0, 0.0, 1.0)`, 'vec4f'];
+    }
+
     if (dataType === 'vec2f') {
-      return [`vec4f(${varA}, 0, 1)`, 'vec4f'];
+      return [`vec4f(${varA}, 0.0, 1.0)`, 'vec4f'];
     }
 
     if (dataType === 'vec3f') {
-      return [`vec4f(${varA}, 1)`, 'vec4f'];
+      return [`vec4f(${varA}, 1.0)`, 'vec4f'];
     }
 
     return [`${varA}`, 'vec4f'];

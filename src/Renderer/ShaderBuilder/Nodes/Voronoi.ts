@@ -9,7 +9,7 @@ class Voronoi extends OperationNode {
     super('Voronoi', 'Voronoi', nodeDescriptor?.id)
 
     this.inputPorts = [
-      new InputPort(this, 'vec2f', 'uv'),
+      new InputPort(this, 'uv', 'uv'),
       new InputPort(this, 'float', 'density'),
     ];
 

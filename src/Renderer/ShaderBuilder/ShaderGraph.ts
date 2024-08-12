@@ -13,7 +13,7 @@ import { DrawableType } from "../types";
 import { GraphDescriptor } from "./GraphDescriptor";
 import Property from "./Property";
 import StageGraph from "./StageGraph";
-import { DataType, PropertyInterface } from "./Types";
+import { DataType, GraphNodeInterface, PropertyInterface } from "./Types";
 
 class ShaderGraph {
   type?: ShaderType;
@@ -91,6 +91,7 @@ class ShaderGraph {
   generateShaderCode (
     drawableType: DrawableType,
     vertProperties: PropertyInterface[],
+    root?: GraphNodeInterface,
   ): [string, PropertyInterface[], PropertyInterface[]] {
     const bindingType = (dataType: DataType) => {  
       if (dataType === 'texture2D') {
@@ -144,7 +145,7 @@ class ShaderGraph {
       vertUniforms = `struct VertProperties { ${vertUniforms} }\n`
     }
   
-    [fragmentBody, fragProperties] = this.fragment.generateStageShaderCode(this.editMode);
+    [fragmentBody, fragProperties] = this.fragment.generateStageShaderCode(this.editMode, root);
   
     console.log(fragmentBody);
   
@@ -209,8 +210,9 @@ class ShaderGraph {
   generateShaderModule (
     drawableType: DrawableType,
     vertexProperties: PropertyInterface[],
+    root?: GraphNodeInterface,
   ): [GPUShaderModule, PropertyInterface[], PropertyInterface[], string] {
-    const [code, vertProperties, fragProperties] = this.generateShaderCode(drawableType, vertexProperties);
+    const [code, vertProperties, fragProperties] = this.generateShaderCode(drawableType, vertexProperties, root);
   
     let shaderModule: GPUShaderModule
     try {

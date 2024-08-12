@@ -24,6 +24,10 @@ class Display extends OperationNode {
 
     const [varA, dataType] = this.inputPorts[0].getValue(editMode);
 
+    if (dataType === 'float') {
+      return [`vec4f(${varA}, 0, 0, ${alpha})`, 'vec4f'];
+    }
+
     if (dataType === 'vec2f') {
       return [`vec4f(${varA}, 0, ${alpha})`, 'vec4f'];
     }

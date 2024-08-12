@@ -9,7 +9,7 @@ class Twirl extends OperationNode {
     super('Twirl', 'Twirl', nodeDescriptor?.id)
 
     this.inputPorts = [
-      new InputPort(this, 'vec2f', 'uv'),
+      new InputPort(this, 'uv', 'uv'),
       new InputPort(this, 'float', 'strength'),
       new InputPort(this, 'vec2f', 'offset'),
     ];
@@ -17,6 +17,10 @@ class Twirl extends OperationNode {
     this.outputPort = [
       new OutputPort(this, 'vec2f', 'uv'),
     ]
+  }
+
+  getDataType(): DataType {
+    return 'vec2f'
   }
 
   getExpression(editMode: boolean): [string, DataType] {

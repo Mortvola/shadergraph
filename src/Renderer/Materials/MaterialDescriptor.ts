@@ -1,5 +1,5 @@
 import ShaderGraph from "../ShaderBuilder/ShaderGraph";
-import { PropertyInterface } from "../ShaderBuilder/Types";
+import { GraphNodeInterface, PropertyInterface } from "../ShaderBuilder/Types";
 import { ShaderDescriptor } from "../shaders/ShaderDescriptor";
 
 export type MaterialDescriptor = {
@@ -8,4 +8,6 @@ export type MaterialDescriptor = {
   shaderDescriptor?: ShaderDescriptor | number,
 
   graph?: ShaderGraph
+
+  root?: GraphNodeInterface
 }

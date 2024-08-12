@@ -15,6 +15,10 @@ class Fraction extends OperationNode {
     this.outputPort = [new OutputPort(this, 'vec2f', 'result')]
   }
 
+  getDataType(): DataType {
+    return this.inputPorts[0].getDataType()
+  }
+
   getExpression(editMode: boolean): [string, DataType] {
     const [value, dataType] = this.inputPorts[0].getValue(editMode);
 

@@ -194,7 +194,7 @@ class StageGraph {
     }
   }
 
-  generateStageShaderCode(editMode: boolean): [string, PropertyInterface[]] {
+  generateStageShaderCode(editMode: boolean, root?: GraphNodeInterface): [string, PropertyInterface[]] {
     // Clear the node priorities
     for (const node of this.nodes) {
       node.priority = null;
@@ -204,8 +204,12 @@ class StageGraph {
     const properties: PropertyInterface[] = [];
   
     // Find the output node
-    const outputNode = this.nodes.find((n) => n.type === 'Display');
-  
+    let outputNode: GraphNodeInterface | undefined = root;
+    
+    if (outputNode === undefined) {
+      outputNode = this.nodes.find((n) => n.type === 'Display');
+    }
+
     if (outputNode) {
       setNextVarid(0);
       let nextSamplerId = 0;

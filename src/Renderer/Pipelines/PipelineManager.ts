@@ -1,7 +1,7 @@
 import { makeShaderDataDefinitions, makeStructuredView } from "webgpu-utils";
 import { bindGroups } from "../BindGroups";
 import { gpu } from "../Gpu";
-import { PropertyInterface } from "../ShaderBuilder/Types";
+import { GraphNodeInterface, PropertyInterface } from "../ShaderBuilder/Types";
 import { DrawableType, PipelineInterface, PipelineManagerInterface, StageBindings } from "../types";
 import LinePipeline from "./LinePipeline";
 import Pipeline from "./Pipeline";
@@ -82,6 +82,7 @@ class PipelineManager implements PipelineManagerInterface {
     drawableType: DrawableType,
     vertexProperties: PropertyInterface[],
     graph: ShaderGraph,
+    root?: GraphNodeInterface,
   ): Promise<PipelineInterface> {
     let vertStageBindings: StageBindings | null = null;
     let fragStageBindings: StageBindings | null = null;
@@ -89,6 +90,7 @@ class PipelineManager implements PipelineManagerInterface {
     const key = JSON.stringify({
       drawableType,
       shaderDescriptor: graph.createShaderDescriptor(),
+      root: root?.id,
     });
 
     let pipelineEntry: PipelineMapEntry | undefined = this.pipelineMap.get(key);
@@ -119,7 +121,7 @@ class PipelineManager implements PipelineManagerInterface {
       let shaderModule: GPUShaderModule;
       let code: string;
     
-      [shaderModule, vertProperties, fragProperties, code] = graph.generateShaderModule(drawableType, vertexProperties);
+      [shaderModule, vertProperties, fragProperties, code] = graph.generateShaderModule(drawableType, vertexProperties, root);
 
       if (drawableType === 'Mesh') {
         vertexBufferLayout = [
