@@ -37,9 +37,11 @@ const ContextMenu: React.FC<PropsType> = ({
         onContextMenu={handleContextMenu}
       >
         <Menu
+          // Key is used to force rebuild of menu DOM if position changes
+          key={`${menuPosition.x}:${menuPosition.y}`}
           wrapperRef={ref}
           menuItems={menuItems}
-          x={menuPosition.x}
+          x={menuPosition.x + 1}
           y={menuPosition.y}
           originPosition={[menuPosition.x, menuPosition.y]}
           onClose={onClose}

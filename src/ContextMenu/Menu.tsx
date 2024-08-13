@@ -58,18 +58,22 @@ const Menu: React.FC<PropsType> = ({
       const wrapperRect = wrapperElement.getBoundingClientRect();
       const menuRect = menuElement.getBoundingClientRect();
 
-      const height = menuRect.bottom - menuRect.top;
+      const menuHeight = menuRect.bottom - menuRect.top;
 
-      if (y + height > wrapperRect.bottom) {
-        if (y - height < 0) {
+      if (y + menuHeight > wrapperRect.bottom) {
+        const adjustment = y + menuHeight - wrapperRect.bottom;
+        
+        // If the adjustment would place the top of the menu
+        // above the wrapper then set the top at the top of the wrapper.
+        if (y - adjustment < 0) {
           setYOffset({ offset: -y, scroll: false, visible: true });
         }
         else {
-          setYOffset({ offset: -height, scroll: false, visible: true });
+          setYOffset({ offset: -adjustment, scroll: false, visible: true });
         }
       }
       else {
-        setYOffset((prev) => ({ ...prev, visible: true }))
+        setYOffset((prev) => ({ ...prev, offset: 0, visible: true }))
       }
     }
   }, [wrapperRef, y])

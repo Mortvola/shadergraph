@@ -35,8 +35,6 @@ const SubmenuItem: React.FC<PropsType> = observer(({
 
   const handleMouseLeave = () => {
     setShowSubmenu(null);
-
-    console.log(`left ${menuItem.name}`)
   }
 
   const handleClose = () => {
