@@ -5,11 +5,13 @@ import Float from '../Float';
 type PropsType = {
   value: number[],
   length: number,
+  onChange: () => void,
 }
 
 const SimpleVector: React.FC<PropsType> = ({
   value,
   length,
+  onChange,
 }) => {
   // const store = useStores();
 
@@ -18,6 +20,7 @@ const SimpleVector: React.FC<PropsType> = ({
       value[index] = newValue;
       
       // store.applyMaterial();
+      onChange()
     }
   }
 

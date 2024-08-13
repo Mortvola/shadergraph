@@ -126,7 +126,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
         case 'vec3f':
         case 'vec4f':
           return Array.isArray(port.value.value)
-          ? <SimpleVector value={port.value.value as number[]} length={getLength(port.value.dataType)} />
+          ? <SimpleVector value={port.value.value as number[]} length={getLength(port.value.dataType)} onChange={handleValueChange} />
           : null
         case 'uv':
           return <SimpleUV />
