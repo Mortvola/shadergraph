@@ -7,7 +7,7 @@ import Controls from './Controls/Controls';
 import Properties from './Properties';
 import { menuItems } from './MenuItems';
 import Http from '../Http/src';
-import GraphComponent from './Graph';
+import Graph from './Graph';
 import { GraphInterface } from '../State/types';
 import Toolbar from './Toolbar';
 
@@ -104,7 +104,7 @@ const ShaderEditor: React.FC<PropsType> = observer(({
         <button type="button" onClick={handleSave}>Save</button>
       </Toolbar>
       <Canvas2d />
-      <GraphComponent parent={ref} />
+      <Graph parent={ref} />
       <Preview />
       <Controls />
       <Properties graph={graph} />

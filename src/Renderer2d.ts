@@ -51,6 +51,13 @@ class Renderer2d {
     this.ctx?.scale(this.canvasScale[0], this.canvasScale[1]);
   }
 
+  screenToViewPoint(x: number, y: number) {
+    return [
+      ((x - (this.origin.x - this.origin.x * this.scale)) / this.scale - this.translate[0]),
+      ((y - (this.origin.y - this.origin.y * this.scale)) / this.scale - this.translate[1]),
+    ];
+  }
+
   changeScale(delta: number) {
     runInAction(() => {
       this.scale += delta;
