@@ -22,11 +22,6 @@ import { box } from "../Renderer/Drawables/Shapes/box";
 import DrawableNode from "../Renderer/Drawables/SceneNodes/DrawableNode";
 import { vec3 } from "wgpu-matrix";
 
-type OpenMenuItem = {
-  menuItem: HTMLElement,
-  menuRect: DOMRect,
-}
-
 class Store implements StoreInterface {
   get graph(): Graph | null {
     return this.project.selectedItem?.type === 'shader' && this.project.selectedItem?.item
@@ -41,8 +36,6 @@ class Store implements StoreInterface {
   mainViewModeler: Modeler;
 
   models: ModelInterface[] = [];
-
-  menus: OpenMenuItem[] = [];
 
   mainView: Renderer;
 
@@ -62,8 +55,6 @@ class Store implements StoreInterface {
     this.previewModeler = new Modeler(previewRenderer, this);
 
     makeObservable(this, {
-      menus: observable,
-      // graph: observable,
       models: observable,
       project: observable,
     })

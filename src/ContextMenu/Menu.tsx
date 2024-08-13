@@ -2,8 +2,6 @@ import React from 'react';
 import styles from './ContextMenu.module.scss';
 import SubmenuItem from './SubmenuItem';
 import MenuItem from './MenuItem';
-import { runInAction } from 'mobx';
-import { useStores } from '../State/store';
 import { MenuItemLike, MenuItemRecord, isMenuActionRecord, isSubmenuItem } from './types';
 
 type PropsType = {
@@ -12,7 +10,6 @@ type PropsType = {
   y: number,
   originPosition: [number, number],
   onClose: () => void,
-  parentRef?: React.RefObject<HTMLDivElement>,
   wrapperRef: React.RefObject<HTMLDivElement>
 }
 
@@ -22,11 +19,8 @@ const Menu: React.FC<PropsType> = ({
   y,
   originPosition,
   onClose,
-  parentRef,
   wrapperRef,
 }) => {
-  const store = useStores();
-
   const renderMenuItem = (menuItem: MenuItemRecord) => {
     if (isMenuActionRecord(menuItem)) {
       return (
@@ -51,22 +45,6 @@ const Menu: React.FC<PropsType> = ({
   }
 
   const ref = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    const element = ref.current;
-    const parentElement = parentRef?.current;
-
-    if (parentElement && element) {
-      const rect = element.getBoundingClientRect();
-
-      runInAction(() => {
-        store.menus = [
-          ...store.menus,
-          { menuItem: parentElement, menuRect: rect }
-        ]  
-      })
-    }
-  }, [parentRef, store])
 
   const [yOffset, setYOffset] = React.useState<{ offset: number, scroll: boolean, visible: boolean }>(
     { offset: 0, scroll: false, visible: false },
@@ -97,7 +75,11 @@ const Menu: React.FC<PropsType> = ({
   }, [wrapperRef, y])
 
   return (
-    <div ref={ref} className={styles.contextmenu} style={{ left: x, top: y + yOffset.offset, visibility: yOffset.visible ? 'visible' : 'hidden' }}>
+    <div
+      ref={ref}
+      className={styles.contextmenu}
+      style={{ left: x, top: y + yOffset.offset, visibility: yOffset.visible ? 'visible' : 'hidden' }}
+    >
       <div>
         {
           menuItems().map((m) => (
