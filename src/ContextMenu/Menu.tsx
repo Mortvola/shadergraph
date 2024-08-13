@@ -10,6 +10,7 @@ type PropsType = {
   menuItems: () => MenuItemLike[],
   x: number,
   y: number,
+  originPosition: [number, number],
   onClose: () => void,
   parentRef?: React.RefObject<HTMLDivElement>,
   wrapperRef: React.RefObject<HTMLDivElement>
@@ -19,6 +20,7 @@ const Menu: React.FC<PropsType> = ({
   menuItems,
   x,
   y,
+  originPosition,
   onClose,
   parentRef,
   wrapperRef,
@@ -28,12 +30,21 @@ const Menu: React.FC<PropsType> = ({
   const renderMenuItem = (menuItem: MenuItemRecord) => {
     if (isMenuActionRecord(menuItem)) {
       return (
-        <MenuItem key={menuItem.name} item={menuItem} x={x} y={y} />
+        <MenuItem key={menuItem.name} item={menuItem} originPosition={originPosition} />
       )  
     }
 
-    if (isSubmenuItem(menuItem)) {
-      return <SubmenuItem key={menuItem.name} wrapperRef={wrapperRef} menuItem={menuItem} x={x} onClose={onClose} />
+    if (isSubmenuItem(menuItem) && menuItem.submenu().length > 0) {
+      return (
+        <SubmenuItem
+          key={menuItem.name}
+          wrapperRef={wrapperRef}
+          menuItem={menuItem}
+          x={x}
+          originPosition={originPosition}
+          onClose={onClose}
+        />
+      )
     }
 
     return null;

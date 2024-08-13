@@ -2,18 +2,16 @@ import React from 'react';
 import { MenuActionRecord } from './types';
 
 type PropsType = {
-  x: number,
-  y: number,
+  originPosition: [number, number]
   item: MenuActionRecord
 }
 
 const MenuItem: React.FC<PropsType> = ({
-  x,
-  y,
+  originPosition,
   item,
 }) => {
   const handleClick = () => {
-    item.action(x, y);
+    item.action(originPosition[0], originPosition[1]);
   }
 
   return (

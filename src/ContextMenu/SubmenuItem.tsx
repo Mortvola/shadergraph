@@ -9,6 +9,7 @@ import { SubmenutItemRecord } from './types';
 type PropsType = {
   menuItem: SubmenutItemRecord,
   x: number,
+  originPosition: [number, number],
   onClose: () => void,
   wrapperRef: React.RefObject<HTMLDivElement>
 }
@@ -16,6 +17,7 @@ type PropsType = {
 const SubmenuItem: React.FC<PropsType> = observer(({
   menuItem,
   x,
+  originPosition,
   onClose,
   wrapperRef,
 }) => {
@@ -61,6 +63,7 @@ const SubmenuItem: React.FC<PropsType> = observer(({
               menuItems={menuItem.submenu}
               x={showSubmenu.x}
               y={showSubmenu.y}
+              originPosition={originPosition}
               onClose={handleClose}
             />,
             wrapperRef.current,

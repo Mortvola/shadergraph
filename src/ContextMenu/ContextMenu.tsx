@@ -62,7 +62,14 @@ const ContextMenu: React.FC<PropsType> = ({
         onContextMenu={handleContextMenu}
         onMouseMove={handleMouseMove}
       >
-        <Menu wrapperRef={ref} menuItems={menuItems} x={menuPosition.x} y={menuPosition.y} onClose={onClose} />
+        <Menu
+          wrapperRef={ref}
+          menuItems={menuItems}
+          x={menuPosition.x}
+          y={menuPosition.y}
+          originPosition={[menuPosition.x, menuPosition.y]}
+          onClose={onClose}
+        />
       </div>,
       document.body,
     )
