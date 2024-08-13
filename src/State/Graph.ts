@@ -195,7 +195,8 @@ class Graph implements GraphInterface {
           ...this.graph.fragment.nodes.slice(index + 1),
         ];
 
-        this.changed = true;    
+        this.changed = true;
+        this.applyMaterial()
       })
     }
   }
