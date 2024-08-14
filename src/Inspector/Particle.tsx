@@ -7,13 +7,16 @@ import ColorPicker from './ColorPicker';
 import { useStores } from '../State/store';
 import { materialManager } from '../Renderer/Materials/MaterialManager';
 import { particleSystemManager } from '../Renderer/ParticleSystemManager';
-import { ParticleItem } from '../Renderer/types';
+import { ParticleItem, PSValue } from '../Renderer/types';
+import { runInAction } from 'mobx';
+import { observer } from 'mobx-react-lite';
+import PSValueInput from './PSValueInput';
 
 type PropsType = {
   particleItem: ParticleItem,
 }
 
-const Particle: React.FC<PropsType> = ({
+const Particle: React.FC<PropsType> = observer(({
   particleItem,
 }) => {  
   const store = useStores()
@@ -54,29 +57,30 @@ const Particle: React.FC<PropsType> = ({
     save()
   }
 
-  const handleVelocityChange = (value: number) => {
-    particleSystem.initialVelocity = value;
+  const handleVelocityChange = (value: PSValue) => {
+    particleSystem.startVelocity = value;
     save()
   }
 
-  const handleMinLifetimeChange = (value: number) => {
-    particleSystem.minLifetime = value;
-    save()
+  const handleLifetimeChange = (value: PSValue) => {
+    runInAction(() => {
+      particleSystem.lifetime = value
+      save()
+    })
   }
 
-  const handleMaxLifetimeChange = (value: number) => {
-    particleSystem.maxLifetime = value;
-    save()
+  const handleStartSizeChange = (value: PSValue) => {
+    runInAction(() => {
+      particleSystem.startSize = value
+      save()
+    })
   }
 
-  const handleInitialSizeChange = (value: number) => {
-    particleSystem.initialeSize = value;
-    save()
-  }
-
-  const handleFinalSizeChange = (value: number) => {
-    particleSystem.finalSize = value;
-    save()
+  const handleSizeChange = (value: PSValue) => {
+    runInAction(() => {
+      particleSystem.size = value
+      save()
+    })
   }
 
   const handleColor1AChange = (value: number[]) => {
@@ -135,6 +139,10 @@ const Particle: React.FC<PropsType> = ({
   return (
     <div className={styles.particle} onDragOver={handleDragOver} onDrop={handleDrop}>
       <label>
+        Duration:
+        <NumberInput value={particleSystem.duration} onChange={handleMaxPointsChange} />
+      </label>
+      <label>
         Number of Particles:
         <NumberInput value={particleSystem.maxPoints} onChange={handleMaxPointsChange} />
       </label>
@@ -151,24 +159,20 @@ const Particle: React.FC<PropsType> = ({
         <NumberInput value={particleSystem.originRadius} onChange={handleRadiusChange} />
       </label>
       <label>
-        Initial Velocity:
-        <NumberInput value={particleSystem.initialVelocity} onChange={handleVelocityChange} />
+        Lifetime:
+        <PSValueInput value={particleSystem.lifetime} onChange={handleLifetimeChange} />
       </label>
       <label>
-        Min Lifetime:
-        <NumberInput value={particleSystem.minLifetime} onChange={handleMinLifetimeChange} />
+        Start Velocity:
+        <PSValueInput value={particleSystem.startVelocity} onChange={handleVelocityChange} />
       </label>
       <label>
-        Max Lifetime:
-        <NumberInput value={particleSystem.maxLifetime} onChange={handleMaxLifetimeChange} />
+        Start Size:
+        <PSValueInput value={particleSystem.startSize} onChange={handleStartSizeChange} />
       </label>
       <label>
-        Initial Size:
-        <NumberInput value={particleSystem.initialeSize} onChange={handleInitialSizeChange} />
-      </label>
-      <label>
-        Final Size:
-        <NumberInput value={particleSystem.finalSize} onChange={handleFinalSizeChange} />
+        Size over lifetime:
+        <PSValueInput value={particleSystem.size} onChange={handleSizeChange} />
       </label>
       <label>
         Initial Color:
@@ -189,6 +193,6 @@ const Particle: React.FC<PropsType> = ({
       </label>
     </div>
   )
-}
+})
 
 export default Particle;

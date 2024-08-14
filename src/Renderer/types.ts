@@ -153,15 +153,49 @@ export type ShaderRecord = {
   descriptor: ShaderDescriptor,
 }
 
+export enum PSValueType {
+  Constant = 'Constant',
+  Random = 'Random',
+  Curve = 'Curve',
+  RandomeCurve = 'RandomCurve',
+}
+
+export type PSCurve = {
+  points: [number, number][],
+}
+
+export type PSValue = {
+  type: PSValueType,
+  value: [number, number],
+  curve: [PSCurve, PSCurve],
+}
+
+export const isPSValue = (r: unknown): r is PSValue => (
+  (r as PSValue).type !== undefined
+  && (r as PSValue).value !== undefined
+  && (r as PSValue).curve !== undefined
+);
+
 export type ParticleDescriptor = {
+  duration?: number,
   maxPoints?: number,
   rate?: number,
   angle?: number,
-  lifetime?: [number, number],
+
+  lifetimeType?: PSValueType,
+  lifetime?: [number, number] | PSValue,
+
   originRadius?: number,
-  initialVelocity?: number,
+  
+  startVelocity?: PSValue,
+
+  startSize?: PSValue,
+
+  size?: PSValue,
+  sizeType?: PSValueType,
   initialSize?: number,
   finalSize?: number,
+
   initialColor?: number[][],
   materialId?: number,
 }
