@@ -2,7 +2,8 @@ import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
 import {
-  ModelInterface, StoreInterface, TextureRecord, isGameObject2D,
+  GameObjectInterface,
+  ModelInterface, StoreInterface, TextureRecord, isGameObject, isGameObject2D,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
@@ -76,12 +77,25 @@ class Store implements StoreInterface {
   }
 
   async selectItem(item: ProjectItemInterface) {
-    if (this.project.selectedItem?.type === 'particle') {
-      const particleSystem: ParticleSystem | null = this.project.selectedItem.getItem()
+    if (this.project.selectedItem?.type === 'object' && isGameObject(this.project.selectedItem.item)) {
+      for (const item of this.project.selectedItem.item.items) {
+        if (item.type === 'particle') {
+          this.mainView.removeParticleSystem((item.item as ParticleItem).id)
+        }
+        else if (item.type === 'model') {
+          const modelItem = this.project.getItemByItemId((item.item as ModelItem).id, 'model');
 
-      if (particleSystem) {
-        this.mainView.removeParticleSystem(particleSystem)
-      }
+          if (modelItem) {
+            const model = await this.getModel(modelItem)
+    
+            if (model) {
+              this.mainViewModeler.renderer.removeSceneNode(model)
+            }
+          }    
+        }
+        else if (item.type === 'decal') {
+        }
+      }  
     }
 
     runInAction(() => {

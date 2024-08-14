@@ -72,6 +72,10 @@ export interface EntityInterface {
   name: string;
 }
 
+export const isGameObject = (r: unknown): r is GameObjectInterface => (
+  (r as GameObjectInterface).items !== undefined
+)
+
 export interface GameObjectInterface extends EntityInterface {
   items: GameObjectItem[]
 

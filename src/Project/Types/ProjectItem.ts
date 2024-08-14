@@ -1,13 +1,13 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import Http from "../../Http/src";
-import { FolderInterface, ItemLike, ProjectItemInterface } from "./types";
+import { FolderInterface, ItemLike, ProjectItemInterface, ProjectItemType } from "./types";
 
 class ProjectItem implements ProjectItemInterface {
   id: number
 
   name: string
 
-  type: string
+  type: ProjectItemType
 
   itemId: number | null
 
@@ -15,7 +15,7 @@ class ProjectItem implements ProjectItemInterface {
 
   item: ItemLike | null = null;
 
-  constructor(id: number, name: string, type: string, parent: FolderInterface | null, itemId: number | null) {
+  constructor(id: number, name: string, type: ProjectItemType, parent: FolderInterface | null, itemId: number | null) {
     this.id = id;
     this.itemId = itemId
     this.parent = parent

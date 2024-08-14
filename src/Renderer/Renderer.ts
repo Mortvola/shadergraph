@@ -580,8 +580,8 @@ class Renderer implements RendererInterface {
     }
   }
 
-  removeParticleSystem(particleSystem: ParticleSystemInterface): void {
-    const index = this.particleSystems.findIndex((p) => p === particleSystem)
+  removeParticleSystem(id: number): void {
+    const index = this.particleSystems.findIndex((p) => p.id === id)
 
     if (index !== -1) {
       this.particleSystems[index].removePoints(this.scene.scene)

@@ -10,12 +10,14 @@ export interface ProjectInterface {
   getItemByItemId(id: number, type: string): ProjectItemInterface | undefined
 }
 
+export type ProjectItemType = 'particle' | 'model' | 'shader' | 'texture' | 'material' | 'object' | 'folder';
+
 export interface ProjectItemInterface {
   id: number
 
   name: string
 
-  type: string
+  type: ProjectItemType
 
   itemId: number | null
 

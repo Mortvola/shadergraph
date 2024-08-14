@@ -3,7 +3,7 @@ import Http from "../../Http/src";
 import { ProjectItemRecord } from "../../State/types";
 import Folder from "./Folder";
 import ProjectItem from "./ProjectItem";
-import { FolderInterface, ProjectInterface, ProjectItemInterface, isFolder } from "./types";
+import { FolderInterface, ProjectInterface, ProjectItemInterface, ProjectItemType, isFolder } from "./types";
 
 class Project implements ProjectInterface {
   projectItems: Folder
@@ -30,7 +30,7 @@ class Project implements ProjectInterface {
             return new Folder(i.id, i.name, folder, this)
           }
 
-          return new ProjectItem(i.id, i.name, i.type, folder, i.itemId)
+          return new ProjectItem(i.id, i.name, i.type as ProjectItemType, folder, i.itemId)
         }));
       }
     })()
@@ -92,7 +92,7 @@ class Project implements ProjectInterface {
     if (response.ok) {
       const rec = await response.json() as ProjectItemRecord
 
-      const item = new ProjectItem(rec.id, rec.name, rec.type, parent, rec.itemId)
+      const item = new ProjectItem(rec.id, rec.name, rec.type as ProjectItemType, parent, rec.itemId)
 
       parent.addItem(item)
 
@@ -197,7 +197,7 @@ class Project implements ProjectInterface {
       if (response.ok) {
         const rec = await response.body();
   
-        const item = new ProjectItem(rec.id, rec.name, rec.type, folder, rec.itemId)
+        const item = new ProjectItem(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
         folder.addItem(item);
       }
   

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FolderInterface, ProjectItemInterface } from './Types/types';
+import { FolderInterface, ProjectItemInterface, ProjectItemType } from './Types/types';
 import styles from './ProjectItem.module.scss';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
@@ -101,7 +101,7 @@ const ProjectItem: React.FC<PropsType> = observer(({
             if (response) {
               const rec = await response.json()
 
-              const newItem = new ProjectItemObject(rec.id, rec.name, rec.type, item.parent, rec.itemId);
+              const newItem = new ProjectItemObject(rec.id, rec.name, rec.type as ProjectItemType, item.parent, rec.itemId);
 
               (item.parent as FolderInterface).addItem(newItem)
         
