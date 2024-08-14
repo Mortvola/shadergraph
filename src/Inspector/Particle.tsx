@@ -121,16 +121,18 @@ const Particle: React.FC<PropsType> = observer(({
     event.preventDefault();
     event.stopPropagation();
 
+    const draggingItem = store.draggingItem;
+
     if (
       event.dataTransfer.types[0] === 'application/project-item'
-      && store.draggingItem
-      && store.draggingItem.type === 'material'
-      && store.draggingItem.itemId !== null
+      && draggingItem
+      && draggingItem.type === 'material'
+      && draggingItem.itemId !== null
     ) {
-      const materialDescriptor = await materialManager.getDescriptor(store.draggingItem.itemId, false)
+      const materialDescriptor = await materialManager.getDescriptor(draggingItem.itemId, false)
 
       if (materialDescriptor) {
-        particleSystem.materialId = store.draggingItem.itemId
+        particleSystem.materialId = draggingItem.itemId
         particleSystem.materialDescriptor = materialDescriptor
       }
     }
