@@ -132,7 +132,7 @@ export interface PipelineManagerInterface {
 
 export interface ParticleSystemInterface {
   id: number
-  
+
   angle: number
 
   update(time: number, elapsedTime: number, scene: ContainerNodeInterface): Promise<void>
@@ -198,6 +198,7 @@ export type ParticleDescriptor = {
   initialSize?: number,
   finalSize?: number,
 
+  startColor?: number[][],
   initialColor?: number[][],
   materialId?: number,
 }

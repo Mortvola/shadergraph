@@ -84,13 +84,23 @@ const Particle: React.FC<PropsType> = observer(({
   }
 
   const handleColor1AChange = (value: number[]) => {
-    particleSystem.initialColor[0] = value.slice();
-    save()
+    runInAction(() => {
+      particleSystem.startColor = [
+        value.slice(),
+        [...particleSystem.startColor[1]],
+      ];
+      save()  
+    })
   }
 
   const handleColor2AChange = (value: number[]) => {
-    particleSystem.initialColor[1] = value.slice();
-    save()
+    runInAction(() => {
+      particleSystem.startColor = [
+        [...particleSystem.startColor[0]],
+        value.slice(),
+      ];  
+      save()
+    })
   }
 
   const save = async () => {
@@ -179,8 +189,8 @@ const Particle: React.FC<PropsType> = observer(({
       <label>
         Initial Color:
         <div>
-          <ColorPicker value={particleSystem.initialColor[0]} onChange={handleColor1AChange} />
-          <ColorPicker value={particleSystem.initialColor[1]} onChange={handleColor2AChange} />
+          <ColorPicker value={particleSystem.startColor[0]} onChange={handleColor1AChange} />
+          <ColorPicker value={particleSystem.startColor[1]} onChange={handleColor2AChange} />
         </div>
       </label>
       <label>

@@ -1,6 +1,8 @@
 import React from 'react';
-import NumberInput from './NumberInput';
 import styles from './ColorPicker.module.scss'
+import ColorPickerPopup from './ColorPickerPopup';
+import ColorMutator from './ColorMutator';
+import Color from './Color';
 
 type PropsType = {
   value: number[],
@@ -11,65 +13,51 @@ const ColorPicker: React.FC<PropsType> = ({
   value,
   onChange,
 }) => {
-  const [red, setRed] = React.useState<number>(value[0]);
-  const [green, setGreen] = React.useState<number>(value[1]);
-  const [blue, setBlue] = React.useState<number>(value[2]);
-  const [brightness, setBrightness] = React.useState<number>(0.299 * red + 0.587 * green + 0.114 * blue)
+  const [open, setOpen] = React.useState<DOMRect | null>();
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [color, setColor] = React.useState<number[]>([0, 0, 0, 1])
+  const [hdr, setHdr] = React.useState<number[]>([0, 0, 0, 1])
 
-  const handleRedChange = (r: number) => {
-    setRed(r);
-    setBrightness((0.299 * r +  0.587 * green  + 0.114 * blue))
-    onChange([r, green, blue, 1])
+  React.useEffect(() => {
+    const cm = new ColorMutator(new Color(value[0], value[1] / 255, value[2], value[3] / 255))
+
+    console.log(JSON.stringify(cm.color))
+
+    setColor(cm.color)
+    setHdr(cm.colorHdr)
+  }, [value])
+
+  const handleClose = () => {
+    setOpen(null);
   }
 
-  const handleGreenChange = (g: number) => {
-    setGreen(g);
-    setBrightness((0.299 * red +  0.587 * g  + 0.114 * blue))
-    onChange([red, g, blue, 1])
-  }
+  const handleOpenClick = () => {
+    const element = ref.current;
 
-  const handleBlueChange = (b: number) => {
-    setBlue(b);
-    setBrightness((0.299 * red +  0.587 * green  + 0.114 * b))
-    onChange([red, green, b, 1])
-  }
+    if (element) {
+      const rect = element.getBoundingClientRect();
 
-  const handleBrightnessChange = (newBrightness: number) => {
-    const colorChange = newBrightness / (0.299 * red +  0.587 * green  + 0.114 * blue)
+      console.log(rect);
 
-    setRed((prev) => prev * colorChange)
-    setGreen((prev) => prev * colorChange)
-    setBlue((prev) => prev * colorChange)
-
-    setBrightness(newBrightness);
-
-    const newRgb = [red * colorChange, green * colorChange, blue * colorChange, 1];
-
-    onChange(newRgb)
+      setOpen(rect);
+    }
   }
 
   return (
     <div className={styles.color}>
       <div
+        ref={ref}
         className={styles.sample}
-        style={{ backgroundColor: `color(srgb-linear ${red * 100}% ${green * 100}% ${blue * 100}% / 100%)` }}
+        // style={{ backgroundColor: `color(srgb-linear ${color[0] * 100}% ${color[1] * 100}% ${color[2] * 100}% / 100%)` }}
+        style={{ backgroundColor: `color(srgb-linear ${hdr[0]} ${hdr[1]} ${hdr[2]})` }}
+        // style={{ backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})` }}
+        onClick={handleOpenClick}
       />
-      <label>
-        Red:
-        <NumberInput value={red} onChange={handleRedChange} />
-      </label>
-      <label>
-        Green:
-        <NumberInput value={green} onChange={handleGreenChange} />
-      </label>
-      <label>
-        Blue:
-        <NumberInput value={blue} onChange={handleBlueChange} />
-      </label>
-      <label>
-        Brightness:
-        <NumberInput value={brightness} onChange={handleBrightnessChange} />
-      </label>
+      {
+        open
+          ? <ColorPickerPopup value={value} onChange={onChange} onClose={handleClose} rect={open} useHdr={true} />
+          : null
+      }
     </div>
   )
 }

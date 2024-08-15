@@ -61,7 +61,7 @@ class ParticleSystem implements ParticleSystemInterface {
 
   originRadius: number;
 
-  initialColor: number[][];
+  startColor: number[][];
 
   materialId: number | undefined = undefined;
 
@@ -134,7 +134,7 @@ class ParticleSystem implements ParticleSystemInterface {
       }  
     }
 
-    this.initialColor = descriptor?.initialColor ?? [[1, 1, 1, 1], [1, 1, 1, 1]]
+    this.startColor = (descriptor?.startColor ?? descriptor?.initialColor) ?? [[1, 1, 1, 1], [1, 1, 1, 1]]
     this.materialId = descriptor?.materialId
     this.materialDescriptor = descriptor?.materialId
 
@@ -143,6 +143,7 @@ class ParticleSystem implements ParticleSystemInterface {
       startVelocity: observable,
       startSize: observable,
       size: observable,
+      startColor: observable,
     })
   }
 
@@ -286,7 +287,7 @@ class ParticleSystem implements ParticleSystemInterface {
         lifetime,
         startSize,
         drawable,
-        color: computeRandomColor(this.initialColor[0], this.initialColor[1]),
+        color: computeRandomColor(this.startColor[0], this.startColor[1]),
       }
 
       this.points.push(point)
@@ -310,7 +311,7 @@ class ParticleSystem implements ParticleSystemInterface {
       startVelocity: this.startVelocity,
       startSize: this.startSize,
       size: this.size,
-      initialColor: this.initialColor,
+      startColor: this.startColor,
       materialId: this.materialId,
     })
   }
