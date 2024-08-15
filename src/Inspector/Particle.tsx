@@ -3,7 +3,7 @@ import ParticleSystem from '../Renderer/ParticleSystem';
 import NumberInput from './NumberInput';
 import Http from '../Http/src';
 import styles from './Particle.module.scss';
-import ColorPicker from './ColorPicker';
+import ColorPicker from '../Color/ColorPicker';
 import { useStores } from '../State/store';
 import { materialManager } from '../Renderer/Materials/MaterialManager';
 import { particleSystemManager } from '../Renderer/ParticleSystemManager';

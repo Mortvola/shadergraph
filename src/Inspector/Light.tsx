@@ -1,5 +1,5 @@
 import React from 'react';
-import ColorPicker from './ColorPicker';
+import ColorPicker from '../Color/ColorPicker';
 import { LightItem } from '../Renderer/types';
 import NumberInput from './NumberInput';
 import { MenuItemLike } from '../ContextMenu/types';

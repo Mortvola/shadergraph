@@ -4,7 +4,7 @@ import Canvas2d from './Canvas2d';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import Preview from './Preview';
 import Controls from './Controls/Controls';
-import Properties from './Properties';
+import Properties from './Properties/Properties';
 import { menuItems } from './MenuItems';
 import Http from '../Http/src';
 import Graph from './Graph';

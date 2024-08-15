@@ -1,12 +1,12 @@
 import React from 'react';
-import styles from './PropertyDialog.module.scss';
-import { PropertyInterface } from '../Renderer/ShaderBuilder/Types';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
-import Modal from '../Modal';
-import { GraphInterface } from '../State/types';
+import styles from './PropertyDialog.module.scss';
+import { PropertyInterface } from '../../Renderer/ShaderBuilder/Types';
+import Modal from '../../Modal';
+import { GraphInterface } from '../../State/types';
 import ValueInput from './ValueInput';
-import { useStores } from '../State/store';
+import { useStores } from '../../State/store';
 
 type PropsType = {
   graph: GraphInterface,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
-import ValueInput from '../ShaderEditor/ValueInput';
+import ValueInput from '../ShaderEditor/Properties/ValueInput';
 import styles from './Material.module.scss';
 import { MaterialItemInterface } from '../State/types';
 import { materialManager } from '../Renderer/Materials/MaterialManager';

@@ -1,5 +1,5 @@
 import React from 'react';
-import NumberInput from './NumberInput';
+import NumberInput from '../Inspector/NumberInput';
 import styles from './ColorPicker.module.scss';
 import { createPortal } from 'react-dom';
 import ColorMutator from './ColorMutator';

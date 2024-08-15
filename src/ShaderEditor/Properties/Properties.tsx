@@ -1,13 +1,13 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import Draggable from './Draggable';
+import Draggable from '../Draggable';
 import styles from './Properties.module.scss';
 import PropertyEntry from './PropertyEntry';
-import { PropertyInterface } from '../Renderer/ShaderBuilder/Types';
+import { PropertyInterface } from '../../Renderer/ShaderBuilder/Types';
 import PropertyDialog from './PropertyDialog';
-import { GraphInterface } from '../State/types';
-import ContextMenu from '../ContextMenu/ContextMenu';
-import { menuItems } from './PropertyMenu/MenuItems';
+import { GraphInterface } from '../../State/types';
+import ContextMenu from '../../ContextMenu/ContextMenu';
+import { menuItems } from './MenuItems';
 
 type PropsType = {
   graph: GraphInterface,

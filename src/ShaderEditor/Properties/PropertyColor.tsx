@@ -1,6 +1,6 @@
 import React from 'react';
-import { ValueType } from '../Renderer/ShaderBuilder/Types';
-import Float from './Float';
+import { ValueType } from '../../Renderer/ShaderBuilder/Types';
+import Float from '../Float';
 import styles from './Properties.module.scss'
 
 type PropsType = {

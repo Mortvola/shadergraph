@@ -1,11 +1,11 @@
 import React from 'react';
-import PropertyVector from './PropertyVector';
-import PropertyTexture from './PropertyTexture';
-import PropertyString from './PropertyString';
-import PropertyFloat from './PropertyFloat';
 import { runInAction } from 'mobx';
-import { ValueInterface } from '../Renderer/ShaderBuilder/Types';
 import { observer } from 'mobx-react-lite';
+import { ValueInterface } from '../../Renderer/ShaderBuilder/Types';
+import PropertyVector from './PropertyVector';
+import PropertyTexture from '../PropertyTexture';
+import PropertyString from '../PropertyString';
+import PropertyFloat from './PropertyFloat';
 import PropertyColor from './PropertyColor';
 
 type PropsType = {
