@@ -64,6 +64,12 @@ class ParticleSystem implements ParticleSystemInterface {
 
   gravityModifier: number;
 
+  collisionEnabled: boolean;
+
+  bounce: number;
+
+  dampen: number;
+
   materialId: number | undefined = undefined;
 
   materialDescriptor: MaterialDescriptor | number | undefined;
@@ -138,7 +144,11 @@ class ParticleSystem implements ParticleSystemInterface {
     this.startColor = (descriptor?.startColor ?? descriptor?.initialColor) ?? [[1, 1, 1, 1], [1, 1, 1, 1]]
 
     this.gravityModifier = descriptor?.gravityModifier ?? 0;
-    
+
+    this.collisionEnabled = descriptor?.collisionEnabled ?? false;
+    this.bounce = descriptor?.bounce ?? 1;
+    this.dampen = descriptor?.dampen ?? 0;
+
     this.materialId = descriptor?.materialId
     this.materialDescriptor = descriptor?.materialId
 
@@ -149,6 +159,7 @@ class ParticleSystem implements ParticleSystemInterface {
       size: observable,
       startColor: observable,
       gravityModifier: observable,
+      collisionEnabled: observable,
     })
   }
 
@@ -208,7 +219,7 @@ class ParticleSystem implements ParticleSystemInterface {
       }
 
       // Adjust velocity with gravity
-      point.velocity = vec3.addScaled(
+      point.velocity = vec4.addScaled(
         point.velocity,
         [0, 1, 0, 0],
         this.gravityModifier * gravity * elapsedTime,
@@ -220,6 +231,32 @@ class ParticleSystem implements ParticleSystemInterface {
         point.velocity,
         elapsedTime,
       );
+
+      if (this.collisionEnabled && point.drawable.translate[1] <= 0) {
+        if (false) {
+          scene.removeNode(point.drawable);
+        
+          this.points = [
+            ...this.points.slice(0, i),
+            ...this.points.slice(i + 1),
+          ]
+  
+          i -= 1
+  
+          continue  
+        }
+
+        // TODO: Improve calculation of point/time of collision and
+        // movement along new vector with remaining time.
+
+        // Compute reflection vector and account for how much bounce.
+        const normal = vec4.create(0, 1, 0, 0);
+        const dot = vec4.dot(point.velocity, normal);
+        point.velocity = vec4.subtract(point.velocity, vec4.scale(normal, dot + dot * this.bounce))
+
+        // Dampen the velocity
+        point.velocity = vec4.scale(point.velocity, 1 - this.dampen)
+      }
 
       const size = getPSValue(this.size, t) * point.size;
 
@@ -329,6 +366,9 @@ class ParticleSystem implements ParticleSystemInterface {
       size: this.size,
       startColor: this.startColor,
       gravityModifier: this.gravityModifier,
+      collisionEnabled: this.collisionEnabled,
+      bounce: this.bounce,
+      dampen: this.dampen,
       materialId: this.materialId,
     })
   }

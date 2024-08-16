@@ -202,7 +202,11 @@ export type ParticleDescriptor = {
   initialColor?: number[][],
 
   gravityModifier?: number,
-  
+
+  collisionEnabled?: boolean,
+  bounce?: number,
+  dampen?: number,
+
   materialId?: number,
 }
 

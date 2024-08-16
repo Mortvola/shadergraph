@@ -11,6 +11,7 @@ import { ParticleItem, PSValue } from '../Renderer/types';
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import PSValueInput from './PSValueInput';
+import Checkbox from '../ShaderEditor/Controls/Checkbox';
 
 type PropsType = {
   particleItem: ParticleItem,
@@ -37,9 +38,18 @@ const Particle: React.FC<PropsType> = observer(({
     return null
   }
 
+  const handleDurationChange = (value: number) => {
+    runInAction(() => {
+      particleSystem.duration = value;
+      save()  
+    })
+  }
+
   const handleMaxPointsChange = (value: number) => {
-    particleSystem.maxPoints = value;
-    save()
+    runInAction(() => {
+      particleSystem.maxPoints = value;
+      save()  
+    })
   }
 
   const handleRateChange = (value: number) => {
@@ -110,6 +120,27 @@ const Particle: React.FC<PropsType> = observer(({
     })
   }
 
+  const handleCollisionChange = (value: boolean) => {
+    runInAction(() => {
+      particleSystem.collisionEnabled = !particleSystem.collisionEnabled;
+      save();
+    })
+  }
+
+  const handleBounceChange = (value: number) => {
+    runInAction(() => {
+      particleSystem.bounce = value;
+      save()  
+    })
+  }
+
+  const handleDampenChange = (value: number) => {
+    runInAction(() => {
+      particleSystem.dampen = value;
+      save()  
+    })
+  }
+
   const save = async () => {
     const response = await Http.patch(`/particles/${particleSystem.id}`, {
       descriptor: particleSystem.getDescriptor(),
@@ -159,7 +190,7 @@ const Particle: React.FC<PropsType> = observer(({
     <div className={styles.particle} onDragOver={handleDragOver} onDrop={handleDrop}>
       <label>
         Duration:
-        <NumberInput value={particleSystem.duration} onChange={handleMaxPointsChange} />
+        <NumberInput value={particleSystem.duration} onChange={handleDurationChange} />
       </label>
       <label>
         Number of Particles:
@@ -203,6 +234,15 @@ const Particle: React.FC<PropsType> = observer(({
       <label>
         Gravity Modifier:
         <NumberInput value={particleSystem.gravityModifier} onChange={handleGravityChange} />
+      </label>
+      <Checkbox label="Collision" value={particleSystem.collisionEnabled} onChange={handleCollisionChange} />
+      <label>
+        Bounce:
+        <NumberInput value={particleSystem.bounce} onChange={handleBounceChange} />
+      </label>
+      <label>
+        Dampen:
+        <NumberInput value={particleSystem.dampen} onChange={handleDampenChange} />
       </label>
       <label>
         Material:
