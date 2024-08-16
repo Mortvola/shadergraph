@@ -1,19 +1,18 @@
 import { Vec4, mat4, vec3, vec4 } from "wgpu-matrix"
 import { ContainerNodeInterface, isPSValue, ParticleDescriptor, ParticleSystemInterface, PSValue, PSValueType } from "./types";
 import DrawableNode from "./Drawables/SceneNodes/DrawableNode";
-import { degToRad } from "./Math";
+import { degToRad, gravity } from "./Math";
 import DrawableInterface from "./Drawables/DrawableInterface";
 import Billboard from "./Drawables/Billboard";
 import { MaterialDescriptor } from "./Materials/MaterialDescriptor";
 import { makeObservable, observable } from "mobx";
 
 type Point = {
-  startVelocity: number,
-  direction: Vec4,
+  velocity: Vec4,
   startTime: number,
   lifetime: number,
   drawable: DrawableNode,
-  startSize: number,
+  size: number,
   color: Vec4,
 }
 
@@ -57,11 +56,13 @@ class ParticleSystem implements ParticleSystemInterface {
 
   startSize: PSValue;
 
-  size: PSValue;
+  size: PSValue; // Size over lifetime
 
   originRadius: number;
 
   startColor: number[][];
+
+  gravityModifier: number;
 
   materialId: number | undefined = undefined;
 
@@ -135,6 +136,9 @@ class ParticleSystem implements ParticleSystemInterface {
     }
 
     this.startColor = (descriptor?.startColor ?? descriptor?.initialColor) ?? [[1, 1, 1, 1], [1, 1, 1, 1]]
+
+    this.gravityModifier = descriptor?.gravityModifier ?? 0;
+    
     this.materialId = descriptor?.materialId
     this.materialDescriptor = descriptor?.materialId
 
@@ -144,6 +148,7 @@ class ParticleSystem implements ParticleSystemInterface {
       startSize: observable,
       size: observable,
       startColor: observable,
+      gravityModifier: observable,
     })
   }
 
@@ -180,7 +185,7 @@ class ParticleSystem implements ParticleSystemInterface {
     this.updateParticles(time, elapsedTime, scene);
   
     // Add new particles
-    await this.emit(time, elapsedTime, elapsedTime2, scene)
+    await this.emit(time, elapsedTime2, scene)
   }
 
   private updateParticles(time: number, elapsedTime: number, scene: ContainerNodeInterface) {
@@ -202,9 +207,21 @@ class ParticleSystem implements ParticleSystemInterface {
         continue
       }
 
-      point.drawable.translate = vec3.addScaled(point.drawable.translate, point.direction, point.startVelocity * elapsedTime);
+      // Adjust velocity with gravity
+      point.velocity = vec3.addScaled(
+        point.velocity,
+        [0, 1, 0, 0],
+        this.gravityModifier * gravity * elapsedTime,
+      )
 
-      const size = getPSValue(this.size, t) * point.startSize;
+      // Find new position with current velocity
+      point.drawable.translate = vec3.addScaled(
+        point.drawable.translate,
+        point.velocity,
+        elapsedTime,
+      );
+
+      const size = getPSValue(this.size, t) * point.size;
 
       point.drawable.scale = vec3.create(size, size, size)
 
@@ -215,7 +232,7 @@ class ParticleSystem implements ParticleSystemInterface {
     }
   }
 
-  private async emit(time: number, elapsedTime: number, t: number, scene: ContainerNodeInterface) {
+  private async emit(time: number, t: number, scene: ContainerNodeInterface) {
     if (this.points.length < this.maxPoints) {
       const emitElapsedTime = time - this.lastEmitTime;
 
@@ -231,11 +248,11 @@ class ParticleSystem implements ParticleSystemInterface {
   }
 
   async emitSome(numToEmit: number, startTime: number, t: number, scene: ContainerNodeInterface) {
-    let lifetime = getPSValue(this.lifetime, t);
-    let startVelocity = getPSValue(this.startVelocity, t);
-    let startSize = getPSValue(this.startSize, t);
-
     for (; numToEmit > 0; numToEmit -= 1) {
+      const lifetime = getPSValue(this.lifetime, t);
+      const startVelocity = getPSValue(this.startVelocity, t);
+      const size = getPSValue(this.startSize, t);
+
       const drawable = await DrawableNode.create(this.drawable!, this.materialDescriptor);
 
       let origin = vec4.create(0, 0, 0, 1)
@@ -269,7 +286,7 @@ class ParticleSystem implements ParticleSystemInterface {
       mat4.rotateX(transform, degToRad(this.angle), transform)
       vec4.transformMat4(p1, transform, p1)
 
-      const vector = vec4.subtract(p1, origin)
+      const direction = vec4.subtract(p1, origin)
 
       const computeRandomColor = (color1: number[], color2: number[]) => {
         return [
@@ -281,11 +298,10 @@ class ParticleSystem implements ParticleSystemInterface {
       }
 
       const point: Point = {
-        startVelocity,
-        direction: vector,
+        velocity: vec4.scale(direction, startVelocity),
         startTime,
         lifetime,
-        startSize,
+        size,
         drawable,
         color: computeRandomColor(this.startColor[0], this.startColor[1]),
       }
@@ -312,6 +328,7 @@ class ParticleSystem implements ParticleSystemInterface {
       startSize: this.startSize,
       size: this.size,
       startColor: this.startColor,
+      gravityModifier: this.gravityModifier,
       materialId: this.materialId,
     })
   }

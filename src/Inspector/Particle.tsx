@@ -103,6 +103,13 @@ const Particle: React.FC<PropsType> = observer(({
     })
   }
 
+  const handleGravityChange = (value: number) => {
+    runInAction(() => {
+      particleSystem.gravityModifier = value;
+      save();
+    })
+  }
+
   const save = async () => {
     const response = await Http.patch(`/particles/${particleSystem.id}`, {
       descriptor: particleSystem.getDescriptor(),
@@ -192,6 +199,10 @@ const Particle: React.FC<PropsType> = observer(({
           <ColorPicker value={particleSystem.startColor[0]} onChange={handleColor1AChange} useAlpha useHdr />
           <ColorPicker value={particleSystem.startColor[1]} onChange={handleColor2AChange} useAlpha useHdr />
         </div>
+      </label>
+      <label>
+        Gravity Modifier:
+        <NumberInput value={particleSystem.gravityModifier} onChange={handleGravityChange} />
       </label>
       <label>
         Material:
