@@ -57,9 +57,7 @@ export const intersectionPlane = (planePoint: Vec4, planeNormal: Vec4, origin: V
     const v = vec4.subtract(planePoint, origin);
     const t = vec4.dot(v, planeNormal) / denom;
 
-    if (t >= 0) {
-      return vec4.add(origin, vec4.mulScalar(ray, t))
-    }
+    return vec4.addScaled(origin, ray, t)
   }
 
   return null;

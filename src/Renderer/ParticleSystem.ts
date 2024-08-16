@@ -1,7 +1,7 @@
 import { Vec4, mat4, vec3, vec4 } from "wgpu-matrix"
 import { ContainerNodeInterface, isPSValue, ParticleDescriptor, ParticleSystemInterface, PSValue, PSValueType } from "./types";
 import DrawableNode from "./Drawables/SceneNodes/DrawableNode";
-import { degToRad, gravity } from "./Math";
+import { degToRad, gravity, intersectionPlane } from "./Math";
 import DrawableInterface from "./Drawables/DrawableInterface";
 import Billboard from "./Drawables/Billboard";
 import { MaterialDescriptor } from "./Materials/MaterialDescriptor";
@@ -173,6 +173,96 @@ class ParticleSystem implements ParticleSystemInterface {
     this.points = []
   }
 
+  collided(point: Point, elapsedTime: number, scene: ContainerNodeInterface): boolean {
+    if (this.collisionEnabled) {
+      const planeNormal = vec4.create(0, 1, 0, 0);
+      const planeOrigin = vec4.create(0, 0, 0, 1);
+
+      const sphereRadius = point.size / 2;
+
+      // Are we traveling toward the plane or away?
+      const d = vec4.dot(planeNormal, point.velocity);
+      if (d <= 0) {
+        // We are traveling toward the plane. Continue with collision detection.
+
+        // Find the point on the sphere that will collide with the plane if
+        // we travel far enough.
+        const sphereIntersectionPoint = vec4.subtract(
+          vec4.create(...point.drawable.translate, 1),
+          vec4.scale(
+            planeNormal,
+            sphereRadius,
+          )
+        )
+
+        // Find the point on the plane that we will collide with if we travel far enough.
+        const planeInterSectionPoint = intersectionPlane(planeOrigin, planeNormal, sphereIntersectionPoint, vec4.normalize(point.velocity));
+
+        if (planeInterSectionPoint) {
+          // Will we travel fare enough to hit the plane?
+          const distanceToCollision = vec3.distance(sphereIntersectionPoint, planeInterSectionPoint)
+          const distanceToDestination = vec3.length(vec4.scale(point.velocity, elapsedTime))
+
+          // Compute the sphere origin to collision point distance for those cases where the sphere has already
+          // partially embedded in the plane.
+          const originToCollision = vec3.distance(point.drawable.translate, planeInterSectionPoint)
+
+          if (distanceToCollision < distanceToDestination || originToCollision < sphereRadius) {
+            // Yes, the sphere and plane will collide
+            // if (false) {
+            //   scene.removeNode(point.drawable);
+            
+            //   this.points = [
+            //     ...this.points.slice(0, i),
+            //     ...this.points.slice(i + 1),
+            //   ]
+      
+            //   i -= 1
+      
+            //   continue  
+            // }
+  
+            // TODO: Improve calculation of point/time of collision and
+            // movement along new vector with remaining time.
+  
+            // Compute the reflection vector and account for how much bounce.
+            const dot = vec4.dot(point.velocity, planeNormal);
+
+            point.velocity = vec4.subtract(point.velocity, vec4.scale(planeNormal, dot + dot * this.bounce))
+
+            // Allow the collision to dampen the velocity
+            point.velocity = vec4.scale(point.velocity, 1 - this.dampen)  
+
+            // Move the sphere to the intersection point
+            // offset by the radius of the sphere along the plane normal.
+            const newlocation = vec4.add(
+              planeInterSectionPoint,
+              vec4.scale(
+                planeNormal,
+                point.size / 2,
+              )    
+            )
+
+            point.drawable.translate = vec3.create(...newlocation.slice(0,3));
+
+            const percentRemaining = 1 - distanceToCollision / distanceToDestination;
+
+            // Add remaing amount to travel
+            point.drawable.translate = vec3.addScaled(
+              point.drawable.translate,
+              point.velocity,
+              elapsedTime * percentRemaining,
+            );  
+
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
   async update(time: number, elapsedTime: number, scene: ContainerNodeInterface): Promise<void> {
     if (!this.drawable) {
       this.drawable = new Billboard()
@@ -225,37 +315,13 @@ class ParticleSystem implements ParticleSystemInterface {
         this.gravityModifier * gravity * elapsedTime,
       )
 
-      // Find new position with current velocity
-      point.drawable.translate = vec3.addScaled(
-        point.drawable.translate,
-        point.velocity,
-        elapsedTime,
-      );
-
-      if (this.collisionEnabled && point.drawable.translate[1] <= 0) {
-        if (false) {
-          scene.removeNode(point.drawable);
-        
-          this.points = [
-            ...this.points.slice(0, i),
-            ...this.points.slice(i + 1),
-          ]
-  
-          i -= 1
-  
-          continue  
-        }
-
-        // TODO: Improve calculation of point/time of collision and
-        // movement along new vector with remaining time.
-
-        // Compute reflection vector and account for how much bounce.
-        const normal = vec4.create(0, 1, 0, 0);
-        const dot = vec4.dot(point.velocity, normal);
-        point.velocity = vec4.subtract(point.velocity, vec4.scale(normal, dot + dot * this.bounce))
-
-        // Dampen the velocity
-        point.velocity = vec4.scale(point.velocity, 1 - this.dampen)
+      if (!this.collided(point,  elapsedTime, scene)) {
+        // Find new position with current velocity
+        point.drawable.translate = vec3.addScaled(
+          point.drawable.translate,
+          point.velocity,
+          elapsedTime,
+        );
       }
 
       const size = getPSValue(this.size, t) * point.size;
@@ -303,7 +369,9 @@ class ParticleSystem implements ParticleSystemInterface {
       mat4.translate(transform, vec4.create(0, 0, offset, 1), transform)
       vec4.transformMat4(origin, transform, origin)
 
-      drawable.translate = origin
+      // drawable.translate = vec3.add(origin, vec3.create(0, 1, 0));
+      drawable.translate = origin;
+
       drawable.scale = vec3.create(this.size.value[0], this.size.value[0], this.size.value[0]);
 
       scene.addNode(drawable)
