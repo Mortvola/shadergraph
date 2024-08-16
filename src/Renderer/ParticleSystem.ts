@@ -225,7 +225,7 @@ class ParticleSystem implements ParticleSystemInterface {
         this.lastEmitTime = time;
       
         // while (this.points.length < this.maxPoints) {
-        this.emitSome(numToEmit, time, t, scene)
+        await this.emitSome(numToEmit, time, t, scene)
       }
     }
   }

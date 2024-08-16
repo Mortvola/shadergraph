@@ -1,3 +1,4 @@
+import { makeObservable, observable } from "mobx";
 import { ValueType, DataType, ValueInterface } from "./Types";
 
 class Value implements ValueInterface {
@@ -8,6 +9,10 @@ class Value implements ValueInterface {
   constructor(dataType: DataType, value: ValueType) {
     this.dataType = dataType;
     this.value = value;
+
+    makeObservable(this, {
+      value: observable,
+    })
   }
 
   copy(): Value {

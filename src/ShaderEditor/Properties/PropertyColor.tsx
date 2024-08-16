@@ -1,21 +1,17 @@
 import React from 'react';
 import { ValueType } from '../../Renderer/ShaderBuilder/Types';
-import Float from '../Float';
 import styles from './Properties.module.scss'
+import ColorPicker from '../../Color/ColorPicker';
 
 type PropsType = {
-  node: { value: ValueType },
-  onChange: (v: number, index?: number) => void,
+  value: ValueType,
+  onChange: (color: number[]) => void,
 }
 
 const PropertyColor: React.FC<PropsType> = ({
-  node,
+  value,
   onChange,
 }) => {
-  const getLabel = (i: number) => (
-    'RGBA'.slice(i, i + 1)
-  )
-
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();
   }
@@ -30,11 +26,11 @@ const PropertyColor: React.FC<PropsType> = ({
 
   return (
     <div className={styles.vector} onClick={handleClick} onPointerDown={handlePointerDown} onKeyDown={handleKeyDown}>
-        {
-          Array.isArray(node.value) && node.value.map((v, i) => (
-            <Float key={i} value={v} onChange={onChange} label={getLabel(i)} index={i} />
-          ))
-        }
+      {
+        Array.isArray(value)
+          ? <ColorPicker value={value} onChange={onChange} useAlpha useHdr />
+          : null
+      }
     </div>
   )
 }

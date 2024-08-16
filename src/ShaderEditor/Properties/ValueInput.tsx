@@ -26,6 +26,13 @@ const ValueInput: React.FC<PropsType> = observer(({
     })  
   }
 
+  const handleColorChange = (v: number[]) => {
+    runInAction(() => {
+      value.value = v;
+      onChange()
+    })
+  }
+
   const handleStringChange = (v: string) => {
     runInAction(() => {
       value.value = v;
@@ -60,7 +67,7 @@ const ValueInput: React.FC<PropsType> = observer(({
       return <PropertyVector value={value.value} onChange={handleVectorChange} />
 
     case 'color':
-      return <PropertyColor node={value} onChange={handleVectorChange} />
+      return <PropertyColor value={value.value} onChange={handleColorChange} />
 
     case 'float':
       return <PropertyFloat node={value} onChange={handleNumberChange} />

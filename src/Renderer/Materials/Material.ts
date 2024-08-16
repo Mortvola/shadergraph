@@ -278,9 +278,7 @@ class Material implements MaterialInterface {
     if (bindings?.uniformsBuffer && bindings?.stageBindings.structuredView) {
       let values: Record<string, unknown> = {};
 
-      bindings.stageBindings.properties = properties;
-
-      // Extract the values from the properties and put them into an object
+      // Extract the values from the properties and put them into an object (ignore sampler and texture props)
       for (const property of properties) {
         if (property.value.dataType !== 'sampler' && property.value.dataType !== 'texture2D') {
           values = {

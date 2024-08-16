@@ -49,7 +49,7 @@ class PipelineManager implements PipelineManagerInterface {
       return null
     }
 
-    // Create the bindgropu layout entries with samplers and textures, if any.
+    // Create the bindgroup layout entries with samplers and textures, if any.
     let entries: GPUBindGroupLayoutEntry[] = [
       ...properties
         .filter((property) => ['sampler', 'texture2D'].includes(property.value.dataType))

@@ -187,10 +187,10 @@ const Particle: React.FC<PropsType> = observer(({
         <PSValueInput value={particleSystem.size} onChange={handleSizeChange} />
       </label>
       <label>
-        Initial Color:
+        Start Color:
         <div>
-          <ColorPicker value={particleSystem.startColor[0]} onChange={handleColor1AChange} />
-          <ColorPicker value={particleSystem.startColor[1]} onChange={handleColor2AChange} />
+          <ColorPicker value={particleSystem.startColor[0]} onChange={handleColor1AChange} useAlpha useHdr />
+          <ColorPicker value={particleSystem.startColor[1]} onChange={handleColor2AChange} useAlpha useHdr />
         </div>
       </label>
       <label>
