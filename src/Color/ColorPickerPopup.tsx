@@ -7,6 +7,7 @@ import Color from './Color';
 import HsvPicker from './HsvPicker';
 import RgbPicker from './RgbPicker';
 import HdrPicker from './HdrPicker';
+import ColorSlider from './ColorSlider';
 
 type PropsType = {
   value: number[],
@@ -40,11 +41,9 @@ const ColorPickerPopup: React.FC<PropsType> = ({
   const [colorMode, setColorMode] = React.useState<ColorMode>(ColorMode.HDR)
   
   React.useEffect(() => {
-    // if (!colorMutator.current) {
-      colorMutator.current = new ColorMutator(new Color(value[0], value[1], value[2], value[3]));
+    colorMutator.current = new ColorMutator(new Color(value[0], value[1], value[2], value[3]));
 
-      setIntensity(colorMutator.current!.exposureValue)
-    // }
+    setIntensity(colorMutator.current!.exposureValue)
   }, [value])
 
   const handleChange = () => {
@@ -65,6 +64,10 @@ const ColorPickerPopup: React.FC<PropsType> = ({
       setAlpha(a);
       onChange(mutator.colorHdr)
     }
+  }
+
+  const handleAlphaSliderChange = (a: number) => {
+    handleAlphaChange(a / 1000);
   }
 
   const handleIntensityChange = (newIntensity: number) => {
@@ -137,6 +140,7 @@ const ColorPickerPopup: React.FC<PropsType> = ({
                     ? (
                       <label>
                         A:
+                        <ColorSlider className={styles.alphaGradient} value={alpha * 1000} min={0} max={1000} onChange={handleAlphaSliderChange} />
                         <NumberInput value={alpha} onChange={handleAlphaChange} />
                       </label>
                     )
