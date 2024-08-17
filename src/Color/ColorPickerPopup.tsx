@@ -166,25 +166,25 @@ const ColorPickerPopup: React.FC<PropsType> = ({
     }
   }
 
-  const handleSChange = (s: number) => {
+  const handleHChange = (h: number) => {
     const mutator = colorMutator.current;
 
     if (mutator) {
-      mutator.setHSVColorChannel(0, s);
+      mutator.setHSVColorChannel(0, h);
 
-      setS(s);
+      setH(h);
 
       hdrChanged();
     }
   }
 
-  const handleHChange = (h: number) => {
+  const handleSChange = (s: number) => {
     const mutator = colorMutator.current;
 
     if (mutator) {
-      mutator.setHSVColorChannel(1, h);
+      mutator.setHSVColorChannel(1, s);
 
-      setH(h);
+      setS(s);
 
       hdrChanged();
     }
