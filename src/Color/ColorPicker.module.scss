@@ -59,12 +59,13 @@
 
 .colorSlider {
   position: relative;
+  border: black thin solid;
 
   & > div {
     position: absolute;
     width: 7px;
-    height: calc(100% + 2px);
-    top: -1px;
+    height: calc(100% + 4px);
+    top: -2px;
     border: black solid 2px;
     box-sizing: border-box;
   }

@@ -68,7 +68,7 @@ const ColorSlider: React.FC<PropsType> = ({
     if (element) {
       const rect = element.getBoundingClientRect();
 
-      const pct = (value ?? min) / (max - min + 1)
+      const pct = Math.max(0, Math.min(max, (value ?? min))) / (max - min + 1)
 
       setPosition(rect.width * pct - 3);
     }
