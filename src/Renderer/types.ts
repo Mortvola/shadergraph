@@ -162,6 +162,13 @@ export enum PSValueType {
   RandomeCurve = 'RandomCurve',
 }
 
+export enum PSColorType {
+  Constant = 'Constant',
+  Random = 'Random',
+  Gradient = 'Gradient',
+  RandomeGradient = 'RandomGradient',
+}
+
 export type PSCurve = {
   points: [number, number][],
 }
@@ -176,6 +183,16 @@ export const isPSValue = (r: unknown): r is PSValue => (
   (r as PSValue).type !== undefined
   && (r as PSValue).value !== undefined
   && (r as PSValue).curve !== undefined
+);
+
+export type PSColor = {
+  type: PSColorType,
+  color: [number[], number[]],
+}
+
+export const isPSColor = (r: unknown): r is PSColor => (
+  (r as PSColor).type !== undefined
+  && (r as PSColor).color !== undefined
 );
 
 export type ParticleDescriptor = {
@@ -198,7 +215,7 @@ export type ParticleDescriptor = {
   initialSize?: number,
   finalSize?: number,
 
-  startColor?: number[][],
+  startColor?: PSColor | number[][],
   initialColor?: number[][],
 
   gravityModifier?: number,

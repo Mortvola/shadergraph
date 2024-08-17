@@ -1,5 +1,5 @@
 import { Vec4, mat4, vec3, vec4 } from "wgpu-matrix"
-import { ContainerNodeInterface, isPSValue, ParticleDescriptor, ParticleSystemInterface, PSValue, PSValueType } from "./types";
+import { ContainerNodeInterface, isPSColor, isPSValue, ParticleDescriptor, ParticleSystemInterface, PSColor, PSColorType, PSValue, PSValueType } from "./types";
 import DrawableNode from "./Drawables/SceneNodes/DrawableNode";
 import { degToRad, gravity, intersectionPlane } from "./Math";
 import DrawableInterface from "./Drawables/DrawableInterface";
@@ -33,6 +33,25 @@ const getPSValue = (value: PSValue, t: number) => {
   return 1;
 }
 
+const getPSColor = (color: PSColor, t: number) => {
+  switch (color.type) {
+    case PSColorType.Constant:
+      return color.color[0];
+    
+    case PSColorType.Random:
+      const t = Math.random();
+
+      return [
+        (color.color[1][0] - color.color[0][0]) * t + color.color[0][0],
+        (color.color[1][1] - color.color[0][1]) * t + color.color[0][1],
+        (color.color[1][2] - color.color[0][2]) * t + color.color[0][2],
+        1,
+      ]
+  }
+
+  return [1, 1, 1, 1];
+}
+
 class ParticleSystem implements ParticleSystemInterface {
   id: number
 
@@ -56,11 +75,11 @@ class ParticleSystem implements ParticleSystemInterface {
 
   startSize: PSValue;
 
+  startColor: PSColor;
+
   size: PSValue; // Size over lifetime
 
   originRadius: number;
-
-  startColor: number[][];
 
   gravityModifier: number;
 
@@ -141,7 +160,36 @@ class ParticleSystem implements ParticleSystemInterface {
       }  
     }
 
-    this.startColor = (descriptor?.startColor ?? descriptor?.initialColor) ?? [[1, 1, 1, 1], [1, 1, 1, 1]]
+    if (descriptor?.startColor && isPSColor(descriptor?.startColor)) {
+      this.startColor = descriptor.startColor;
+    }
+    else if (descriptor?.startColor && Array.isArray(descriptor?.startColor)) {
+      this.startColor = {
+        type: PSColorType.Random,
+        color: [
+          descriptor.startColor[0],
+          descriptor.startColor[1],
+        ]
+      }
+    }
+    else if (descriptor?.initialColor) {
+      this.startColor = {
+        type: PSColorType.Random,
+        color: [
+          descriptor.initialColor[0],
+          descriptor.initialColor[1],
+        ]
+      }
+    }
+    else {
+      this.startColor = {
+        type: PSColorType.Constant,
+        color: [
+          [1, 1, 1, 1],
+          [1, 1, 1, 1],
+        ]
+      }
+    }
 
     this.gravityModifier = descriptor?.gravityModifier ?? 0;
 
@@ -355,6 +403,7 @@ class ParticleSystem implements ParticleSystemInterface {
       const lifetime = getPSValue(this.lifetime, t);
       const startVelocity = getPSValue(this.startVelocity, t);
       const size = getPSValue(this.startSize, t);
+      const startColor = getPSColor(this.startColor, t);
 
       const drawable = await DrawableNode.create(this.drawable!, this.materialDescriptor);
 
@@ -393,22 +442,13 @@ class ParticleSystem implements ParticleSystemInterface {
 
       const direction = vec4.subtract(p1, origin)
 
-      const computeRandomColor = (color1: number[], color2: number[]) => {
-        return [
-          Math.random() * (color2[0] - color1[0]) + color1[0],
-          Math.random() * (color2[1] - color1[1]) + color1[1],
-          Math.random() * (color2[2] - color1[2]) + color1[2],
-          1,
-        ]
-      }
-
       const point: Point = {
         velocity: vec4.scale(direction, startVelocity),
         startTime,
         lifetime,
         size,
         drawable,
-        color: computeRandomColor(this.startColor[0], this.startColor[1]),
+        color: startColor,
       }
 
       this.points.push(point)

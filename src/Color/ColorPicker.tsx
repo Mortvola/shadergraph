@@ -42,13 +42,11 @@ const ColorPicker: React.FC<PropsType> = ({
   }
 
   return (
-    <div className={styles.color}>
+    <>
       <div
         ref={ref}
         className={styles.sample}
-        // style={{ backgroundColor: `color(srgb-linear ${color[0] * 100}% ${color[1] * 100}% ${color[2] * 100}% / 100%)` }}
         style={{ backgroundColor: `color(srgb-linear ${hdr[0]} ${hdr[1]} ${hdr[2]})` }}
-        // style={{ backgroundColor: `rgb(${color[0]}, ${color[1]}, ${color[2]})` }}
         onClick={handleOpenClick}
       />
       {
@@ -56,7 +54,7 @@ const ColorPicker: React.FC<PropsType> = ({
           ? <ColorPickerPopup value={value} onChange={onChange} onClose={handleClose} rect={open} useHdr={useHdr} useAlpha={useAlpha} />
           : null
       }
-    </div>
+    </>
   )
 }
 

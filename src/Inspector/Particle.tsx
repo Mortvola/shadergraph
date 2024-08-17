@@ -7,11 +7,12 @@ import ColorPicker from '../Color/ColorPicker';
 import { useStores } from '../State/store';
 import { materialManager } from '../Renderer/Materials/MaterialManager';
 import { particleSystemManager } from '../Renderer/ParticleSystemManager';
-import { ParticleItem, PSValue } from '../Renderer/types';
+import { ParticleItem, PSColor, PSValue } from '../Renderer/types';
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import PSValueInput from './PSValueInput';
 import Checkbox from '../ShaderEditor/Controls/Checkbox';
+import PSColorInput from './PSColorInput';
 
 type PropsType = {
   particleItem: ParticleItem,
@@ -93,23 +94,10 @@ const Particle: React.FC<PropsType> = observer(({
     })
   }
 
-  const handleColor1AChange = (value: number[]) => {
+  const handleStartColorChange = (color: PSColor) => {
     runInAction(() => {
-      particleSystem.startColor = [
-        value.slice(),
-        [...particleSystem.startColor[1]],
-      ];
+      particleSystem.startColor = color;
       save()  
-    })
-  }
-
-  const handleColor2AChange = (value: number[]) => {
-    runInAction(() => {
-      particleSystem.startColor = [
-        [...particleSystem.startColor[0]],
-        value.slice(),
-      ];  
-      save()
     })
   }
 
@@ -193,7 +181,7 @@ const Particle: React.FC<PropsType> = observer(({
         <NumberInput value={particleSystem.duration} onChange={handleDurationChange} />
       </label>
       <label>
-        Number of Particles:
+        Maximum Particles:
         <NumberInput value={particleSystem.maxPoints} onChange={handleMaxPointsChange} />
       </label>
       <label>
@@ -221,15 +209,12 @@ const Particle: React.FC<PropsType> = observer(({
         <PSValueInput value={particleSystem.startSize} onChange={handleStartSizeChange} />
       </label>
       <label>
-        Size over lifetime:
-        <PSValueInput value={particleSystem.size} onChange={handleSizeChange} />
+        Start Color:
+        <PSColorInput value={particleSystem.startColor} onChange={handleStartColorChange} />
       </label>
       <label>
-        Start Color:
-        <div>
-          <ColorPicker value={particleSystem.startColor[0]} onChange={handleColor1AChange} useAlpha useHdr />
-          <ColorPicker value={particleSystem.startColor[1]} onChange={handleColor2AChange} useAlpha useHdr />
-        </div>
+        Size over lifetime:
+        <PSValueInput value={particleSystem.size} onChange={handleSizeChange} />
       </label>
       <label>
         Gravity Modifier:

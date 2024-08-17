@@ -57,7 +57,6 @@ const PSValueInput: React.FC<PropsType> = ({
   }
 
   const handleTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    console.log(`type change: ${event.target.value}`)
     onChange({
       ...value,
       type: event.target.value as PSValueType,
