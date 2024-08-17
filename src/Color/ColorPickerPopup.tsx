@@ -1,7 +1,8 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
+import convert from 'color-convert';
 import NumberInput from '../Inspector/NumberInput';
 import styles from './ColorPicker.module.scss';
-import { createPortal } from 'react-dom';
 import ColorMutator from './ColorMutator';
 import Color from './Color';
 
@@ -48,6 +49,43 @@ const ColorPickerPopup: React.FC<PropsType> = ({
   const [wrapperBounds, setWrapperBounds] = React.useState<DOMRect>();
   const colorMutator = React.useRef<ColorMutator>()
   const [colorMode, setColorMode] = React.useState<ColorMode>(ColorMode.HDR)
+  const [saturationRange, setSaturationRange] = React.useState<string>('')
+  const [valueRange, setValueRange] = React.useState<string>('')
+  const [redRange, setRedRange] = React.useState<string>('')
+  const [greenRange, setGreenRange] = React.useState<string>('')
+  const [blueRange, setBlueRange] = React.useState<string>('')
+  
+  const updateRgbGradients = () => {
+    const mutator = colorMutator.current;
+
+    if (mutator) {
+      const r1 = [0, mutator.color[1], mutator.color[2]]
+      const r2 = [255, mutator.color[1], mutator.color[2]]
+      setRedRange(`rgb(${r1.join()}), rgb(${r2.join()})`)
+
+      const g1 = [mutator.color[0], 0, mutator.color[2]]
+      const g2 = [mutator.color[0], 255, mutator.color[2]]
+      setGreenRange(`rgb(${g1.join()}), rgb(${g2.join()})`)
+
+      const b1 = [mutator.color[0], mutator.color[1], 0]
+      const b2 = [mutator.color[0], mutator.color[1], 255]
+      setBlueRange(`rgb(${b1.join()}), rgb(${b2.join()})`)
+    }
+  }
+
+  const updateHsvGradients = () => {
+    const mutator = colorMutator.current;
+
+    if (mutator) {
+      const s1 = convert.hsv.rgb([mutator.hsv[0] * 360, 0, mutator.hsv[2] * 100]);
+      const s2 = convert.hsv.rgb([mutator.hsv[0] * 360, 100, mutator.hsv[2] * 100]);
+      setSaturationRange(`rgb(${s1.join()}), rgb(${s2.join()})`)
+
+      const v1 = convert.hsv.rgb([mutator.hsv[0] * 360, mutator.hsv[1] * 100, 0]);
+      const v2 = convert.hsv.rgb([mutator.hsv[0] * 360, mutator.hsv[1] * 100, 100]);
+      setValueRange(`rgb(${v1.join()}), rgb(${v2.join()})`)
+    }
+  }
 
   React.useEffect(() => {
     if (!colorMutator.current) {
@@ -58,9 +96,12 @@ const ColorPickerPopup: React.FC<PropsType> = ({
       setGreen(colorMutator.current.color[1])
       setBlue(colorMutator.current.color[2])
 
-      setH(colorMutator.current.hsv[0])
-      setS(colorMutator.current.hsv[1])
-      setV(colorMutator.current.hsv[2])
+      setH(Math.round(colorMutator.current.hsv[0] * 360))
+      setS(Math.round(colorMutator.current.hsv[1] * 100))
+      setV(Math.round(colorMutator.current.hsv[2] * 100))
+
+      updateRgbGradients();
+      updateHsvGradients();
 
       setIntensity(colorMutator.current!.exposureValue)
     }
@@ -139,6 +180,7 @@ const ColorPickerPopup: React.FC<PropsType> = ({
       setRed(r);
 
       hdrChanged();
+      updateRgbGradients();
     }
   }
 
@@ -151,6 +193,7 @@ const ColorPickerPopup: React.FC<PropsType> = ({
       setGreen(g);
 
       hdrChanged();
+      updateRgbGradients();
     }
   }
 
@@ -163,6 +206,7 @@ const ColorPickerPopup: React.FC<PropsType> = ({
       setBlue(b);
 
       hdrChanged();
+      updateRgbGradients();
     }
   }
 
@@ -170,11 +214,12 @@ const ColorPickerPopup: React.FC<PropsType> = ({
     const mutator = colorMutator.current;
 
     if (mutator) {
-      mutator.setHSVColorChannel(0, h);
+      mutator.setHSVColorChannel(0, h / 360);
 
       setH(h);
 
       hdrChanged();
+      updateHsvGradients();
     }
   }
 
@@ -182,11 +227,12 @@ const ColorPickerPopup: React.FC<PropsType> = ({
     const mutator = colorMutator.current;
 
     if (mutator) {
-      mutator.setHSVColorChannel(1, s);
+      mutator.setHSVColorChannel(1, s / 100);
 
       setS(s);
 
       hdrChanged();
+      updateHsvGradients();
     }
   }
 
@@ -194,11 +240,12 @@ const ColorPickerPopup: React.FC<PropsType> = ({
     const mutator = colorMutator.current;
 
     if (mutator) {
-      mutator.setHSVColorChannel(2, v);
+      mutator.setHSVColorChannel(2, v / 100);
 
       setV(v);
 
       hdrChanged();
+      updateHsvGradients();
     }
   }
 
@@ -241,7 +288,7 @@ const ColorPickerPopup: React.FC<PropsType> = ({
           wrapperBounds
             ? (
               <div className={styles.popup} style={{ left: rect.left, bottom: wrapperBounds!.bottom - rect.top }} onClick={handleClick}>
-                <select value={colorMode} onChange={handleColorModeChange}>
+                <select className={styles.colorMode} value={colorMode} onChange={handleColorModeChange}>
                   <option value={ColorMode.HDR}>RGB 0.0-1.0</option>
                   <option value={ColorMode.RGB}>RGB 0-255</option>
                   <option value={ColorMode.HSV}>HSV</option>
@@ -272,14 +319,17 @@ const ColorPickerPopup: React.FC<PropsType> = ({
                             <>
                               <label>
                                 R:
+                                <div style={{ background: `linear-gradient(90deg, ${redRange})`}} />
                                 <NumberInput value={red} onChange={handleRedChange} />
                               </label>
                               <label>
                                 G:
+                                <div style={{ background: `linear-gradient(90deg, ${greenRange})`}} />
                                 <NumberInput value={green} onChange={handleGreenChange} />
                               </label>
                               <label>
                                 B:
+                                <div style={{ background: `linear-gradient(90deg, ${blueRange})`}} />
                                 <NumberInput value={blue} onChange={handleBlueChange} />
                               </label>    
                             </>
@@ -290,14 +340,17 @@ const ColorPickerPopup: React.FC<PropsType> = ({
                           <>
                             <label>
                               H:
+                              <div className={styles.hueGradient} />
                               <NumberInput value={h} onChange={handleHChange} />
                             </label>
                             <label>
                               S:
+                              <div style={{ background: `linear-gradient(90deg, ${saturationRange})`}} />
                               <NumberInput value={s} onChange={handleSChange} />
                             </label>
                             <label>
                               V:
+                              <div style={{ background: `linear-gradient(90deg, ${valueRange})`}} />
                               <NumberInput value={v} onChange={handleVChange} />
                             </label>    
                           </>

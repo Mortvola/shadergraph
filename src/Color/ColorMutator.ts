@@ -61,7 +61,7 @@ class ColorMutator {
   }
 
   setRGBColorChannel(index: number, value: number) {
-    this.color[index] = Math.min(Math.max(Math.round(value * 255), 0), 255);
+    this.color[index] = Math.min(Math.max(Math.round(value), 0), 255);
 
     this.colorHdr[index] = value / 255;
 
