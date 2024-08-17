@@ -5,6 +5,7 @@ import NumberInput from '../Inspector/NumberInput';
 import styles from './ColorPicker.module.scss';
 import ColorMutator from './ColorMutator';
 import Color from './Color';
+import ColorSlider from './ColorSlider';
 
 type PropsType = {
   value: number[],
@@ -319,17 +320,35 @@ const ColorPickerPopup: React.FC<PropsType> = ({
                             <>
                               <label>
                                 R:
-                                <div style={{ background: `linear-gradient(90deg, ${redRange})`}} />
+                                <ColorSlider
+                                  style={{ background: `linear-gradient(90deg, ${redRange})`}}
+                                  min={0}
+                                  max={255}
+                                  onChange={handleRedChange}
+                                  value={red}
+                                />
                                 <NumberInput value={red} onChange={handleRedChange} />
                               </label>
                               <label>
                                 G:
-                                <div style={{ background: `linear-gradient(90deg, ${greenRange})`}} />
+                                <ColorSlider
+                                  style={{ background: `linear-gradient(90deg, ${greenRange})`}}
+                                  min={0}
+                                  max={255}
+                                  onChange={handleGreenChange}
+                                  value={green}
+                                />
                                 <NumberInput value={green} onChange={handleGreenChange} />
                               </label>
                               <label>
                                 B:
-                                <div style={{ background: `linear-gradient(90deg, ${blueRange})`}} />
+                                <ColorSlider
+                                  style={{ background: `linear-gradient(90deg, ${blueRange})`}}
+                                  min={0}
+                                  max={255}
+                                  onChange={handleBlueChange}
+                                  value={blue}
+                                />
                                 <NumberInput value={blue} onChange={handleBlueChange} />
                               </label>    
                             </>
@@ -340,17 +359,31 @@ const ColorPickerPopup: React.FC<PropsType> = ({
                           <>
                             <label>
                               H:
-                              <div className={styles.hueGradient} />
+                              <ColorSlider
+                                className={styles.hueGradient}
+                                min={0}
+                                max={360}
+                                onChange={handleHChange}
+                                value={h}
+                              />
                               <NumberInput value={h} onChange={handleHChange} />
                             </label>
                             <label>
                               S:
-                              <div style={{ background: `linear-gradient(90deg, ${saturationRange})`}} />
+                              <ColorSlider
+                                style={{ background: `linear-gradient(90deg, ${saturationRange})`}}
+                                onChange={handleSChange}
+                                value={s}
+                              />
                               <NumberInput value={s} onChange={handleSChange} />
                             </label>
                             <label>
                               V:
-                              <div style={{ background: `linear-gradient(90deg, ${valueRange})`}} />
+                              <ColorSlider
+                                style={{ background: `linear-gradient(90deg, ${valueRange})`}}
+                                onChange={handleVChange}
+                                value={v}
+                              />
                               <NumberInput value={v} onChange={handleVChange} />
                             </label>    
                           </>
