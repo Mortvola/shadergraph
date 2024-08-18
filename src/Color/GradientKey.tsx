@@ -1,23 +1,22 @@
 import React from 'react';
 import styles from './ColorPicker.module.scss';
-import { AlphaGradientKey } from '../Renderer/types';
 
 type PropsType = {
-  alphaKey: AlphaGradientKey,
+  id: number,
   position: number,
   selected?: boolean,
   onClick?: (index: number) => void,
 }
 
 const GradientKey: React.FC<PropsType> = ({
-  alphaKey,
+  id,
   position,
   selected = false,
   onClick,
 }) => {
   const handleClick = () => {
     if (onClick) {
-      onClick(alphaKey.id)
+      onClick(id)
     }
   }
 

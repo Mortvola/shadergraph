@@ -194,7 +194,18 @@ class ParticleSystem implements ParticleSystemInterface {
           value: 1,
         }
       ],
-      colorKeys: [],
+      colorKeys: [
+        {
+          id: 0,
+          position: 0,
+          value: [1, 1, 1, 1],
+        },
+        {
+          id: 1,
+          position: 1,
+          value: [1, 1, 1, 1],
+        }
+      ],
     };
 
     if (descriptor?.startColor && isPSColor(descriptor?.startColor)) {
@@ -202,6 +213,10 @@ class ParticleSystem implements ParticleSystemInterface {
 
       if (this.startColor.gradient === undefined) {
         this.startColor.gradient = defaultGradient
+      }
+
+      if (this.startColor.gradient.colorKeys.length === 0) {
+        this.startColor.gradient.colorKeys = defaultGradient.colorKeys
       }
     }
     else if (descriptor?.startColor && Array.isArray(descriptor?.startColor)) {

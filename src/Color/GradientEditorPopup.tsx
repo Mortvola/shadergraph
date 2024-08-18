@@ -21,6 +21,8 @@ const GradientEditorPopup: React.FC<PropsType> = ({
   const [wrapperBounds, setWrapperBounds] = React.useState<DOMRect>();
   const [selectedAlphaId, setSelectedAlphaId] = React.useState<number | undefined>()
   const [alpha, setAlpha] = React.useState<number>(0);
+  const [selectedColorId, setSelectedColorId] = React.useState<number | undefined>()
+  const [color, setColor] = React.useState<number[]>([1, 1, 1, 1]);
 
   React.useEffect(() => {
     const element = ref.current;
@@ -41,7 +43,8 @@ const GradientEditorPopup: React.FC<PropsType> = ({
 
     if (key) {
       setAlpha(Math.round(key.value * 255))
-      setSelectedAlphaId(id);  
+      setSelectedAlphaId(id);
+      setSelectedColorId(undefined)
     }
   }
 
@@ -68,6 +71,16 @@ const GradientEditorPopup: React.FC<PropsType> = ({
     }
   }
 
+  const handleColorKeyClick = (id: number) => {
+    const key = value.colorKeys.find((k) => k.id === id);
+
+    if (key) {
+      setColor(key.value)
+      setSelectedColorId(id);
+      setSelectedAlphaId(undefined)
+    }
+  }
+
   return (
     createPortal(
       <div
@@ -84,6 +97,7 @@ const GradientEditorPopup: React.FC<PropsType> = ({
               >
                 <GradientKeys keys={value.alphaKeys} onKeyClick={handleAlphaKeyClick} selected={selectedAlphaId} />
                 <div className={styles.gradientGraph} />
+                <GradientKeys keys={value.colorKeys} onKeyClick={handleColorKeyClick} selected={selectedColorId} />
                 {
                   selectedAlphaId !== undefined
                     ? <input type="range" min={0} max={255} value={alpha} onChange={handleAlphaChange} />

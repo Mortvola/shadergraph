@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './ColorPicker.module.scss';
 import GradientKey from './GradientKey';
-import { AlphaGradientKey } from '../Renderer/types';
+import { AlphaGradientKey, ColorGradientKey } from '../Renderer/types';
 
 type PropsType = {
-  keys: AlphaGradientKey[],
+  keys: (AlphaGradientKey | ColorGradientKey)[],
   onKeyClick?: (index: number) => void,
   selected?: number,
 }
@@ -39,7 +39,7 @@ const GradientKeys: React.FC<PropsType> = ({
         keys.map((k) => (
           <GradientKey
             key={k.id}
-            alphaKey={k}
+            id={k.id}
             position={k.position * width}
             onClick={handleKeyClick}
             selected={k.id === selected}
