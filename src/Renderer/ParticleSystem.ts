@@ -50,24 +50,44 @@ const getPSColor = (color: PSColor, t: number): number[] => {
     }
 
     case PSColorType.Gradient:
+      let a = 1;
+      let c = [1, 1, 1];
+
       // Find first key that is greater than or equal to t.
-      const index = color.gradient.alphaKeys.findIndex((k) => k.position >= t);
+      let index = color.gradient.alphaKeys.findIndex((k) => k.position >= t);
 
       if (index !== -1) {
-        let a: number;
-
         if (index > 0) {
           const k1 = color.gradient.alphaKeys[index - 1];
           const k2 = color.gradient.alphaKeys[index];
-    
-          a = (k2.value - k1.value) * (t - k1.position) + k1.value;  
+          const pct = (t - k1.position) / (k2.position - k1.position)
+
+          a = (k2.value - k1.value) * pct + k1.value;  
         }
         else {
           a = color.gradient.alphaKeys[0].value;
         }
-
-        return [...color.color[0].slice(0, 3), a];  
       }
+
+      // Find first key that is greater than or equal to t.
+      index = color.gradient.colorKeys.findIndex((k) => k.position >= t);
+
+      if (index !== -1) {
+        if (index > 0) {
+          const k1 = color.gradient.colorKeys[index - 1];
+          const k2 = color.gradient.colorKeys[index];
+          const pct = (t - k1.position) / (k2.position - k1.position)
+    
+          c[0] = (k2.value[0] - k1.value[0]) * pct + k1.value[0];  
+          c[1] = (k2.value[1] - k1.value[1]) * pct + k1.value[1];  
+          c[2] = (k2.value[2] - k1.value[2]) * pct + k1.value[2];  
+        }
+        else {
+          c = color.gradient.colorKeys[0].value.slice(0, 3);
+        }
+      }
+
+      return [...c, a];  
   }
 
   return [1, 1, 1, 1];

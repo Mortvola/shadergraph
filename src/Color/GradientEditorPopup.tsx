@@ -2,7 +2,8 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import styles from './ColorPicker.module.scss';
 import GradientKeys from './GradientKeys';
-import { Gradient } from '../Renderer/types';
+import { AlphaGradientKey, ColorGradientKey, Gradient } from '../Renderer/types';
+import ColorPicker from './ColorPicker';
 
 type PropsType = {
   value: Gradient,
@@ -23,6 +24,19 @@ const GradientEditorPopup: React.FC<PropsType> = ({
   const [alpha, setAlpha] = React.useState<number>(0);
   const [selectedColorId, setSelectedColorId] = React.useState<number | undefined>()
   const [color, setColor] = React.useState<number[]>([1, 1, 1, 1]);
+  const [colorGradient, setColorGradient] = React.useState<string>('')
+
+  const updateRgbGradients = React.useCallback(() => {
+    let gradient = '';
+    let comma = '';
+
+    for (let i = 0; i < value.colorKeys.length; i += 1) {
+      gradient += `${comma}rgb(${value.colorKeys[i].value.map((c) => Math.round(c * 255)).join()}) ${value.colorKeys[i].position * 100}%`
+      comma = ', '
+    }
+
+    setColorGradient(gradient)
+  }, [value.colorKeys])
 
   React.useEffect(() => {
     const element = ref.current;
@@ -31,8 +45,10 @@ const GradientEditorPopup: React.FC<PropsType> = ({
       const rect = element.getBoundingClientRect();
 
       setWrapperBounds(rect);
+
+      updateRgbGradients()
     }
-  }, [])
+  }, [updateRgbGradients])
 
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();
@@ -54,7 +70,7 @@ const GradientEditorPopup: React.FC<PropsType> = ({
 
     if (index !== -1) {
       if (index > 0) {
-        const newKey =             {
+        const newKey: AlphaGradientKey = {
           id: value.alphaKeys.reduce((prev, k) => (Math.max(prev, k.id)), 0) + 1,
           position,
           value: value.alphaKeys[0].value,
@@ -72,8 +88,34 @@ const GradientEditorPopup: React.FC<PropsType> = ({
             ...value.alphaKeys.slice(index),
           ],
         });
+      }
+    }
+  }
 
-        console.log('alpha key added')
+  const handleAddColorKey = (position: number) => {
+    // Find first key that is greater than this position
+    const index = value.colorKeys.findIndex((k) => k.position > position);
+
+    if (index !== -1) {
+      if (index > 0) {
+        const newKey: ColorGradientKey = {
+          id: value.colorKeys.reduce((prev, k) => (Math.max(prev, k.id)), 0) + 1,
+          position,
+          value: value.colorKeys[0].value.slice(), // Copy the previous key value
+        };
+
+        setColor(newKey.value)
+        setSelectedColorId(newKey.id);
+        setSelectedAlphaId(undefined)
+  
+        onChange({
+          ...value,
+          colorKeys: [
+            ...value.colorKeys.slice(0, index),
+            newKey,
+            ...value.colorKeys.slice(index),
+          ],
+        });
       }
     }
   }
@@ -95,6 +137,28 @@ const GradientEditorPopup: React.FC<PropsType> = ({
               value: a / 255.0,
             },
             ...value.alphaKeys.slice(index + 1),
+          ],
+        });  
+      }
+    }
+  }
+
+  const handleColorChange = (color: number[]) => {
+    if (selectedColorId !== undefined) {
+      setColor(color)
+
+      const index = value.colorKeys.findIndex((k) => k.id === selectedColorId);
+
+      if (index !== -1) {
+        onChange({
+          ...value,
+          colorKeys: [
+            ...value.colorKeys.slice(0, index),
+            {
+              ...value.colorKeys[index],
+              value: color,
+            },
+            ...value.colorKeys.slice(index + 1),
           ],
         });  
       }
@@ -130,9 +194,29 @@ const GradientEditorPopup: React.FC<PropsType> = ({
             ...value.alphaKeys.slice(index + 1),
           ],
         });
-
-        console.log('alpha key deleted')
       }
+  }
+
+  const deleteColorKey = (id: number) => {
+    // Find index of selected alpha key
+    const index = value.colorKeys.findIndex((k) => k.id === id);
+
+    // Don't delete the keys at position 0 and 1.
+    if (
+      index !== -1
+      && index !== 0
+      && index !== value.colorKeys.length - 1
+    ) {
+      setSelectedColorId(undefined);
+  
+      onChange({
+        ...value,
+        colorKeys: [
+          ...value.colorKeys.slice(0, index),
+          ...value.colorKeys.slice(index + 1),
+        ],
+      });
+    }
   }
 
   const handleMoveAlphaKey = (id: number, position: number) => {
@@ -159,12 +243,39 @@ const GradientEditorPopup: React.FC<PropsType> = ({
     }
   }
 
+  const handleMoveColorKey = (id: number, position: number) => {
+    // Find index of selected alpha key
+    const index = value.colorKeys.findIndex((k) => k.id === id);
+
+    // Don't move the keys at position 0 and 1.
+    if (
+      index !== -1
+      && index !== 0
+      && index !== value.colorKeys.length - 1
+    ) {
+      onChange({
+        ...value,
+        colorKeys: [
+          ...value.colorKeys.slice(0, index),
+          {
+            ...value.colorKeys[index],
+            position,
+          },
+          ...value.colorKeys.slice(index + 1),
+        ],
+      });
+    }
+  }
+
   const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
     console.log(event.code)
     event.stopPropagation();
     if (event.code === 'Backspace' || event.code === 'Delete') {
       if (selectedAlphaId !== undefined) {
         deleteAlphaKey(selectedAlphaId)
+      }
+      else if (selectedColorId !== undefined) {
+        deleteColorKey(selectedColorId)
       }
     }
   }
@@ -188,16 +299,30 @@ const GradientEditorPopup: React.FC<PropsType> = ({
                 <GradientKeys
                   keys={value.alphaKeys}
                   onKeyClick={handleAlphaKeyClick}
-                  selected={selectedAlphaId}
                   onAddKey={handleAddAlphaKey}
                   onMove={handleMoveAlphaKey}
+                  selected={selectedAlphaId}
                 />
-                <div className={styles.gradientGraph} />
-                <GradientKeys keys={value.colorKeys} onKeyClick={handleColorKeyClick} selected={selectedColorId} />
+                <div
+                  className={styles.gradientGraph}
+                  style={{ background: `linear-gradient(90deg, ${colorGradient})`}}
+                />
+                <GradientKeys
+                  keys={value.colorKeys}
+                  onKeyClick={handleColorKeyClick}
+                  onAddKey={handleAddColorKey}
+                  onMove={handleMoveColorKey}
+                  selected={selectedColorId}
+                />
                 <div className={styles.gradientControls}>
                   {
                     selectedAlphaId !== undefined
                       ? <input type="range" min={0} max={255} value={alpha} onChange={handleAlphaChange} />
+                      : null
+                  }
+                  {
+                    selectedColorId !== undefined
+                      ? <ColorPicker value={color} onChange={handleColorChange} />
                       : null
                   }
                 </div>
