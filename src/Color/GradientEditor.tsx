@@ -2,6 +2,7 @@ import React from 'react';
 import GradientEditorPopup from './GradientEditorPopup';
 import styles from './ColorPicker.module.scss'
 import { Gradient } from '../Renderer/types';
+import { getGradientCss } from './Color';
 
 type PropsType = {
   value: Gradient,
@@ -14,6 +15,12 @@ const GradientEditor: React.FC<PropsType> = ({
 }) => {
   const [open, setOpen] = React.useState<DOMRect | null>();
   const ref = React.useRef<HTMLDivElement>(null);
+  const [colorGradient, setColorGradient] = React.useState<string>('')
+
+  React.useEffect(() => {
+    const gradients = getGradientCss(value.colorKeys, value.alphaKeys)
+    setColorGradient(gradients)
+  }, [value.alphaKeys, value.colorKeys])
 
   const handleOpenClick = () => {
     const element = ref.current;
@@ -34,7 +41,7 @@ const GradientEditor: React.FC<PropsType> = ({
       <div
         ref={ref}
         className={styles.sample}
-        style={{ backgroundColor: `color(srgb-linear ${0} ${0} ${0})` }}
+        style={{ background: `linear-gradient(90deg, ${colorGradient})`}}
         onClick={handleOpenClick}
       />
       {

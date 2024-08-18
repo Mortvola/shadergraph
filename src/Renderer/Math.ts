@@ -520,3 +520,19 @@ export const lineRectangleClip = (p1: Vec2, p2: Vec2, upperLeft: Vec2, lowerRigh
 
   return [vec2.create(x0, y0), vec2.create(x1, y1)];
 }
+
+export function lerp(v1: number, v2: number, t: number): number;
+export function lerp(v1: number[], v2: number[], t: number): number[];
+export function lerp(v1: number[] | number, v2: number[] | number, t: number): number[] | number {
+  if (typeof v1 === 'number' && typeof v2 === 'number') {
+    return (v2 - v1) * t + v1;
+  }
+
+  if (Array.isArray(v1) && Array.isArray(v2) && v1.length === v2.length) {
+    return v1.map((v, index) => (
+      (v2[index] - v) * t + v
+    ));
+  }
+
+  throw new Error('Mixed types in lerp not allowed.')
+}

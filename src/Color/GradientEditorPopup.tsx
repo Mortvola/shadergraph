@@ -5,6 +5,8 @@ import GradientKeys from './GradientKeys';
 import { AlphaGradientKey, ColorGradientKey, Gradient } from '../Renderer/types';
 import ColorPicker from './ColorPicker';
 import NumberInput from '../Inspector/NumberInput';
+import { lerp } from '../Renderer/Math';
+import { getGradientCss } from './Color';
 
 type PropsType = {
   value: Gradient,
@@ -29,16 +31,10 @@ const GradientEditorPopup: React.FC<PropsType> = ({
   const [position, setPosition] = React.useState<number>(0);
 
   const updateRgbGradients = React.useCallback(() => {
-    let gradient = '';
-    let comma = '';
+    const gradients = getGradientCss(value.colorKeys, value.alphaKeys)
 
-    for (let i = 0; i < value.colorKeys.length; i += 1) {
-      gradient += `${comma}rgb(${value.colorKeys[i].value.map((c) => Math.round(c * 255)).join()}) ${value.colorKeys[i].position * 100}%`
-      comma = ', '
-    }
-
-    setColorGradient(gradient)
-  }, [value.colorKeys])
+    setColorGradient(gradients)
+  }, [value.alphaKeys, value.colorKeys])
 
   React.useEffect(() => {
     const element = ref.current;
