@@ -48,6 +48,36 @@ const GradientEditorPopup: React.FC<PropsType> = ({
     }
   }
 
+  const handleAddAlphaKey = (position: number) => {
+    // Find first key that is greater than this position
+    const index = value.alphaKeys.findIndex((k) => k.position > position);
+
+    if (index !== -1) {
+      if (index > 0) {
+        const newKey =             {
+          id: value.alphaKeys.reduce((prev, k) => (Math.max(prev, k.id)), 0) + 1,
+          position,
+          value: value.alphaKeys[0].value,
+        };
+
+        setAlpha(Math.round(newKey.value * 255))
+        setSelectedAlphaId(newKey.id);
+        setSelectedColorId(undefined)
+  
+        onChange({
+          ...value,
+          alphaKeys: [
+            ...value.alphaKeys.slice(0, index),
+            newKey,
+            ...value.alphaKeys.slice(index),
+          ],
+        });
+
+        console.log('alpha key added')
+      }
+    }
+  }
+
   const handleAlphaChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     if (selectedAlphaId !== undefined) {
       const a = parseInt(event.target.value, 10);
@@ -81,6 +111,64 @@ const GradientEditorPopup: React.FC<PropsType> = ({
     }
   }
 
+  const deleteAlphaKey = (id: number) => {
+      // Find index of selected alpha key
+      const index = value.alphaKeys.findIndex((k) => k.id === id);
+
+      // Don't delete the keys at position 0 and 1.
+      if (
+        index !== -1
+        && index !== 0
+        && index !== value.alphaKeys.length - 1
+      ) {
+        setSelectedAlphaId(undefined);
+    
+        onChange({
+          ...value,
+          alphaKeys: [
+            ...value.alphaKeys.slice(0, index),
+            ...value.alphaKeys.slice(index + 1),
+          ],
+        });
+
+        console.log('alpha key deleted')
+      }
+  }
+
+  const handleMoveAlphaKey = (id: number, position: number) => {
+    // Find index of selected alpha key
+    const index = value.alphaKeys.findIndex((k) => k.id === id);
+
+    // Don't move the keys at position 0 and 1.
+    if (
+      index !== -1
+      && index !== 0
+      && index !== value.alphaKeys.length - 1
+    ) {
+      onChange({
+        ...value,
+        alphaKeys: [
+          ...value.alphaKeys.slice(0, index),
+          {
+            ...value.alphaKeys[index],
+            position,
+          },
+          ...value.alphaKeys.slice(index + 1),
+        ],
+      });
+    }
+  }
+
+  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
+    console.log(event.code)
+    event.stopPropagation();
+    if (event.code === 'Backspace' || event.code === 'Delete') {
+      if (selectedAlphaId !== undefined) {
+        deleteAlphaKey(selectedAlphaId)
+      }
+    }
+  }
+
   return (
     createPortal(
       <div
@@ -93,16 +181,26 @@ const GradientEditorPopup: React.FC<PropsType> = ({
             ? (
               <div
                 className={styles.gradientPopup}
-                style={{ left: rect.left, bottom: wrapperBounds!.bottom - rect.top }} onClick={handleClick}
+                style={{ left: rect.left, bottom: wrapperBounds!.bottom - rect.top }}
+                onClick={handleClick}
+                onKeyDown={handleKeyDown}
               >
-                <GradientKeys keys={value.alphaKeys} onKeyClick={handleAlphaKeyClick} selected={selectedAlphaId} />
+                <GradientKeys
+                  keys={value.alphaKeys}
+                  onKeyClick={handleAlphaKeyClick}
+                  selected={selectedAlphaId}
+                  onAddKey={handleAddAlphaKey}
+                  onMove={handleMoveAlphaKey}
+                />
                 <div className={styles.gradientGraph} />
                 <GradientKeys keys={value.colorKeys} onKeyClick={handleColorKeyClick} selected={selectedColorId} />
-                {
-                  selectedAlphaId !== undefined
-                    ? <input type="range" min={0} max={255} value={alpha} onChange={handleAlphaChange} />
-                    : null
-                }
+                <div className={styles.gradientControls}>
+                  {
+                    selectedAlphaId !== undefined
+                      ? <input type="range" min={0} max={255} value={alpha} onChange={handleAlphaChange} />
+                      : null
+                  }
+                </div>
               </div>
             )
             : null

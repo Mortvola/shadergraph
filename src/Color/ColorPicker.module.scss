@@ -49,22 +49,29 @@
 
 .gradientGraph {
   width: 100%;
-  height: 100px;
+  height: 50px;
   border: black thin solid;
+  box-sizing: border-box;
+}
+
+.gradientControls {
+  height: 25px;
 }
 
 .keys {
-  height: 20px;
+  height: 17px;
   width: 100%;
   position: relative;
 }
 
 .key {
-  width: 10px;
-  height: 10px;
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
   border: black thin solid;
-  transform: rotate(45deg) translateY(6.5px);
+  transform: translate(-6px, 2.5px) rotate(45deg);
   position: absolute;
+  outline: none;
 
   &.selected {
     background-color: black;

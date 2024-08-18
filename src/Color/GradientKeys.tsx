@@ -7,12 +7,16 @@ type PropsType = {
   keys: (AlphaGradientKey | ColorGradientKey)[],
   onKeyClick?: (index: number) => void,
   selected?: number,
+  onAddKey?: (position: number) => void,
+  onMove?: (id: number, position: number) => void,
 }
 
 const GradientKeys: React.FC<PropsType> = ({
   keys,
   onKeyClick,
   selected,
+  onAddKey,
+  onMove,
 }) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const [width, setWidth] = React.useState<number>(0);
@@ -33,8 +37,35 @@ const GradientKeys: React.FC<PropsType> = ({
     }
   }
 
+  const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
+    const element = ref.current;
+
+    if (element) {
+      const rect = element.getBoundingClientRect();
+
+      if (onAddKey) {
+        onAddKey((event.clientX - rect.left) / rect.width)
+      }
+    }
+  }
+
+  const handleMove = (id: number, clientX: number) => {
+    const element = ref.current;
+
+    if (element) {
+      const rect = element.getBoundingClientRect();
+
+      const position = Math.max(Math.min(1, (clientX - rect.left) / rect.width), 0);
+
+      if (onMove) {
+        onMove(id, position)
+        console.log(position);
+      }
+    }
+  }
+
   return (
-    <div ref={ref} className={styles.keys}>
+    <div ref={ref} className={styles.keys} onClick={handleClick}>
       {
         keys.map((k) => (
           <GradientKey
@@ -43,6 +74,7 @@ const GradientKeys: React.FC<PropsType> = ({
             position={k.position * width}
             onClick={handleKeyClick}
             selected={k.id === selected}
+            onMove={handleMove}
           />
         ))
       }
