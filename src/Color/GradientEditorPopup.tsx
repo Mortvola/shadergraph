@@ -318,10 +318,9 @@ const GradientEditorPopup: React.FC<PropsType> = ({
                   onMove={handleMoveAlphaKey}
                   selected={selectedAlphaId}
                 />
-                <div
-                  className={styles.gradientGraph}
-                  style={{ background: `linear-gradient(90deg, ${colorGradient})`}}
-                />
+                <div className={`${styles.gradientGraph}  ${styles.checkerboard}`}>
+                  <div style={{ background: `linear-gradient(90deg, ${colorGradient})`}} />
+                </div>
                 <GradientKeys
                   keys={value.colorKeys}
                   onKeyClick={handleColorKeyClick}

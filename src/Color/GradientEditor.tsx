@@ -40,10 +40,11 @@ const GradientEditor: React.FC<PropsType> = ({
     <>
       <div
         ref={ref}
-        className={styles.sample}
-        style={{ background: `linear-gradient(90deg, ${colorGradient})`}}
+        className={`${styles.gradientSample} ${styles.checkerboard}`}
         onClick={handleOpenClick}
-      />
+      >
+        <div style={{ background: `linear-gradient(90deg, ${colorGradient})`}} />
+      </div>
       {
         open
           ? (
