@@ -188,6 +188,7 @@ export const isPSValue = (r: unknown): r is PSValue => (
 export type PSColor = {
   type: PSColorType,
   color: [number[], number[]],
+  gradient: Gradient,
 }
 
 export const isPSColor = (r: unknown): r is PSColor => (
@@ -293,4 +294,21 @@ export type ParticleRecord = {
   id: number,
   name: string,
   descriptor: ParticleDescriptor,
+}
+
+export type AlphaGradientKey = {
+  id: number,
+  position: number,
+  value: number,
+}
+
+export type ColorGradientKey = {
+  id: number,
+  position: number,
+  value: number[],
+}
+
+export type Gradient = {
+  colorKeys: ColorGradientKey[],
+  alphaKeys: AlphaGradientKey[],
 }

@@ -1,7 +1,8 @@
 import React from 'react';
 import ColorPicker from '../Color/ColorPicker';
-import { PSColor, PSColorType } from '../Renderer/types';
+import { Gradient, PSColor, PSColorType } from '../Renderer/types';
 import PSColorTypeSelector from './PSColorTypeSelector';
+import GradientEditor from '../Color/GradientEditor';
 
 type PropsType = {
   value: PSColor,
@@ -32,6 +33,13 @@ const PSColorInput: React.FC<PropsType> = ({
     })
   }
 
+  const handleGradientChange = (gradient: Gradient) => {
+    onChange({
+      ...value,
+      gradient,
+    })
+  }
+
   const handleTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     onChange({
       ...value,
@@ -41,11 +49,28 @@ const PSColorInput: React.FC<PropsType> = ({
 
   return (
     <>
-      <ColorPicker value={value.color[0]} onChange={handleMinChange} useAlpha useHdr />
       {
-        value.type === PSColorType.Random
-          ? <ColorPicker value={value.color[1]} onChange={handleMaxChange} useAlpha useHdr />
-          : null
+        (() => {
+          switch (value.type) {
+            case PSColorType.Constant:
+            case PSColorType.Random:
+              return (
+                <>
+                  <ColorPicker value={value.color[0]} onChange={handleMinChange} useAlpha useHdr />
+                  {
+                    value.type === PSColorType.Random
+                      ? <ColorPicker value={value.color[1]} onChange={handleMaxChange} useAlpha useHdr />
+                      : null
+                  }
+                </>
+              )
+
+            case PSColorType.Gradient:
+              return (
+                <GradientEditor value={value.gradient} onChange={handleGradientChange} />
+              )
+          }
+        })()
       }
       <PSColorTypeSelector value={value.type} onChange={handleTypeChange} />
     </>

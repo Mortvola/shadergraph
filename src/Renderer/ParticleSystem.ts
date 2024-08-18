@@ -1,5 +1,5 @@
 import { Vec4, mat4, vec3, vec4 } from "wgpu-matrix"
-import { ContainerNodeInterface, isPSColor, isPSValue, ParticleDescriptor, ParticleSystemInterface, PSColor, PSColorType, PSValue, PSValueType } from "./types";
+import { ContainerNodeInterface, Gradient, isPSColor, isPSValue, ParticleDescriptor, ParticleSystemInterface, PSColor, PSColorType, PSValue, PSValueType } from "./types";
 import DrawableNode from "./Drawables/SceneNodes/DrawableNode";
 import { degToRad, gravity, intersectionPlane } from "./Math";
 import DrawableInterface from "./Drawables/DrawableInterface";
@@ -33,20 +33,41 @@ const getPSValue = (value: PSValue, t: number) => {
   return 1;
 }
 
-const getPSColor = (color: PSColor, t: number) => {
+const getPSColor = (color: PSColor, t: number): number[] => {
   switch (color.type) {
     case PSColorType.Constant:
       return color.color[0];
     
-    case PSColorType.Random:
-      const t = Math.random();
+    case PSColorType.Random: {
+      const r = Math.random();
 
       return [
-        (color.color[1][0] - color.color[0][0]) * t + color.color[0][0],
-        (color.color[1][1] - color.color[0][1]) * t + color.color[0][1],
-        (color.color[1][2] - color.color[0][2]) * t + color.color[0][2],
+        (color.color[1][0] - color.color[0][0]) * r + color.color[0][0],
+        (color.color[1][1] - color.color[0][1]) * r + color.color[0][1],
+        (color.color[1][2] - color.color[0][2]) * r + color.color[0][2],
         1,
       ]
+    }
+
+    case PSColorType.Gradient:
+      // Find first key that is greater than or equal to t.
+      const index = color.gradient.alphaKeys.findIndex((k) => k.position >= t);
+
+      if (index !== -1) {
+        let a: number;
+
+        if (index > 0) {
+          const k1 = color.gradient.alphaKeys[index - 1];
+          const k2 = color.gradient.alphaKeys[index];
+    
+          a = (k2.value - k1.value) * (t - k1.position) + k1.value;  
+        }
+        else {
+          a = color.gradient.alphaKeys[0].value;
+        }
+
+        return [...color.color[0].slice(0, 3), a];  
+      }
   }
 
   return [1, 1, 1, 1];
@@ -160,8 +181,28 @@ class ParticleSystem implements ParticleSystemInterface {
       }  
     }
 
+    const defaultGradient: Gradient = {
+      alphaKeys: [
+        {
+          id: 0,
+          position: 0,
+          value: 1,
+        },
+        {
+          id: 1,
+          position: 1,
+          value: 1,
+        }
+      ],
+      colorKeys: [],
+    };
+
     if (descriptor?.startColor && isPSColor(descriptor?.startColor)) {
       this.startColor = descriptor.startColor;
+
+      if (this.startColor.gradient === undefined) {
+        this.startColor.gradient = defaultGradient
+      }
     }
     else if (descriptor?.startColor && Array.isArray(descriptor?.startColor)) {
       this.startColor = {
@@ -169,7 +210,8 @@ class ParticleSystem implements ParticleSystemInterface {
         color: [
           descriptor.startColor[0],
           descriptor.startColor[1],
-        ]
+        ],
+        gradient: defaultGradient,
       }
     }
     else if (descriptor?.initialColor) {
@@ -178,7 +220,8 @@ class ParticleSystem implements ParticleSystemInterface {
         color: [
           descriptor.initialColor[0],
           descriptor.initialColor[1],
-        ]
+        ],
+        gradient: defaultGradient,
       }
     }
     else {
@@ -187,7 +230,8 @@ class ParticleSystem implements ParticleSystemInterface {
         color: [
           [1, 1, 1, 1],
           [1, 1, 1, 1],
-        ]
+        ],
+        gradient: defaultGradient,
       }
     }
 
