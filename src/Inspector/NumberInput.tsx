@@ -26,8 +26,18 @@ const NumberInput: React.FC<PropsType> = ({
     }
   }
 
+  const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
+    event.stopPropagation()
+  }
+
   return (
-    <input type="text" className={styles.input} value={stringValue} onChange={handleChange} />
+    <input
+      type="text"
+      className={styles.input}
+      value={stringValue}
+      onChange={handleChange}
+      onKeyDown={handleKeyDown}
+    />
   )
 }
 

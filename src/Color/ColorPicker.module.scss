@@ -56,6 +56,10 @@
 
 .gradientControls {
   height: 25px;
+  display: flex;
+  column-gap: 0.5rem;
+  align-items: center;
+  padding-top: 0.5rem;
 }
 
 .keys {

@@ -4,6 +4,7 @@ import styles from './ColorPicker.module.scss';
 import GradientKeys from './GradientKeys';
 import { AlphaGradientKey, ColorGradientKey, Gradient } from '../Renderer/types';
 import ColorPicker from './ColorPicker';
+import NumberInput from '../Inspector/NumberInput';
 
 type PropsType = {
   value: Gradient,
@@ -25,6 +26,7 @@ const GradientEditorPopup: React.FC<PropsType> = ({
   const [selectedColorId, setSelectedColorId] = React.useState<number | undefined>()
   const [color, setColor] = React.useState<number[]>([1, 1, 1, 1]);
   const [colorGradient, setColorGradient] = React.useState<string>('')
+  const [position, setPosition] = React.useState<number>(0);
 
   const updateRgbGradients = React.useCallback(() => {
     let gradient = '';
@@ -59,6 +61,8 @@ const GradientEditorPopup: React.FC<PropsType> = ({
 
     if (key) {
       setAlpha(Math.round(key.value * 255))
+      setPosition(key.position);
+
       setSelectedAlphaId(id);
       setSelectedColorId(undefined)
     }
@@ -170,6 +174,8 @@ const GradientEditorPopup: React.FC<PropsType> = ({
 
     if (key) {
       setColor(key.value)
+      setPosition(key.position);
+
       setSelectedColorId(id);
       setSelectedAlphaId(undefined)
     }
@@ -229,6 +235,8 @@ const GradientEditorPopup: React.FC<PropsType> = ({
       && index !== 0
       && index !== value.alphaKeys.length - 1
     ) {
+      setPosition(position);
+
       onChange({
         ...value,
         alphaKeys: [
@@ -253,6 +261,8 @@ const GradientEditorPopup: React.FC<PropsType> = ({
       && index !== 0
       && index !== value.colorKeys.length - 1
     ) {
+      setPosition(position);
+
       onChange({
         ...value,
         colorKeys: [
@@ -277,6 +287,15 @@ const GradientEditorPopup: React.FC<PropsType> = ({
       else if (selectedColorId !== undefined) {
         deleteColorKey(selectedColorId)
       }
+    }
+  }
+
+  const handlePositionChange = (value: number) => {
+    if (selectedAlphaId !== undefined) {
+      handleMoveAlphaKey(selectedAlphaId, value)
+    }
+    else if (selectedColorId !== undefined) {
+      handleMoveColorKey(selectedColorId, value)
     }
   }
 
@@ -317,12 +336,26 @@ const GradientEditorPopup: React.FC<PropsType> = ({
                 <div className={styles.gradientControls}>
                   {
                     selectedAlphaId !== undefined
-                      ? <input type="range" min={0} max={255} value={alpha} onChange={handleAlphaChange} />
+                      ? (
+                        <>
+                          Position:
+                          <NumberInput value={position} onChange={handlePositionChange} />
+                          Alpha:
+                          <input type="range" min={0} max={255} value={alpha} onChange={handleAlphaChange} />
+                        </>
+                      )
                       : null
                   }
                   {
                     selectedColorId !== undefined
-                      ? <ColorPicker value={color} onChange={handleColorChange} />
+                      ? (
+                        <>
+                          Position:
+                          <NumberInput value={position} onChange={handlePositionChange} />
+                          Color:
+                          <ColorPicker value={color} onChange={handleColorChange} />
+                        </>
+                      )
                       : null
                   }
                 </div>
