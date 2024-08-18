@@ -120,9 +120,8 @@ const GradientEditorPopup: React.FC<PropsType> = ({
     }
   }
 
-  const handleAlphaChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+  const handleAlphaChange = (a: number) => {
     if (selectedAlphaId !== undefined) {
-      const a = parseInt(event.target.value, 10);
       setAlpha(a)
       
       const index = value.alphaKeys.findIndex((k) => k.id === selectedAlphaId);
@@ -333,10 +332,14 @@ const GradientEditorPopup: React.FC<PropsType> = ({
                     selectedAlphaId !== undefined
                       ? (
                         <>
-                          Position:
-                          <NumberInput value={position} onChange={handlePositionChange} />
-                          Alpha:
-                          <input type="range" min={0} max={255} value={alpha} onChange={handleAlphaChange} />
+                          <label>
+                            Position:
+                            <NumberInput value={position} onChange={handlePositionChange} />
+                          </label>
+                          <label>
+                            Alpha:
+                            < NumberInput value={alpha} onChange={handleAlphaChange} />
+                          </label>
                         </>
                       )
                       : null
@@ -345,12 +348,21 @@ const GradientEditorPopup: React.FC<PropsType> = ({
                     selectedColorId !== undefined
                       ? (
                         <>
-                          Position:
-                          <NumberInput value={position} onChange={handlePositionChange} />
-                          Color:
-                          <ColorPicker value={color} onChange={handleColorChange} />
+                          <label>
+                            Position:
+                            <NumberInput value={position} onChange={handlePositionChange} />
+                          </label>
+                          <label>
+                            Color:
+                            <ColorPicker value={color} onChange={handleColorChange} />
+                          </label>
                         </>
                       )
+                      : null
+                  }
+                  {
+                    selectedAlphaId === undefined && selectedColorId === undefined
+                      ? <>Select a key to edit.</>
                       : null
                   }
                 </div>
