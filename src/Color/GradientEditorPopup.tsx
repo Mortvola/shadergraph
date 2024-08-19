@@ -7,6 +7,7 @@ import ColorPicker from './ColorPicker';
 import NumberInput from '../Inspector/NumberInput';
 import { lerp } from '../Renderer/Math';
 import { getGradientCss } from './Color';
+import { observer } from 'mobx-react-lite';
 
 type PropsType = {
   value: Gradient,
@@ -15,7 +16,7 @@ type PropsType = {
   rect: DOMRect,
 }
 
-const GradientEditorPopup: React.FC<PropsType> = ({
+const GradientEditorPopup: React.FC<PropsType> = observer(({
   value,
   onChange,
   onClose,
@@ -374,6 +375,6 @@ const GradientEditorPopup: React.FC<PropsType> = ({
       document.body,
     )
   )
-}
+})
 
 export default GradientEditorPopup;

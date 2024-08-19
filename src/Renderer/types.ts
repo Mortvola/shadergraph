@@ -188,13 +188,19 @@ export const isPSValue = (r: unknown): r is PSValue => (
 export type PSColor = {
   type: PSColorType,
   color: [number[], number[]],
-  gradient: Gradient,
+  gradient?: Gradient,
+  gradients: [Gradient, Gradient],
 }
 
 export const isPSColor = (r: unknown): r is PSColor => (
   (r as PSColor).type !== undefined
   && (r as PSColor).color !== undefined
 );
+
+export type LifetimeColor = {
+  enabled: boolean,
+  color: PSColor,
+}
 
 export type ParticleDescriptor = {
   duration?: number,
@@ -218,6 +224,7 @@ export type ParticleDescriptor = {
 
   startColor?: PSColor | number[][],
   initialColor?: number[][],
+  lifetimeColor?: LifetimeColor,
 
   gravityModifier?: number,
 

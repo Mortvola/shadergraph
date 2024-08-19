@@ -3,7 +3,6 @@ import ParticleSystem from '../Renderer/ParticleSystem';
 import NumberInput from './NumberInput';
 import Http from '../Http/src';
 import styles from './Particle.module.scss';
-import ColorPicker from '../Color/ColorPicker';
 import { useStores } from '../State/store';
 import { materialManager } from '../Renderer/Materials/MaterialManager';
 import { particleSystemManager } from '../Renderer/ParticleSystemManager';
@@ -101,6 +100,20 @@ const Particle: React.FC<PropsType> = observer(({
     })
   }
 
+  const handleEnableLifetimeColor = (value: boolean) => {
+    runInAction(() => {
+      particleSystem.lifetimeColor.enabled = value
+      save();
+    })
+  }
+
+  const handleLifetimeColorChange = (color: PSColor) => {
+    runInAction(() => {
+      particleSystem.lifetimeColor.color = color;
+      save()  
+    })
+  }
+
   const handleGravityChange = (value: number) => {
     runInAction(() => {
       particleSystem.gravityModifier = value;
@@ -110,7 +123,7 @@ const Particle: React.FC<PropsType> = observer(({
 
   const handleCollisionChange = (value: boolean) => {
     runInAction(() => {
-      particleSystem.collisionEnabled = !particleSystem.collisionEnabled;
+      particleSystem.collisionEnabled = value;
       save();
     })
   }
@@ -216,6 +229,10 @@ const Particle: React.FC<PropsType> = observer(({
         Size over lifetime:
         <PSValueInput value={particleSystem.size} onChange={handleSizeChange} />
       </label>
+      <div>
+        <Checkbox label="Color over lifetime:" value={particleSystem.lifetimeColor.enabled} onChange={handleEnableLifetimeColor} />
+        <PSColorInput value={particleSystem.lifetimeColor.color} onChange={handleLifetimeColorChange} />
+      </div>
       <label>
         Gravity Modifier:
         <NumberInput value={particleSystem.gravityModifier} onChange={handleGravityChange} />

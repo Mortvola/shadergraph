@@ -1,11 +1,15 @@
 import { Vec4, mat4, vec3, vec4 } from "wgpu-matrix"
-import { ContainerNodeInterface, Gradient, isPSColor, isPSValue, ParticleDescriptor, ParticleSystemInterface, PSColor, PSColorType, PSValue, PSValueType } from "./types";
+import { ContainerNodeInterface, Gradient, isPSColor, isPSValue, LifetimeColor, ParticleDescriptor, ParticleSystemInterface, PSColor, PSColorType, PSValue, PSValueType } from "./types";
 import DrawableNode from "./Drawables/SceneNodes/DrawableNode";
-import { degToRad, gravity, intersectionPlane } from "./Math";
+import { degToRad, gravity, intersectionPlane, lerp } from "./Math";
 import DrawableInterface from "./Drawables/DrawableInterface";
 import Billboard from "./Drawables/Billboard";
 import { MaterialDescriptor } from "./Materials/MaterialDescriptor";
 import { makeObservable, observable } from "mobx";
+
+export function clone<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj)) as T
+}
 
 type Point = {
   velocity: Vec4,
@@ -13,7 +17,7 @@ type Point = {
   lifetime: number,
   drawable: DrawableNode,
   size: number,
-  color: Vec4,
+  startColor: Vec4,
 }
 
 const getPSValue = (value: PSValue, t: number) => {
@@ -33,6 +37,45 @@ const getPSValue = (value: PSValue, t: number) => {
   return 1;
 }
 
+const getColorFromGradient = (gradient: Gradient, t: number) => {
+  let a = 1;
+  let c = [1, 1, 1];
+
+  // Find first key that is greater than or equal to t.
+  let index = gradient.alphaKeys.findIndex((k) => k.position >= t);
+
+  if (index !== -1) {
+    if (index > 0) {
+      const k1 = gradient.alphaKeys[index - 1];
+      const k2 = gradient.alphaKeys[index];
+      const pct = (t - k1.position) / (k2.position - k1.position)
+
+      a = lerp(k1.value, k2.value, pct)
+    }
+    else {
+      a = gradient.alphaKeys[0].value;
+    }
+  }
+
+  // Find first key that is greater than or equal to t.
+  index = gradient.colorKeys.findIndex((k) => k.position >= t);
+
+  if (index !== -1) {
+    if (index > 0) {
+      const k1 = gradient.colorKeys[index - 1];
+      const k2 = gradient.colorKeys[index];
+      const pct = (t - k1.position) / (k2.position - k1.position)
+
+      c = lerp(k1.value.slice(0, 3), k2.value.slice(0, 3), pct);
+    }
+    else {
+      c = gradient.colorKeys[0].value.slice(0, 3);
+    }
+  }
+
+  return [...c, a];
+}
+
 const getPSColor = (color: PSColor, t: number): number[] => {
   switch (color.type) {
     case PSColorType.Constant:
@@ -41,53 +84,19 @@ const getPSColor = (color: PSColor, t: number): number[] => {
     case PSColorType.Random: {
       const r = Math.random();
 
-      return [
-        (color.color[1][0] - color.color[0][0]) * r + color.color[0][0],
-        (color.color[1][1] - color.color[0][1]) * r + color.color[0][1],
-        (color.color[1][2] - color.color[0][2]) * r + color.color[0][2],
-        1,
-      ]
+      return lerp(color.color[0], color.color[1], r)
     }
 
     case PSColorType.Gradient:
-      let a = 1;
-      let c = [1, 1, 1];
+      return getColorFromGradient(color.gradients[0], t);
 
-      // Find first key that is greater than or equal to t.
-      let index = color.gradient.alphaKeys.findIndex((k) => k.position >= t);
+    case PSColorType.RandomeGradient:
+      const color1 = getColorFromGradient(color.gradients[0], t);
+      const color2 = getColorFromGradient(color.gradients[1], t);
 
-      if (index !== -1) {
-        if (index > 0) {
-          const k1 = color.gradient.alphaKeys[index - 1];
-          const k2 = color.gradient.alphaKeys[index];
-          const pct = (t - k1.position) / (k2.position - k1.position)
+      const r = Math.random();
 
-          a = (k2.value - k1.value) * pct + k1.value;  
-        }
-        else {
-          a = color.gradient.alphaKeys[0].value;
-        }
-      }
-
-      // Find first key that is greater than or equal to t.
-      index = color.gradient.colorKeys.findIndex((k) => k.position >= t);
-
-      if (index !== -1) {
-        if (index > 0) {
-          const k1 = color.gradient.colorKeys[index - 1];
-          const k2 = color.gradient.colorKeys[index];
-          const pct = (t - k1.position) / (k2.position - k1.position)
-    
-          c[0] = (k2.value[0] - k1.value[0]) * pct + k1.value[0];  
-          c[1] = (k2.value[1] - k1.value[1]) * pct + k1.value[1];  
-          c[2] = (k2.value[2] - k1.value[2]) * pct + k1.value[2];  
-        }
-        else {
-          c = color.gradient.colorKeys[0].value.slice(0, 3);
-        }
-      }
-
-      return [...c, a];  
+      return lerp(color1, color2, r)
   }
 
   return [1, 1, 1, 1];
@@ -117,6 +126,8 @@ class ParticleSystem implements ParticleSystemInterface {
   startSize: PSValue;
 
   startColor: PSColor;
+
+  lifetimeColor: LifetimeColor;
 
   size: PSValue; // Size over lifetime
 
@@ -231,12 +242,14 @@ class ParticleSystem implements ParticleSystemInterface {
     if (descriptor?.startColor && isPSColor(descriptor?.startColor)) {
       this.startColor = descriptor.startColor;
 
-      if (this.startColor.gradient === undefined) {
-        this.startColor.gradient = defaultGradient
-      }
-
-      if (this.startColor.gradient.colorKeys.length === 0) {
-        this.startColor.gradient.colorKeys = defaultGradient.colorKeys
+      if (this.startColor.gradients === undefined) {
+        if (this.startColor.gradient === undefined) {
+          this.startColor.gradients = [clone(defaultGradient), clone(defaultGradient)]
+        }
+        else {
+          this.startColor.gradients = [this.startColor.gradient, clone(defaultGradient)];
+          this.startColor.gradient = undefined
+        }
       }
     }
     else if (descriptor?.startColor && Array.isArray(descriptor?.startColor)) {
@@ -246,7 +259,7 @@ class ParticleSystem implements ParticleSystemInterface {
           descriptor.startColor[0],
           descriptor.startColor[1],
         ],
-        gradient: defaultGradient,
+        gradients: [clone(defaultGradient), clone(defaultGradient)],
       }
     }
     else if (descriptor?.initialColor) {
@@ -256,7 +269,7 @@ class ParticleSystem implements ParticleSystemInterface {
           descriptor.initialColor[0],
           descriptor.initialColor[1],
         ],
-        gradient: defaultGradient,
+        gradients: [clone(defaultGradient), clone(defaultGradient)],
       }
     }
     else {
@@ -266,7 +279,16 @@ class ParticleSystem implements ParticleSystemInterface {
           [1, 1, 1, 1],
           [1, 1, 1, 1],
         ],
-        gradient: defaultGradient,
+        gradients: [clone(defaultGradient), clone(defaultGradient)],
+      }
+    }
+
+    this.lifetimeColor = descriptor?.lifetimeColor ?? {
+      enabled: false,
+      color: {
+        type: PSColorType.Gradient,
+        color: [[1, 1, 1, 1], [1, 1, 1, 1]],
+        gradients: [clone(defaultGradient), clone(defaultGradient)],
       }
     }
 
@@ -287,6 +309,14 @@ class ParticleSystem implements ParticleSystemInterface {
       startColor: observable,
       gravityModifier: observable,
       collisionEnabled: observable,
+    })
+
+    makeObservable(this.lifetimeColor, {
+      enabled: observable,
+    })
+
+    makeObservable(this.lifetimeColor.color, {
+      gradients: observable,
     })
   }
 
@@ -455,10 +485,16 @@ class ParticleSystem implements ParticleSystemInterface {
 
       point.drawable.scale = vec3.create(size, size, size)
 
-      point.drawable.color[0] = point.color[0];
-      point.drawable.color[1] = point.color[1];
-      point.drawable.color[2] = point.color[2];
-      point.drawable.color[3] = point.color[3];
+      let lifetimeColor = [1, 1, 1, 1];
+
+      if (this.lifetimeColor.enabled) {
+        lifetimeColor = getPSColor(this.lifetimeColor.color, t);
+      }
+
+      point.drawable.color[0] = lifetimeColor[0] * point.startColor[0];
+      point.drawable.color[1] = lifetimeColor[1] * point.startColor[1];
+      point.drawable.color[2] = lifetimeColor[2] * point.startColor[2];
+      point.drawable.color[3] = lifetimeColor[3] * point.startColor[3];
     }
   }
 
@@ -527,7 +563,7 @@ class ParticleSystem implements ParticleSystemInterface {
         lifetime,
         size,
         drawable,
-        color: startColor,
+        startColor,
       }
 
       this.points.push(point)
@@ -552,6 +588,7 @@ class ParticleSystem implements ParticleSystemInterface {
       startSize: this.startSize,
       size: this.size,
       startColor: this.startColor,
+      lifetimeColor: this.lifetimeColor,
       gravityModifier: this.gravityModifier,
       collisionEnabled: this.collisionEnabled,
       bounce: this.bounce,

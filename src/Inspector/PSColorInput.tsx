@@ -33,10 +33,17 @@ const PSColorInput: React.FC<PropsType> = ({
     })
   }
 
-  const handleGradientChange = (gradient: Gradient) => {
+  const handleGradient1Change = (gradient: Gradient) => {
     onChange({
       ...value,
-      gradient,
+      gradients: [gradient, value.gradients[1]],
+    })
+  }
+
+  const handleGradient2Change = (gradient: Gradient) => {
+    onChange({
+      ...value,
+      gradients: [value.gradients[0], gradient],
     })
   }
 
@@ -66,8 +73,16 @@ const PSColorInput: React.FC<PropsType> = ({
               )
 
             case PSColorType.Gradient:
+            case PSColorType.RandomeGradient:
               return (
-                <GradientEditor value={value.gradient} onChange={handleGradientChange} />
+                <>
+                  <GradientEditor value={value.gradients[0]} onChange={handleGradient1Change} />
+                  {
+                    value.type === PSColorType.RandomeGradient
+                      ? <GradientEditor value={value.gradients[1]} onChange={handleGradient2Change} />
+                      : null
+                  }
+                </>
               )
           }
         })()

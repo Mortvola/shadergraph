@@ -3,13 +3,14 @@ import GradientEditorPopup from './GradientEditorPopup';
 import styles from './ColorPicker.module.scss'
 import { Gradient } from '../Renderer/types';
 import { getGradientCss } from './Color';
+import { observer } from 'mobx-react-lite';
 
 type PropsType = {
   value: Gradient,
   onChange: (gradient: Gradient) => void,
 }
 
-const GradientEditor: React.FC<PropsType> = ({
+const GradientEditor: React.FC<PropsType> = observer(({
   value,
   onChange,
 }) => {
@@ -22,7 +23,9 @@ const GradientEditor: React.FC<PropsType> = ({
     setColorGradient(gradients)
   }, [value.alphaKeys, value.colorKeys])
 
-  const handleOpenClick = () => {
+  const handleOpenClick: React.MouseEventHandler = (event) => {
+    event.stopPropagation();
+    
     const element = ref.current;
 
     if (element) {
@@ -58,6 +61,6 @@ const GradientEditor: React.FC<PropsType> = ({
       }
     </>
   )
-}
+})
 
 export default GradientEditor;
