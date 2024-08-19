@@ -1,11 +1,17 @@
 import { Vec4, mat4, vec3, vec4 } from "wgpu-matrix"
-import { ContainerNodeInterface, Gradient, isPSColor, isPSValue, LifetimeColor, ParticleDescriptor, ParticleSystemInterface, PSColor, PSColorType, PSValue, PSValueType } from "./types";
+import {
+  ContainerNodeInterface, isPSValue,
+  ParticleDescriptor, ParticleSystemInterface,
+  PSValue, PSValueType,
+} from "./types";
 import DrawableNode from "./Drawables/SceneNodes/DrawableNode";
-import { degToRad, gravity, intersectionPlane, lerp } from "./Math";
+import { degToRad, gravity, intersectionPlane } from "./Math";
 import DrawableInterface from "./Drawables/DrawableInterface";
 import Billboard from "./Drawables/Billboard";
 import { MaterialDescriptor } from "./Materials/MaterialDescriptor";
 import { makeObservable, observable } from "mobx";
+import PSColor from "../Inspector/PSColor";
+import LifetimeColor from "../Inspector/LifetimeColor";
 
 export function clone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj)) as T
@@ -35,71 +41,6 @@ const getPSValue = (value: PSValue, t: number) => {
   }
 
   return 1;
-}
-
-const getColorFromGradient = (gradient: Gradient, t: number) => {
-  let a = 1;
-  let c = [1, 1, 1];
-
-  // Find first key that is greater than or equal to t.
-  let index = gradient.alphaKeys.findIndex((k) => k.position >= t);
-
-  if (index !== -1) {
-    if (index > 0) {
-      const k1 = gradient.alphaKeys[index - 1];
-      const k2 = gradient.alphaKeys[index];
-      const pct = (t - k1.position) / (k2.position - k1.position)
-
-      a = lerp(k1.value, k2.value, pct)
-    }
-    else {
-      a = gradient.alphaKeys[0].value;
-    }
-  }
-
-  // Find first key that is greater than or equal to t.
-  index = gradient.colorKeys.findIndex((k) => k.position >= t);
-
-  if (index !== -1) {
-    if (index > 0) {
-      const k1 = gradient.colorKeys[index - 1];
-      const k2 = gradient.colorKeys[index];
-      const pct = (t - k1.position) / (k2.position - k1.position)
-
-      c = lerp(k1.value.slice(0, 3), k2.value.slice(0, 3), pct);
-    }
-    else {
-      c = gradient.colorKeys[0].value.slice(0, 3);
-    }
-  }
-
-  return [...c, a];
-}
-
-const getPSColor = (color: PSColor, t: number): number[] => {
-  switch (color.type) {
-    case PSColorType.Constant:
-      return color.color[0];
-    
-    case PSColorType.Random: {
-      const r = Math.random();
-
-      return lerp(color.color[0], color.color[1], r)
-    }
-
-    case PSColorType.Gradient:
-      return getColorFromGradient(color.gradients[0], t);
-
-    case PSColorType.RandomeGradient:
-      const color1 = getColorFromGradient(color.gradients[0], t);
-      const color2 = getColorFromGradient(color.gradients[1], t);
-
-      const r = Math.random();
-
-      return lerp(color1, color2, r)
-  }
-
-  return [1, 1, 1, 1];
 }
 
 class ParticleSystem implements ParticleSystemInterface {
@@ -212,85 +153,8 @@ class ParticleSystem implements ParticleSystemInterface {
       }  
     }
 
-    const defaultGradient: Gradient = {
-      alphaKeys: [
-        {
-          id: 0,
-          position: 0,
-          value: 1,
-        },
-        {
-          id: 1,
-          position: 1,
-          value: 1,
-        }
-      ],
-      colorKeys: [
-        {
-          id: 0,
-          position: 0,
-          value: [1, 1, 1, 1],
-        },
-        {
-          id: 1,
-          position: 1,
-          value: [1, 1, 1, 1],
-        }
-      ],
-    };
-
-    if (descriptor?.startColor && isPSColor(descriptor?.startColor)) {
-      this.startColor = descriptor.startColor;
-
-      if (this.startColor.gradients === undefined) {
-        if (this.startColor.gradient === undefined) {
-          this.startColor.gradients = [clone(defaultGradient), clone(defaultGradient)]
-        }
-        else {
-          this.startColor.gradients = [this.startColor.gradient, clone(defaultGradient)];
-          this.startColor.gradient = undefined
-        }
-      }
-    }
-    else if (descriptor?.startColor && Array.isArray(descriptor?.startColor)) {
-      this.startColor = {
-        type: PSColorType.Random,
-        color: [
-          descriptor.startColor[0],
-          descriptor.startColor[1],
-        ],
-        gradients: [clone(defaultGradient), clone(defaultGradient)],
-      }
-    }
-    else if (descriptor?.initialColor) {
-      this.startColor = {
-        type: PSColorType.Random,
-        color: [
-          descriptor.initialColor[0],
-          descriptor.initialColor[1],
-        ],
-        gradients: [clone(defaultGradient), clone(defaultGradient)],
-      }
-    }
-    else {
-      this.startColor = {
-        type: PSColorType.Constant,
-        color: [
-          [1, 1, 1, 1],
-          [1, 1, 1, 1],
-        ],
-        gradients: [clone(defaultGradient), clone(defaultGradient)],
-      }
-    }
-
-    this.lifetimeColor = descriptor?.lifetimeColor ?? {
-      enabled: false,
-      color: {
-        type: PSColorType.Gradient,
-        color: [[1, 1, 1, 1], [1, 1, 1, 1]],
-        gradients: [clone(defaultGradient), clone(defaultGradient)],
-      }
-    }
+    this.startColor = PSColor.fromDescriptor(descriptor?.startColor)
+    this.lifetimeColor = LifetimeColor.fromDescriptor(descriptor?.lifetimeColor)
 
     this.gravityModifier = descriptor?.gravityModifier ?? 0;
 
@@ -309,14 +173,6 @@ class ParticleSystem implements ParticleSystemInterface {
       startColor: observable,
       gravityModifier: observable,
       collisionEnabled: observable,
-    })
-
-    makeObservable(this.lifetimeColor, {
-      enabled: observable,
-    })
-
-    makeObservable(this.lifetimeColor.color, {
-      gradients: observable,
     })
   }
 
@@ -488,7 +344,7 @@ class ParticleSystem implements ParticleSystemInterface {
       let lifetimeColor = [1, 1, 1, 1];
 
       if (this.lifetimeColor.enabled) {
-        lifetimeColor = getPSColor(this.lifetimeColor.color, t);
+        lifetimeColor = this.lifetimeColor.color.getColor(t);
       }
 
       point.drawable.color[0] = lifetimeColor[0] * point.startColor[0];
@@ -518,7 +374,7 @@ class ParticleSystem implements ParticleSystemInterface {
       const lifetime = getPSValue(this.lifetime, t);
       const startVelocity = getPSValue(this.startVelocity, t);
       const size = getPSValue(this.startSize, t);
-      const startColor = getPSColor(this.startColor, t);
+      const startColor = this.startColor.getColor(t);
 
       const drawable = await DrawableNode.create(this.drawable!, this.materialDescriptor);
 

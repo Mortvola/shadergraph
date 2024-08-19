@@ -59,7 +59,6 @@ const GradientKeys: React.FC<PropsType> = ({
 
       if (onMove) {
         onMove(id, position)
-        console.log(position);
       }
     }
   }

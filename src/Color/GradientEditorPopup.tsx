@@ -2,12 +2,13 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import styles from './ColorPicker.module.scss';
 import GradientKeys from './GradientKeys';
-import { AlphaGradientKey, ColorGradientKey, Gradient } from '../Renderer/types';
+import { AlphaGradientKey, ColorGradientKey } from '../Renderer/types';
 import ColorPicker from './ColorPicker';
 import NumberInput from '../Inspector/NumberInput';
-import { lerp } from '../Renderer/Math';
 import { getGradientCss } from './Color';
 import { observer } from 'mobx-react-lite';
+import Gradient from '../Inspector/Gradient';
+import { runInAction } from 'mobx';
 
 type PropsType = {
   value: Gradient,
@@ -81,14 +82,22 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
         setSelectedAlphaId(newKey.id);
         setSelectedColorId(undefined)
   
-        onChange({
-          ...value,
-          alphaKeys: [
+        runInAction(() => {
+          value.alphaKeys = [
             ...value.alphaKeys.slice(0, index),
             newKey,
             ...value.alphaKeys.slice(index),
-          ],
-        });
+          ];  
+        })
+
+        // onChange({
+        //   ...value,
+        //   alphaKeys: [
+        //     ...value.alphaKeys.slice(0, index),
+        //     newKey,
+        //     ...value.alphaKeys.slice(index),
+        //   ],
+        // });
       }
     }
   }
@@ -109,14 +118,22 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
         setSelectedColorId(newKey.id);
         setSelectedAlphaId(undefined)
   
-        onChange({
-          ...value,
-          colorKeys: [
+        runInAction(() => {
+          value.colorKeys = [
             ...value.colorKeys.slice(0, index),
             newKey,
             ...value.colorKeys.slice(index),
-          ],
-        });
+          ];  
+        })
+
+        // onChange({
+        //   ...value,
+        //   colorKeys: [
+        //     ...value.colorKeys.slice(0, index),
+        //     newKey,
+        //     ...value.colorKeys.slice(index),
+        //   ],
+        // });
       }
     }
   }
@@ -128,17 +145,30 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
       const index = value.alphaKeys.findIndex((k) => k.id === selectedAlphaId);
 
       if (index !== -1) {
-        onChange({
-          ...value,
-          alphaKeys: [
-            ...value.alphaKeys.slice(0, index),
-            {
-              ...value.alphaKeys[index],
-              value: a / 255.0,
-            },
-            ...value.alphaKeys.slice(index + 1),
-          ],
-        });  
+        runInAction(() => {
+          runInAction(() => {
+            value.alphaKeys = [
+              ...value.alphaKeys.slice(0, index),
+              {
+                ...value.alphaKeys[index],
+                value: a / 255.0,
+              },
+              ...value.alphaKeys.slice(index + 1),
+            ];    
+          })
+        })
+
+        // onChange({
+        //   ...value,
+        //   alphaKeys: [
+        //     ...value.alphaKeys.slice(0, index),
+        //     {
+        //       ...value.alphaKeys[index],
+        //       value: a / 255.0,
+        //     },
+        //     ...value.alphaKeys.slice(index + 1),
+        //   ],
+        // });  
       }
     }
   }
@@ -150,17 +180,28 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
       const index = value.colorKeys.findIndex((k) => k.id === selectedColorId);
 
       if (index !== -1) {
-        onChange({
-          ...value,
-          colorKeys: [
+        runInAction(() => {
+          value.colorKeys = [
             ...value.colorKeys.slice(0, index),
             {
               ...value.colorKeys[index],
               value: color,
             },
             ...value.colorKeys.slice(index + 1),
-          ],
-        });  
+          ];  
+        })
+
+        // onChange({
+        //   ...value,
+        //   colorKeys: [
+        //     ...value.colorKeys.slice(0, index),
+        //     {
+        //       ...value.colorKeys[index],
+        //       value: color,
+        //     },
+        //     ...value.colorKeys.slice(index + 1),
+        //   ],
+        // });  
       }
     }
   }
@@ -189,13 +230,20 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
       ) {
         setSelectedAlphaId(undefined);
     
-        onChange({
-          ...value,
-          alphaKeys: [
+        runInAction(() => {
+          value.alphaKeys = [
             ...value.alphaKeys.slice(0, index),
             ...value.alphaKeys.slice(index + 1),
-          ],
-        });
+          ];  
+        })
+
+        // onChange({
+        //   ...value,
+        //   alphaKeys: [
+        //     ...value.alphaKeys.slice(0, index),
+        //     ...value.alphaKeys.slice(index + 1),
+        //   ],
+        // });
       }
   }
 
@@ -211,13 +259,20 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
     ) {
       setSelectedColorId(undefined);
   
-      onChange({
-        ...value,
-        colorKeys: [
+      runInAction(() => {
+        value.colorKeys = [
           ...value.colorKeys.slice(0, index),
           ...value.colorKeys.slice(index + 1),
-        ],
-      });
+        ]  
+      })
+
+      // onChange({
+      //   ...value,
+      //   colorKeys: [
+      //     ...value.colorKeys.slice(0, index),
+      //     ...value.colorKeys.slice(index + 1),
+      //   ],
+      // });
     }
   }
 
@@ -233,17 +288,28 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
     ) {
       setPosition(position);
 
-      onChange({
-        ...value,
-        alphaKeys: [
+      runInAction(() => {
+        value.alphaKeys = [
           ...value.alphaKeys.slice(0, index),
           {
             ...value.alphaKeys[index],
             position,
           },
           ...value.alphaKeys.slice(index + 1),
-        ],
-      });
+        ]  
+      })
+
+      // onChange({
+      //   ...value,
+      //   alphaKeys: [
+      //     ...value.alphaKeys.slice(0, index),
+      //     {
+      //       ...value.alphaKeys[index],
+      //       position,
+      //     },
+      //     ...value.alphaKeys.slice(index + 1),
+      //   ],
+      // });
     }
   }
 
@@ -259,17 +325,28 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
     ) {
       setPosition(position);
 
-      onChange({
-        ...value,
-        colorKeys: [
+      runInAction(() => {
+        value.colorKeys = [
           ...value.colorKeys.slice(0, index),
           {
             ...value.colorKeys[index],
             position,
           },
           ...value.colorKeys.slice(index + 1),
-        ],
-      });
+        ]  
+      })
+
+      // onChange({
+      //   ...value,
+      //   colorKeys: [
+      //     ...value.colorKeys.slice(0, index),
+      //     {
+      //       ...value.colorKeys[index],
+      //       position,
+      //     },
+      //     ...value.colorKeys.slice(index + 1),
+      //   ],
+      // });
     }
   }
 

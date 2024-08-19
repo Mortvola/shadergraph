@@ -3,6 +3,7 @@ import styles from './ColorPicker.module.scss'
 import ColorPickerPopup from './ColorPickerPopup';
 import ColorMutator from './ColorMutator';
 import Color from './Color';
+import { observer } from 'mobx-react-lite';
 
 type PropsType = {
   value: number[],
@@ -11,7 +12,7 @@ type PropsType = {
   onChange: (value: number[]) => void,
 }
 
-const ColorPicker: React.FC<PropsType> = ({
+const ColorPicker: React.FC<PropsType> = observer(({
   value,
   useHdr = false,
   useAlpha = false,
@@ -56,6 +57,6 @@ const ColorPicker: React.FC<PropsType> = ({
       }
     </>
   )
-}
+})
 
 export default ColorPicker;

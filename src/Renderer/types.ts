@@ -185,21 +185,20 @@ export const isPSValue = (r: unknown): r is PSValue => (
   && (r as PSValue).curve !== undefined
 );
 
-export type PSColor = {
-  type: PSColorType,
-  color: [number[], number[]],
-  gradient?: Gradient,
-  gradients: [Gradient, Gradient],
+export type GradientDescriptor = {
+  alphaKeys: AlphaGradientKey[],
+  colorKeys: ColorGradientKey[]
 }
 
-export const isPSColor = (r: unknown): r is PSColor => (
-  (r as PSColor).type !== undefined
-  && (r as PSColor).color !== undefined
-);
+export type PSColorDescriptor = {
+  type: PSColorType,
+  color: [number[], number[]],
+  gradients: [GradientDescriptor, GradientDescriptor],
+}
 
-export type LifetimeColor = {
+export type LifetimeColorDescriptor = {
   enabled: boolean,
-  color: PSColor,
+  color: PSColorDescriptor,
 }
 
 export type ParticleDescriptor = {
@@ -222,9 +221,9 @@ export type ParticleDescriptor = {
   initialSize?: number,
   finalSize?: number,
 
-  startColor?: PSColor | number[][],
+  startColor?: PSColorDescriptor
   initialColor?: number[][],
-  lifetimeColor?: LifetimeColor,
+  lifetimeColor?: LifetimeColorDescriptor,
 
   gravityModifier?: number,
 
@@ -313,9 +312,4 @@ export type ColorGradientKey = {
   id: number,
   position: number,
   value: number[],
-}
-
-export type Gradient = {
-  colorKeys: ColorGradientKey[],
-  alphaKeys: AlphaGradientKey[],
 }

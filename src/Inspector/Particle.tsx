@@ -6,12 +6,13 @@ import styles from './Particle.module.scss';
 import { useStores } from '../State/store';
 import { materialManager } from '../Renderer/Materials/MaterialManager';
 import { particleSystemManager } from '../Renderer/ParticleSystemManager';
-import { ParticleItem, PSColor, PSValue } from '../Renderer/types';
+import { ParticleItem, PSValue } from '../Renderer/types';
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import PSValueInput from './PSValueInput';
 import Checkbox from '../ShaderEditor/Controls/Checkbox';
 import PSColorInput from './PSColorInput';
+import PSColor from './PSColor';
 
 type PropsType = {
   particleItem: ParticleItem,

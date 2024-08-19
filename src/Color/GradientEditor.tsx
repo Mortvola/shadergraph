@@ -1,9 +1,9 @@
 import React from 'react';
 import GradientEditorPopup from './GradientEditorPopup';
 import styles from './ColorPicker.module.scss'
-import { Gradient } from '../Renderer/types';
 import { getGradientCss } from './Color';
 import { observer } from 'mobx-react-lite';
+import Gradient from '../Inspector/Gradient';
 
 type PropsType = {
   value: Gradient,
