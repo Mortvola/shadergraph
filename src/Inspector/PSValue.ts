@@ -1,6 +1,6 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import { lerp } from "../Renderer/Math";
-import { PSCurve, PSValueDescriptor, PSValueType } from "../Renderer/types";
+import { isPSValue, PSCurve, PSValueDescriptor, PSValueType } from "../Renderer/types";
 
 class PSValue {
   type = PSValueType.Constant;
@@ -24,7 +24,7 @@ class PSValue {
   static fromDescriptor(descriptor?: PSValueDescriptor, onChange?: () => void) {
     const psValue = new PSValue(onChange)
 
-    if (descriptor) {
+    if (descriptor && isPSValue(descriptor)) {
       psValue.type = descriptor.type;
       psValue.value = [descriptor.value[0], descriptor.value[1]];
       psValue.curve = [descriptor.curve[0], descriptor.curve[1]];

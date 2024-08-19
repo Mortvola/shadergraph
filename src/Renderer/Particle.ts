@@ -10,16 +10,16 @@ class Particle {
 
   drawable: DrawableNode;
 
-  size: number;
+  startSize: number;
 
   startColor: Vec4;
 
-  constructor(velocity: Vec4, startTime: number, lifetime: number, drawable: DrawableNode, size: number, startColor: Vec4) {
+  constructor(velocity: Vec4, startTime: number, lifetime: number, drawable: DrawableNode, startSize: number, startColor: Vec4) {
     this.velocity = velocity;
     this.startTime = startTime;
     this.lifetime = lifetime;
     this.drawable = drawable;
-    this.size = size;
+    this.startSize = startSize;
     this.startColor = startColor;
   }
 }

@@ -70,13 +70,6 @@ const Particle: React.FC<PropsType> = observer(({
     particleSystem.lifetimeColor.setEnabled(value)
   }
 
-  const handleGravityChange = (value: number) => {
-    runInAction(() => {
-      particleSystem.gravityModifier = value;
-      particleSystem.save();
-    })
-  }
-
   const handleCollisionChange = (value: boolean) => {
     runInAction(() => {
       particleSystem.collisionEnabled = value;
@@ -172,7 +165,7 @@ const Particle: React.FC<PropsType> = observer(({
       </label>
       <label>
         Size over lifetime:
-        <PSValueInput value={particleSystem.size} />
+        <PSValueInput value={particleSystem.lifetimeSize} />
       </label>
       <div>
         <Checkbox label="Color over lifetime:" value={particleSystem.lifetimeColor.enabled} onChange={handleEnableLifetimeColor} />
@@ -180,7 +173,7 @@ const Particle: React.FC<PropsType> = observer(({
       </div>
       <label>
         Gravity Modifier:
-        <NumberInput value={particleSystem.gravityModifier} onChange={handleGravityChange} />
+        <PSValueInput value={particleSystem.gravityModifier} />
       </label>
       <Checkbox label="Collision" value={particleSystem.collisionEnabled} onChange={handleCollisionChange} />
       <label>

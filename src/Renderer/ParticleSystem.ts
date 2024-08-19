@@ -42,11 +42,11 @@ class ParticleSystem implements ParticleSystemInterface {
 
   lifetimeColor: LifetimeColor;
 
-  size: PSValue; // Size over lifetime
+  lifetimeSize: PSValue; // Size over lifetime
 
   originRadius: number;
 
-  gravityModifier: number;
+  gravityModifier: PSValue;
 
   collisionEnabled: boolean;
 
@@ -75,12 +75,12 @@ class ParticleSystem implements ParticleSystemInterface {
     this.startVelocity = PSValue.fromDescriptor(descriptor?.startVelocity, this.onChange);
     this.startSize = PSValue.fromDescriptor(descriptor?.startSize, this.onChange);
     
-    this.size = PSValue.fromDescriptor(descriptor?.size, this.onChange);
+    this.lifetimeSize = PSValue.fromDescriptor(descriptor?.lifetimeSize, this.onChange);
 
     this.startColor = PSColor.fromDescriptor(descriptor?.startColor, this.onChange)
     this.lifetimeColor = LifetimeColor.fromDescriptor(descriptor?.lifetimeColor, this.onChange)
 
-    this.gravityModifier = descriptor?.gravityModifier ?? 0;
+    this.gravityModifier = PSValue.fromDescriptor(descriptor?.gravityModifier);
 
     this.collisionEnabled = descriptor?.collisionEnabled ?? false;
     this.bounce = descriptor?.bounce ?? 1;
@@ -93,7 +93,7 @@ class ParticleSystem implements ParticleSystemInterface {
       lifetime: observable,
       startVelocity: observable,
       startSize: observable,
-      size: observable,
+      lifetimeSize: observable,
       startColor: observable,
       gravityModifier: observable,
       collisionEnabled: observable,
@@ -115,7 +115,7 @@ class ParticleSystem implements ParticleSystemInterface {
       const planeNormal = vec4.create(0, 1, 0, 0);
       const planeOrigin = vec4.create(0, 0, 0, 1);
 
-      const sphereRadius = point.size / 2;
+      const sphereRadius = point.startSize / 2;
 
       // Are we traveling toward the plane or away?
       const d = vec4.dot(planeNormal, point.velocity);
@@ -176,7 +176,7 @@ class ParticleSystem implements ParticleSystemInterface {
               planeInterSectionPoint,
               vec4.scale(
                 planeNormal,
-                point.size / 2,
+                point.startSize / 2,
               )    
             )
 
@@ -249,7 +249,7 @@ class ParticleSystem implements ParticleSystemInterface {
       particle.velocity = vec4.addScaled(
         particle.velocity,
         [0, 1, 0, 0],
-        this.gravityModifier * gravity * elapsedTime,
+        this.gravityModifier.getValue(t) * gravity * elapsedTime,
       )
 
       if (!this.collided(particle,  elapsedTime, scene)) {
@@ -262,7 +262,7 @@ class ParticleSystem implements ParticleSystemInterface {
         );
       }
 
-      const size = this.size.getValue(t) * particle.size;
+      const size = this.lifetimeSize.getValue(t) * particle.startSize;
       particle.drawable.scale = vec3.create(size, size, size)
 
       let lifetimeColor = [1, 1, 1, 1];
@@ -296,7 +296,7 @@ class ParticleSystem implements ParticleSystemInterface {
     for (; numToEmit > 0; numToEmit -= 1) {
       const lifetime = this.lifetime.getValue(t);
       const startVelocity = this.startVelocity.getValue(t);
-      const size = this.startSize.getValue(t);
+      const startSize = this.startSize.getValue(t);
       const startColor = this.startColor.getColor(t);
 
       const drawable = await DrawableNode.create(this.drawable!, this.materialDescriptor);
@@ -315,7 +315,7 @@ class ParticleSystem implements ParticleSystemInterface {
       // drawable.translate = vec3.add(origin, vec3.create(0, 1, 0));
       drawable.translate = origin;
 
-      drawable.scale = vec3.create(this.size.value[0], this.size.value[0], this.size.value[0]);
+      drawable.scale = vec3.create(startSize, startSize, startSize);
 
       scene.addNode(drawable)
 
@@ -341,7 +341,7 @@ class ParticleSystem implements ParticleSystemInterface {
         startTime,
         lifetime,
         drawable,
-        size,
+        startSize,
         startColor,
       )
 
@@ -365,7 +365,7 @@ class ParticleSystem implements ParticleSystemInterface {
       lifetime: this.lifetime.toDesriptor(),
       startVelocity: this.startVelocity.toDesriptor(),
       startSize: this.startSize.toDesriptor(),
-      size: this.size.toDesriptor(),
+      lifetimeSize: this.lifetimeSize.toDesriptor(),
       startColor: this.startColor.toDescriptor(),
       lifetimeColor: this.lifetimeColor.toDescriptor(),
       gravityModifier: this.gravityModifier,

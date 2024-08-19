@@ -215,15 +215,12 @@ export type ParticleDescriptor = {
 
   startSize?: PSValueDescriptor,
 
-  size?: PSValueDescriptor,
-  sizeType?: PSValueType,
-  initialSize?: number,
-  finalSize?: number,
+  lifetimeSize?: PSValueDescriptor,
 
   startColor?: PSColorDescriptor
   lifetimeColor?: LifetimeColorDescriptor,
 
-  gravityModifier?: number,
+  gravityModifier?: PSValueDescriptor,
 
   collisionEnabled?: boolean,
   bounce?: number,
