@@ -173,16 +173,16 @@ export type PSCurve = {
   points: [number, number][],
 }
 
-export type PSValue = {
+export type PSValueDescriptor = {
   type: PSValueType,
   value: [number, number],
   curve: [PSCurve, PSCurve],
 }
 
-export const isPSValue = (r: unknown): r is PSValue => (
-  (r as PSValue).type !== undefined
-  && (r as PSValue).value !== undefined
-  && (r as PSValue).curve !== undefined
+export const isPSValue = (r: unknown): r is PSValueDescriptor => (
+  (r as PSValueDescriptor).type !== undefined
+  && (r as PSValueDescriptor).value !== undefined
+  && (r as PSValueDescriptor).curve !== undefined
 );
 
 export type GradientDescriptor = {
@@ -207,16 +207,15 @@ export type ParticleDescriptor = {
   rate?: number,
   angle?: number,
 
-  lifetimeType?: PSValueType,
-  lifetime?: [number, number] | PSValue,
+  lifetime?: PSValueDescriptor,
 
   originRadius?: number,
   
-  startVelocity?: PSValue,
+  startVelocity?: PSValueDescriptor,
 
-  startSize?: PSValue,
+  startSize?: PSValueDescriptor,
 
-  size?: PSValue,
+  size?: PSValueDescriptor,
   sizeType?: PSValueType,
   initialSize?: number,
   finalSize?: number,

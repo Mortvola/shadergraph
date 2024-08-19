@@ -5,7 +5,7 @@ import styles from './Particle.module.scss';
 import { useStores } from '../State/store';
 import { materialManager } from '../Renderer/Materials/MaterialManager';
 import { particleSystemManager } from '../Renderer/ParticleSystemManager';
-import { ParticleItem, PSValue } from '../Renderer/types';
+import { ParticleItem } from '../Renderer/types';
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import PSValueInput from './PSValueInput';
@@ -64,32 +64,6 @@ const Particle: React.FC<PropsType> = observer(({
   const handleRadiusChange = (value: number) => {
     particleSystem.originRadius = value;
     particleSystem.save()
-  }
-
-  const handleVelocityChange = (value: PSValue) => {
-    particleSystem.startVelocity = value;
-    particleSystem.save()
-  }
-
-  const handleLifetimeChange = (value: PSValue) => {
-    runInAction(() => {
-      particleSystem.lifetime = value
-      particleSystem.save()
-    })
-  }
-
-  const handleStartSizeChange = (value: PSValue) => {
-    runInAction(() => {
-      particleSystem.startSize = value
-      particleSystem.save()
-    })
-  }
-
-  const handleSizeChange = (value: PSValue) => {
-    runInAction(() => {
-      particleSystem.size = value
-      particleSystem.save()
-    })
   }
 
   const handleEnableLifetimeColor = (value: boolean) => {
@@ -182,15 +156,15 @@ const Particle: React.FC<PropsType> = observer(({
       </label>
       <label>
         Lifetime:
-        <PSValueInput value={particleSystem.lifetime} onChange={handleLifetimeChange} />
+        <PSValueInput value={particleSystem.lifetime} />
       </label>
       <label>
         Start Velocity:
-        <PSValueInput value={particleSystem.startVelocity} onChange={handleVelocityChange} />
+        <PSValueInput value={particleSystem.startVelocity} />
       </label>
       <label>
         Start Size:
-        <PSValueInput value={particleSystem.startSize} onChange={handleStartSizeChange} />
+        <PSValueInput value={particleSystem.startSize} />
       </label>
       <label>
         Start Color:
@@ -198,7 +172,7 @@ const Particle: React.FC<PropsType> = observer(({
       </label>
       <label>
         Size over lifetime:
-        <PSValueInput value={particleSystem.size} onChange={handleSizeChange} />
+        <PSValueInput value={particleSystem.size} />
       </label>
       <div>
         <Checkbox label="Color over lifetime:" value={particleSystem.lifetimeColor.enabled} onChange={handleEnableLifetimeColor} />

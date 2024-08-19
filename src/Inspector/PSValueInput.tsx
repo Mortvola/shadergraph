@@ -1,66 +1,37 @@
 import React from 'react';
 import NumberInput from './NumberInput';
 import PSValueTypeSelector from './PSValueTypeSelector';
-import { PSValue, PSValueType } from '../Renderer/types';
+import { PSValueType } from '../Renderer/types';
+import PSValue from './PSValue';
+import { observer } from 'mobx-react-lite';
 
 type PropsType = {
   value: PSValue,
-  onChange: (value: PSValue) => void,
 }
 
-const PSValueInput: React.FC<PropsType> = ({
+const PSValueInput: React.FC<PropsType> = observer(({
   value,
-  onChange,
 }) => {
   const handleMinChange = (min: number) => {
     if (value.type === PSValueType.Curve) {
-      onChange({
-        ...value,
-        curve: [
-          {
-            points: [[0, min], [1, value.curve[0].points[1][1]]],
-          },
-          {
-            points: [...value.curve[1].points],
-          }
-        ]
-      })  
+      value.setMinCurve(min)
     }
     else {
-      onChange({
-        ...value,
-        value: [min, value.value[1]]
-      })  
+      value.setMinValue(min)
     }
   }
 
   const handleMaxChange = (max: number) => {
     if (value.type === PSValueType.Curve) {
-      onChange({
-        ...value,
-        curve: [
-          {
-            points: [[0, value.curve[0].points[0][1]], [1, max]],
-          },
-          {
-            points: [...value.curve[1].points],
-          }
-        ]
-      })  
+      value.setMaxCurve(max)
     }
     else {
-      onChange({
-        ...value,
-        value: [value.value[0], max]
-      })
+      value.setMaxValue(max)
     }
   }
 
   const handleTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    onChange({
-      ...value,
-      type: event.target.value as PSValueType,
-    })
+    value.setType(event.target.value as PSValueType)
   }
 
   return (
@@ -82,6 +53,6 @@ const PSValueInput: React.FC<PropsType> = ({
       <PSValueTypeSelector value={value.type} onChange={handleTypeChange} />
     </>
   )
-}
+})
 
 export default PSValueInput;

@@ -1,8 +1,7 @@
 import { Vec4, mat4, vec3, vec4 } from "wgpu-matrix"
 import {
-  ContainerNodeInterface, isPSValue,
+  ContainerNodeInterface,
   ParticleDescriptor, ParticleSystemInterface,
-  PSValue, PSValueType,
 } from "./types";
 import DrawableNode from "./Drawables/SceneNodes/DrawableNode";
 import { degToRad, gravity, intersectionPlane } from "./Math";
@@ -13,10 +12,7 @@ import { makeObservable, observable } from "mobx";
 import PSColor from "../Inspector/PSColor";
 import LifetimeColor from "../Inspector/LifetimeColor";
 import Http from "../Http/src";
-
-export function clone<T>(obj: T): T {
-  return JSON.parse(JSON.stringify(obj)) as T
-}
+import PSValue from "../Inspector/PSValue";
 
 type Point = {
   velocity: Vec4,
@@ -25,23 +21,6 @@ type Point = {
   drawable: DrawableNode,
   size: number,
   startColor: Vec4,
-}
-
-const getPSValue = (value: PSValue, t: number) => {
-  switch (value.type) {
-    case PSValueType.Constant:
-      return value.value[0];
-
-    case PSValueType.Random:
-      return (value.value[1] - value.value[0]) * Math.random() + value.value[0];
-
-    case PSValueType.Curve: {
-      const delta = value.curve[0].points[1][1] - value.curve[0].points[0][1];
-      return value.curve[0].points[0][1] + delta * t;
-    }
-  }
-
-  return 1;
 }
 
 class ParticleSystem implements ParticleSystemInterface {
@@ -96,63 +75,15 @@ class ParticleSystem implements ParticleSystemInterface {
     this.rate = descriptor?.rate ?? 10
     this.maxPoints = descriptor?.maxPoints ?? 50
 
-    if (descriptor?.lifetime && isPSValue(descriptor?.lifetime)) {
-      this.lifetime = descriptor.lifetime
-    }
-    else {
-      this.lifetime = {
-        type: descriptor?.lifetimeType ?? PSValueType.Random,
-        value: [
-          descriptor?.lifetime
-            ? (descriptor.lifetime  as [number, number])[0]
-            : 1,
-          descriptor?.lifetime
-            ? (descriptor.lifetime as [number, number])[1]
-            : 5
-        ],
-        curve: [
-          { points: [[0, 1], [1, 5]] },
-          { points: [[0, 1], [1, 5]] },
-        ]
-      }  
-    }
+    this.lifetime = PSValue.fromDescriptor(descriptor?.lifetime, this.onChange);
 
     this.angle = descriptor?.angle ?? 25
     this.originRadius = descriptor?.originRadius ?? 1
 
-    this.startVelocity = descriptor?.startVelocity
-      ?? ({
-        type: PSValueType.Constant,
-        value: [1, 1],
-        curve: [
-          { points: [[0, 1], [1, 1]]},
-          { points: [[0, 1], [1, 1]]},
-        ]
-      })
+    this.startVelocity = PSValue.fromDescriptor(descriptor?.startVelocity, this.onChange);
+    this.startSize = PSValue.fromDescriptor(descriptor?.startSize, this.onChange);
     
-    this.startSize = descriptor?.startSize
-      ?? ({
-        type: PSValueType.Constant,
-        value: [1, 1],
-        curve: [
-          { points: [[0, 1], [1, 1]]},
-          { points: [[0, 1], [1, 1]]},
-        ]
-      })
-    
-    if (descriptor?.size && isPSValue(descriptor?.size)) {
-      this.size = descriptor.size;
-    }
-    else {
-      this.size = {
-        type: descriptor?.sizeType ?? PSValueType.Random,
-        value: [descriptor?.initialSize ?? 1, descriptor?.finalSize ?? (descriptor?.initialSize ?? 1) ],
-        curve: [
-          { points: [[0, 1], [1, 1]] },
-          { points: [[0, 1], [1, 1]] },
-        ]
-      }  
-    }
+    this.size = PSValue.fromDescriptor(descriptor?.size, this.onChange);
 
     this.startColor = PSColor.fromDescriptor(descriptor?.startColor, this.onChange)
     this.lifetimeColor = LifetimeColor.fromDescriptor(descriptor?.lifetimeColor, this.onChange)
@@ -338,7 +269,7 @@ class ParticleSystem implements ParticleSystemInterface {
         );
       }
 
-      const size = getPSValue(this.size, t) * point.size;
+      const size = this.size.getValue(t) * point.size;
 
       point.drawable.scale = vec3.create(size, size, size)
 
@@ -372,9 +303,9 @@ class ParticleSystem implements ParticleSystemInterface {
 
   async emitSome(numToEmit: number, startTime: number, t: number, scene: ContainerNodeInterface) {
     for (; numToEmit > 0; numToEmit -= 1) {
-      const lifetime = getPSValue(this.lifetime, t);
-      const startVelocity = getPSValue(this.startVelocity, t);
-      const size = getPSValue(this.startSize, t);
+      const lifetime = this.lifetime.getValue(t);
+      const startVelocity = this.startVelocity.getValue(t);
+      const size = this.startSize.getValue(t);
       const startColor = this.startColor.getColor(t);
 
       const drawable = await DrawableNode.create(this.drawable!, this.materialDescriptor);
@@ -440,10 +371,10 @@ class ParticleSystem implements ParticleSystemInterface {
       rate: this.rate,
       angle: this.angle,
       originRadius: this.originRadius,
-      lifetime: this.lifetime,
-      startVelocity: this.startVelocity,
-      startSize: this.startSize,
-      size: this.size,
+      lifetime: this.lifetime.toDesriptor(),
+      startVelocity: this.startVelocity.toDesriptor(),
+      startSize: this.startSize.toDesriptor(),
+      size: this.size.toDesriptor(),
       startColor: this.startColor.toDescriptor(),
       lifetimeColor: this.lifetimeColor.toDescriptor(),
       gravityModifier: this.gravityModifier,
