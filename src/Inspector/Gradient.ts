@@ -1,4 +1,4 @@
-import { makeObservable, observable } from "mobx";
+import { makeObservable, observable, runInAction } from "mobx";
 import { lerp } from "../Renderer/Math";
 import { AlphaGradientKey, ColorGradientKey, GradientDescriptor } from "../Renderer/types";
 
@@ -45,6 +45,186 @@ class Gradient {
     return gradient;
   }
 
+  addAlphaKey(position: number) {
+    // Find first key that is greater than this position
+    const index = this.alphaKeys.findIndex((k) => k.position > position);
+
+    if (index > 0) {
+      const newKey: AlphaGradientKey = {
+        id: this.alphaKeys.reduce((prev, k) => (Math.max(prev, k.id)), 0) + 1,
+        position,
+        value: this.alphaKeys[0].value,
+      };
+
+      runInAction(() => {
+        this.alphaKeys = [
+          ...this.alphaKeys.slice(0, index),
+          newKey,
+          ...this.alphaKeys.slice(index),
+        ];  
+      })
+
+      return newKey;
+    }
+  }
+
+  addColorKey(position: number) {
+    // Find first key that is greater than this position
+    const index = this.colorKeys.findIndex((k) => k.position > position);
+
+    if (index > 0) {
+      const newKey: ColorGradientKey = {
+        id: this.colorKeys.reduce((prev, k) => (Math.max(prev, k.id)), 0) + 1,
+        position,
+        value: this.colorKeys[0].value.slice(), // Copy the previous key value
+      };
+
+      runInAction(() => {
+        this.colorKeys = [
+          ...this.colorKeys.slice(0, index),
+          newKey,
+          ...this.colorKeys.slice(index),
+        ];  
+      })
+
+      return newKey;
+    }
+  }
+
+  deleteAlphaKey(id: number) {
+    // Find index of selected alpha key
+    const index = this.alphaKeys.findIndex((k) => k.id === id);
+
+    // Don't delete the keys at position 0 and 1.
+    if (
+      index !== -1
+      && index !== 0
+      && index !== this.alphaKeys.length - 1
+    ) {
+      runInAction(() => {
+        this.alphaKeys = [
+          ...this.alphaKeys.slice(0, index),
+          ...this.alphaKeys.slice(index + 1),
+        ];  
+      })
+    }
+  }
+
+  deleteColorKey(id: number) {
+    // Find index of selected alpha key
+    const index = this.colorKeys.findIndex((k) => k.id === id);
+
+    // Don't delete the keys at position 0 and 1.
+    if (
+      index !== -1
+      && index !== 0
+      && index !== this.colorKeys.length - 1
+    ) {
+      runInAction(() => {
+        this.colorKeys = [
+          ...this.colorKeys.slice(0, index),
+          ...this.colorKeys.slice(index + 1),
+        ]  
+      })
+    }
+  }
+
+  moveAlphaKey(id: number, position: number) {
+    // Find index of selected alpha key
+    const index = this.alphaKeys.findIndex((k) => k.id === id);
+
+    // Don't move the keys at position 0 and 1.
+    if (
+      index !== -1
+      && index !== 0
+      && index !== this.alphaKeys.length - 1
+    ) {
+      runInAction(() => {
+        this.alphaKeys = [
+          ...this.alphaKeys.slice(0, index),
+          {
+            ...this.alphaKeys[index],
+            position,
+          },
+          ...this.alphaKeys.slice(index + 1),
+        ]  
+      })
+
+      return true;
+    }
+
+    return false;
+  }
+
+  moveColorKey(id: number, position: number) {
+    // Find index of selected alpha key
+    const index = this.colorKeys.findIndex((k) => k.id === id);
+
+    // Don't move the keys at position 0 and 1.
+    if (
+      index !== -1
+      && index !== 0
+      && index !== this.colorKeys.length - 1
+    ) {
+      runInAction(() => {
+        this.colorKeys = [
+          ...this.colorKeys.slice(0, index),
+          {
+            ...this.colorKeys[index],
+            position,
+          },
+          ...this.colorKeys.slice(index + 1),
+        ]  
+      })
+
+      return true;
+    }
+
+    return false;
+  }
+
+  alphaChange(id: number, a: number) {
+    const index = this.alphaKeys.findIndex((k) => k.id === id);
+
+    if (index !== -1) {
+      runInAction(() => {
+        this.alphaKeys = [
+          ...this.alphaKeys.slice(0, index),
+          {
+            ...this.alphaKeys[index],
+            value: a / 255.0,
+          },
+          ...this.alphaKeys.slice(index + 1),
+        ];    
+      })
+
+      return true;
+    }
+
+    return false;
+  }
+
+  colorChange(id: number, color: number[]) {
+    const index = this.colorKeys.findIndex((k) => k.id === id);
+
+    if (index !== -1) {
+      runInAction(() => {
+        this.colorKeys = [
+          ...this.colorKeys.slice(0, index),
+          {
+            ...this.colorKeys[index],
+            value: color,
+          },
+          ...this.colorKeys.slice(index + 1),
+        ];  
+      })
+
+      return true;
+    }
+
+    return false;
+  }
+
   getColor(t: number) {
     let a = 1;
     let c = [1, 1, 1];
@@ -82,7 +262,7 @@ class Gradient {
     }
   
     return [...c, a];
-  }  
+  }
 };
 
 export default Gradient;

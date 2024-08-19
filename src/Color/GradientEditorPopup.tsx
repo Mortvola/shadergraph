@@ -2,13 +2,11 @@ import React from 'react';
 import { createPortal } from 'react-dom';
 import styles from './ColorPicker.module.scss';
 import GradientKeys from './GradientKeys';
-import { AlphaGradientKey, ColorGradientKey } from '../Renderer/types';
 import ColorPicker from './ColorPicker';
 import NumberInput from '../Inspector/NumberInput';
 import { getGradientCss } from './Color';
 import { observer } from 'mobx-react-lite';
 import Gradient from '../Inspector/Gradient';
-import { runInAction } from 'mobx';
 
 type PropsType = {
   value: Gradient,
@@ -34,7 +32,6 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
 
   const updateRgbGradients = React.useCallback(() => {
     const gradients = getGradientCss(value.colorKeys, value.alphaKeys)
-
     setColorGradient(gradients)
   }, [value.alphaKeys, value.colorKeys])
 
@@ -67,142 +64,40 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
   }
 
   const handleAddAlphaKey = (position: number) => {
-    // Find first key that is greater than this position
-    const index = value.alphaKeys.findIndex((k) => k.position > position);
+    const newKey = value.addAlphaKey(position);
 
-    if (index !== -1) {
-      if (index > 0) {
-        const newKey: AlphaGradientKey = {
-          id: value.alphaKeys.reduce((prev, k) => (Math.max(prev, k.id)), 0) + 1,
-          position,
-          value: value.alphaKeys[0].value,
-        };
-
-        setAlpha(Math.round(newKey.value * 255))
-        setSelectedAlphaId(newKey.id);
-        setSelectedColorId(undefined)
-  
-        runInAction(() => {
-          value.alphaKeys = [
-            ...value.alphaKeys.slice(0, index),
-            newKey,
-            ...value.alphaKeys.slice(index),
-          ];  
-        })
-
-        // onChange({
-        //   ...value,
-        //   alphaKeys: [
-        //     ...value.alphaKeys.slice(0, index),
-        //     newKey,
-        //     ...value.alphaKeys.slice(index),
-        //   ],
-        // });
-      }
+    if (newKey !== undefined) {
+      setAlpha(Math.round(newKey.value * 255))
+      setSelectedAlphaId(newKey.id);
+      setSelectedColorId(undefined)
     }
   }
 
   const handleAddColorKey = (position: number) => {
-    // Find first key that is greater than this position
-    const index = value.colorKeys.findIndex((k) => k.position > position);
+    const newKey = value.addColorKey(position);
 
-    if (index !== -1) {
-      if (index > 0) {
-        const newKey: ColorGradientKey = {
-          id: value.colorKeys.reduce((prev, k) => (Math.max(prev, k.id)), 0) + 1,
-          position,
-          value: value.colorKeys[0].value.slice(), // Copy the previous key value
-        };
-
-        setColor(newKey.value)
-        setSelectedColorId(newKey.id);
-        setSelectedAlphaId(undefined)
-  
-        runInAction(() => {
-          value.colorKeys = [
-            ...value.colorKeys.slice(0, index),
-            newKey,
-            ...value.colorKeys.slice(index),
-          ];  
-        })
-
-        // onChange({
-        //   ...value,
-        //   colorKeys: [
-        //     ...value.colorKeys.slice(0, index),
-        //     newKey,
-        //     ...value.colorKeys.slice(index),
-        //   ],
-        // });
-      }
+    if (newKey !== undefined) {
+      setColor(newKey.value)
+      setSelectedColorId(newKey.id);
+      setSelectedAlphaId(undefined)  
     }
   }
 
   const handleAlphaChange = (a: number) => {
-    if (selectedAlphaId !== undefined) {
+    if (
+      selectedAlphaId !== undefined
+      && value.alphaChange(selectedAlphaId, a)
+    ) {
       setAlpha(a)
-      
-      const index = value.alphaKeys.findIndex((k) => k.id === selectedAlphaId);
-
-      if (index !== -1) {
-        runInAction(() => {
-          runInAction(() => {
-            value.alphaKeys = [
-              ...value.alphaKeys.slice(0, index),
-              {
-                ...value.alphaKeys[index],
-                value: a / 255.0,
-              },
-              ...value.alphaKeys.slice(index + 1),
-            ];    
-          })
-        })
-
-        // onChange({
-        //   ...value,
-        //   alphaKeys: [
-        //     ...value.alphaKeys.slice(0, index),
-        //     {
-        //       ...value.alphaKeys[index],
-        //       value: a / 255.0,
-        //     },
-        //     ...value.alphaKeys.slice(index + 1),
-        //   ],
-        // });  
-      }
     }
   }
 
   const handleColorChange = (color: number[]) => {
-    if (selectedColorId !== undefined) {
+    if (
+      selectedColorId !== undefined
+      && value.colorChange(selectedColorId, color)
+    ) {
       setColor(color)
-
-      const index = value.colorKeys.findIndex((k) => k.id === selectedColorId);
-
-      if (index !== -1) {
-        runInAction(() => {
-          value.colorKeys = [
-            ...value.colorKeys.slice(0, index),
-            {
-              ...value.colorKeys[index],
-              value: color,
-            },
-            ...value.colorKeys.slice(index + 1),
-          ];  
-        })
-
-        // onChange({
-        //   ...value,
-        //   colorKeys: [
-        //     ...value.colorKeys.slice(0, index),
-        //     {
-        //       ...value.colorKeys[index],
-        //       value: color,
-        //     },
-        //     ...value.colorKeys.slice(index + 1),
-        //   ],
-        // });  
-      }
     }
   }
 
@@ -219,134 +114,24 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
   }
 
   const deleteAlphaKey = (id: number) => {
-      // Find index of selected alpha key
-      const index = value.alphaKeys.findIndex((k) => k.id === id);
-
-      // Don't delete the keys at position 0 and 1.
-      if (
-        index !== -1
-        && index !== 0
-        && index !== value.alphaKeys.length - 1
-      ) {
-        setSelectedAlphaId(undefined);
-    
-        runInAction(() => {
-          value.alphaKeys = [
-            ...value.alphaKeys.slice(0, index),
-            ...value.alphaKeys.slice(index + 1),
-          ];  
-        })
-
-        // onChange({
-        //   ...value,
-        //   alphaKeys: [
-        //     ...value.alphaKeys.slice(0, index),
-        //     ...value.alphaKeys.slice(index + 1),
-        //   ],
-        // });
-      }
+    value.deleteAlphaKey(id);
+    setSelectedAlphaId(undefined);
   }
 
   const deleteColorKey = (id: number) => {
-    // Find index of selected alpha key
-    const index = value.colorKeys.findIndex((k) => k.id === id);
-
-    // Don't delete the keys at position 0 and 1.
-    if (
-      index !== -1
-      && index !== 0
-      && index !== value.colorKeys.length - 1
-    ) {
-      setSelectedColorId(undefined);
-  
-      runInAction(() => {
-        value.colorKeys = [
-          ...value.colorKeys.slice(0, index),
-          ...value.colorKeys.slice(index + 1),
-        ]  
-      })
-
-      // onChange({
-      //   ...value,
-      //   colorKeys: [
-      //     ...value.colorKeys.slice(0, index),
-      //     ...value.colorKeys.slice(index + 1),
-      //   ],
-      // });
-    }
+    value.deleteColorKey(id);
+    setSelectedColorId(undefined);
   }
 
   const handleMoveAlphaKey = (id: number, position: number) => {
-    // Find index of selected alpha key
-    const index = value.alphaKeys.findIndex((k) => k.id === id);
-
-    // Don't move the keys at position 0 and 1.
-    if (
-      index !== -1
-      && index !== 0
-      && index !== value.alphaKeys.length - 1
-    ) {
+    if (value.moveAlphaKey(id, position)) {
       setPosition(position);
-
-      runInAction(() => {
-        value.alphaKeys = [
-          ...value.alphaKeys.slice(0, index),
-          {
-            ...value.alphaKeys[index],
-            position,
-          },
-          ...value.alphaKeys.slice(index + 1),
-        ]  
-      })
-
-      // onChange({
-      //   ...value,
-      //   alphaKeys: [
-      //     ...value.alphaKeys.slice(0, index),
-      //     {
-      //       ...value.alphaKeys[index],
-      //       position,
-      //     },
-      //     ...value.alphaKeys.slice(index + 1),
-      //   ],
-      // });
     }
   }
 
   const handleMoveColorKey = (id: number, position: number) => {
-    // Find index of selected alpha key
-    const index = value.colorKeys.findIndex((k) => k.id === id);
-
-    // Don't move the keys at position 0 and 1.
-    if (
-      index !== -1
-      && index !== 0
-      && index !== value.colorKeys.length - 1
-    ) {
+    if (value.moveColorKey(id, position)) {
       setPosition(position);
-
-      runInAction(() => {
-        value.colorKeys = [
-          ...value.colorKeys.slice(0, index),
-          {
-            ...value.colorKeys[index],
-            position,
-          },
-          ...value.colorKeys.slice(index + 1),
-        ]  
-      })
-
-      // onChange({
-      //   ...value,
-      //   colorKeys: [
-      //     ...value.colorKeys.slice(0, index),
-      //     {
-      //       ...value.colorKeys[index],
-      //       position,
-      //     },
-      //     ...value.colorKeys.slice(index + 1),
-      //   ],
-      // });
     }
   }
 

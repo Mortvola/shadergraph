@@ -1,5 +1,5 @@
 import React from 'react';
-import { PSColorType, PSValueType } from '../Renderer/types';
+import { PSColorType } from '../Renderer/types';
 import { observer } from 'mobx-react-lite';
 
 type PropsType = {

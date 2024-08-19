@@ -6,7 +6,6 @@ import { useStores } from '../State/store';
 import Mesh from '../Renderer/Drawables/Mesh';
 import { plane as planeShape } from '../Renderer/Drawables/Shapes/plane';
 import DrawableNode from '../Renderer/Drawables/SceneNodes/DrawableNode';
-import { runInAction } from 'mobx';
 
 const plane = await DrawableNode.create(await Mesh.create(planeShape(1, 1), 1));
 plane.name = 'Plane';
