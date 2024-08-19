@@ -1,5 +1,5 @@
 import { makeAutoObservable, observable, runInAction } from "mobx";
-import { LifetimeColorDescriptor } from "../Renderer/types";
+import { LifetimeColorDescriptor } from "./Types";
 import PSColor from "./PSColor";
 
 class LifetimeColor {

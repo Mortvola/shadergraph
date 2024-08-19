@@ -1,6 +1,6 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import { lerp } from "../Renderer/Math";
-import { AlphaGradientKey, ColorGradientKey, GradientDescriptor } from "../Renderer/types";
+import { lerp } from "../Math";
+import { AlphaGradientKey, ColorGradientKey, GradientDescriptor } from "./Types";
 
 class Gradient {
   alphaKeys: AlphaGradientKey[] = [

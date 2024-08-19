@@ -1,6 +1,6 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import { lerp } from "../Renderer/Math";
-import { isPSValue, PSCurve, PSValueDescriptor, PSValueType } from "../Renderer/types";
+import { lerp } from "../Math";
+import { isPSValue, PSCurve, PSValueDescriptor, PSValueType } from "./Types";
 
 class PSValue {
   type = PSValueType.Constant;

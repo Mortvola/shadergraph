@@ -1,8 +1,8 @@
 import React from 'react';
 import NumberInput from './NumberInput';
 import PSValueTypeSelector from './PSValueTypeSelector';
-import { PSValueType } from '../Renderer/types';
-import PSValue from './PSValue';
+import { PSValueType } from '../Renderer/ParticleSystem/Types';
+import PSValue from '../Renderer/ParticleSystem/PSValue';
 import { observer } from 'mobx-react-lite';
 
 type PropsType = {

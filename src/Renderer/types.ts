@@ -5,6 +5,7 @@ import { PropertyInterface, ValueType } from './ShaderBuilder/Types';
 import { ShaderDescriptor } from './shaders/ShaderDescriptor';
 import SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
 import ShaderGraph from './ShaderBuilder/ShaderGraph';
+import { ParticleDescriptor } from './ParticleSystem/Types';
 
 export const maxInstances = 1000;
 
@@ -155,80 +156,6 @@ export type ShaderRecord = {
   descriptor: ShaderDescriptor,
 }
 
-export enum PSValueType {
-  Constant = 'Constant',
-  Random = 'Random',
-  Curve = 'Curve',
-  RandomeCurve = 'RandomCurve',
-}
-
-export enum PSColorType {
-  Constant = 'Constant',
-  Random = 'Random',
-  Gradient = 'Gradient',
-  RandomeGradient = 'RandomGradient',
-}
-
-export type PSCurve = {
-  points: [number, number][],
-}
-
-export type PSValueDescriptor = {
-  type: PSValueType,
-  value: [number, number],
-  curve: [PSCurve, PSCurve],
-}
-
-export const isPSValue = (r: unknown): r is PSValueDescriptor => (
-  (r as PSValueDescriptor).type !== undefined
-  && (r as PSValueDescriptor).value !== undefined
-  && (r as PSValueDescriptor).curve !== undefined
-);
-
-export type GradientDescriptor = {
-  alphaKeys: AlphaGradientKey[],
-  colorKeys: ColorGradientKey[]
-}
-
-export type PSColorDescriptor = {
-  type: PSColorType,
-  color: [number[], number[]],
-  gradients: [GradientDescriptor, GradientDescriptor],
-}
-
-export type LifetimeColorDescriptor = {
-  enabled: boolean,
-  color: PSColorDescriptor,
-}
-
-export type ParticleDescriptor = {
-  duration?: number,
-  maxPoints?: number,
-  rate?: number,
-  angle?: number,
-
-  lifetime?: PSValueDescriptor,
-
-  originRadius?: number,
-  
-  startVelocity?: PSValueDescriptor,
-
-  startSize?: PSValueDescriptor,
-
-  lifetimeSize?: PSValueDescriptor,
-
-  startColor?: PSColorDescriptor
-  lifetimeColor?: LifetimeColorDescriptor,
-
-  gravityModifier?: PSValueDescriptor,
-
-  collisionEnabled?: boolean,
-  bounce?: number,
-  dampen?: number,
-
-  materialId?: number,
-}
-
 export type ModelItem = {
   id: number,
   materials: Record<string, number>,
@@ -295,16 +222,4 @@ export type ParticleRecord = {
   id: number,
   name: string,
   descriptor: ParticleDescriptor,
-}
-
-export type AlphaGradientKey = {
-  id: number,
-  position: number,
-  value: number,
-}
-
-export type ColorGradientKey = {
-  id: number,
-  position: number,
-  value: number[],
 }

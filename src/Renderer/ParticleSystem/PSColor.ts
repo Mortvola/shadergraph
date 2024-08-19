@@ -1,7 +1,7 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import { lerp } from "../Renderer/Math";
-import { PSColorDescriptor, PSColorType } from "../Renderer/types";
-import Gradient from "./Gradient";
+import { lerp } from "../Math";
+import { PSColorDescriptor, PSColorType } from "./Types";
+import Gradient from './Gradient';
 
 export const isPSColor = (r: unknown): r is PSColor => (
   (r as PSColorDescriptor).type !== undefined

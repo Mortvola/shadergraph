@@ -1,10 +1,10 @@
 import React from 'react';
-import ParticleSystem from '../Renderer/ParticleSystem';
+import ParticleSystem from '../Renderer/ParticleSystem/ParticleSystem';
 import NumberInput from './NumberInput';
 import styles from './Particle.module.scss';
 import { useStores } from '../State/store';
 import { materialManager } from '../Renderer/Materials/MaterialManager';
-import { particleSystemManager } from '../Renderer/ParticleSystemManager';
+import { particleSystemManager } from '../Renderer/ParticleSystem/ParticleSystemManager';
 import { ParticleItem } from '../Renderer/types';
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';

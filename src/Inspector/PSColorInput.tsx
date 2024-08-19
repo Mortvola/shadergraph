@@ -1,9 +1,9 @@
 import React from 'react';
 import ColorPicker from '../Color/ColorPicker';
-import { PSColorType } from '../Renderer/types';
+import { PSColorType } from '../Renderer/ParticleSystem/Types';
 import PSColorTypeSelector from './PSColorTypeSelector';
 import GradientEditor from '../Color/GradientEditor';
-import PSColor from './PSColor';
+import PSColor from '../Renderer/ParticleSystem/PSColor';
 import { observer } from 'mobx-react-lite';
 
 type PropsType = {

@@ -1,6 +1,6 @@
-import Http from "../Http/src";
+import Http from "../../Http/src";
 import ParticleSystem from "./ParticleSystem";
-import { ParticleRecord } from "./types";
+import { ParticleRecord } from "../types";
 
 class ParticleSystemManager { 
   map: Map<number, ParticleSystem> = new Map()

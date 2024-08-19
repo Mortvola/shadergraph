@@ -1,5 +1,5 @@
 import { Vec4 } from "wgpu-matrix"
-import DrawableNode from "./Drawables/SceneNodes/DrawableNode";
+import DrawableNode from "../Drawables/SceneNodes/DrawableNode";
 
 class Particle {
   velocity: Vec4;

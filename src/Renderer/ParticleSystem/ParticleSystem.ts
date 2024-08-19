@@ -1,19 +1,20 @@
 import { mat4, vec3, vec4 } from "wgpu-matrix"
+import { makeObservable, observable } from "mobx";
 import {
   ContainerNodeInterface,
-  ParticleDescriptor, ParticleSystemInterface,
-} from "./types";
-import DrawableNode from "./Drawables/SceneNodes/DrawableNode";
-import { degToRad, gravity, intersectionPlane } from "./Math";
-import DrawableInterface from "./Drawables/DrawableInterface";
-import Billboard from "./Drawables/Billboard";
-import { MaterialDescriptor } from "./Materials/MaterialDescriptor";
-import { makeObservable, observable } from "mobx";
-import PSColor from "../Inspector/PSColor";
-import LifetimeColor from "../Inspector/LifetimeColor";
-import Http from "../Http/src";
-import PSValue from "../Inspector/PSValue";
+  ParticleSystemInterface,
+} from "../types";
+import DrawableNode from "../Drawables/SceneNodes/DrawableNode";
+import { degToRad, gravity, intersectionPlane } from "../Math";
+import DrawableInterface from "../Drawables/DrawableInterface";
+import Billboard from "../Drawables/Billboard";
+import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
+import PSColor from "./PSColor";
+import Http from "../../Http/src";
+import PSValue from "./PSValue";
 import Particle from "./Particle";
+import LifetimeColor from "./LifetimeColor";
+import { ParticleDescriptor } from "./Types";
 
 class ParticleSystem implements ParticleSystemInterface {
   id: number
