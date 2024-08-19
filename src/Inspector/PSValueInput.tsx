@@ -1,6 +1,6 @@
 import React from 'react';
 import NumberInput from './NumberInput';
-import PSValueTypeSelector from './PSValueType';
+import PSValueTypeSelector from './PSValueTypeSelector';
 import { PSValue, PSValueType } from '../Renderer/types';
 
 type PropsType = {
