@@ -4,77 +4,25 @@ import { PSColorType } from '../Renderer/types';
 import PSColorTypeSelector from './PSColorTypeSelector';
 import GradientEditor from '../Color/GradientEditor';
 import PSColor from './PSColor';
-import Gradient from './Gradient';
 import { observer } from 'mobx-react-lite';
-import { runInAction } from 'mobx';
 
 type PropsType = {
   value: PSColor,
-  onChange: (value: PSColor) => void,
 }
 
 const PSColorInput: React.FC<PropsType> = observer(({
   value,
-  onChange,
 }) => {
   const handleMinChange = (color: number[]) => {
-    runInAction(() => {
-      value.color = [
-        color,
-        value.color[1],
-      ]  
-    })
-
-    // onChange({
-    //   ...value,
-    //   color: [
-    //     color,
-    //     value.color[1].slice(),
-    //   ]
-    // })
+    value.setMinColor(color);
   }
 
   const handleMaxChange = (color: number[]) => {
-    runInAction(() => {
-      value.color = [
-        value.color[0],
-        color,
-      ]  
-    })
-
-    // onChange({
-    //   ...value,
-    //   color: [
-    //     value.color[0].slice(),
-    //     color,
-    //   ]
-    // })
-  }
-
-  const handleGradient1Change = (gradient: Gradient) => {
-    // value.gradients = [gradient, value.gradients[1]]
-    // onChange({
-    //   ...value,
-    //   gradients: [gradient, value.gradients[1]],
-    // })
-  }
-
-  const handleGradient2Change = (gradient: Gradient) => {
-    // value.gradients = [value.gradients[0], gradient];
-    // onChange({
-    //   ...value,
-    //   gradients: [value.gradients[0], gradient],
-    // })
+    value.setMaxColor(color);
   }
 
   const handleTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    runInAction(() => {
-      value.type = event.target.value as PSColorType;
-    })
-    // onChange({
-    //   ...value,
-    //   type: event.target.value as PSColorType,
-    // })
+    value.setType(event.target.value as PSColorType)
   }
 
   return (
@@ -99,10 +47,10 @@ const PSColorInput: React.FC<PropsType> = observer(({
             case PSColorType.RandomeGradient:
               return (
                 <>
-                  <GradientEditor value={value.gradients[0]} onChange={handleGradient1Change} />
+                  <GradientEditor value={value.gradients[0]} />
                   {
                     value.type === PSColorType.RandomeGradient
-                      ? <GradientEditor value={value.gradients[1]} onChange={handleGradient2Change} />
+                      ? <GradientEditor value={value.gradients[1]} />
                       : null
                   }
                 </>

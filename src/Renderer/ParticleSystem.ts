@@ -12,6 +12,7 @@ import { MaterialDescriptor } from "./Materials/MaterialDescriptor";
 import { makeObservable, observable } from "mobx";
 import PSColor from "../Inspector/PSColor";
 import LifetimeColor from "../Inspector/LifetimeColor";
+import Http from "../Http/src";
 
 export function clone<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj)) as T
@@ -153,8 +154,8 @@ class ParticleSystem implements ParticleSystemInterface {
       }  
     }
 
-    this.startColor = PSColor.fromDescriptor(descriptor?.startColor)
-    this.lifetimeColor = LifetimeColor.fromDescriptor(descriptor?.lifetimeColor)
+    this.startColor = PSColor.fromDescriptor(descriptor?.startColor, this.onChange)
+    this.lifetimeColor = LifetimeColor.fromDescriptor(descriptor?.lifetimeColor, this.onChange)
 
     this.gravityModifier = descriptor?.gravityModifier ?? 0;
 
@@ -432,7 +433,7 @@ class ParticleSystem implements ParticleSystemInterface {
     }
   }
 
-  getDescriptor(): ParticleDescriptor {
+  toDescriptor(): ParticleDescriptor {
     return ({
       duration: this.duration,
       maxPoints: this.maxPoints,
@@ -443,14 +444,28 @@ class ParticleSystem implements ParticleSystemInterface {
       startVelocity: this.startVelocity,
       startSize: this.startSize,
       size: this.size,
-      startColor: this.startColor,
-      lifetimeColor: this.lifetimeColor,
+      startColor: this.startColor.toDescriptor(),
+      lifetimeColor: this.lifetimeColor.toDescriptor(),
       gravityModifier: this.gravityModifier,
       collisionEnabled: this.collisionEnabled,
       bounce: this.bounce,
       dampen: this.dampen,
       materialId: this.materialId,
     })
+  }
+
+  async save() {
+    const response = await Http.patch(`/particles/${this.id}`, {
+      descriptor: this.toDescriptor(),
+    })
+
+    if (response.ok) {
+
+    }
+  }
+
+  onChange = () => {
+    this.save();
   }
 }
 

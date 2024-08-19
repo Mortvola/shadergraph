@@ -10,14 +10,12 @@ import Gradient from '../Inspector/Gradient';
 
 type PropsType = {
   value: Gradient,
-  onChange: (gradient: Gradient) => void,
   onClose: () => void,
   rect: DOMRect,
 }
 
 const GradientEditorPopup: React.FC<PropsType> = observer(({
   value,
-  onChange,
   onClose,
   rect,
 }) => {

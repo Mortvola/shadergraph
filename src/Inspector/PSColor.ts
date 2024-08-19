@@ -1,4 +1,4 @@
-import { makeObservable, observable } from "mobx";
+import { makeObservable, observable, runInAction } from "mobx";
 import { lerp } from "../Renderer/Math";
 import { PSColorDescriptor, PSColorType } from "../Renderer/types";
 import Gradient from "./Gradient";
@@ -15,8 +15,11 @@ class PSColor {
 
   gradients: [Gradient, Gradient];
 
-  constructor() {
+  onChange?: () => void;
+
+  constructor(onChange?: () => void) {
     this.gradients = [new Gradient(), new Gradient()]
+    this.onChange = onChange;
 
     makeObservable(this, {
       type: observable,
@@ -24,19 +27,63 @@ class PSColor {
     })
   }
 
-  static fromDescriptor(descriptor: PSColorDescriptor | undefined) {
-    const psColor = new PSColor();
+  static fromDescriptor(descriptor: PSColorDescriptor | undefined, onChange?: () => void) {
+    const psColor = new PSColor(onChange);
 
     if (descriptor && isPSColor(descriptor)) {
       psColor.type = descriptor.type;
       psColor.color = [[...descriptor.color[0]], [...descriptor.color[1]]]
       psColor.gradients = [
-        Gradient.fromDescriptor(descriptor.gradients[0]),
-        Gradient.fromDescriptor(descriptor.gradients[1]),
+        Gradient.fromDescriptor(descriptor.gradients[0], psColor.onChange),
+        Gradient.fromDescriptor(descriptor.gradients[1], psColor.onChange),
       ];
     }
 
     return psColor;
+  }
+
+  toDescriptor(): PSColorDescriptor {
+    return ({
+      type: this.type,
+      color: [this.color[0].slice(), this.color[1].slice()],
+      gradients: [this.gradients[0].toDescriptor(), this.gradients[1].toDescriptor()],
+    })
+  }
+
+  setType(type: PSColorType) {
+    runInAction(() => {
+      this.type = type;
+
+      if (this.onChange) {
+        this.onChange()
+      }
+    })
+  }
+
+  setMinColor(color: number[]) {
+    runInAction(() => {
+      this.color = [
+        color,
+        this.color[1],
+      ]
+
+      if (this.onChange) {
+        this.onChange()
+      }
+    })
+  }
+
+  setMaxColor(color: number[]) {
+    runInAction(() => {
+      this.color = [
+        this.color[0],
+        color,
+      ]
+
+      if (this.onChange) {
+        this.onChange()
+      }
+    })
   }
 
   getColor(t: number): number[] {

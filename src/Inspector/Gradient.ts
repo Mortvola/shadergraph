@@ -29,20 +29,31 @@ class Gradient {
     }
   ]
 
-  constructor() {
+  onChange?: () => void;
+
+  constructor(onChange?: () => void) {
+    this.onChange = onChange;
+
     makeObservable(this, {
       alphaKeys: observable,
       colorKeys: observable,
     })
   }
   
-  static fromDescriptor(descriptor: GradientDescriptor) {
-    const gradient = new Gradient();
+  static fromDescriptor(descriptor: GradientDescriptor, onChange?: () => void) {
+    const gradient = new Gradient(onChange);
 
     gradient.alphaKeys = descriptor.alphaKeys.map((k) => ({ ...k }));
     gradient.colorKeys = descriptor.colorKeys.map((k) => ({ ...k }));
 
     return gradient;
+  }
+
+  toDescriptor(): GradientDescriptor {
+    return ({
+      alphaKeys: this.alphaKeys.slice(),
+      colorKeys: this.colorKeys.slice(),
+    })
   }
 
   addAlphaKey(position: number) {
@@ -61,7 +72,11 @@ class Gradient {
           ...this.alphaKeys.slice(0, index),
           newKey,
           ...this.alphaKeys.slice(index),
-        ];  
+        ];
+
+        if (this.onChange) {
+          this.onChange();
+        }
       })
 
       return newKey;
@@ -84,7 +99,11 @@ class Gradient {
           ...this.colorKeys.slice(0, index),
           newKey,
           ...this.colorKeys.slice(index),
-        ];  
+        ];
+
+        if (this.onChange) {
+          this.onChange();
+        }
       })
 
       return newKey;
@@ -105,7 +124,11 @@ class Gradient {
         this.alphaKeys = [
           ...this.alphaKeys.slice(0, index),
           ...this.alphaKeys.slice(index + 1),
-        ];  
+        ];
+
+        if (this.onChange) {
+          this.onChange();
+        }
       })
     }
   }
@@ -124,7 +147,11 @@ class Gradient {
         this.colorKeys = [
           ...this.colorKeys.slice(0, index),
           ...this.colorKeys.slice(index + 1),
-        ]  
+        ]
+
+        if (this.onChange) {
+          this.onChange();
+        }
       })
     }
   }
@@ -147,7 +174,11 @@ class Gradient {
             position,
           },
           ...this.alphaKeys.slice(index + 1),
-        ]  
+        ]
+
+        if (this.onChange) {
+          this.onChange();
+        }
       })
 
       return true;
@@ -174,7 +205,11 @@ class Gradient {
             position,
           },
           ...this.colorKeys.slice(index + 1),
-        ]  
+        ]
+
+        if (this.onChange) {
+          this.onChange();
+        }
       })
 
       return true;
@@ -195,7 +230,11 @@ class Gradient {
             value: a / 255.0,
           },
           ...this.alphaKeys.slice(index + 1),
-        ];    
+        ];
+
+        if (this.onChange) {
+          this.onChange();
+        }
       })
 
       return true;
@@ -216,7 +255,11 @@ class Gradient {
             value: color,
           },
           ...this.colorKeys.slice(index + 1),
-        ];  
+        ];
+
+        if (this.onChange) {
+          this.onChange();
+        }
       })
 
       return true;

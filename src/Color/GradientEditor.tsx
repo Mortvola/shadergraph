@@ -7,12 +7,10 @@ import Gradient from '../Inspector/Gradient';
 
 type PropsType = {
   value: Gradient,
-  onChange: (gradient: Gradient) => void,
 }
 
 const GradientEditor: React.FC<PropsType> = observer(({
   value,
-  onChange,
 }) => {
   const [open, setOpen] = React.useState<DOMRect | null>();
   const ref = React.useRef<HTMLDivElement>(null);
@@ -53,7 +51,6 @@ const GradientEditor: React.FC<PropsType> = observer(({
           ? (
             <GradientEditorPopup
               value={value}
-              onChange={onChange}
               onClose={handleClose} rect={open}
             />
           )

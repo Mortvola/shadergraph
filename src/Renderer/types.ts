@@ -222,7 +222,6 @@ export type ParticleDescriptor = {
   finalSize?: number,
 
   startColor?: PSColorDescriptor
-  initialColor?: number[][],
   lifetimeColor?: LifetimeColorDescriptor,
 
   gravityModifier?: number,

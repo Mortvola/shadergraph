@@ -1,7 +1,6 @@
 import React from 'react';
 import ParticleSystem from '../Renderer/ParticleSystem';
 import NumberInput from './NumberInput';
-import Http from '../Http/src';
 import styles from './Particle.module.scss';
 import { useStores } from '../State/store';
 import { materialManager } from '../Renderer/Materials/MaterialManager';
@@ -12,7 +11,6 @@ import { observer } from 'mobx-react-lite';
 import PSValueInput from './PSValueInput';
 import Checkbox from '../ShaderEditor/Controls/Checkbox';
 import PSColorInput from './PSColorInput';
-import PSColor from './PSColor';
 
 type PropsType = {
   particleItem: ParticleItem,
@@ -42,122 +40,94 @@ const Particle: React.FC<PropsType> = observer(({
   const handleDurationChange = (value: number) => {
     runInAction(() => {
       particleSystem.duration = value;
-      save()  
+      particleSystem.save()
     })
   }
 
   const handleMaxPointsChange = (value: number) => {
     runInAction(() => {
       particleSystem.maxPoints = value;
-      save()  
+      particleSystem.save()
     })
   }
 
   const handleRateChange = (value: number) => {
     particleSystem.rate = value;
-    save()
+    particleSystem.save()
   }
 
   const handleAngleChange = (value: number) => {
     particleSystem.angle = value;
-    save()
+    particleSystem.save()
   }
 
   const handleRadiusChange = (value: number) => {
     particleSystem.originRadius = value;
-    save()
+    particleSystem.save()
   }
 
   const handleVelocityChange = (value: PSValue) => {
     particleSystem.startVelocity = value;
-    save()
+    particleSystem.save()
   }
 
   const handleLifetimeChange = (value: PSValue) => {
     runInAction(() => {
       particleSystem.lifetime = value
-      save()
+      particleSystem.save()
     })
   }
 
   const handleStartSizeChange = (value: PSValue) => {
     runInAction(() => {
       particleSystem.startSize = value
-      save()
+      particleSystem.save()
     })
   }
 
   const handleSizeChange = (value: PSValue) => {
     runInAction(() => {
       particleSystem.size = value
-      save()
-    })
-  }
-
-  const handleStartColorChange = (color: PSColor) => {
-    runInAction(() => {
-      particleSystem.startColor = color;
-      save()  
+      particleSystem.save()
     })
   }
 
   const handleEnableLifetimeColor = (value: boolean) => {
-    runInAction(() => {
-      particleSystem.lifetimeColor.enabled = value
-      save();
-    })
-  }
-
-  const handleLifetimeColorChange = (color: PSColor) => {
-    runInAction(() => {
-      particleSystem.lifetimeColor.color = color;
-      save()  
-    })
+    particleSystem.lifetimeColor.setEnabled(value)
   }
 
   const handleGravityChange = (value: number) => {
     runInAction(() => {
       particleSystem.gravityModifier = value;
-      save();
+      particleSystem.save();
     })
   }
 
   const handleCollisionChange = (value: boolean) => {
     runInAction(() => {
       particleSystem.collisionEnabled = value;
-      save();
+      particleSystem.save();
     })
   }
 
   const handleBounceChange = (value: number) => {
     runInAction(() => {
       particleSystem.bounce = value;
-      save()  
+      particleSystem.save()
     })
   }
 
   const handleDampenChange = (value: number) => {
     runInAction(() => {
       particleSystem.dampen = value;
-      save()  
+      particleSystem.save()
     })
-  }
-
-  const save = async () => {
-    const response = await Http.patch(`/particles/${particleSystem.id}`, {
-      descriptor: particleSystem.getDescriptor(),
-    })
-
-    if (response.ok) {
-
-    }
   }
 
   const handleDragOver: React.DragEventHandler = (event) => {
     event.preventDefault();
     event.stopPropagation();
 
-    
     if (
       event.dataTransfer.types[0] === 'application/project-item'
       && store.draggingItem
@@ -224,7 +194,7 @@ const Particle: React.FC<PropsType> = observer(({
       </label>
       <label>
         Start Color:
-        <PSColorInput value={particleSystem.startColor} onChange={handleStartColorChange} />
+        <PSColorInput value={particleSystem.startColor} />
       </label>
       <label>
         Size over lifetime:
@@ -232,7 +202,7 @@ const Particle: React.FC<PropsType> = observer(({
       </label>
       <div>
         <Checkbox label="Color over lifetime:" value={particleSystem.lifetimeColor.enabled} onChange={handleEnableLifetimeColor} />
-        <PSColorInput value={particleSystem.lifetimeColor.color} onChange={handleLifetimeColorChange} />
+        <PSColorInput value={particleSystem.lifetimeColor.color} />
       </div>
       <label>
         Gravity Modifier:
