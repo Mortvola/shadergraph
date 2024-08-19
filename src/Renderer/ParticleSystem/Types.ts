@@ -56,7 +56,7 @@ export type LifetimeColorDescriptor = {
   color: PSColorDescriptor,
 }
 
-export type ParticleDescriptor = {
+export type ParticleSystemDescriptor = {
   duration?: number,
   maxPoints?: number,
   rate?: number,

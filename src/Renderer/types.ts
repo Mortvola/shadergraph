@@ -5,7 +5,7 @@ import { PropertyInterface, ValueType } from './ShaderBuilder/Types';
 import { ShaderDescriptor } from './shaders/ShaderDescriptor';
 import SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
 import ShaderGraph from './ShaderBuilder/ShaderGraph';
-import { ParticleDescriptor } from './ParticleSystem/Types';
+import { ParticleSystemDescriptor } from './ParticleSystem/Types';
 
 export const maxInstances = 1000;
 
@@ -221,5 +221,5 @@ export const isGameObject2DRecord = (r: unknown): r is GameObject2DRecord => (
 export type ParticleRecord = {
   id: number,
   name: string,
-  descriptor: ParticleDescriptor,
+  descriptor: ParticleSystemDescriptor,
 }

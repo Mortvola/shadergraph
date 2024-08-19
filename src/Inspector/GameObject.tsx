@@ -3,7 +3,6 @@ import { GameObjectInterface, isGameObject2D } from '../State/types';
 import ModelTree from './ModelTree/ModelTree';
 import { useStores } from '../State/store';
 import styles from './Inspector.module.scss'
-import Particle from './Particle';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import { ComponentType, DecalItem, GameObjectItem, LightItem, ModelItem, ParticleItem } from '../Renderer/types';
@@ -12,6 +11,7 @@ import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
 import Decal from './Decal';
 import Light from './Light';
+import Particle from './Particle';
 
 type PropsType = {
   gameObject: GameObjectInterface

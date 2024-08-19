@@ -14,7 +14,7 @@ import Http from "../../Http/src";
 import PSValue from "./PSValue";
 import Particle from "./Particle";
 import LifetimeColor from "./LifetimeColor";
-import { ParticleDescriptor } from "./Types";
+import { ParticleSystemDescriptor } from "./Types";
 
 class ParticleSystem implements ParticleSystemInterface {
   id: number
@@ -61,7 +61,7 @@ class ParticleSystem implements ParticleSystemInterface {
 
   drawable: DrawableInterface | null = null;
 
-  private constructor(id: number, descriptor?: ParticleDescriptor) {
+  private constructor(id: number, descriptor?: ParticleSystemDescriptor) {
     this.id = id
 
     this.duration = descriptor?.duration ?? 5
@@ -101,7 +101,7 @@ class ParticleSystem implements ParticleSystemInterface {
     })
   }
 
-  static async create(id: number, descriptor?: ParticleDescriptor) {
+  static async create(id: number, descriptor?: ParticleSystemDescriptor) {
     return new ParticleSystem(id, descriptor)
   }
 
@@ -356,7 +356,7 @@ class ParticleSystem implements ParticleSystemInterface {
     }
   }
 
-  toDescriptor(): ParticleDescriptor {
+  toDescriptor(): ParticleSystemDescriptor {
     return ({
       duration: this.duration,
       maxPoints: this.maxPoints,
