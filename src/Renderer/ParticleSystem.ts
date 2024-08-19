@@ -1,4 +1,4 @@
-import { Vec4, mat4, vec3, vec4 } from "wgpu-matrix"
+import { mat4, vec3, vec4 } from "wgpu-matrix"
 import {
   ContainerNodeInterface,
   ParticleDescriptor, ParticleSystemInterface,
@@ -13,20 +13,12 @@ import PSColor from "../Inspector/PSColor";
 import LifetimeColor from "../Inspector/LifetimeColor";
 import Http from "../Http/src";
 import PSValue from "../Inspector/PSValue";
-
-type Point = {
-  velocity: Vec4,
-  startTime: number,
-  lifetime: number,
-  drawable: DrawableNode,
-  size: number,
-  startColor: Vec4,
-}
+import Particle from "./Particle";
 
 class ParticleSystem implements ParticleSystemInterface {
   id: number
 
-  points: Point[] = []
+  particles: Particle[] = []
 
   duration: number;
 
@@ -115,10 +107,10 @@ class ParticleSystem implements ParticleSystemInterface {
   reset() {
     this.startTime = 0;
     this.lastEmitTime = 0
-    this.points = []
+    this.particles = []
   }
 
-  collided(point: Point, elapsedTime: number, scene: ContainerNodeInterface): boolean {
+  collided(point: Particle, elapsedTime: number, scene: ContainerNodeInterface): boolean {
     if (this.collisionEnabled) {
       const planeNormal = vec4.create(0, 1, 0, 0);
       const planeOrigin = vec4.create(0, 0, 0, 1);
@@ -235,17 +227,17 @@ class ParticleSystem implements ParticleSystemInterface {
   }
 
   private updateParticles(time: number, elapsedTime: number, scene: ContainerNodeInterface) {
-    for (let i = 0; i < this.points.length; i +=1) {
-      const point = this.points[i];
+    for (let i = 0; i < this.particles.length; i +=1) {
+      const particle = this.particles[i];
 
-      const t = (time - point.startTime) / (point.lifetime * 1000);
+      const t = (time - particle.startTime) / (particle.lifetime * 1000);
 
       if (t > 1.0) {
-        scene.removeNode(point.drawable);
+        scene.removeNode(particle.drawable);
         
-        this.points = [
-          ...this.points.slice(0, i),
-          ...this.points.slice(i + 1),
+        this.particles = [
+          ...this.particles.slice(0, i),
+          ...this.particles.slice(i + 1),
         ]
 
         i -= 1
@@ -254,24 +246,24 @@ class ParticleSystem implements ParticleSystemInterface {
       }
 
       // Adjust velocity with gravity
-      point.velocity = vec4.addScaled(
-        point.velocity,
+      particle.velocity = vec4.addScaled(
+        particle.velocity,
         [0, 1, 0, 0],
         this.gravityModifier * gravity * elapsedTime,
       )
 
-      if (!this.collided(point,  elapsedTime, scene)) {
+      if (!this.collided(particle,  elapsedTime, scene)) {
+        // No collision occured
         // Find new position with current velocity
-        point.drawable.translate = vec3.addScaled(
-          point.drawable.translate,
-          point.velocity,
+        particle.drawable.translate = vec3.addScaled(
+          particle.drawable.translate,
+          particle.velocity,
           elapsedTime,
         );
       }
 
-      const size = this.size.getValue(t) * point.size;
-
-      point.drawable.scale = vec3.create(size, size, size)
+      const size = this.size.getValue(t) * particle.size;
+      particle.drawable.scale = vec3.create(size, size, size)
 
       let lifetimeColor = [1, 1, 1, 1];
 
@@ -279,23 +271,22 @@ class ParticleSystem implements ParticleSystemInterface {
         lifetimeColor = this.lifetimeColor.color.getColor(t);
       }
 
-      point.drawable.color[0] = lifetimeColor[0] * point.startColor[0];
-      point.drawable.color[1] = lifetimeColor[1] * point.startColor[1];
-      point.drawable.color[2] = lifetimeColor[2] * point.startColor[2];
-      point.drawable.color[3] = lifetimeColor[3] * point.startColor[3];
+      particle.drawable.color[0] = lifetimeColor[0] * particle.startColor[0];
+      particle.drawable.color[1] = lifetimeColor[1] * particle.startColor[1];
+      particle.drawable.color[2] = lifetimeColor[2] * particle.startColor[2];
+      particle.drawable.color[3] = lifetimeColor[3] * particle.startColor[3];
     }
   }
 
   private async emit(time: number, t: number, scene: ContainerNodeInterface) {
-    if (this.points.length < this.maxPoints) {
+    if (this.particles.length < this.maxPoints) {
       const emitElapsedTime = time - this.lastEmitTime;
 
-      let numToEmit = Math.min(Math.trunc((this.rate / 1000) * emitElapsedTime), this.maxPoints - this.points.length);
+      let numToEmit = Math.min(Math.trunc((this.rate / 1000) * emitElapsedTime), this.maxPoints - this.particles.length);
 
       if (numToEmit > 0) {
         this.lastEmitTime = time;
       
-        // while (this.points.length < this.maxPoints) {
         await this.emitSome(numToEmit, time, t, scene)
       }
     }
@@ -345,22 +336,22 @@ class ParticleSystem implements ParticleSystemInterface {
 
       const direction = vec4.subtract(p1, origin)
 
-      const point: Point = {
-        velocity: vec4.scale(direction, startVelocity),
+      const particle = new Particle(
+        vec4.scale(direction, startVelocity),
         startTime,
         lifetime,
-        size,
         drawable,
+        size,
         startColor,
-      }
+      )
 
-      this.points.push(point)
+      this.particles.push(particle)
     }
   }
 
-  removePoints(scene: ContainerNodeInterface): void {
-    for (const point of this.points) {
-      scene.removeNode(point.drawable)
+  removeParticles(scene: ContainerNodeInterface): void {
+    for (const particle of this.particles) {
+      scene.removeNode(particle.drawable)
     }
   }
 

@@ -137,7 +137,7 @@ export interface ParticleSystemInterface {
 
   update(time: number, elapsedTime: number, scene: ContainerNodeInterface): Promise<void>
 
-  removePoints(scene: ContainerNodeInterface): void
+  removeParticles(scene: ContainerNodeInterface): void
 
   reset(): void
 }
