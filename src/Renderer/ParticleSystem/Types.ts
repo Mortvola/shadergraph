@@ -56,6 +56,11 @@ export type LifetimeColorDescriptor = {
   color: PSColorDescriptor,
 }
 
+export type LifetimeSizeDescriptor = {
+  enabled: boolean,
+  size: PSValueDescriptor,
+}
+
 export enum ShapeType {
   Cone = 'Cone',
   Sphere = 'Sphere',
@@ -91,7 +96,7 @@ export type ParticleSystemDescriptor = {
 
   startSize?: PSValueDescriptor,
 
-  lifetimeSize?: PSValueDescriptor,
+  lifetimeSize?: LifetimeSizeDescriptor,
 
   startColor?: PSColorDescriptor
   lifetimeColor?: LifetimeColorDescriptor,

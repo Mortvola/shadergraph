@@ -58,10 +58,6 @@ const Particle: React.FC<PropsType> = observer(({
     particleSystem.save()
   }
 
-  const handleEnableLifetimeColor = (value: boolean) => {
-    particleSystem.lifetimeColor.setEnabled(value)
-  }
-
   const handleCollisionChange = (value: boolean) => {
     runInAction(() => {
       particleSystem.collisionEnabled = value;
@@ -131,9 +127,6 @@ const Particle: React.FC<PropsType> = observer(({
         Emission Rate:
         <NumberInput value={particleSystem.rate} onChange={handleRateChange} />
       </label>
-      <PSModule title="Shape" module={particleSystem.shape}>
-        <ShapeModule shape={particleSystem.shape} />
-      </PSModule>
       <label>
         Lifetime:
         <PSValueInput value={particleSystem.lifetime} />
@@ -151,17 +144,18 @@ const Particle: React.FC<PropsType> = observer(({
         <PSColorInput value={particleSystem.startColor} />
       </label>
       <label>
-        Size over lifetime:
-        <PSValueInput value={particleSystem.lifetimeSize} />
-      </label>
-      <div>
-        <Checkbox label="Color over lifetime:" value={particleSystem.lifetimeColor.enabled} onChange={handleEnableLifetimeColor} />
-        <PSColorInput value={particleSystem.lifetimeColor.color} />
-      </div>
-      <label>
         Gravity Modifier:
         <PSValueInput value={particleSystem.gravityModifier} />
       </label>
+      <PSModule title="Shape" module={particleSystem.shape}>
+        <ShapeModule shape={particleSystem.shape} />
+      </PSModule>
+      <PSModule title="Size over lifetime" module={particleSystem.lifetimeSize}>
+        <PSValueInput value={particleSystem.lifetimeSize.size} />
+      </PSModule>
+      <PSModule title="Color over lifetime" module={particleSystem.lifetimeColor}>
+        <PSColorInput value={particleSystem.lifetimeColor.color} />        
+      </PSModule>
       <Checkbox label="Collision" value={particleSystem.collisionEnabled} onChange={handleCollisionChange} />
       <label>
         Bounce:

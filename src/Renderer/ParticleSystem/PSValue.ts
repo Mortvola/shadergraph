@@ -33,7 +33,7 @@ class PSValue {
     return psValue;
   }
 
-  toDesriptor(): PSValueDescriptor {
+  toDescriptor(): PSValueDescriptor {
     return ({
       type: this.type,
       value: this.value,

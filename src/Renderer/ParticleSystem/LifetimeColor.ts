@@ -1,24 +1,23 @@
-import { makeAutoObservable, observable, runInAction } from "mobx";
+import { makeObservable, observable } from "mobx";
 import { LifetimeColorDescriptor } from "./Types";
 import PSColor from "./PSColor";
+import PSModule from "./PSModule";
 
-class LifetimeColor {
-  enabled = false;
+class LifetimeColor extends PSModule {
+  color: PSColor;
 
-  color = new PSColor();
+  constructor(onChange?: () => void) {
+    super(onChange);
 
-  onChange?: () => void;
+    this.color = new PSColor(onChange);
 
-  constructor() {
-    makeAutoObservable(this, {
-      enabled: observable,
+    makeObservable(this, {
       color: observable,
     })
   }
 
   static fromDescriptor(descriptor: LifetimeColorDescriptor | undefined, onChange?: () => void) {
-    const lifetimeColor = new LifetimeColor();
-    lifetimeColor.onChange = onChange;
+    const lifetimeColor = new LifetimeColor(onChange);
 
     if (descriptor) {
       lifetimeColor.enabled = descriptor.enabled;
@@ -32,16 +31,6 @@ class LifetimeColor {
     return ({
       enabled: this.enabled,
       color: this.color.toDescriptor(),
-    })
-  }
-
-  setEnabled(enabled: boolean) {
-    runInAction(() => {
-      this.enabled = enabled;
-
-      if (this.onChange) {
-        this.onChange();
-      }
     })
   }
 }

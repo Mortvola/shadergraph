@@ -16,6 +16,7 @@ import Particle from "./Particle";
 import LifetimeColor from "./LifetimeColor";
 import { ParticleSystemDescriptor } from "./Types";
 import Shape from "./Shapes/Shape";
+import LifetimeSize from "./LIfetimeSize";
 
 class ParticleSystem implements ParticleSystemInterface {
   id: number
@@ -44,7 +45,7 @@ class ParticleSystem implements ParticleSystemInterface {
 
   lifetimeColor: LifetimeColor;
 
-  lifetimeSize: PSValue; // Size over lifetime
+  lifetimeSize: LifetimeSize;
 
   gravityModifier: PSValue;
 
@@ -74,7 +75,7 @@ class ParticleSystem implements ParticleSystemInterface {
     this.startVelocity = PSValue.fromDescriptor(descriptor?.startVelocity, this.onChange);
     this.startSize = PSValue.fromDescriptor(descriptor?.startSize, this.onChange);
     
-    this.lifetimeSize = PSValue.fromDescriptor(descriptor?.lifetimeSize, this.onChange);
+    this.lifetimeSize = LifetimeSize.fromDescriptor(descriptor?.lifetimeSize, this.onChange);
 
     this.startColor = PSColor.fromDescriptor(descriptor?.startColor, this.onChange)
     this.lifetimeColor = LifetimeColor.fromDescriptor(descriptor?.lifetimeColor, this.onChange)
@@ -261,7 +262,7 @@ class ParticleSystem implements ParticleSystemInterface {
         );
       }
 
-      const size = this.lifetimeSize.getValue(t) * particle.startSize;
+      const size = this.lifetimeSize.size.getValue(t) * particle.startSize;
       particle.drawable.scale = vec3.create(size, size, size)
 
       let lifetimeColor = [1, 1, 1, 1];
@@ -332,10 +333,10 @@ class ParticleSystem implements ParticleSystemInterface {
       maxPoints: this.maxPoints,
       rate: this.rate,
       shape: this.shape.toDescriptor(),
-      lifetime: this.lifetime.toDesriptor(),
-      startVelocity: this.startVelocity.toDesriptor(),
-      startSize: this.startSize.toDesriptor(),
-      lifetimeSize: this.lifetimeSize.toDesriptor(),
+      lifetime: this.lifetime.toDescriptor(),
+      startVelocity: this.startVelocity.toDescriptor(),
+      startSize: this.startSize.toDescriptor(),
+      lifetimeSize: this.lifetimeSize.toDescriptor(),
       startColor: this.startColor.toDescriptor(),
       lifetimeColor: this.lifetimeColor.toDescriptor(),
       gravityModifier: this.gravityModifier,
