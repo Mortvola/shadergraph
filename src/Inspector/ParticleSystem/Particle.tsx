@@ -1,16 +1,16 @@
 import React from 'react';
-import ParticleSystem from '../Renderer/ParticleSystem/ParticleSystem';
-import NumberInput from './NumberInput';
+import ParticleSystem from '../../Renderer/ParticleSystem/ParticleSystem';
+import NumberInput from '../NumberInput';
 import styles from './Particle.module.scss';
-import { useStores } from '../State/store';
-import { materialManager } from '../Renderer/Materials/MaterialManager';
-import { particleSystemManager } from '../Renderer/ParticleSystem/ParticleSystemManager';
-import { ParticleItem } from '../Renderer/types';
+import { useStores } from '../../State/store';
+import { materialManager } from '../../Renderer/Materials/MaterialManager';
+import { particleSystemManager } from '../../Renderer/ParticleSystem/ParticleSystemManager';
+import { ParticleItem } from '../../Renderer/types';
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import PSValueInput from './PSValueInput';
 import PSColorInput from './PSColorInput';
-import ShapeModule from './ShapeModule';
+import ShapeModule from './Shapes/ShapeModule';
 import PSModule from './PSModule';
 import Collision from './Collision';
 

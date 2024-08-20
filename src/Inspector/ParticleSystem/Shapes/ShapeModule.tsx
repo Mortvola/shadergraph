@@ -1,7 +1,7 @@
 import React from 'react';
 import ShapeTypeSelector from './ShapeTypeSelector';
-import Shape from '../Renderer/ParticleSystem/Shapes/Shape';
-import { ShapeType } from '../Renderer/ParticleSystem/Types';
+import Shape from '../../../Renderer/ParticleSystem/Shapes/Shape';
+import { ShapeType } from '../../../Renderer/ParticleSystem/Types';
 import { observer } from 'mobx-react-lite';
 import Cone from './Cone';
 import styles from './PSModule.module.scss';
@@ -32,7 +32,7 @@ const ShapeModule: React.FC<PropsType> = observer(({
 
             case ShapeType.Sphere:
               return <Sphere sphere={shape.sphere} />
-              
+
             default:
               return null;
           }

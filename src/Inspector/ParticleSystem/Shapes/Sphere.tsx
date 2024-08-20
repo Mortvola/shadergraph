@@ -1,6 +1,6 @@
 import React from 'react';
-import NumberInput from './NumberInput';
-import SphereData from '../Renderer/ParticleSystem/Shapes/Sphere';
+import NumberInput from '../../NumberInput';
+import SphereData from '../../../Renderer/ParticleSystem/Shapes/Sphere';
 import { observer } from 'mobx-react-lite';
 
 type PropsType = {

@@ -11,7 +11,7 @@ import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
 import Decal from './Decal';
 import Light from './Light';
-import Particle from './Particle';
+import Particle from './ParticleSystem/Particle';
 
 type PropsType = {
   gameObject: GameObjectInterface

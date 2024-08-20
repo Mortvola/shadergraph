@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShapeType } from '../Renderer/ParticleSystem/Types';
+import { ShapeType } from '../../../Renderer/ParticleSystem/Types';
 
 type PropsType = {
   value: ShapeType,
