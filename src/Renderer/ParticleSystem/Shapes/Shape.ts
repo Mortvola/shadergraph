@@ -1,7 +1,7 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import { ShapeDescriptor, ShapeType } from "../Types";
 import Cone from "./Cone";
-import { Vec4 } from "wgpu-matrix";
+import { vec4, Vec4 } from "wgpu-matrix";
 import Sphere from "./Sphere";
 import PSModule from "../PSModule";
 
@@ -60,11 +60,17 @@ class Shape extends PSModule {
   }
 
   getPositionAndDirection(): [Vec4, Vec4] {
-    if (this.type === ShapeType.Sphere) {
-      return this.sphere.getPositionAndDirection();
+    if (this.enabled) {
+      if (this.type === ShapeType.Sphere) {
+        return this.sphere.getPositionAndDirection();
+      }
+  
+      if (this.type === ShapeType.Cone) {
+        return this.cone.getPositionAndDirection();
+      }  
     }
 
-    return this.cone.getPositionAndDirection()
+    return [vec4.create(0, 0, 0, 1), vec4.create(0, 0, 0, 0)];
   }
 }
 
