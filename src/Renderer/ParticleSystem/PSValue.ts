@@ -25,9 +25,16 @@ class PSValue {
     const psValue = new PSValue(onChange)
 
     if (descriptor && isPSValue(descriptor)) {
-      psValue.type = descriptor.type;
-      psValue.value = [descriptor.value[0], descriptor.value[1]];
-      psValue.curve = [descriptor.curve[0], descriptor.curve[1]];
+      psValue.type = descriptor.type ?? PSValueType.Constant;
+      psValue.value = descriptor.value !== undefined
+        ? [descriptor.value[0], descriptor.value[1]]
+        : [1, 1];
+      psValue.curve = descriptor.curve !== undefined
+        ? [
+          descriptor.curve[0],
+          descriptor.curve[1],
+        ]
+        : [ { points: [[1, 0], [1, 1]] }, { points: [[0, 1], [1, 1]]}];
     }
 
     return psValue;

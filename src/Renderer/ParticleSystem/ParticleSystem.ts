@@ -14,7 +14,7 @@ import Http from "../../Http/src";
 import PSValue from "./PSValue";
 import Particle from "./Particle";
 import LifetimeColor from "./LifetimeColor";
-import { ParticleSystemDescriptor } from "./Types";
+import { ParticleSystemDescriptor, PSValueType } from "./Types";
 import Shape from "./Shapes/Shape";
 import LifetimeSize from "./LIfetimeSize";
 import Collision from "./Collision";
@@ -77,7 +77,13 @@ class ParticleSystem implements ParticleSystemInterface {
     this.startColor = PSColor.fromDescriptor(descriptor?.startColor, this.onChange)
     this.lifetimeColor = LifetimeColor.fromDescriptor(descriptor?.lifetimeColor, this.onChange)
 
-    this.gravityModifier = PSValue.fromDescriptor(descriptor?.gravityModifier, this.onChange);
+    this.gravityModifier = PSValue.fromDescriptor(
+      descriptor?.gravityModifier ?? {
+        type: PSValueType.Constant,
+        value: [0, 0],
+      },
+      this.onChange,
+    );
 
     this.collision = Collision.fromDescriptor(descriptor?.collision, this.onChange)
 
