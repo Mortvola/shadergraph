@@ -3,11 +3,6 @@ import { lerp } from "../Math";
 import { PSColorDescriptor, PSColorType } from "./Types";
 import Gradient from './Gradient';
 
-export const isPSColor = (r: unknown): r is PSColor => (
-  (r as PSColorDescriptor).type !== undefined
-  && (r as PSColorDescriptor).color !== undefined
-);
-
 class PSColor {
   type = PSColorType.Constant;
 
@@ -30,13 +25,20 @@ class PSColor {
   static fromDescriptor(descriptor: PSColorDescriptor | undefined, onChange?: () => void) {
     const psColor = new PSColor(onChange);
 
-    if (descriptor && isPSColor(descriptor)) {
-      psColor.type = descriptor.type;
-      psColor.color = [[...descriptor.color[0]], [...descriptor.color[1]]]
-      psColor.gradients = [
-        Gradient.fromDescriptor(descriptor.gradients[0], psColor.onChange),
-        Gradient.fromDescriptor(descriptor.gradients[1], psColor.onChange),
-      ];
+    if (descriptor) {
+      psColor.type = descriptor.type ?? PSColorType.Constant;
+      psColor.color = descriptor.color !== undefined
+        ? [[...descriptor.color[0]], [...descriptor.color[1]]]
+        : [[1, 1, 1, 1], [1, 1, 1, 1]];
+      psColor.gradients = descriptor.gradients !== undefined
+        ? [
+          Gradient.fromDescriptor(descriptor.gradients[0], psColor.onChange),
+          Gradient.fromDescriptor(descriptor.gradients[1], psColor.onChange),
+        ]
+        : [
+          new Gradient(onChange),
+          new Gradient(onChange),
+        ];
     }
 
     return psColor;

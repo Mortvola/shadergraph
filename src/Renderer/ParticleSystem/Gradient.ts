@@ -20,12 +20,12 @@ class Gradient {
     {
       id: 0,
       position: 0,
-      value: [1, 1, 1, 1],
+      value: [1, 1, 1],
     },
     {
       id: 1,
       position: 1,
-      value: [1, 1, 1, 1],
+      value: [1, 1, 1],
     }
   ]
 
