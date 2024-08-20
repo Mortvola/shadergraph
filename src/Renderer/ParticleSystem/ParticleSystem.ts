@@ -1,4 +1,4 @@
-import { vec3, Vec4, vec4 } from "wgpu-matrix"
+import { vec3, vec4 } from "wgpu-matrix"
 import { makeObservable, observable } from "mobx";
 import {
   ContainerNodeInterface,
@@ -23,7 +23,7 @@ import Renderer from "./Renderer";
 class ParticleSystem implements ParticleSystemInterface {
   id: number
 
-  particles: Particle[] = []
+  particles: Map<number, Particle> = new Map();
 
   duration: number;
 
@@ -115,7 +115,7 @@ class ParticleSystem implements ParticleSystemInterface {
   reset() {
     this.startTime = 0;
     this.lastEmitTime = 0
-    this.particles = []
+    this.particles.clear()
   }
 
   collided(point: Particle, elapsedTime: number, scene: ContainerNodeInterface): boolean {
@@ -222,89 +222,86 @@ class ParticleSystem implements ParticleSystemInterface {
     if (this.lastEmitTime === 0) {
       this.lastEmitTime = time;
 
-      this.emitSome(1, time, elapsedTime2, scene)
-      return
+      await this.emitSome(1, time, elapsedTime2, scene)
     }
-
-    // Update existing particles
-    await this.updateParticles(time, elapsedTime, scene);
-  
-    // Add new particles
-    await this.emit(time, elapsedTime2, scene)
+    else {
+      // Update existing particles
+      await this.updateParticles(time, elapsedTime, scene);
+    
+      // Add new particles
+      await this.emit(time, elapsedTime2, scene)
+    }
   }
 
   private async updateParticles(time: number, elapsedTime: number, scene: ContainerNodeInterface) {
-    for (let i = 0; i < this.particles.length; i +=1) {
-      const particle = this.particles[i];
-
+    for (const [, particle] of this.particles) {
       const t = (time - particle.startTime) / (particle.lifetime * 1000);
 
       if (t > 1.0) {
         if (particle.drawable) {
           scene.removeNode(particle.drawable);
+          particle.drawable = null;
         }
         
-        this.particles = [
-          ...this.particles.slice(0, i),
-          ...this.particles.slice(i + 1),
-        ]
-
-        i -= 1
-
-        continue
+        this.particles.delete(particle.id)    
       }
-
-      // Adjust velocity with gravity
-      particle.velocity = vec4.addScaled(
-        particle.velocity,
-        [0, 1, 0, 0],
-        this.gravityModifier.getValue(t) * gravity * elapsedTime,
-      )
-
-      if (!this.collided(particle,  elapsedTime, scene)) {
-        // No collision occured
-        // Find new position with current velocity
-        particle.position = vec3.addScaled(
-          particle.position,
+      else {
+        // Adjust velocity with gravity
+        particle.velocity = vec4.addScaled(
           particle.velocity,
-          elapsedTime,
-        );
-      }
+          [0, 1, 0, 0],
+          this.gravityModifier.getValue(t) * gravity * elapsedTime,
+        )
 
-      if (this.renderer.enabled && particle.drawable === null) {
-        particle.drawable = await DrawableNode.create(this.drawable!, this.materialDescriptor);
-        scene.addNode(particle.drawable)  
-      }
-      else if (!this.renderer.enabled && particle.drawable !== null) {
-        scene.removeNode(particle.drawable);
-        particle.drawable = null;
-      }
-
-      if (particle.drawable) {
-        particle.drawable.translate = particle.position;
-  
-        const size = this.lifetimeSize.size.getValue(t) * particle.startSize;
-        particle.drawable.scale = vec3.create(size, size, size)
-
-        let lifetimeColor = [1, 1, 1, 1];
-
-        if (this.lifetimeColor.enabled) {
-          lifetimeColor = this.lifetimeColor.color.getColor(t);
+        if (!this.collided(particle,  elapsedTime, scene)) {
+          // No collision occured
+          // Find new position with current velocity
+          particle.position = vec3.addScaled(
+            particle.position,
+            particle.velocity,
+            elapsedTime,
+          );
         }
 
-        particle.drawable.color[0] = lifetimeColor[0] * particle.startColor[0];
-        particle.drawable.color[1] = lifetimeColor[1] * particle.startColor[1];
-        particle.drawable.color[2] = lifetimeColor[2] * particle.startColor[2];
-        particle.drawable.color[3] = lifetimeColor[3] * particle.startColor[3];  
+        await this.renderParticle(particle, scene, t);
       }
     }
   }
 
+  async renderParticle(particle: Particle, scene: ContainerNodeInterface, t: number) {
+    if (this.renderer.enabled) {
+      if (particle.drawable === null) {
+        particle.drawable = await DrawableNode.create(this.drawable!, this.materialDescriptor);
+        scene.addNode(particle.drawable)  
+      }
+
+      particle.drawable.translate = particle.position;
+
+      const size = this.lifetimeSize.size.getValue(t) * particle.startSize;
+      particle.drawable.scale = vec3.create(size, size, size)
+
+      let lifetimeColor = [1, 1, 1, 1];
+
+      if (this.lifetimeColor.enabled) {
+        lifetimeColor = this.lifetimeColor.color.getColor(t);
+      }
+
+      particle.drawable.color[0] = lifetimeColor[0] * particle.startColor[0];
+      particle.drawable.color[1] = lifetimeColor[1] * particle.startColor[1];
+      particle.drawable.color[2] = lifetimeColor[2] * particle.startColor[2];
+      particle.drawable.color[3] = lifetimeColor[3] * particle.startColor[3];  
+    }
+    else if (particle.drawable !== null) {
+      scene.removeNode(particle.drawable);
+      particle.drawable = null;
+    }
+  }
+
   private async emit(time: number, t: number, scene: ContainerNodeInterface) {
-    if (this.particles.length < this.maxPoints) {
+    if (this.particles.size < this.maxPoints) {
       const emitElapsedTime = time - this.lastEmitTime;
 
-      let numToEmit = Math.min(Math.trunc((this.rate / 1000) * emitElapsedTime), this.maxPoints - this.particles.length);
+      let numToEmit = Math.min(Math.trunc((this.rate / 1000) * emitElapsedTime), this.maxPoints - this.particles.size);
 
       if (numToEmit > 0) {
         this.lastEmitTime = time;
@@ -320,36 +317,31 @@ class ParticleSystem implements ParticleSystemInterface {
       const startVelocity = this.startVelocity.getValue(t);
       const startSize = this.startSize.getValue(t);
       const startColor = this.startColor.getColor(t);
-
       const [position, direction] = this.shape.getPositionAndDirection();
-
-      let drawable: DrawableNode | null = null;
-
-      if (this.renderer.enabled) {
-        drawable = await DrawableNode.create(this.drawable!, this.materialDescriptor);
-        drawable.scale = vec3.create(startSize, startSize, startSize);
-        scene.addNode(drawable)  
-      }
 
       const particle = new Particle(
         position,
         vec4.scale(direction, startVelocity),
         startTime,
         lifetime,
-        drawable,
         startSize,
         startColor,
       )
 
-      this.particles.push(particle)
+      this.particles.set(particle.id, particle)
+
+      await this.renderParticle(particle, scene, 0);
     }
   }
 
   removeParticles(scene: ContainerNodeInterface): void {
-    for (const particle of this.particles) {
+    for (const [id, particle] of this.particles) {
       if (particle.drawable) {
         scene.removeNode(particle.drawable)
+        particle.drawable = null;
       }
+
+      this.particles.delete(id)
     }
   }
 

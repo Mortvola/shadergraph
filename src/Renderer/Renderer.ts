@@ -306,9 +306,7 @@ class Renderer implements RendererInterface {
           // Get elapsed time in seconds.
           const elapsedTime = (timestamp - this.previousTimestamp) * 0.001;
 
-          for (const particleSystem of this.particleSystems) {
-            particleSystem.update(timestamp, elapsedTime, this.scene.scene)
-          }
+          await Promise.all(this.particleSystems.map((ps) => ps.update(timestamp, elapsedTime, this.scene.scene)))
 
           this.camera.updatePosition(elapsedTime, timestamp);
         }

@@ -1,3 +1,13 @@
+export enum RenderMode {
+  Billboard = 'Billboard',
+  FlatBillboard = 'FlatBillboard',
+}
+
+export type RendererDescriptor = {
+  enabled: boolean,
+  mode: RenderMode,
+}
+
 export type AlphaGradientKey = {
   id: number,
   position: number,
@@ -110,6 +120,8 @@ export type ParticleSystemDescriptor = {
   gravityModifier?: PSValueDescriptor,
 
   collision: CollisionDescriptor,
+
+  renderer: RendererDescriptor,
 
   materialId?: number,
 }
