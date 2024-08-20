@@ -11,6 +11,8 @@ import { observer } from 'mobx-react-lite';
 import PSValueInput from './PSValueInput';
 import Checkbox from '../ShaderEditor/Controls/Checkbox';
 import PSColorInput from './PSColorInput';
+import ShapeModule from './ShapeModule';
+import PSModule from './PSModule';
 
 type PropsType = {
   particleItem: ParticleItem,
@@ -53,16 +55,6 @@ const Particle: React.FC<PropsType> = observer(({
 
   const handleRateChange = (value: number) => {
     particleSystem.rate = value;
-    particleSystem.save()
-  }
-
-  const handleAngleChange = (value: number) => {
-    particleSystem.angle = value;
-    particleSystem.save()
-  }
-
-  const handleRadiusChange = (value: number) => {
-    particleSystem.originRadius = value;
     particleSystem.save()
   }
 
@@ -139,14 +131,9 @@ const Particle: React.FC<PropsType> = observer(({
         Emission Rate:
         <NumberInput value={particleSystem.rate} onChange={handleRateChange} />
       </label>
-      <label>
-        Angle:
-        <NumberInput value={particleSystem.angle} onChange={handleAngleChange} />
-      </label>
-      <label>
-        Radius:
-        <NumberInput value={particleSystem.originRadius} onChange={handleRadiusChange} />
-      </label>
+      <PSModule title="Shape" module={particleSystem.shape}>
+        <ShapeModule shape={particleSystem.shape} />
+      </PSModule>
       <label>
         Lifetime:
         <PSValueInput value={particleSystem.lifetime} />

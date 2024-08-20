@@ -6,6 +6,7 @@ import { ShaderDescriptor } from './shaders/ShaderDescriptor';
 import SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
 import ShaderGraph from './ShaderBuilder/ShaderGraph';
 import { ParticleSystemDescriptor } from './ParticleSystem/Types';
+import Shape from './ParticleSystem/Shapes/Shape';
 
 export const maxInstances = 1000;
 
@@ -134,7 +135,7 @@ export interface PipelineManagerInterface {
 export interface ParticleSystemInterface {
   id: number
 
-  angle: number
+  shape: Shape;
 
   update(time: number, elapsedTime: number, scene: ContainerNodeInterface): Promise<void>
 

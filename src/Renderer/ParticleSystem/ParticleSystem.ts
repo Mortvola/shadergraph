@@ -1,11 +1,11 @@
-import { mat4, vec3, vec4 } from "wgpu-matrix"
+import { vec3, Vec4, vec4 } from "wgpu-matrix"
 import { makeObservable, observable } from "mobx";
 import {
   ContainerNodeInterface,
   ParticleSystemInterface,
 } from "../types";
 import DrawableNode from "../Drawables/SceneNodes/DrawableNode";
-import { degToRad, gravity, intersectionPlane } from "../Math";
+import { gravity, intersectionPlane } from "../Math";
 import DrawableInterface from "../Drawables/DrawableInterface";
 import Billboard from "../Drawables/Billboard";
 import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
@@ -15,6 +15,7 @@ import PSValue from "./PSValue";
 import Particle from "./Particle";
 import LifetimeColor from "./LifetimeColor";
 import { ParticleSystemDescriptor } from "./Types";
+import Shape from "./Shapes/Shape";
 
 class ParticleSystem implements ParticleSystemInterface {
   id: number
@@ -27,13 +28,13 @@ class ParticleSystem implements ParticleSystemInterface {
 
   rate: number
 
+  shape: Shape;
+
   startTime = 0;
 
   lastEmitTime = 0;
 
   lifetime: PSValue;
-
-  angle: number;
 
   startVelocity: PSValue;
 
@@ -44,8 +45,6 @@ class ParticleSystem implements ParticleSystemInterface {
   lifetimeColor: LifetimeColor;
 
   lifetimeSize: PSValue; // Size over lifetime
-
-  originRadius: number;
 
   gravityModifier: PSValue;
 
@@ -70,8 +69,7 @@ class ParticleSystem implements ParticleSystemInterface {
 
     this.lifetime = PSValue.fromDescriptor(descriptor?.lifetime, this.onChange);
 
-    this.angle = descriptor?.angle ?? 25
-    this.originRadius = descriptor?.originRadius ?? 1
+    this.shape = Shape.fromDescriptor(descriptor?.shape, this.onChange);
 
     this.startVelocity = PSValue.fromDescriptor(descriptor?.startVelocity, this.onChange);
     this.startSize = PSValue.fromDescriptor(descriptor?.startSize, this.onChange);
@@ -302,40 +300,12 @@ class ParticleSystem implements ParticleSystemInterface {
 
       const drawable = await DrawableNode.create(this.drawable!, this.materialDescriptor);
 
-      let origin = vec4.create(0, 0, 0, 1)
-
-      // const offset = Math.random() * this.originRadius;
-      const offset = this.originRadius;
-      const rotate = degToRad(Math.random() * 360);
-
-      let transform = mat4.identity()
-      mat4.rotateY(transform, rotate, transform)
-      mat4.translate(transform, vec4.create(0, 0, offset, 1), transform)
-      vec4.transformMat4(origin, transform, origin)
-
-      // drawable.translate = vec3.add(origin, vec3.create(0, 1, 0));
-      drawable.translate = origin;
+      let direction: Vec4;
+      [drawable.translate, direction] = this.shape.getPositionAndDirection();
 
       drawable.scale = vec3.create(startSize, startSize, startSize);
 
       scene.addNode(drawable)
-
-      // const vector = vec4.create(0, 1, 0, 0)
-
-      // transform = mat4.identity()
-      // mat4.rotateY(transform, degToRad(Math.random() * 360), transform)
-      // mat4.rotateX(transform, degToRad(this.angle), transform)
-      // vec4.transformMat4(vector, transform, vector)
-
-      const p1 = vec4.create(0, 1, 0, 1);
-
-      transform = mat4.identity()
-      mat4.rotateY(transform, rotate, transform)
-      mat4.translate(transform, vec4.create(0, 0, offset, 1), transform)
-      mat4.rotateX(transform, degToRad(this.angle), transform)
-      vec4.transformMat4(p1, transform, p1)
-
-      const direction = vec4.subtract(p1, origin)
 
       const particle = new Particle(
         vec4.scale(direction, startVelocity),
@@ -361,8 +331,7 @@ class ParticleSystem implements ParticleSystemInterface {
       duration: this.duration,
       maxPoints: this.maxPoints,
       rate: this.rate,
-      angle: this.angle,
-      originRadius: this.originRadius,
+      shape: this.shape.toDescriptor(),
       lifetime: this.lifetime.toDesriptor(),
       startVelocity: this.startVelocity.toDesriptor(),
       startSize: this.startSize.toDesriptor(),
