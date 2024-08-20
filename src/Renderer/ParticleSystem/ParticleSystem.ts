@@ -14,10 +14,11 @@ import Http from "../../Http/src";
 import PSValue from "./PSValue";
 import Particle from "./Particle";
 import LifetimeColor from "./LifetimeColor";
-import { ParticleSystemDescriptor, PSValueType } from "./Types";
+import { ParticleSystemDescriptor, PSValueType, RenderMode } from "./Types";
 import Shape from "./Shapes/Shape";
 import LifetimeSize from "./LIfetimeSize";
 import Collision from "./Collision";
+import Renderer from "./Renderer";
 
 class ParticleSystem implements ParticleSystemInterface {
   id: number
@@ -51,6 +52,8 @@ class ParticleSystem implements ParticleSystemInterface {
   gravityModifier: PSValue;
 
   collision: Collision;
+
+  renderer: Renderer;
 
   materialId: number | undefined = undefined;
 
@@ -86,6 +89,11 @@ class ParticleSystem implements ParticleSystemInterface {
     );
 
     this.collision = Collision.fromDescriptor(descriptor?.collision, this.onChange)
+
+    this.renderer = Renderer.fromDescriptor(
+      descriptor?.renderer ?? { enabled: true, mode: RenderMode.Billboard },
+      this.onChange
+    );
 
     this.materialId = descriptor?.materialId
     this.materialDescriptor = descriptor?.materialId
@@ -125,7 +133,7 @@ class ParticleSystem implements ParticleSystemInterface {
         // Find the point on the sphere that will collide with the plane if
         // we travel far enough.
         const sphereIntersectionPoint = vec4.subtract(
-          vec4.create(...point.drawable.translate, 1),
+          vec4.create(...point.position, 1),
           vec4.scale(
             planeNormal,
             sphereRadius,
@@ -142,7 +150,7 @@ class ParticleSystem implements ParticleSystemInterface {
 
           // Compute the sphere origin to collision point distance for those cases where the sphere has already
           // partially embedded in the plane.
-          const originToCollision = vec3.distance(point.drawable.translate, planeInterSectionPoint)
+          const originToCollision = vec3.distance(point.position, planeInterSectionPoint)
 
           if (distanceToCollision < distanceToDestination || originToCollision < sphereRadius) {
             // Yes, the sphere and plane will collide
@@ -180,13 +188,13 @@ class ParticleSystem implements ParticleSystemInterface {
               )    
             )
 
-            point.drawable.translate = vec3.create(...newlocation.slice(0,3));
+            point.position = vec3.create(...newlocation.slice(0,3));
 
             const percentRemaining = 1 - distanceToCollision / distanceToDestination;
 
             // Add remaing amount to travel
-            point.drawable.translate = vec3.addScaled(
-              point.drawable.translate,
+            point.position = vec3.addScaled(
+              point.position,
               point.velocity,
               elapsedTime * percentRemaining,
             );  
@@ -201,9 +209,8 @@ class ParticleSystem implements ParticleSystemInterface {
   }
 
   async update(time: number, elapsedTime: number, scene: ContainerNodeInterface): Promise<void> {
-    if (!this.drawable) {
+    if (this.renderer.enabled && !this.drawable) {
       this.drawable = new Billboard()
-      console.log('created particle drawable')
     }
 
     if (this.startTime === 0) {
@@ -220,20 +227,22 @@ class ParticleSystem implements ParticleSystemInterface {
     }
 
     // Update existing particles
-    this.updateParticles(time, elapsedTime, scene);
+    await this.updateParticles(time, elapsedTime, scene);
   
     // Add new particles
     await this.emit(time, elapsedTime2, scene)
   }
 
-  private updateParticles(time: number, elapsedTime: number, scene: ContainerNodeInterface) {
+  private async updateParticles(time: number, elapsedTime: number, scene: ContainerNodeInterface) {
     for (let i = 0; i < this.particles.length; i +=1) {
       const particle = this.particles[i];
 
       const t = (time - particle.startTime) / (particle.lifetime * 1000);
 
       if (t > 1.0) {
-        scene.removeNode(particle.drawable);
+        if (particle.drawable) {
+          scene.removeNode(particle.drawable);
+        }
         
         this.particles = [
           ...this.particles.slice(0, i),
@@ -255,26 +264,39 @@ class ParticleSystem implements ParticleSystemInterface {
       if (!this.collided(particle,  elapsedTime, scene)) {
         // No collision occured
         // Find new position with current velocity
-        particle.drawable.translate = vec3.addScaled(
-          particle.drawable.translate,
+        particle.position = vec3.addScaled(
+          particle.position,
           particle.velocity,
           elapsedTime,
         );
       }
 
-      const size = this.lifetimeSize.size.getValue(t) * particle.startSize;
-      particle.drawable.scale = vec3.create(size, size, size)
-
-      let lifetimeColor = [1, 1, 1, 1];
-
-      if (this.lifetimeColor.enabled) {
-        lifetimeColor = this.lifetimeColor.color.getColor(t);
+      if (this.renderer.enabled && particle.drawable === null) {
+        particle.drawable = await DrawableNode.create(this.drawable!, this.materialDescriptor);
+        scene.addNode(particle.drawable)  
+      }
+      else if (!this.renderer.enabled && particle.drawable !== null) {
+        scene.removeNode(particle.drawable);
+        particle.drawable = null;
       }
 
-      particle.drawable.color[0] = lifetimeColor[0] * particle.startColor[0];
-      particle.drawable.color[1] = lifetimeColor[1] * particle.startColor[1];
-      particle.drawable.color[2] = lifetimeColor[2] * particle.startColor[2];
-      particle.drawable.color[3] = lifetimeColor[3] * particle.startColor[3];
+      if (particle.drawable) {
+        particle.drawable.translate = particle.position;
+  
+        const size = this.lifetimeSize.size.getValue(t) * particle.startSize;
+        particle.drawable.scale = vec3.create(size, size, size)
+
+        let lifetimeColor = [1, 1, 1, 1];
+
+        if (this.lifetimeColor.enabled) {
+          lifetimeColor = this.lifetimeColor.color.getColor(t);
+        }
+
+        particle.drawable.color[0] = lifetimeColor[0] * particle.startColor[0];
+        particle.drawable.color[1] = lifetimeColor[1] * particle.startColor[1];
+        particle.drawable.color[2] = lifetimeColor[2] * particle.startColor[2];
+        particle.drawable.color[3] = lifetimeColor[3] * particle.startColor[3];  
+      }
     }
   }
 
@@ -299,16 +321,18 @@ class ParticleSystem implements ParticleSystemInterface {
       const startSize = this.startSize.getValue(t);
       const startColor = this.startColor.getColor(t);
 
-      const drawable = await DrawableNode.create(this.drawable!, this.materialDescriptor);
+      const [position, direction] = this.shape.getPositionAndDirection();
 
-      let direction: Vec4;
-      [drawable.translate, direction] = this.shape.getPositionAndDirection();
+      let drawable: DrawableNode | null = null;
 
-      drawable.scale = vec3.create(startSize, startSize, startSize);
-
-      scene.addNode(drawable)
+      if (this.renderer.enabled) {
+        drawable = await DrawableNode.create(this.drawable!, this.materialDescriptor);
+        drawable.scale = vec3.create(startSize, startSize, startSize);
+        scene.addNode(drawable)  
+      }
 
       const particle = new Particle(
+        position,
         vec4.scale(direction, startVelocity),
         startTime,
         lifetime,
@@ -323,7 +347,9 @@ class ParticleSystem implements ParticleSystemInterface {
 
   removeParticles(scene: ContainerNodeInterface): void {
     for (const particle of this.particles) {
-      scene.removeNode(particle.drawable)
+      if (particle.drawable) {
+        scene.removeNode(particle.drawable)
+      }
     }
   }
 
@@ -341,6 +367,7 @@ class ParticleSystem implements ParticleSystemInterface {
       lifetimeColor: this.lifetimeColor.toDescriptor(),
       gravityModifier: this.gravityModifier.toDescriptor(),
       collision: this.collision.toDescriptor(),
+      renderer: this.renderer.toDescriptor(),
       materialId: this.materialId,
     })
   }

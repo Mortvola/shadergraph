@@ -13,6 +13,7 @@ import PSColorInput from './PSColorInput';
 import ShapeModule from './Shapes/ShapeModule';
 import PSModule from './PSModule';
 import Collision from './Collision';
+import PSRenderer from './PSRenderer';
 
 type PropsType = {
   particleItem: ParticleItem,
@@ -137,6 +138,9 @@ const Particle: React.FC<PropsType> = observer(({
       </PSModule>
       <PSModule title="Collsion" module={particleSystem.collision}>
         <Collision value={particleSystem.collision} />
+      </PSModule>
+      <PSModule title="Renderer" module={particleSystem.renderer}>
+        <PSRenderer value={particleSystem.renderer} />
       </PSModule>
       <label>
         Material:
