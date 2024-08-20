@@ -4,7 +4,7 @@ import Shape from '../../../Renderer/ParticleSystem/Shapes/Shape';
 import { ShapeType } from '../../../Renderer/ParticleSystem/Types';
 import { observer } from 'mobx-react-lite';
 import Cone from './Cone';
-import styles from './PSModule.module.scss';
+import styles from '../PSModule.module.scss';
 import Sphere from './Sphere';
 
 type PropsType = {
