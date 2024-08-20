@@ -8,7 +8,6 @@ import DrawableNode from "../Drawables/SceneNodes/DrawableNode";
 import { gravity, intersectionPlane } from "../Math";
 import DrawableInterface from "../Drawables/DrawableInterface";
 import Billboard from "../Drawables/Billboard";
-import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
 import PSColor from "./PSColor";
 import Http from "../../Http/src";
 import PSValue from "./PSValue";
@@ -19,6 +18,9 @@ import Shape from "./Shapes/Shape";
 import LifetimeSize from "./LIfetimeSize";
 import Collision from "./Collision";
 import Renderer from "./Renderer";
+import HorizontalBillboard from "../Drawables/HorizontalBillboard";
+import { materialManager } from "../Materials/MaterialManager";
+import MaterialItem from "../MaterialItem";
 
 class ParticleSystem implements ParticleSystemInterface {
   id: number
@@ -55,13 +57,14 @@ class ParticleSystem implements ParticleSystemInterface {
 
   renderer: Renderer;
 
-  materialId: number | undefined = undefined;
+  // materialId: number | undefined = undefined;
 
-  materialDescriptor: MaterialDescriptor | number | undefined;
+  // materialDescriptor: MaterialDescriptor | number | undefined;
+  materialItem?: MaterialItem;
 
   drawable: DrawableInterface | null = null;
 
-  private constructor(id: number, descriptor?: ParticleSystemDescriptor) {
+  private constructor(id: number, descriptor?: ParticleSystemDescriptor, materialItem?: MaterialItem) {
     this.id = id
 
     this.duration = descriptor?.duration ?? 5
@@ -95,8 +98,7 @@ class ParticleSystem implements ParticleSystemInterface {
       this.onChange
     );
 
-    this.materialId = descriptor?.materialId
-    this.materialDescriptor = descriptor?.materialId
+    this.materialItem = materialItem;
 
     makeObservable(this, {
       lifetime: observable,
@@ -109,7 +111,13 @@ class ParticleSystem implements ParticleSystemInterface {
   }
 
   static async create(id: number, descriptor?: ParticleSystemDescriptor) {
-    return new ParticleSystem(id, descriptor)
+    let materialItem: MaterialItem | undefined = undefined;
+
+    if (descriptor?.materialId !== undefined) {
+      materialItem = await materialManager.getItem(descriptor?.materialId)
+    }
+
+    return new ParticleSystem(id, descriptor, materialItem)
   }
 
   reset() {
@@ -209,8 +217,24 @@ class ParticleSystem implements ParticleSystemInterface {
   }
 
   async update(time: number, elapsedTime: number, scene: ContainerNodeInterface): Promise<void> {
-    if (this.renderer.enabled && !this.drawable) {
-      this.drawable = new Billboard()
+    // if (this.renderer.enabled && !this.drawable) {
+    //   this.drawable = new Billboard()
+    // }
+
+    switch (this.renderer.mode) {
+      case RenderMode.Billboard:
+        if (!this.drawable || this.drawable.type !== 'Billboard') {
+          this.drawable = new Billboard()
+        }
+
+        break;
+
+      case RenderMode.FlatBillboard:
+        if (!this.drawable || this.drawable.type !== 'HorizontalBillboard') {
+          this.drawable = new HorizontalBillboard()
+        }
+
+        break;
     }
 
     if (this.startTime === 0) {

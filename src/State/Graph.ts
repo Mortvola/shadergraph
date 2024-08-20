@@ -242,12 +242,12 @@ class Graph implements GraphInterface {
   }
 
   async generateMaterial(): Promise<MaterialInterface> {
-    const shaderDescriptor = this.graph.createShaderDescriptor();
+    // const shaderDescriptor = this.graph.createShaderDescriptor();
 
     // Find a preview node.
     const preview = this.graph.fragment.nodes.find((n) => n.type === 'Preview');
 
-    return await Material.create('Mesh', [], { shaderDescriptor, graph: this.graph, root: preview });
+    return await Material.create('Mesh', [], { graph: this.graph, root: preview });
   }
 }
 

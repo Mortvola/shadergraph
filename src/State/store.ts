@@ -2,7 +2,6 @@ import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
 import {
-  GameObjectInterface,
   ModelInterface, StoreInterface, TextureRecord, isGameObject, isGameObject2D,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
@@ -11,8 +10,10 @@ import Http from "../Http/src";
 import { ProjectItemInterface } from "../Project/Types/types";
 import GameObject from "./GameObject";
 import Texture from "./Texture";
-import { DecalItem, GameObject2DRecord, GameObjectRecord, MaterialRecord, ModelItem, ParticleItem, ParticleSystemInterface, SceneNodeInterface, ShaderRecord } from "../Renderer/types";
-import ParticleSystem from "../Renderer/ParticleSystem/ParticleSystem";
+import {
+  DecalItem, GameObject2DRecord, GameObjectRecord, MaterialRecord,
+  ModelItem, ParticleItem, ParticleSystemInterface, SceneNodeInterface, ShaderRecord,
+} from "../Renderer/types";
 import { renderer2d } from "../Main";
 import Project from "../Project/Types/Project";
 import { particleSystemManager } from "../Renderer/ParticleSystem/ParticleSystemManager";

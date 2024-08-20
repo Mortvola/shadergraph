@@ -50,7 +50,7 @@ const Material: React.FC<PropsType> = observer(({
   const handleShaderChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     if (materialItem) {
       runInAction(() => {
-        materialItem.shaderId = parseInt(event.target.value, 10);
+        materialItem.setShaderId(parseInt(event.target.value, 10))
       })
     }
   }

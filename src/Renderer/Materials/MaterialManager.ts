@@ -1,31 +1,33 @@
 import Http from "../../Http/src";
+import MaterialItem from "../MaterialItem";
 import { PropertyInterface } from "../ShaderBuilder/Types";
 import { shaderManager } from "../shaders/ShaderManager";
-import { DrawableType, MaterialRecord } from "../types";
+import { DrawableType, MaterialRecordDescriptor } from "../types";
 import Material from "./Material";
 import { MaterialDescriptor } from "./MaterialDescriptor";
 
 class MaterialManager {
-  materialDescriptors: Map<number, MaterialRecord> = new Map()
+  materialItems: Map<number, MaterialItem> = new Map()
   
   materials: Map<string | number, Map<string, Material>> = new Map()
 
-  async getDescriptor(id: number, withShaderDescriptor = true): Promise<MaterialDescriptor | undefined> {
-    let materialRecord = this.materialDescriptors.get(id)
+  async getItem(id: number, withShaderDescriptor = true): Promise<MaterialDescriptor | undefined> {
+    let materialItem = this.materialItems.get(id)
 
-    if (!materialRecord) {
-      const response = await Http.get<MaterialRecord>(`/materials/${id}`);
+    if (!materialItem) {
+      const response = await Http.get<MaterialRecordDescriptor>(`/materials/${id}`);
 
       if (response.ok) {
-        materialRecord = await response.body();
+        const materialItemDescriptor = await response.body();
 
-        this.materialDescriptors.set(id, materialRecord)
+        materialItem = new MaterialItem(materialItemDescriptor);
+        this.materialItems.set(id, materialItem)
       }  
     }
 
-    if (materialRecord) {
+    if (materialItem) {
       if (withShaderDescriptor) {
-        const shaderDescriptor = await shaderManager.getDescriptor(materialRecord.shaderId);
+        const shaderDescriptor = await shaderManager.getDescriptor(materialItem.shaderId);
 
         if (shaderDescriptor) {
           return {

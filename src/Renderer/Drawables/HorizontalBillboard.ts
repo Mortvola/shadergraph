@@ -1,11 +1,11 @@
 import { Vec4, Mat4 } from 'wgpu-matrix';
 import Drawable from './Drawable';
 
-class Billboard extends Drawable {
+class HorizontalBillboard extends Drawable {
   constructor() {
-    super('Billboard', 1);
+    super('HorizontalBillboard', 1);
 
-    this.name = 'Billboard'
+    this.name = 'HorizontalBillboard'
   }
 
   render(passEncoder: GPURenderPassEncoder) {
@@ -17,4 +17,4 @@ class Billboard extends Drawable {
   }
 }
 
-export default Billboard;
+export default HorizontalBillboard;

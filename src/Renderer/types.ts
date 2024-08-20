@@ -73,7 +73,7 @@ export interface SceneNodeInterface {
   setFromAngles(x: number, y: number, z: number): void;
 }
 
-export type DrawableType = 'Mesh' | 'Billboard' | 'Circle' | 'Line' | '2D' | 'Mesh2D'| 'Decal'
+export type DrawableType = 'Mesh' | 'Billboard' | 'HorizontalBillboard' | 'Circle' | 'Line' | '2D' | 'Mesh2D'| 'Decal'
 
 export interface MaterialInterface {
   pipeline: PipelineInterface | null;
@@ -144,7 +144,7 @@ export interface ParticleSystemInterface {
   reset(): void
 }
 
-export type MaterialRecord = {
+export type MaterialRecordDescriptor = {
   id: number,
   name: string,
   shaderId: number,
