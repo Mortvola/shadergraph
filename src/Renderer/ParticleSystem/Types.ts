@@ -61,6 +61,12 @@ export type LifetimeSizeDescriptor = {
   size: PSValueDescriptor,
 }
 
+export type CollisionDescriptor = {
+  enabled: boolean,
+  bounce: number,
+  dampen: number,
+}
+
 export enum ShapeType {
   Cone = 'Cone',
   Sphere = 'Sphere',
@@ -103,9 +109,7 @@ export type ParticleSystemDescriptor = {
 
   gravityModifier?: PSValueDescriptor,
 
-  collisionEnabled?: boolean,
-  bounce?: number,
-  dampen?: number,
+  collision: CollisionDescriptor,
 
   materialId?: number,
 }

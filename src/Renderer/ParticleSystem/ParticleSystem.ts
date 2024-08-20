@@ -17,6 +17,7 @@ import LifetimeColor from "./LifetimeColor";
 import { ParticleSystemDescriptor } from "./Types";
 import Shape from "./Shapes/Shape";
 import LifetimeSize from "./LIfetimeSize";
+import Collision from "./Collision";
 
 class ParticleSystem implements ParticleSystemInterface {
   id: number
@@ -49,11 +50,7 @@ class ParticleSystem implements ParticleSystemInterface {
 
   gravityModifier: PSValue;
 
-  collisionEnabled: boolean;
-
-  bounce: number;
-
-  dampen: number;
+  collision: Collision;
 
   materialId: number | undefined = undefined;
 
@@ -80,11 +77,9 @@ class ParticleSystem implements ParticleSystemInterface {
     this.startColor = PSColor.fromDescriptor(descriptor?.startColor, this.onChange)
     this.lifetimeColor = LifetimeColor.fromDescriptor(descriptor?.lifetimeColor, this.onChange)
 
-    this.gravityModifier = PSValue.fromDescriptor(descriptor?.gravityModifier);
+    this.gravityModifier = PSValue.fromDescriptor(descriptor?.gravityModifier, this.onChange);
 
-    this.collisionEnabled = descriptor?.collisionEnabled ?? false;
-    this.bounce = descriptor?.bounce ?? 1;
-    this.dampen = descriptor?.dampen ?? 0;
+    this.collision = Collision.fromDescriptor(descriptor?.collision, this.onChange)
 
     this.materialId = descriptor?.materialId
     this.materialDescriptor = descriptor?.materialId
@@ -96,7 +91,6 @@ class ParticleSystem implements ParticleSystemInterface {
       lifetimeSize: observable,
       startColor: observable,
       gravityModifier: observable,
-      collisionEnabled: observable,
     })
   }
 
@@ -111,7 +105,7 @@ class ParticleSystem implements ParticleSystemInterface {
   }
 
   collided(point: Particle, elapsedTime: number, scene: ContainerNodeInterface): boolean {
-    if (this.collisionEnabled) {
+    if (this.collision.enabled) {
       const planeNormal = vec4.create(0, 1, 0, 0);
       const planeOrigin = vec4.create(0, 0, 0, 1);
 
@@ -165,10 +159,10 @@ class ParticleSystem implements ParticleSystemInterface {
             // Compute the reflection vector and account for how much bounce.
             const dot = vec4.dot(point.velocity, planeNormal);
 
-            point.velocity = vec4.subtract(point.velocity, vec4.scale(planeNormal, dot + dot * this.bounce))
+            point.velocity = vec4.subtract(point.velocity, vec4.scale(planeNormal, dot + dot * this.collision.bounce))
 
             // Allow the collision to dampen the velocity
-            point.velocity = vec4.scale(point.velocity, 1 - this.dampen)  
+            point.velocity = vec4.scale(point.velocity, 1 - this.collision.dampen)  
 
             // Move the sphere to the intersection point
             // offset by the radius of the sphere along the plane normal.
@@ -339,10 +333,8 @@ class ParticleSystem implements ParticleSystemInterface {
       lifetimeSize: this.lifetimeSize.toDescriptor(),
       startColor: this.startColor.toDescriptor(),
       lifetimeColor: this.lifetimeColor.toDescriptor(),
-      gravityModifier: this.gravityModifier,
-      collisionEnabled: this.collisionEnabled,
-      bounce: this.bounce,
-      dampen: this.dampen,
+      gravityModifier: this.gravityModifier.toDescriptor(),
+      collision: this.collision.toDescriptor(),
       materialId: this.materialId,
     })
   }

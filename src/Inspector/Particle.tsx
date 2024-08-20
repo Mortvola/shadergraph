@@ -9,10 +9,10 @@ import { ParticleItem } from '../Renderer/types';
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import PSValueInput from './PSValueInput';
-import Checkbox from '../ShaderEditor/Controls/Checkbox';
 import PSColorInput from './PSColorInput';
 import ShapeModule from './ShapeModule';
 import PSModule from './PSModule';
+import Collision from './Collision';
 
 type PropsType = {
   particleItem: ParticleItem,
@@ -56,27 +56,6 @@ const Particle: React.FC<PropsType> = observer(({
   const handleRateChange = (value: number) => {
     particleSystem.rate = value;
     particleSystem.save()
-  }
-
-  const handleCollisionChange = (value: boolean) => {
-    runInAction(() => {
-      particleSystem.collisionEnabled = value;
-      particleSystem.save();
-    })
-  }
-
-  const handleBounceChange = (value: number) => {
-    runInAction(() => {
-      particleSystem.bounce = value;
-      particleSystem.save()
-    })
-  }
-
-  const handleDampenChange = (value: number) => {
-    runInAction(() => {
-      particleSystem.dampen = value;
-      particleSystem.save()
-    })
   }
 
   const handleDragOver: React.DragEventHandler = (event) => {
@@ -156,15 +135,9 @@ const Particle: React.FC<PropsType> = observer(({
       <PSModule title="Color over lifetime" module={particleSystem.lifetimeColor}>
         <PSColorInput value={particleSystem.lifetimeColor.color} />        
       </PSModule>
-      <Checkbox label="Collision" value={particleSystem.collisionEnabled} onChange={handleCollisionChange} />
-      <label>
-        Bounce:
-        <NumberInput value={particleSystem.bounce} onChange={handleBounceChange} />
-      </label>
-      <label>
-        Dampen:
-        <NumberInput value={particleSystem.dampen} onChange={handleDampenChange} />
-      </label>
+      <PSModule title="Collsion" module={particleSystem.collision}>
+        <Collision value={particleSystem.collision} />
+      </PSModule>
       <label>
         Material:
         <div>
