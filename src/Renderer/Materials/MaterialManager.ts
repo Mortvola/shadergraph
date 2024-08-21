@@ -2,16 +2,16 @@ import Http from "../../Http/src";
 import MaterialItem from "../MaterialItem";
 import { PropertyInterface } from "../ShaderBuilder/Types";
 import { shaderManager } from "../shaders/ShaderManager";
-import { DrawableType, MaterialRecordDescriptor } from "../types";
+import { DrawableType, MaterialManagerInterface, MaterialRecordDescriptor } from "../types";
 import Material from "./Material";
 import { MaterialDescriptor } from "./MaterialDescriptor";
 
-class MaterialManager {
+class MaterialManager implements MaterialManagerInterface {
   materialItems: Map<number, MaterialItem> = new Map()
   
   materials: Map<string | number, Map<string, Material>> = new Map()
 
-  async getItem(id: number, withShaderDescriptor = true): Promise<MaterialDescriptor | undefined> {
+  async getItem(id: number, withShaderDescriptor = true): Promise<MaterialItem | undefined> {
     let materialItem = this.materialItems.get(id)
 
     if (!materialItem) {
@@ -20,31 +20,17 @@ class MaterialManager {
       if (response.ok) {
         const materialItemDescriptor = await response.body();
 
-        materialItem = new MaterialItem(materialItemDescriptor);
+        materialItem = new MaterialItem(this, materialItemDescriptor);
         this.materialItems.set(id, materialItem)
       }  
     }
 
     if (materialItem) {
       if (withShaderDescriptor) {
-        const shaderDescriptor = await shaderManager.getDescriptor(materialItem.shaderId);
-
-        if (shaderDescriptor) {
-          return {
-            properties: [], // materialRecord.properties.map((p) => { }),
-            shaderDescriptor: shaderDescriptor,
-          }
-        }
+        materialItem.shaderDescriptor = await shaderManager.getDescriptor(materialItem.shaderId);
       }
-      else {
-        return ({
-          ...materialRecord,
 
-          shaderDescriptor: materialRecord.shaderId,
-          
-          properties: materialRecord.properties,
-        })
-      }
+      return materialItem;
     }
   }
 
@@ -58,7 +44,7 @@ class MaterialManager {
       let descriptor: MaterialDescriptor | undefined = undefined
 
       if (typeof id === 'number') {
-        descriptor = await this.getDescriptor(id, false)
+        descriptor = await this.getItem(id, false)
       }
       else {
         descriptor = id
@@ -81,7 +67,7 @@ class MaterialManager {
       let descriptor: MaterialDescriptor | undefined = undefined
 
       if (typeof id === 'number') {
-        descriptor = await this.getDescriptor(id, false)
+        descriptor = await this.getItem(id, false)
       }
       else {
         descriptor = id
@@ -117,6 +103,11 @@ class MaterialManager {
 
   setMaterialDescriptor(id: number, descriptor: MaterialDescriptor) {
 
+  }
+
+  async saveItem(materialItem: MaterialItem): Promise<void> {
+    const descriptor = await materialItem.toDescriptor();
+    const response = await Http.patch<MaterialRecordDescriptor, void>(`/materials/${materialItem.id}`, descriptor);
   }
 }
 

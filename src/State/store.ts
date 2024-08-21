@@ -11,7 +11,8 @@ import { ProjectItemInterface } from "../Project/Types/types";
 import GameObject from "./GameObject";
 import Texture from "./Texture";
 import {
-  DecalItem, GameObject2DRecord, GameObjectRecord, MaterialRecord,
+  DecalItem, GameObject2DRecord, GameObjectRecord,
+  MaterialRecordDescriptor,
   ModelItem, ParticleItem, ParticleSystemInterface, SceneNodeInterface, ShaderRecord,
 } from "../Renderer/types";
 import { renderer2d } from "../Main";
@@ -23,6 +24,7 @@ import Mesh from "../Renderer/Drawables/Mesh";
 import { box } from "../Renderer/Drawables/Shapes/box";
 import DrawableNode from "../Renderer/Drawables/SceneNodes/DrawableNode";
 import { vec3 } from "wgpu-matrix";
+import { materialManager } from "../Renderer/Materials/MaterialManager";
 
 class Store implements StoreInterface {
   get graph(): Graph | null {
@@ -177,16 +179,12 @@ class Store implements StoreInterface {
       }
     }
     else if (item.type === 'material') {
-      if (item.item === null) {
-        const response = await Http.get<MaterialRecord>(`/materials/${item.itemId}`);
+      if (item.item === null && item.itemId !==  null) {
+        const materialItem = await materialManager.getItem(item.itemId) ?? null;
 
-        if (response.ok) {
-          const materialRecord = await response.body();
-
-          runInAction(() => {
-            item.item = materialRecord;
-          })
-        }
+        runInAction(() => {
+          item.item = materialItem;
+        })
       }
     }
     else if (item.type === 'texture') {

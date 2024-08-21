@@ -2,7 +2,7 @@ import { ParticleSystemInterface, SceneNodeInterface, ShaderRecord } from "../..
 import { GameObject2DInterface, GameObjectInterface, GraphInterface, MaterialItemInterface, TextureInterface } from "../../State/types";
 
 export type ItemLike = GameObjectInterface | GameObject2DInterface | MaterialItemInterface | TextureInterface
-  | GraphInterface | SceneNodeInterface | ParticleSystemInterface | ShaderRecord;
+  | GraphInterface | SceneNodeInterface | ParticleSystemInterface | ShaderRecord | MaterialItemInterface;
 
 export interface ProjectInterface {
   selectedItem: ProjectItemInterface | null

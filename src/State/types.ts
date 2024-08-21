@@ -117,6 +117,8 @@ export interface MaterialItemInterface extends EntityInterface {
   shaderId: number;
 
   properties: PropertyInterface[];
+
+  setShaderId(id: number): void;
 }
 
 export interface ModelInterface extends EntityInterface {

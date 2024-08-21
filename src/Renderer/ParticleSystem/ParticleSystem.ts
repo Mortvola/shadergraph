@@ -1,7 +1,9 @@
 import { vec3, vec4 } from "wgpu-matrix"
-import { makeObservable, observable } from "mobx";
+import { makeObservable, observable, runInAction } from "mobx";
 import {
   ContainerNodeInterface,
+  DrawableType,
+  MaterialInterface,
   ParticleSystemInterface,
 } from "../types";
 import DrawableNode from "../Drawables/SceneNodes/DrawableNode";
@@ -21,6 +23,7 @@ import Renderer from "./Renderer";
 import HorizontalBillboard from "../Drawables/HorizontalBillboard";
 import { materialManager } from "../Materials/MaterialManager";
 import MaterialItem from "../MaterialItem";
+import { MaterialItemInterface } from "../../State/types";
 
 class ParticleSystem implements ParticleSystemInterface {
   id: number
@@ -57,10 +60,7 @@ class ParticleSystem implements ParticleSystemInterface {
 
   renderer: Renderer;
 
-  // materialId: number | undefined = undefined;
-
-  // materialDescriptor: MaterialDescriptor | number | undefined;
-  materialItem?: MaterialItem;
+  materialItem?: MaterialItemInterface;
 
   drawable: DrawableInterface | null = null;
 
@@ -107,6 +107,7 @@ class ParticleSystem implements ParticleSystemInterface {
       lifetimeSize: observable,
       startColor: observable,
       gravityModifier: observable,
+      materialItem: observable,
     })
   }
 
@@ -295,7 +296,7 @@ class ParticleSystem implements ParticleSystemInterface {
   async renderParticle(particle: Particle, scene: ContainerNodeInterface, t: number) {
     if (this.renderer.enabled) {
       if (particle.drawable === null) {
-        particle.drawable = await DrawableNode.create(this.drawable!, this.materialDescriptor);
+        particle.drawable = await DrawableNode.create(this.drawable!, this.materialItem);
         scene.addNode(particle.drawable)  
       }
 
@@ -384,7 +385,38 @@ class ParticleSystem implements ParticleSystemInterface {
       gravityModifier: this.gravityModifier.toDescriptor(),
       collision: this.collision.toDescriptor(),
       renderer: this.renderer.toDescriptor(),
-      materialId: this.materialId,
+      materialId: this.materialItem?.id,
+    })
+  }
+
+  getDrawableType(): DrawableType | undefined {
+    switch(this.renderer.mode) {
+      case RenderMode.Billboard:
+        return 'Billboard'
+
+      case RenderMode.FlatBillboard:
+        return 'HorizontalBillboard';
+    }
+  }
+
+  async setMaterial(materialItem: MaterialItemInterface) {
+    let material: MaterialInterface | undefined = undefined;
+
+    const drawableType = this.getDrawableType();
+    if (drawableType) {
+      material = await materialManager.get(materialItem, drawableType, []);
+    }
+
+    runInAction(() => {
+      this.materialItem = materialItem;
+
+      for (const [, particle] of this.particles) {
+        if (particle.drawable && material) {
+          particle.drawable.material = material;
+        }
+      }
+      
+      this.save();
     })
   }
 

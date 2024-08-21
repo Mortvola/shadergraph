@@ -7,6 +7,7 @@ import SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
 import ShaderGraph from './ShaderBuilder/ShaderGraph';
 import { ParticleSystemDescriptor } from './ParticleSystem/Types';
 import Shape from './ParticleSystem/Shapes/Shape';
+import { MaterialItemInterface } from '../State/types';
 
 export const maxInstances = 1000;
 
@@ -223,4 +224,8 @@ export type ParticleRecord = {
   id: number,
   name: string,
   descriptor: ParticleSystemDescriptor,
+}
+
+export interface MaterialManagerInterface {
+  saveItem(materialItem: MaterialItemInterface): Promise<void>
 }

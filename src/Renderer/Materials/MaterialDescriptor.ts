@@ -5,7 +5,9 @@ import { ShaderDescriptor } from "../shaders/ShaderDescriptor";
 export type MaterialDescriptor = {
   properties?: PropertyInterface[],
 
-  shaderDescriptor?: ShaderDescriptor | number,
+  shaderId?: number,
+
+  shaderDescriptor?: ShaderDescriptor,
 
   graph?: ShaderGraph
 

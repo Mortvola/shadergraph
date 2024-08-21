@@ -84,11 +84,10 @@ const Particle: React.FC<PropsType> = observer(({
       && draggingItem.type === 'material'
       && draggingItem.itemId !== null
     ) {
-      const materialDescriptor = await materialManager.getDescriptor(draggingItem.itemId, false)
+      const materialItem = await materialManager.getItem(draggingItem.itemId, false)
 
-      if (materialDescriptor) {
-        particleSystem.materialId = draggingItem.itemId
-        particleSystem.materialDescriptor = materialDescriptor
+      if (materialItem) {
+        particleSystem.setMaterial(materialItem)
       }
     }
   }
@@ -146,9 +145,9 @@ const Particle: React.FC<PropsType> = observer(({
         Material:
         <div>
           {
-            particleSystem.materialDescriptor
-              ? 'yes'
-              : 'no'
+            particleSystem.materialItem
+              ? particleSystem.materialItem.name
+              : 'not assigned'
           }
         </div>
       </label>
