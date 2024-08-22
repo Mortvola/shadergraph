@@ -23,16 +23,16 @@ class SceneGraph implements SceneGraphInterface {
       if (isContainerNode(n)) {
         stack.push(...n.nodes)
 
-        // Look the set of components for lights and
-        // add them to the lights set.
+        // Look the set of components for lights and range circles and
+        // add them to the appropriate set.
         for (const component of Array.from(n.components)) {
           if (component.type === ComponentType.Light) {
             this.lights.add(component as Light)
           }
+          else if (component.type === ComponentType.RangeCircle) {
+            this.rangeCircles.add(component as RangeCircle)
+          }
         }
-      }
-      else if (isRangeCircle(n)) {
-        this.rangeCircles.add(n)
       }
     }
   }
@@ -59,11 +59,10 @@ class SceneGraph implements SceneGraphInterface {
           if (component.type === ComponentType.Light) {
             this.lights.delete(component as Light)
           }
+          else if (component.type === ComponentType.RangeCircle) {
+            this.rangeCircles.delete(component as RangeCircle)
+          }
         }
-
-      }
-      else if (isRangeCircle(n)) {
-        this.rangeCircles.delete(n)
       }
     }
   }

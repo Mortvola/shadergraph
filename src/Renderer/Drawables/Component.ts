@@ -3,6 +3,7 @@ import { SceneNodeInterface } from "../types";
 export enum ComponentType {
   Drawable = 'Drawable',
   Light = 'Light',
+  RangeCircle = 'RangeCircle',
 }
 
 class Component {

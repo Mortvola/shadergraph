@@ -1,32 +1,32 @@
-import { Vec3, vec4, Vec4 } from 'wgpu-matrix';
-import SceneNode from './SceneNodes/SceneNode';
+import { mat4, vec4, Vec4 } from 'wgpu-matrix';
+import Component, { ComponentType } from './Component';
 
-class RangeCircle extends SceneNode {
+class RangeCircle extends Component {
   color;
 
   radius: number;
 
   thickness: number;
 
-  constructor(position: Vec3, radius: number, thickness: number, color = vec4.create(1, 1, 1, 1)) {
-    super()
-
-    this.translate[0] = position[0];
-    this.translate[1] = position[1];
-    this.translate[2] = position[2];
+  constructor(radius: number, thickness: number, color = vec4.create(1, 1, 1, 1)) {
+    super(ComponentType.RangeCircle)
 
     this.radius = radius;
     this.thickness = thickness;
     this.color = color;
   }
 
+  get transform() {
+    if (this.sceneNode) {
+      return this.sceneNode.transform;
+    }
+
+    return mat4.identity()
+  }
+
   computeCentroid(): Vec4 {
     return vec4.create(0, 0, 0, 1);
   }
 }
-
-// export const isLight = (r: unknown): r is Light => (
-//   (r as Circle).lightColor !== undefined
-// )
 
 export default RangeCircle;
