@@ -1,4 +1,5 @@
 import { RendererInterface, SceneGraphInterface, SceneNodeInterface, SceneObjectInterface } from "../../types";
+import { ComponentType } from "../Component";
 import Light, { isLight } from "../Light";
 import RangeCircle from "../RangeCircle";
 import ContainerNode, { isContainerNode } from "./ContainerNode";
@@ -21,12 +22,17 @@ class SceneGraph implements SceneGraphInterface {
 
       if (isContainerNode(n)) {
         stack.push(...n.nodes)
+
+        // Look the set of components for lights and
+        // add them to the lights set.
+        for (const component of Array.from(n.components)) {
+          if (component.type === ComponentType.Light) {
+            this.lights.add(component as Light)
+          }
+        }
       }
       else if (isRangeCircle(n)) {
         this.rangeCircles.add(n)
-      }
-      else if (isLight(n)) {
-        this.lights.add(n)
       }
     }
   }
@@ -46,12 +52,18 @@ class SceneGraph implements SceneGraphInterface {
 
       if (isContainerNode(n)) {
         stack.push(...n.nodes)
+
+        // Look the set of components for lights and
+        // remove them to the lights set.
+        for (const component of Array.from(n.components)) {
+          if (component.type === ComponentType.Light) {
+            this.lights.delete(component as Light)
+          }
+        }
+
       }
       else if (isRangeCircle(n)) {
         this.rangeCircles.delete(n)
-      }
-      else if (isLight(n)) {
-        this.lights.delete(n)
       }
     }
   }

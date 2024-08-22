@@ -130,26 +130,26 @@ class Renderer implements RendererInterface {
       this.scene.addNode(floor);
     }
 
-    let light = new Light()
-    light.translate[0] = 0;
-    light.translate[1] = 3;
-    light.translate[2] = 0;
-    
-    this.scene.addNode(light);
+    let lightNode = new ContainerNode();
+    lightNode.translate[0] = 0;
+    lightNode.translate[1] = 3;
+    lightNode.translate[2] = 0;
+    lightNode.addComponent(new Light());
+    this.scene.addNode(lightNode);
 
-    light = new Light()
-    light.translate[0] = 15;
-    light.translate[1] = 4;
-    light.translate[2] = -15;
+    lightNode = new ContainerNode();
+    lightNode.translate[0] = 15;
+    lightNode.translate[1] = 4;
+    lightNode.translate[2] = -15;
+    lightNode.addComponent(new Light());
+    this.scene.addNode(lightNode)
 
-    this.scene.addNode(light)
-
-    light = new Light()
-    light.translate[0] = -15;
-    light.translate[1] = 5;
-    light.translate[2] = -15;
-
-    this.scene.addNode(light)
+    lightNode = new ContainerNode();
+    lightNode.translate[0] = -15;
+    lightNode.translate[1] = 5;
+    lightNode.translate[2] = -15;
+    lightNode.addComponent(new Light());
+    this.scene.addNode(lightNode)
 
     this.scene.updateTransforms(null);
   }

@@ -3,7 +3,7 @@ import DrawableInterface from "./DrawableInterface";
 import { DrawableComponentInterface, MaterialInterface } from "../types";
 import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
 import { materialManager } from "../Materials/MaterialManager";
-import Component from "./Component";
+import Component, { ComponentType } from "./Component";
 
 class DrawableComponent extends Component implements DrawableComponentInterface {
   name = '';
@@ -17,7 +17,7 @@ class DrawableComponent extends Component implements DrawableComponentInterface 
   instanceIndex = 0;
 
   private constructor(drawable: DrawableInterface, material: MaterialInterface) {
-    super();
+    super(ComponentType.Drawable);
     this.drawable = drawable;
     this.material = material;
     this.color = material.color.slice();

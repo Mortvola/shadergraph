@@ -3,7 +3,7 @@ import DrawableInterface from "../DrawableInterface";
 import SceneNode from "./SceneNode";
 import { ContainerNodeInterface, SceneNodeInterface, RendererInterface } from '../../types';
 import { isDrawableNode } from './utils';
-import Component from '../Component';
+import Component, { ComponentType } from '../Component';
 import DrawableComponent from '../DrawableComponent';
 
 export type HitTestResult = {
@@ -61,21 +61,23 @@ class ContainerNode extends SceneNode implements ContainerNodeInterface {
           for (const component of Array.from(node.components)) {
             const c = component as DrawableComponent
 
-            c.instanceIndex = c.drawable.numInstances;
-            c.drawable.addInstanceInfo(node.transform, c.color);
-
-            if (c.material.decal && renderer.decalPass) {
-              renderer.decalPass?.addDrawable(c);
+            if (c.type === ComponentType.Drawable) {
+              c.instanceIndex = c.drawable.numInstances;
+              c.drawable.addInstanceInfo(node.transform, c.color);
+  
+              if (c.material.decal && renderer.decalPass) {
+                renderer.decalPass?.addDrawable(c);
+              }
+              else if (c.material.transparent && renderer.transparentPass) {
+                renderer.transparentPass!.addDrawable(c);
+              }
+              else if (c.material.lit && renderer.deferredRenderPass) {
+                renderer.deferredRenderPass!.addDrawable(c);
+              }
+              else if (renderer.unlitRenderPass) {
+                renderer.unlitRenderPass!.addDrawable(c);
+              }    
             }
-            else if (c.material.transparent && renderer.transparentPass) {
-              renderer.transparentPass!.addDrawable(c);
-            }
-            else if (c.material.lit && renderer.deferredRenderPass) {
-              renderer.deferredRenderPass!.addDrawable(c);
-            }
-            else if (renderer.unlitRenderPass) {
-              renderer.unlitRenderPass!.addDrawable(c);
-            }  
           }  
         }
       }

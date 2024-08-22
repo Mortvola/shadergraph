@@ -1,10 +1,8 @@
-import { mat4, vec4, Vec4 } from 'wgpu-matrix';
-import SceneNode from './SceneNodes/SceneNode';
+import { vec4, Vec4 } from 'wgpu-matrix';
+import Component, { ComponentType } from './Component';
 
-class Light extends SceneNode {
+class Light extends Component {
   lightColor = vec4.create(1, 1, 1, 1);
-
-  worldPosition = vec4.create(0, 0, 0, 0);
 
   constant = 1.0;
 
@@ -12,14 +10,20 @@ class Light extends SceneNode {
 
   quadratic = 0.032;
   
-  computeCentroid(): Vec4 {
+  constructor() {
+    super(ComponentType.Light)
+  }
+
+  get worldPosition(): Vec4 {
+    if (this.sceneNode) {
+      return vec4.transformMat4(vec4.create(0, 0, 0, 1), this.sceneNode.transform);
+    }
+
     return vec4.create(0, 0, 0, 1);
   }
 
-  computeTransform(transform = mat4.identity(), prepend = true): void {
-    super.computeTransform(transform, prepend);
-
-    this.worldPosition = vec4.transformMat4(vec4.create(0, 0, 0, 1), this.transform)
+  computeCentroid(): Vec4 {
+    return vec4.create(0, 0, 0, 1);
   }
 }
 
