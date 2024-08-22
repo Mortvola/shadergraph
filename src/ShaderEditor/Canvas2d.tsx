@@ -1,18 +1,35 @@
 import React from 'react';
-import { renderer2d } from '../Main';
 import { gpu } from '../Renderer/Gpu';
+import Renderer2d from '../Renderer2d';
 
-const Canvas2d: React.FC = () => {
+type PropsType = {
+  renderer2d?: Renderer2d,
+  onClick?: (event: React.MouseEvent<HTMLCanvasElement>) => void,
+  onPointerDownCapture?: (event: React.PointerEvent<HTMLCanvasElement>) => void,
+  onPointerMoveCapture?: (event: React.PointerEvent<HTMLCanvasElement>) => void,
+  onPointerUpCapture?: (event: React.PointerEvent<HTMLCanvasElement>) => void,
+}
+
+const Canvas2d = React.forwardRef<HTMLCanvasElement, PropsType>(({
+  renderer2d,
+  onClick,
+  onPointerDownCapture,
+  onPointerMoveCapture,
+  onPointerUpCapture,
+}, forwardedRef) => {
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
 
   React.useEffect(() => {
     const element = canvasRef.current;
-
+    
     if (element) {
       element.focus();
-      renderer2d.setCanvas(element);
+
+      if (renderer2d) {
+        renderer2d.setCanvas(element);
+      }
     }
-  }, [])
+  }, [renderer2d])
   
   React.useEffect(() => {
     const element = canvasRef.current;
@@ -33,7 +50,9 @@ const Canvas2d: React.FC = () => {
 
           const rect = canvas.getBoundingClientRect();
 
-          renderer2d.setCanvasScale(canvas.width / rect.width, canvas.height / rect.height);
+          if (renderer2d) {
+            renderer2d.setCanvasScale(canvas.width / rect.width, canvas.height / rect.height);
+          }
         }
       })
 
@@ -46,11 +65,27 @@ const Canvas2d: React.FC = () => {
 
       return () => resizeObserver.disconnect();
     }
-  }, []);
+  }, [renderer2d]);
 
   return (
-    <canvas ref={canvasRef} />
+    <canvas
+      ref={
+        (instance) => {
+          canvasRef.current = instance;
+
+          if (typeof forwardedRef === "function") {
+            forwardedRef(instance);
+          } else if (typeof forwardedRef === "object" && forwardedRef !== null) {
+            forwardedRef.current = instance;
+          }  
+        }
+      }
+      onClick={onClick}
+      onPointerDownCapture={onPointerDownCapture}
+      onPointerMoveCapture={onPointerMoveCapture}
+      onPointerUpCapture={onPointerUpCapture}
+    />
   )
-}
+})
 
 export default Canvas2d;

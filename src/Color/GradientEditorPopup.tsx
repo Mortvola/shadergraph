@@ -134,7 +134,6 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
   }
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
-    console.log(event.code)
     event.stopPropagation();
     if (event.code === 'Backspace' || event.code === 'Delete') {
       if (selectedAlphaId !== undefined) {

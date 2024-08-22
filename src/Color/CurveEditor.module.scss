@@ -1,0 +1,70 @@
+.sample {
+  display: inline-block;
+  width: 3rem;
+  height: 16px;
+  border: thin black solid;
+  border-radius: 4px;
+
+  & > div {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+
+  > div {
+    position: absolute;
+  }
+}
+
+.popup {
+  background-color: white;
+  border: thin black solid;
+  border-radius: 4px;
+  padding: 0.75rem;
+
+  width: 350px;
+  height: 250px;
+}
+
+.graph {
+  width: 100%;
+  height: 100%;
+  border: black thin solid;
+  box-sizing: border-box;
+
+  & > div {
+    width: 100%;
+    height: 100%;
+
+    position: relative;
+
+    & > canvas {
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+.point {
+  position: absolute;
+
+  background-color: gray;
+
+  &.control {
+    background-color: lightblue;
+  }
+
+  width: 12px;
+  height: 12px;
+  border-radius: 6px;
+  border: black 1px solid;
+  box-sizing: border-box;
+}

@@ -1,13 +1,14 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import { lerp } from "../Math";
-import { isPSValue, PSCurve, PSValueDescriptor, PSValueType } from "./Types";
+import { isPSValue, PSValueDescriptor, PSValueType } from "./Types";
+import PSCurve from "./PSCurve";
 
 class PSValue {
   type = PSValueType.Constant;
 
   value: [number, number] = [1, 1];
 
-  curve: [PSCurve, PSCurve] = [{ points: [[0, 1], [1, 1]] }, { points: [[0, 1], [1, 1]] }]
+  curve: [PSCurve, PSCurve] = [new PSCurve(), new PSCurve()];
 
   onChange?: () => void;
 
@@ -29,12 +30,10 @@ class PSValue {
       psValue.value = descriptor.value !== undefined
         ? [descriptor.value[0], descriptor.value[1]]
         : [1, 1];
-      psValue.curve = descriptor.curve !== undefined
-        ? [
-          descriptor.curve[0],
-          descriptor.curve[1],
-        ]
-        : [ { points: [[1, 0], [1, 1]] }, { points: [[0, 1], [1, 1]]}];
+      psValue.curve = [
+        PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 0) ? descriptor.curve![0] : undefined ),
+        PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 1) ? descriptor.curve![1] : undefined ),
+      ];
     }
 
     return psValue;
@@ -78,35 +77,35 @@ class PSValue {
     })
   }
 
-  setMinCurve(min: number) {
-    runInAction(() => {
-      this.curve = [
-        {
-          points: [[0, min], [1, this.curve[0].points[1][1]]],
-        },
-        this.curve[1],
-      ]
+  // setMinCurve(min: number) {
+  //   runInAction(() => {
+  //     this.curve = [
+  //       {
+  //         points: [[0, min], [1, this.curve[0].points[1][1]]],
+  //       },
+  //       this.curve[1],
+  //     ]
 
-      if (this.onChange) {
-        this.onChange();
-      }
-    })
-  }
+  //     if (this.onChange) {
+  //       this.onChange();
+  //     }
+  //   })
+  // }
 
-  setMaxCurve(max: number) {
-    runInAction(() => {
-      this.curve = [
-        {
-          points: [[0, this.curve[0].points[0][1]], [1, max]],
-        },
-        this.curve[1],
-      ]
+  // setMaxCurve(max: number) {
+  //   runInAction(() => {
+  //     this.curve = [
+  //       {
+  //         points: [[0, this.curve[0].points[0][1]], [1, max]],
+  //       },
+  //       this.curve[1],
+  //     ]
 
-      if (this.onChange) {
-        this.onChange();
-      }
-    })
-  }
+  //     if (this.onChange) {
+  //       this.onChange();
+  //     }
+  //   })
+  // }
 
   getValue(t: number) {
     switch (this.type) {
@@ -116,10 +115,10 @@ class PSValue {
       case PSValueType.Random:
         return lerp(this.value[0], this.value[1], Math.random());
   
-      case PSValueType.Curve: {
-        const delta = this.curve[0].points[1][1] - this.curve[0].points[0][1];
-        return this.curve[0].points[0][1] + delta * t;
-      }
+      // case PSValueType.Curve: {
+      //   const delta = this.curve[0].points[1][1] - this.curve[0].points[0][1];
+      //   return this.curve[0].points[0][1] + delta * t;
+      // }
     }
   
     return 1;

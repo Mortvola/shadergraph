@@ -45,14 +45,28 @@ export type PSColorDescriptor = {
   gradients: [GradientDescriptor, GradientDescriptor],
 }
 
-export type PSCurve = {
-  points: [number, number][],
+export type PSCurvePoint = {
+  id: number,
+  x: number,
+  y: number,
+  leftCtrl: {
+    x: number,
+    y: number,
+  },
+  rightCtrl: {
+    x: number,
+    y: number,
+  }
+}
+
+export type PSCurveDescriptor = {
+  points: PSCurvePoint[],
 }
 
 export type PSValueDescriptor = {
   type?: PSValueType,
   value?: [number, number],
-  curve?: [PSCurve, PSCurve],
+  curve?: [PSCurveDescriptor, PSCurveDescriptor],
 }
 
 export const isPSValue = (r: unknown): r is PSValueDescriptor => (
