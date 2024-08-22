@@ -8,6 +8,7 @@ type PropsType = {
   onPointerDownCapture?: (event: React.PointerEvent<HTMLCanvasElement>) => void,
   onPointerMoveCapture?: (event: React.PointerEvent<HTMLCanvasElement>) => void,
   onPointerUpCapture?: (event: React.PointerEvent<HTMLCanvasElement>) => void,
+  onMouseMove?: (event: React.MouseEvent<HTMLCanvasElement>) => void,
 }
 
 const Canvas2d = React.forwardRef<HTMLCanvasElement, PropsType>(({
@@ -16,6 +17,7 @@ const Canvas2d = React.forwardRef<HTMLCanvasElement, PropsType>(({
   onPointerDownCapture,
   onPointerMoveCapture,
   onPointerUpCapture,
+  onMouseMove,
 }, forwardedRef) => {
   const canvasRef = React.useRef<HTMLCanvasElement | null>(null);
 
@@ -84,6 +86,7 @@ const Canvas2d = React.forwardRef<HTMLCanvasElement, PropsType>(({
       onPointerDownCapture={onPointerDownCapture}
       onPointerMoveCapture={onPointerMoveCapture}
       onPointerUpCapture={onPointerUpCapture}
+      onMouseMove={onMouseMove}
     />
   )
 })

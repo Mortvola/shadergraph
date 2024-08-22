@@ -1,6 +1,5 @@
 import React from 'react';
 import { PSCurvePoint } from '../Renderer/ParticleSystem/Types';
-import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import Canvas2d from '../ShaderEditor/Canvas2d';
 import CurveRenderer, { Subpoint } from './CurveRenderer';
@@ -35,8 +34,6 @@ const CurveGraph: React.FC<PropsType> = observer(({
   }, [value.points])
 
   const handleMove = (x: number, y: number) => {
-    // console.log(`x; ${x - graphRect.left}, y: ${y - graphRect.top}`)
-
     if (dragPoint) {
       const index = value.points.findIndex((p) => p.id === dragPoint.point.id);
 
@@ -100,11 +97,6 @@ const CurveGraph: React.FC<PropsType> = observer(({
           ...value.points.slice(index + 1),
         ]
 
-        // Make sure the points are sorted by their x value.
-        // points.sort((a, b) => a.x - b.x)
-
-        // renderer.current.updateCurve(points);
-
         value.setPoints(points)
       }
     }
@@ -123,10 +115,6 @@ const CurveGraph: React.FC<PropsType> = observer(({
         setDragPoint(point)
         element.setPointerCapture(event.pointerId);
       }
-
-      // const rect = element.getBoundingClientRect();
-
-      // setDragOffset({ x: event.clientX - rect.left - offset.x, y: event.clientY - rect.top - offset.y })
     }
   }
 
@@ -149,38 +137,14 @@ const CurveGraph: React.FC<PropsType> = observer(({
   }
 
   return (
-    <div key={2308234} ref={graphRef}>
+    <div ref={graphRef}>
       <Canvas2d
         ref={canvasRef}
         renderer2d={renderer.current}
         onPointerDownCapture={handlePointerDown}
         onPointerMoveCapture={handlePointerMove}
-        onPointerUpCapture={handlePointerUp}  
+        onPointerUpCapture={handlePointerUp}
       />
-      {/* {
-        value.points.map((p) => (
-          <React.Fragment key={p.id}>
-            <CurvePoint
-              id={p.id}
-              x={(p.x + p.leftCtrl.x) * graphRect.width}
-              y={graphRect.height - (p.y + p.leftCtrl.y) * graphRect.height}
-              control
-            />
-            <CurvePoint
-              id={p.id}
-              x={p.x * graphRect.width}
-              y={graphRect.height - p.y * graphRect.height}
-              onMove={handleMove}
-            />
-            <CurvePoint
-              id={p.id}
-              x={(p.x + p.rightCtrl.x) * graphRect.width}
-              y={graphRect.height - (p.y + p.rightCtrl.y) * graphRect.height}
-              control
-            />
-          </React.Fragment>
-        ))
-      } */}
     </div>
   )
 })

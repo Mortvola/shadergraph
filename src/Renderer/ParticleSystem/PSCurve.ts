@@ -113,6 +113,25 @@ class PSCurve {
       this.sanitize();
     })
   }
+
+  getValue(t: number) {
+    const index = this.points.findIndex((p) => t <= p.x);
+
+    if (index !== -1) {
+      if (index === 0) {
+        return this.points[0].y;
+      }
+
+      const t2 = (t - this.points[index - 1].x) / (this.points[index].x - this.points[index - 1].x)
+
+      const y = Math.pow(1 - t2, 3) * this.points[index - 1].y
+        + 3 * Math.pow(1 - t2, 2) * t2 * (this.points[index - 1].y + this.points[index - 1].rightCtrl.y)
+        + 3 * (1 - t2) * t2 * t2 * (this.points[index].y + this.points[index].leftCtrl.y)
+        + t2 * t2 * t2 * this.points[index].y;
+
+      return y;
+    }
+  }
 }
 
 export default PSCurve;

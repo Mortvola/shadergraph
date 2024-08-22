@@ -115,10 +115,9 @@ class PSValue {
       case PSValueType.Random:
         return lerp(this.value[0], this.value[1], Math.random());
   
-      // case PSValueType.Curve: {
-      //   const delta = this.curve[0].points[1][1] - this.curve[0].points[0][1];
-      //   return this.curve[0].points[0][1] + delta * t;
-      // }
+      case PSValueType.Curve: {
+        return this.curve[0].getValue(t) ?? 1;
+      }
     }
   
     return 1;

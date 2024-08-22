@@ -302,7 +302,12 @@ class ParticleSystem implements ParticleSystemInterface {
 
       particle.drawable.translate = particle.position;
 
-      const size = this.lifetimeSize.size.getValue(t) * particle.startSize;
+      let size = particle.startSize;
+
+      if (this.lifetimeSize.enabled) {
+        size *= this.lifetimeSize.size.getValue(t);
+      }
+      
       particle.drawable.scale = vec3.create(size, size, size)
 
       let lifetimeColor = [1, 1, 1, 1];
