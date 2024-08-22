@@ -6,9 +6,9 @@ import { useStores } from '../State/store';
 import Mesh from '../Renderer/Drawables/Mesh';
 import { plane as planeShape } from '../Renderer/Drawables/Shapes/plane';
 import DrawableComponent from '../Renderer/Drawables/DrawableComponent';
-import ContainerNode from '../Renderer/Drawables/SceneNodes/ContainerNode';
+import SceneNode from '../Renderer/Drawables/SceneNodes/SceneNode';
 
-const plane = new ContainerNode();
+const plane = new SceneNode();
 const component = await DrawableComponent.create(await Mesh.create(planeShape(1, 1), 1));
 plane.addComponent(component);
 plane.name = 'Plane';

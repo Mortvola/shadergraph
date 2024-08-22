@@ -1,6 +1,6 @@
 import { Vec4 } from "wgpu-matrix"
 import DrawableComponent from "../Drawables/DrawableComponent";
-import ContainerNode from "../Drawables/SceneNodes/ContainerNode";
+import SceneNode from "../Drawables/SceneNodes/SceneNode";
 
 let id = 0;
 
@@ -15,8 +15,8 @@ class Particle {
 
   lifetime: number;
 
-  sceneNode: ContainerNode | null = null;
-  
+  sceneNode: SceneNode | null = null;
+
   drawable: DrawableComponent | null = null;
 
   startSize: number;

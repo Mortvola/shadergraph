@@ -12,10 +12,28 @@ import Component from './Drawables/Component';
 
 export const maxInstances = 1000;
 
-export interface ContainerNodeInterface extends SceneNodeInterface {
+export interface SceneNodeInterface {
   nodes: SceneNodeInterface[];
 
   components: Set<Component>;
+
+  name: string;
+
+  translate: Vec3;
+
+  qRotate: Quat;
+
+  angles: number[];
+
+  scale: Vec3;
+
+  transform: Mat4;
+
+  computeTransform(transform: Mat4, prepend?: boolean): void;
+
+  setFromAngles(x: number, y: number, z: number): void;
+
+  getTransform(): Mat4;
 
   addNode(node: SceneNodeInterface): void;
 
@@ -34,7 +52,7 @@ export interface RenderPass2DInterface {
 }
 
 export interface SceneObjectInterface {
-  sceneNode: ContainerNodeInterface
+  sceneNode: SceneNodeInterface
 
   update(time: number, elapsedTime: number): Promise<void>
 }
@@ -59,26 +77,6 @@ export interface RendererInterface {
   transparentPass: RenderPassInterface | null;
 
   unlitRenderPass: RenderPassInterface | null;
-}
-
-export interface SceneNodeInterface {
-  name: string;
-
-  translate: Vec3;
-
-  qRotate: Quat;
-
-  angles: number[];
-
-  scale: Vec3;
-
-  transform: Mat4;
-
-  computeTransform(transform: Mat4, prepend?: boolean): void;
-
-  setFromAngles(x: number, y: number, z: number): void;
-
-  getTransform(): Mat4;
 }
 
 export type DrawableType = 'Mesh' | 'Billboard' | 'HorizontalBillboard' | 'Circle' | 'Line' | '2D' | 'Mesh2D'| 'Decal'
@@ -147,9 +145,9 @@ export interface ParticleSystemInterface {
 
   shape: Shape;
 
-  update(time: number, elapsedTime: number, scene: ContainerNodeInterface): Promise<void>
+  update(time: number, elapsedTime: number, scene: SceneNodeInterface): Promise<void>
 
-  removeParticles(scene: ContainerNodeInterface): void
+  removeParticles(scene: SceneNodeInterface): void
 
   reset(): void
 }

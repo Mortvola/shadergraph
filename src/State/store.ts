@@ -11,8 +11,9 @@ import { ProjectItemInterface } from "../Project/Types/types";
 import GameObject from "./GameObject";
 import Texture from "./Texture";
 import {
+  SceneNodeInterface,
   DecalItem, GameObject2DRecord, GameObjectRecord,
-  ModelItem, ParticleItem, ParticleSystemInterface, SceneNodeInterface, ShaderRecord,
+  ModelItem, ParticleItem, ParticleSystemInterface, ShaderRecord,
 } from "../Renderer/types";
 import { renderer2d } from "../Main";
 import Project from "../Project/Types/Project";
@@ -24,7 +25,7 @@ import { box } from "../Renderer/Drawables/Shapes/box";
 import DrawableComponent from "../Renderer/Drawables/DrawableComponent";
 import { vec3 } from "wgpu-matrix";
 import { materialManager } from "../Renderer/Materials/MaterialManager";
-import ContainerNode from "../Renderer/Drawables/SceneNodes/ContainerNode";
+import SceneNode from "../Renderer/Drawables/SceneNodes/SceneNode";
 import ParticleSystem from "../Renderer/ParticleSystem/ParticleSystem";
 
 class Store implements StoreInterface {
@@ -153,7 +154,7 @@ class Store implements StoreInterface {
             const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
     
             if (particleSystem) {
-              const node = new ContainerNode();
+              const node = new SceneNode();
               node.addComponent(particleSystem)
 
               this.mainView.addSceneNode(node)
@@ -162,7 +163,7 @@ class Store implements StoreInterface {
           else if (item.type === 'decal') {
             const decal = item.item as DecalItem;
 
-            const drawableNode = new ContainerNode();
+            const drawableNode = new SceneNode();
             const drawable = await DrawableComponent.create(
               await Mesh.create(box(1, 1, 1), 1),
               decal.materialId,
@@ -242,7 +243,7 @@ class Store implements StoreInterface {
 
       const particleSystem: ParticleSystemInterface | null = item.getItem()
       if (particleSystem) {
-        const node = new ContainerNode();
+        const node = new SceneNode();
         node.addComponent(particleSystem as ParticleSystem)
 
         this.mainView.addSceneNode(node)

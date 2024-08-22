@@ -1,8 +1,8 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { useStores } from '../../State/store';
-import { DrawableComponentInterface, ModelItem, SceneNodeInterface } from '../../Renderer/types';
-import { isContainerNode } from '../../Renderer/Drawables/SceneNodes/ContainerNode';
+import { SceneNodeInterface, DrawableComponentInterface, ModelItem } from '../../Renderer/types';
+import { isSceneNode } from '../../Renderer/Drawables/SceneNodes/SceneNode';
 import { isDrawableNode } from '../../Renderer/Drawables/SceneNodes/utils';
 import MeshNode from './MeshNode';
 
@@ -64,7 +64,7 @@ const ModelTree: React.FC<PropsType> = observer(({
           )  
         }
 
-        if (isContainerNode(node.node)) {
+        if (isSceneNode(node.node)) {
           stack = node.node.nodes.map((n) => ({
             level: node.level + 1,
             node: n,

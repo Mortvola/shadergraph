@@ -1,12 +1,12 @@
 import ParticleSystem from "../../ParticleSystem/ParticleSystem";
-import { RendererInterface, SceneGraphInterface, SceneNodeInterface, SceneObjectInterface } from "../../types";
+import { SceneNodeInterface, RendererInterface, SceneGraphInterface, SceneObjectInterface } from "../../types";
 import { ComponentType } from "../Component";
 import Light from "../Light";
 import RangeCircle from "../RangeCircle";
-import ContainerNode, { isContainerNode } from "./ContainerNode";
+import SceneNode, { isSceneNode } from "./SceneNode";
 
 class SceneGraph implements SceneGraphInterface {
-  scene = new ContainerNode()
+  scene = new SceneNode()
 
   lights: Set<Light> = new Set();
 
@@ -23,7 +23,7 @@ class SceneGraph implements SceneGraphInterface {
       const n = stack[0];
       stack = stack.slice(1);
 
-      if (isContainerNode(n)) {
+      if (isSceneNode(n)) {
         stack.push(...n.nodes)
 
         // Look the set of components for lights and range circles and
@@ -56,7 +56,7 @@ class SceneGraph implements SceneGraphInterface {
       const n = stack[0];
       stack = stack.slice(1);
 
-      if (isContainerNode(n)) {
+      if (isSceneNode(n)) {
         stack.push(...n.nodes)
 
         // Look the set of components for lights and

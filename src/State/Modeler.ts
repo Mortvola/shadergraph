@@ -1,10 +1,10 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import Mesh from "../Renderer/Drawables/Mesh";
-import ContainerNode, { isContainerNode } from "../Renderer/Drawables/SceneNodes/ContainerNode";
+import SceneNode, { isSceneNode } from "../Renderer/Drawables/SceneNodes/SceneNode";
 import DrawableComponent from "../Renderer/Drawables/DrawableComponent";
 import { isDrawableNode } from "../Renderer/Drawables/SceneNodes/utils";
 import Renderer from "../Renderer/Renderer";
-import { DrawableComponentInterface, MaterialInterface, SceneNodeInterface } from "../Renderer/types";
+import { SceneNodeInterface, DrawableComponentInterface, MaterialInterface } from "../Renderer/types";
 import { ModelerInterface, NodeMaterials, StoreInterface } from "./types";
 import { downloadFbx } from "../Fbx/LoadFbx";
 import { FbxNodeInterface, isFbxContainerNode, isFbxGeometryNode } from "../Fbx/types";
@@ -95,14 +95,14 @@ class Modeler implements ModelerInterface {
           }
         }
       }
-      else if (isContainerNode(node)) {
+      else if (isSceneNode(node)) {
         stack = stack.concat(node.nodes)
       }
     }
   }
 
   getDrawableNode(node: SceneNodeInterface): DrawableComponentInterface | null {
-    if (isContainerNode(node)) {
+    if (isSceneNode(node)) {
       for (const child of node.nodes) {
         const n = this.getDrawableNode(child);
 
@@ -145,7 +145,7 @@ const parseFbxModel = async (
   nodeMaterials?: NodeMaterials,
 ): Promise<SceneNodeInterface | undefined> => {
   if (isFbxContainerNode(node)) {
-    const container = new ContainerNode();
+    const container = new SceneNode();
 
     container.scale = node.scale;
     container.translate = node.translate;
@@ -196,7 +196,7 @@ const parseFbxModel = async (
     //   materialDescriptor = litMaterial;
     // }  
 
-    const drawableNode = new ContainerNode();
+    const drawableNode = new SceneNode();
     const drawable = await DrawableComponent.create(mesh);
 
     drawableNode.addComponent(drawable);

@@ -1,4 +1,4 @@
-import { ParticleSystemInterface, SceneNodeInterface, ShaderRecord } from "../../Renderer/types";
+import { SceneNodeInterface, ParticleSystemInterface, ShaderRecord } from "../../Renderer/types";
 import { GameObject2DInterface, GameObjectInterface, GraphInterface, MaterialItemInterface, TextureInterface } from "../../State/types";
 
 export type ItemLike = GameObjectInterface | GameObject2DInterface | MaterialItemInterface | TextureInterface

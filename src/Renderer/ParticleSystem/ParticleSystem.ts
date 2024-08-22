@@ -1,7 +1,7 @@
 import { vec3, vec4 } from "wgpu-matrix"
 import { makeObservable, observable, runInAction } from "mobx";
 import {
-  ContainerNodeInterface,
+  SceneNodeInterface,
   DrawableType,
   MaterialInterface,
   ParticleSystemInterface,
@@ -25,7 +25,7 @@ import { materialManager } from "../Materials/MaterialManager";
 import MaterialItem from "../MaterialItem";
 import { MaterialItemInterface } from "../../State/types";
 import LifetimeVelocity from "./LifetimeVelocity";
-import ContainerNode from "../Drawables/SceneNodes/ContainerNode";
+import SceneNode from "../Drawables/SceneNodes/SceneNode";
 import Component, { ComponentType } from "../Drawables/Component";
 
 class ParticleSystem extends Component implements ParticleSystemInterface {
@@ -136,7 +136,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     this.particles.clear()
   }
 
-  collided(point: Particle, elapsedTime: number, scene: ContainerNodeInterface): boolean {
+  collided(point: Particle, elapsedTime: number, scene: SceneNodeInterface): boolean {
     if (this.collision.enabled) {
       const planeNormal = vec4.create(0, 1, 0, 0);
       const planeOrigin = vec4.create(0, 0, 0, 1);
@@ -226,7 +226,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     return false;
   }
 
-  async update(time: number, elapsedTime: number, scene: ContainerNodeInterface): Promise<void> {
+  async update(time: number, elapsedTime: number, scene: SceneNodeInterface): Promise<void> {
     switch (this.renderer.mode) {
       case RenderMode.Billboard:
         if (!this.drawable || this.drawable.type !== 'Billboard') {
@@ -263,7 +263,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     }
   }
 
-  private async updateParticles(time: number, elapsedTime: number, scene: ContainerNodeInterface) {
+  private async updateParticles(time: number, elapsedTime: number, scene: SceneNodeInterface) {
     for (const [, particle] of this.particles) {
       const t = (time - particle.startTime) / (particle.lifetime * 1000);
 
@@ -302,10 +302,10 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     }
   }
 
-  async renderParticle(particle: Particle, scene: ContainerNodeInterface, t: number) {
+  async renderParticle(particle: Particle, scene: SceneNodeInterface, t: number) {
     if (this.renderer.enabled) {
       if (particle.sceneNode === null) {
-        particle.sceneNode = new ContainerNode();
+        particle.sceneNode = new SceneNode();
         scene.addNode(particle.sceneNode)  
       }
 
@@ -341,7 +341,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     }
   }
 
-  private async emit(time: number, t: number, scene: ContainerNodeInterface) {
+  private async emit(time: number, t: number, scene: SceneNodeInterface) {
     if (this.particles.size < this.maxPoints) {
       const emitElapsedTime = time - this.lastEmitTime;
 
@@ -355,7 +355,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     }
   }
 
-  async emitSome(numToEmit: number, startTime: number, t: number, scene: ContainerNodeInterface) {
+  async emitSome(numToEmit: number, startTime: number, t: number, scene: SceneNodeInterface) {
     for (; numToEmit > 0; numToEmit -= 1) {
       const lifetime = this.lifetime.getValue(t);
       const startVelocity = this.startVelocity.getValue(t);
@@ -378,7 +378,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     }
   }
 
-  removeParticles(scene: ContainerNodeInterface): void {
+  removeParticles(scene: SceneNodeInterface): void {
     for (const [id, particle] of this.particles) {
       if (particle.sceneNode) {
         scene.removeNode(particle.sceneNode)

@@ -6,12 +6,12 @@ import {
 } from 'webgpu-utils';
 import Camera from './Camera';
 import { degToRad } from './Math';
-import ContainerNode, { isContainerNode } from './Drawables/SceneNodes/ContainerNode';
+import SceneNode, { isSceneNode } from './Drawables/SceneNodes/SceneNode';
 import DeferredRenderPass from './RenderPasses/DeferredRenderPass';
 import Light from './Drawables/Light';
 import CartesianAxes from './Drawables/CartesianAxes';
 import DrawableComponent from './Drawables/DrawableComponent';
-import { SceneNodeInterface, RendererInterface, ContainerNodeInterface, DrawableComponentInterface } from './types';
+import { RendererInterface, SceneNodeInterface, DrawableComponentInterface } from './types';
 import { lineMaterial } from './Materials/Line';
 import { lights } from "./shaders/lights";
 import { gpu } from './Gpu';
@@ -128,21 +128,21 @@ class Renderer implements RendererInterface {
       this.scene.addNode(floor);
     }
 
-    let lightNode = new ContainerNode();
+    let lightNode = new SceneNode();
     lightNode.translate[0] = 0;
     lightNode.translate[1] = 3;
     lightNode.translate[2] = 0;
     lightNode.addComponent(new Light());
     this.scene.addNode(lightNode);
 
-    lightNode = new ContainerNode();
+    lightNode = new SceneNode();
     lightNode.translate[0] = 15;
     lightNode.translate[1] = 4;
     lightNode.translate[2] = -15;
     lightNode.addComponent(new Light());
     this.scene.addNode(lightNode)
 
-    lightNode = new ContainerNode();
+    lightNode = new SceneNode();
     lightNode.translate[0] = -15;
     lightNode.translate[1] = 5;
     lightNode.translate[2] = -15;
@@ -158,11 +158,11 @@ class Renderer implements RendererInterface {
 
     const cartesianAxes = await DrawableComponent.create(new CartesianAxes(), { shaderDescriptor: lineMaterial })
     
-    let floor: ContainerNode | undefined = undefined;
+    let floor: SceneNode | undefined = undefined;
 
     if (withFloor) {
       const quad = await Mesh.create(plane(50, 50, [1, 1, 1, 1]), 0)
-      floor = new ContainerNode();
+      floor = new SceneNode();
       const component = await DrawableComponent.create(quad, { shaderDescriptor: { lit: true }})
       floor.addComponent(component)
       floor.postTransforms.push(mat4.fromQuat(quat.fromEuler(degToRad(270), 0, 0, "xyz")))  
@@ -534,7 +534,7 @@ class Renderer implements RendererInterface {
     }
   }
 
-  setOutlineMesh(sceneNode: ContainerNodeInterface | null): boolean {
+  setOutlineMesh(sceneNode: SceneNodeInterface | null): boolean {
     if (sceneNode === null) {
       this.outlineMesh = null
     }
@@ -544,7 +544,7 @@ class Renderer implements RendererInterface {
           this.outlineMesh = node
           return true;
         }
-        else if (isContainerNode(node)) {
+        else if (isSceneNode(node)) {
           const result = this.setOutlineMesh(node);
   
           if (result) {
