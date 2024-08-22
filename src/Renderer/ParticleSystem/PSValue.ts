@@ -8,12 +8,14 @@ class PSValue {
 
   value: [number, number] = [1, 1];
 
-  curve: [PSCurve, PSCurve] = [new PSCurve(), new PSCurve()];
+  curve: [PSCurve, PSCurve];
 
   onChange?: () => void;
 
   constructor(onChange?: () => void) {
     this.onChange = onChange;
+
+    this.curve = [new PSCurve(onChange), new PSCurve(onChange)]
 
     makeObservable(this, {
       type: observable,
@@ -31,8 +33,8 @@ class PSValue {
         ? [descriptor.value[0], descriptor.value[1]]
         : [1, 1];
       psValue.curve = [
-        PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 0) ? descriptor.curve![0] : undefined ),
-        PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 1) ? descriptor.curve![1] : undefined ),
+        PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 0) ? descriptor.curve![0] : undefined, onChange),
+        PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 1) ? descriptor.curve![1] : undefined, onChange),
       ];
     }
 

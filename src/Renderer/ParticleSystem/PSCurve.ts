@@ -7,14 +7,18 @@ class PSCurve {
     { id: 1, x: 1, y: 1, leftCtrl: { x: -0.1, y: 0 }, rightCtrl: { x: 0.1, y: 0 }},
   ];
 
-  constructor() {
+  onChange?: () => void;
+
+  constructor(onChange?: () => void) {
+    this.onChange = onChange;
+
     makeObservable(this, {
       points: observable,
     })
   }
 
   static fromDescriptor(descriptor?: PSCurveDescriptor, onChange?: () => void) {
-    const curve = new PSCurve();
+    const curve = new PSCurve(onChange);
 
     if (descriptor) {
       curve.points = descriptor.points.map((p, index, points) => ({
@@ -111,6 +115,10 @@ class PSCurve {
     runInAction(() => {
       this.points = points;
       this.sanitize();
+
+      if (this.onChange) {
+        this.onChange();
+      }
     })
   }
 
