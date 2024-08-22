@@ -85,6 +85,11 @@ export type LifetimeSizeDescriptor = {
   size: PSValueDescriptor,
 }
 
+export type LifetimeVelocityDescriptor = {
+  enabled: boolean,
+  speedModifier: PSValueDescriptor,
+}
+
 export type CollisionDescriptor = {
   enabled: boolean,
   bounce: number,
@@ -127,6 +132,8 @@ export type ParticleSystemDescriptor = {
   startSize?: PSValueDescriptor,
 
   lifetimeSize?: LifetimeSizeDescriptor,
+
+  lifetimeVelocity?: LifetimeVelocityDescriptor,
 
   startColor?: PSColorDescriptor
   lifetimeColor?: LifetimeColorDescriptor,

@@ -135,6 +135,9 @@ const Particle: React.FC<PropsType> = observer(({
       <PSModule title="Color over lifetime" module={particleSystem.lifetimeColor}>
         <PSColorInput value={particleSystem.lifetimeColor.color} />        
       </PSModule>
+      <PSModule title="Velocity over lifetime" module={particleSystem.lifetimeVelocity}>
+        <PSValueInput value={particleSystem.lifetimeVelocity.speedModifier} />        
+      </PSModule>
       <PSModule title="Collsion" module={particleSystem.collision}>
         <Collision value={particleSystem.collision} />
       </PSModule>

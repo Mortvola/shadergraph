@@ -24,6 +24,7 @@ import HorizontalBillboard from "../Drawables/HorizontalBillboard";
 import { materialManager } from "../Materials/MaterialManager";
 import MaterialItem from "../MaterialItem";
 import { MaterialItemInterface } from "../../State/types";
+import LifetimeVelocity from "./LifetimeVelocity";
 
 class ParticleSystem implements ParticleSystemInterface {
   id: number
@@ -54,6 +55,8 @@ class ParticleSystem implements ParticleSystemInterface {
 
   lifetimeSize: LifetimeSize;
 
+  lifetimeVelocity: LifetimeVelocity;
+
   gravityModifier: PSValue;
 
   collision: Collision;
@@ -79,6 +82,8 @@ class ParticleSystem implements ParticleSystemInterface {
     this.startSize = PSValue.fromDescriptor(descriptor?.startSize, this.onChange);
     
     this.lifetimeSize = LifetimeSize.fromDescriptor(descriptor?.lifetimeSize, this.onChange);
+
+    this.lifetimeVelocity = LifetimeVelocity.fromDescriptor(descriptor?.lifetimeVelocity, this.onChange);
 
     this.startColor = PSColor.fromDescriptor(descriptor?.startColor, this.onChange)
     this.lifetimeColor = LifetimeColor.fromDescriptor(descriptor?.lifetimeColor, this.onChange)
@@ -278,6 +283,10 @@ class ParticleSystem implements ParticleSystemInterface {
           this.gravityModifier.getValue(t) * gravity * elapsedTime,
         )
 
+        if (this.lifetimeVelocity.enabled) {
+          particle.velocity = vec4.scale(particle.velocity, this.lifetimeVelocity.speedModifier.getValue(t));
+        }
+
         if (!this.collided(particle,  elapsedTime, scene)) {
           // No collision occured
           // Find new position with current velocity
@@ -307,7 +316,7 @@ class ParticleSystem implements ParticleSystemInterface {
       if (this.lifetimeSize.enabled) {
         size *= this.lifetimeSize.size.getValue(t);
       }
-      
+
       particle.drawable.scale = vec3.create(size, size, size)
 
       let lifetimeColor = [1, 1, 1, 1];

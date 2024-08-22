@@ -16,7 +16,7 @@ class LifetimeColor extends PSModule {
     })
   }
 
-  static fromDescriptor(descriptor: LifetimeColorDescriptor | undefined, onChange?: () => void) {
+  static fromDescriptor(descriptor?: LifetimeColorDescriptor, onChange?: () => void) {
     const lifetimeColor = new LifetimeColor(onChange);
 
     if (descriptor) {

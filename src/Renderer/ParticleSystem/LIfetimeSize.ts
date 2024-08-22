@@ -16,7 +16,7 @@ class LifetimeSize extends PSModule {
     })
   }
 
-  static fromDescriptor(descriptor: LifetimeSizeDescriptor | undefined, onChange?: () => void) {
+  static fromDescriptor(descriptor?: LifetimeSizeDescriptor, onChange?: () => void) {
     const lifetimeSize = new LifetimeSize(onChange);
 
     if (descriptor) {
