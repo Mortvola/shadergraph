@@ -59,8 +59,6 @@ export interface RendererInterface {
   transparentPass: RenderPassInterface | null;
 
   unlitRenderPass: RenderPassInterface | null;
-
-  addParticleSystem(particleSystem: ParticleSystemInterface): void;
 }
 
 export interface SceneNodeInterface {

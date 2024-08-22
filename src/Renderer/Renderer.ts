@@ -11,7 +11,7 @@ import DeferredRenderPass from './RenderPasses/DeferredRenderPass';
 import Light from './Drawables/Light';
 import CartesianAxes from './Drawables/CartesianAxes';
 import DrawableComponent from './Drawables/DrawableComponent';
-import { SceneNodeInterface, RendererInterface, ParticleSystemInterface, ContainerNodeInterface, DrawableComponentInterface } from './types';
+import { SceneNodeInterface, RendererInterface, ContainerNodeInterface, DrawableComponentInterface } from './types';
 import { lineMaterial } from './Materials/Line';
 import { lights } from "./shaders/lights";
 import { gpu } from './Gpu';
@@ -111,8 +111,6 @@ class Renderer implements RendererInterface {
   lights: Light[] = [];
 
   circles: RangeCircle[] = [];
-
-  particleSystems: ParticleSystemInterface[] = [];
 
   timeBuffer = new Float32Array(1)
 
@@ -308,7 +306,7 @@ class Renderer implements RendererInterface {
           // Get elapsed time in seconds.
           const elapsedTime = (timestamp - this.previousTimestamp) * 0.001;
 
-          await Promise.all(this.particleSystems.map((ps) => ps.update(timestamp, elapsedTime, this.scene.scene)))
+          await Promise.all(Array.from(this.scene.particleSystems).map((ps) => ps.update(timestamp, elapsedTime, this.scene.scene)))
 
           this.camera.updatePosition(elapsedTime, timestamp);
         }
@@ -571,26 +569,6 @@ class Renderer implements RendererInterface {
   zoomIn() {
     this.camera.offset -= 1;
     this.camera.rotateX += 1;
-  }
-
-  addParticleSystem(particleSystem: ParticleSystemInterface): void {
-    if (!this.particleSystems.some((p) => p === particleSystem)) {
-      particleSystem.reset()
-      this.particleSystems.push(particleSystem)
-    }
-  }
-
-  removeParticleSystem(id: number): void {
-    const index = this.particleSystems.findIndex((p) => p.id === id)
-
-    if (index !== -1) {
-      this.particleSystems[index].removeParticles(this.scene.scene)
-
-      this.particleSystems = [
-        ...this.particleSystems.slice(0, index),
-        ...this.particleSystems.slice(index + 1),
-      ]
-    }
   }
 
   canvasResize(width: number, height: number, scaleX: number, scaleY: number, viewportWidth: number, viewportHeight: number) {

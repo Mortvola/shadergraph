@@ -26,8 +26,9 @@ import MaterialItem from "../MaterialItem";
 import { MaterialItemInterface } from "../../State/types";
 import LifetimeVelocity from "./LifetimeVelocity";
 import ContainerNode from "../Drawables/SceneNodes/ContainerNode";
+import Component, { ComponentType } from "../Drawables/Component";
 
-class ParticleSystem implements ParticleSystemInterface {
+class ParticleSystem extends Component implements ParticleSystemInterface {
   id: number
 
   particles: Map<number, Particle> = new Map();
@@ -69,6 +70,8 @@ class ParticleSystem implements ParticleSystemInterface {
   drawable: DrawableInterface | null = null;
 
   private constructor(id: number, descriptor?: ParticleSystemDescriptor, materialItem?: MaterialItem) {
+    super(ComponentType.ParticleSystem)
+  
     this.id = id
 
     this.duration = descriptor?.duration ?? 5

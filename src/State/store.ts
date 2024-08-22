@@ -25,6 +25,7 @@ import DrawableComponent from "../Renderer/Drawables/DrawableComponent";
 import { vec3 } from "wgpu-matrix";
 import { materialManager } from "../Renderer/Materials/MaterialManager";
 import ContainerNode from "../Renderer/Drawables/SceneNodes/ContainerNode";
+import ParticleSystem from "../Renderer/ParticleSystem/ParticleSystem";
 
 class Store implements StoreInterface {
   get graph(): Graph | null {
@@ -83,7 +84,11 @@ class Store implements StoreInterface {
     if (this.project.selectedItem?.type === 'object' && isGameObject(this.project.selectedItem.item)) {
       for (const item of this.project.selectedItem.item.items) {
         if (item.type === 'particle') {
-          this.mainView.removeParticleSystem((item.item as ParticleItem).id)
+          const particleEntry = item.item as ParticleItem;
+          const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
+          if (particleSystem?.sceneNode) {
+            this.mainView.removeSceneNode(particleSystem?.sceneNode)
+          }
         }
         else if (item.type === 'model') {
           const modelItem = this.project.getItemByItemId((item.item as ModelItem).id, 'model');
@@ -148,7 +153,10 @@ class Store implements StoreInterface {
             const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
     
             if (particleSystem) {
-              this.mainView.addParticleSystem(particleSystem)
+              const node = new ContainerNode();
+              node.addComponent(particleSystem)
+
+              this.mainView.addSceneNode(node)
             }
           }
           else if (item.type === 'decal') {
@@ -234,7 +242,10 @@ class Store implements StoreInterface {
 
       const particleSystem: ParticleSystemInterface | null = item.getItem()
       if (particleSystem) {
-        this.mainView.addParticleSystem(particleSystem)
+        const node = new ContainerNode();
+        node.addComponent(particleSystem as ParticleSystem)
+
+        this.mainView.addSceneNode(node)
       }
 
       this.mainViewModeler.assignModel(null);

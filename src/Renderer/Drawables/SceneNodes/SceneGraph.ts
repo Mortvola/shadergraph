@@ -1,6 +1,7 @@
+import ParticleSystem from "../../ParticleSystem/ParticleSystem";
 import { RendererInterface, SceneGraphInterface, SceneNodeInterface, SceneObjectInterface } from "../../types";
 import { ComponentType } from "../Component";
-import Light, { isLight } from "../Light";
+import Light from "../Light";
 import RangeCircle from "../RangeCircle";
 import ContainerNode, { isContainerNode } from "./ContainerNode";
 
@@ -10,6 +11,8 @@ class SceneGraph implements SceneGraphInterface {
   lights: Set<Light> = new Set();
 
   rangeCircles: Set<RangeCircle> = new Set();
+
+  particleSystems: Set<ParticleSystem> = new Set();
 
   addNode(node: SceneNodeInterface) {
     this.scene.addNode(node);
@@ -31,6 +34,9 @@ class SceneGraph implements SceneGraphInterface {
           }
           else if (component.type === ComponentType.RangeCircle) {
             this.rangeCircles.add(component as RangeCircle)
+          }
+          else if (component.type === ComponentType.ParticleSystem) {
+            this.particleSystems.add(component as ParticleSystem)
           }
         }
       }
@@ -62,6 +68,13 @@ class SceneGraph implements SceneGraphInterface {
           else if (component.type === ComponentType.RangeCircle) {
             this.rangeCircles.delete(component as RangeCircle)
           }
+          else if (component.type === ComponentType.ParticleSystem) {
+            const particleSystem = component as ParticleSystem;
+
+            particleSystem.removeParticles(this.scene)
+
+            this.particleSystems.delete(component as ParticleSystem)
+          }
         }
       }
     }
@@ -91,10 +104,5 @@ class SceneGraph implements SceneGraphInterface {
     return lights
   }
 }
-
-const isRangeCircle = (r: unknown): r is RangeCircle => (
-  (r as RangeCircle).radius !== undefined
-  && (r as RangeCircle).thickness !== undefined
-)
 
 export default SceneGraph;
