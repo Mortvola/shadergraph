@@ -12,6 +12,7 @@ import { MenuItemLike } from '../ContextMenu/types';
 import Decal from './Decal';
 import Light from './Light';
 import Particle from './ParticleSystem/Particle';
+import NumberInput from './NumberInput';
 
 type PropsType = {
   gameObject: GameObjectInterface
@@ -218,6 +219,12 @@ const GameObject: React.FC<PropsType> = observer(({
   return (
     <div className={styles.gameObject} onDragOver={handleDragOver} onDrop={handleDrop}>
       <div>{`Name: ${gameObject.name}`}</div>
+      <div>
+        Translate:
+        <NumberInput value={gameObject.translate[0]} />
+        <NumberInput value={gameObject.translate[1]} />
+        <NumberInput value={gameObject.translate[2]} />
+      </div>
       {
         isGameObject2D(gameObject)
           ? (

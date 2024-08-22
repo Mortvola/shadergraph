@@ -1,14 +1,14 @@
 import React from 'react';
-import { DrawableNodeInterface, ModelItem } from '../../Renderer/types';
+import { DrawableComponentInterface, ModelItem } from '../../Renderer/types';
 import { useStores } from '../../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './ModelTree.module.scss';
 import { GameObjectInterface } from '../../State/types';
 
 type PropsType = {
-  node: DrawableNodeInterface,
+  node: DrawableComponentInterface,
   level: number,
-  onMaterialAssignment: (node: DrawableNodeInterface, materialId: number) => void,
+  onMaterialAssignment: (node: DrawableComponentInterface, materialId: number) => void,
 }
 
 const MeshNode: React.FC<PropsType> = observer(({

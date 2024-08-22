@@ -8,19 +8,26 @@ import ShaderGraph from './ShaderBuilder/ShaderGraph';
 import { ParticleSystemDescriptor } from './ParticleSystem/Types';
 import Shape from './ParticleSystem/Shapes/Shape';
 import { MaterialItemInterface } from '../State/types';
+import Component from './Drawables/Component';
 
 export const maxInstances = 1000;
 
 export interface ContainerNodeInterface extends SceneNodeInterface {
   nodes: SceneNodeInterface[];
 
+  components: Set<Component>;
+
   addNode(node: SceneNodeInterface): void;
 
   removeNode(node: SceneNodeInterface): void;
+
+  addComponent(component: Component): void;
+
+  removeComponent(component: Component): void;
 }
 
 export interface RenderPassInterface {
-  addDrawable(drawable: DrawableNodeInterface | SceneNode2d): void;
+  addDrawable(drawable: DrawableComponentInterface | SceneNode2d): void;
 }
 
 export interface RenderPass2DInterface {
@@ -72,6 +79,8 @@ export interface SceneNodeInterface {
   computeTransform(transform: Mat4, prepend?: boolean): void;
 
   setFromAngles(x: number, y: number, z: number): void;
+
+  getTransform(): Mat4;
 }
 
 export type DrawableType = 'Mesh' | 'Billboard' | 'HorizontalBillboard' | 'Circle' | 'Line' | '2D' | 'Mesh2D'| 'Decal'
@@ -94,7 +103,9 @@ export interface MaterialInterface {
   updateProperty(stage: GPUShaderStageFlags, name: string, value: ValueType): void;
 }
 
-export interface DrawableNodeInterface extends SceneNodeInterface {
+export interface DrawableComponentInterface {
+  name: string;
+
   drawable: DrawableInterface;
 
   material: MaterialInterface;

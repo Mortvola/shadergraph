@@ -4,7 +4,7 @@ import { gpu } from "../Gpu";
 import { outputFormat } from "../RenderSetings";
 import { outlineShader } from "../shaders/outline";
 import { outlineApplyShader } from "../shaders/outlineApply";
-import { DrawableNodeInterface } from "../types";
+import { DrawableComponentInterface } from "../types";
 
 const label = 'outline pass';
 
@@ -159,7 +159,7 @@ class OutlinePass {
   render(
     destinationView: GPUTextureView,
     frameBindGroup: GPUBindGroup,
-    node: DrawableNodeInterface,
+    node: DrawableComponentInterface,
     commandEncoder: GPUCommandEncoder,
   ) {
     let passEncoder = commandEncoder.beginRenderPass({

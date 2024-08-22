@@ -1,8 +1,10 @@
-import { Mat4, Vec4, mat4 } from 'wgpu-matrix';
+import { Vec4, mat4 } from 'wgpu-matrix';
 import DrawableInterface from "../DrawableInterface";
 import SceneNode from "./SceneNode";
 import { ContainerNodeInterface, SceneNodeInterface, RendererInterface } from '../../types';
 import { isDrawableNode } from './utils';
+import Component from '../Component';
+import DrawableComponent from '../DrawableComponent';
 
 export type HitTestResult = {
   drawable: DrawableInterface,
@@ -12,6 +14,8 @@ export type HitTestResult = {
 
 class ContainerNode extends SceneNode implements ContainerNodeInterface {
   nodes: SceneNodeInterface[] = [];
+
+  components: Set<Component> = new Set();
   
   addNode(node: SceneNodeInterface) {
     this.nodes.push(node);
@@ -36,24 +40,43 @@ class ContainerNode extends SceneNode implements ContainerNodeInterface {
     }
   }
 
+  addComponent(component: Component) {
+    this.components.add(component);
+    component.sceneNode = this;
+  }
+
+  removeComponent(component: Component) {
+    this.components.delete(component);
+    component.sceneNode = null;
+  }
+
   updateTransforms(mat = mat4.identity(), renderer: RendererInterface | null) {
     this.computeTransform(mat);
     
     for (const node of this.nodes) {
       node.computeTransform(this.transform);
 
-      if (isDrawableNode(node) && renderer) {
-        if (node.material.decal && renderer.decalPass) {
-          renderer.decalPass?.addDrawable(node);
-        }
-        else if (node.material.transparent && renderer.transparentPass) {
-          renderer.transparentPass!.addDrawable(node);
-        }
-        else if (node.material.lit && renderer.deferredRenderPass) {
-          renderer.deferredRenderPass!.addDrawable(node);
-        }
-        else if (renderer.unlitRenderPass) {
-          renderer.unlitRenderPass!.addDrawable(node);
+      if (renderer) {
+        if (isContainerNode(node)) {
+          for (const component of Array.from(node.components)) {
+            const c = component as DrawableComponent
+
+            c.instanceIndex = c.drawable.numInstances;
+            c.drawable.addInstanceInfo(node.transform, c.color);
+
+            if (c.material.decal && renderer.decalPass) {
+              renderer.decalPass?.addDrawable(c);
+            }
+            else if (c.material.transparent && renderer.transparentPass) {
+              renderer.transparentPass!.addDrawable(c);
+            }
+            else if (c.material.lit && renderer.deferredRenderPass) {
+              renderer.deferredRenderPass!.addDrawable(c);
+            }
+            else if (renderer.unlitRenderPass) {
+              renderer.unlitRenderPass!.addDrawable(c);
+            }  
+          }  
         }
       }
       else if (isContainerNode(node)) {

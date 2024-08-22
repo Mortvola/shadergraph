@@ -6,7 +6,7 @@ import {
   MaterialInterface,
   ParticleSystemInterface,
 } from "../types";
-import DrawableNode from "../Drawables/SceneNodes/DrawableNode";
+import DrawableComponent from "../Drawables/DrawableComponent";
 import { gravity, intersectionPlane } from "../Math";
 import DrawableInterface from "../Drawables/DrawableInterface";
 import Billboard from "../Drawables/Billboard";
@@ -25,6 +25,7 @@ import { materialManager } from "../Materials/MaterialManager";
 import MaterialItem from "../MaterialItem";
 import { MaterialItemInterface } from "../../State/types";
 import LifetimeVelocity from "./LifetimeVelocity";
+import ContainerNode from "../Drawables/SceneNodes/ContainerNode";
 
 class ParticleSystem implements ParticleSystemInterface {
   id: number
@@ -223,10 +224,6 @@ class ParticleSystem implements ParticleSystemInterface {
   }
 
   async update(time: number, elapsedTime: number, scene: ContainerNodeInterface): Promise<void> {
-    // if (this.renderer.enabled && !this.drawable) {
-    //   this.drawable = new Billboard()
-    // }
-
     switch (this.renderer.mode) {
       case RenderMode.Billboard:
         if (!this.drawable || this.drawable.type !== 'Billboard') {
@@ -268,9 +265,9 @@ class ParticleSystem implements ParticleSystemInterface {
       const t = (time - particle.startTime) / (particle.lifetime * 1000);
 
       if (t > 1.0) {
-        if (particle.drawable) {
-          scene.removeNode(particle.drawable);
-          particle.drawable = null;
+        if (particle.sceneNode) {
+          scene.removeNode(particle.sceneNode);
+          particle.sceneNode = null;
         }
         
         this.particles.delete(particle.id)    
@@ -304,12 +301,17 @@ class ParticleSystem implements ParticleSystemInterface {
 
   async renderParticle(particle: Particle, scene: ContainerNodeInterface, t: number) {
     if (this.renderer.enabled) {
-      if (particle.drawable === null) {
-        particle.drawable = await DrawableNode.create(this.drawable!, this.materialItem);
-        scene.addNode(particle.drawable)  
+      if (particle.sceneNode === null) {
+        particle.sceneNode = new ContainerNode();
+        scene.addNode(particle.sceneNode)  
       }
 
-      particle.drawable.translate = particle.position;
+      if (particle.drawable === null) {
+        particle.drawable = await DrawableComponent.create(this.drawable!, this.materialItem);
+        particle.sceneNode.addComponent(particle.drawable);
+      }
+
+      particle.sceneNode.translate = particle.position;
 
       let size = particle.startSize;
 
@@ -317,7 +319,7 @@ class ParticleSystem implements ParticleSystemInterface {
         size *= this.lifetimeSize.size.getValue(t);
       }
 
-      particle.drawable.scale = vec3.create(size, size, size)
+      particle.sceneNode.scale = vec3.create(size, size, size)
 
       let lifetimeColor = [1, 1, 1, 1];
 
@@ -328,11 +330,11 @@ class ParticleSystem implements ParticleSystemInterface {
       particle.drawable.color[0] = lifetimeColor[0] * particle.startColor[0];
       particle.drawable.color[1] = lifetimeColor[1] * particle.startColor[1];
       particle.drawable.color[2] = lifetimeColor[2] * particle.startColor[2];
-      particle.drawable.color[3] = lifetimeColor[3] * particle.startColor[3];  
+      particle.drawable.color[3] = lifetimeColor[3] * particle.startColor[3];    
     }
-    else if (particle.drawable !== null) {
-      scene.removeNode(particle.drawable);
-      particle.drawable = null;
+    else if (particle.sceneNode !== null) {
+      scene.removeNode(particle.sceneNode);
+      particle.sceneNode = null;
     }
   }
 
@@ -375,9 +377,9 @@ class ParticleSystem implements ParticleSystemInterface {
 
   removeParticles(scene: ContainerNodeInterface): void {
     for (const [id, particle] of this.particles) {
-      if (particle.drawable) {
-        scene.removeNode(particle.drawable)
-        particle.drawable = null;
+      if (particle.sceneNode) {
+        scene.removeNode(particle.sceneNode)
+        particle.sceneNode = null;
       }
 
       this.particles.delete(id)

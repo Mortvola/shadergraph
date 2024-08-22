@@ -21,14 +21,4 @@
   height: 100%;
   background-color: white;
   box-sizing: border-box;
-
-  >div:first-child {
-    padding: 0.5rem;
-    border-bottom: black thin solid;
-  }
-
-  >div:nth-child(2) {
-    padding-left: 0.5rem;
-    overflow-y: auto;
-  }
 }

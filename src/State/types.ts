@@ -2,6 +2,7 @@ import { ProjectInterface } from "../Project/Types/types";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
 import { GameObjectItem, MaterialInterface } from "../Renderer/types";
 import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
+import { Vec4 } from "wgpu-matrix";
 
 export interface ModelerInterface {
   applyMaterial(material: MaterialInterface): void
@@ -77,6 +78,8 @@ export const isGameObject = (r: unknown): r is GameObjectInterface => (
 )
 
 export interface GameObjectInterface extends EntityInterface {
+  translate: Vec4,
+
   items: GameObjectItem[]
 
   save(): Promise<void>

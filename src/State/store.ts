@@ -12,7 +12,6 @@ import GameObject from "./GameObject";
 import Texture from "./Texture";
 import {
   DecalItem, GameObject2DRecord, GameObjectRecord,
-  MaterialRecordDescriptor,
   ModelItem, ParticleItem, ParticleSystemInterface, SceneNodeInterface, ShaderRecord,
 } from "../Renderer/types";
 import { renderer2d } from "../Main";
@@ -22,9 +21,10 @@ import GameObject2D from "./GameObject2D";
 import SceneNode2d from "../Renderer/Drawables/SceneNodes/SceneNode2d";
 import Mesh from "../Renderer/Drawables/Mesh";
 import { box } from "../Renderer/Drawables/Shapes/box";
-import DrawableNode from "../Renderer/Drawables/SceneNodes/DrawableNode";
+import DrawableComponent from "../Renderer/Drawables/DrawableComponent";
 import { vec3 } from "wgpu-matrix";
 import { materialManager } from "../Renderer/Materials/MaterialManager";
+import ContainerNode from "../Renderer/Drawables/SceneNodes/ContainerNode";
 
 class Store implements StoreInterface {
   get graph(): Graph | null {
@@ -154,14 +154,16 @@ class Store implements StoreInterface {
           else if (item.type === 'decal') {
             const decal = item.item as DecalItem;
 
-            const drawable = await DrawableNode.create(
+            const drawableNode = new ContainerNode();
+            const drawable = await DrawableComponent.create(
               await Mesh.create(box(1, 1, 1), 1),
               decal.materialId,
             )
+            drawableNode.addComponent(drawable);
 
-            drawable.scale = vec3.create(decal.width ?? 1, 1, decal.height ?? 1)
+            drawableNode.scale = vec3.create(decal.width ?? 1, 1, decal.height ?? 1)
 
-            this.mainView.scene.addNode(drawable)
+            this.mainView.scene.addNode(drawableNode)
           }
         }
       }

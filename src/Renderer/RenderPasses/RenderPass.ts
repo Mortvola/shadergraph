@@ -1,6 +1,6 @@
 import DrawableInterface from "../Drawables/DrawableInterface";
 import { gpu } from "../Gpu";
-import { DrawableNodeInterface, MaterialInterface, PipelineInterface, RenderPassInterface } from "../types";
+import { DrawableComponentInterface, MaterialInterface, PipelineInterface, RenderPassInterface } from "../types";
 
 type PipelineEntry = {
   pipeline: PipelineInterface,
@@ -10,7 +10,7 @@ type PipelineEntry = {
 class RenderPass implements RenderPassInterface {
   pipelines: PipelineEntry[] = [];
 
-  addDrawable(drawableNode: DrawableNodeInterface) {
+  addDrawable(drawableNode: DrawableComponentInterface) {
     const pipeline = drawableNode.material.pipeline;
 
     if (pipeline) {

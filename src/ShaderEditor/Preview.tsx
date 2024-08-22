@@ -5,9 +5,12 @@ import Draggable from './Draggable';
 import { useStores } from '../State/store';
 import Mesh from '../Renderer/Drawables/Mesh';
 import { plane as planeShape } from '../Renderer/Drawables/Shapes/plane';
-import DrawableNode from '../Renderer/Drawables/SceneNodes/DrawableNode';
+import DrawableComponent from '../Renderer/Drawables/DrawableComponent';
+import ContainerNode from '../Renderer/Drawables/SceneNodes/ContainerNode';
 
-const plane = await DrawableNode.create(await Mesh.create(planeShape(1, 1), 1));
+const plane = new ContainerNode();
+const component = await DrawableComponent.create(await Mesh.create(planeShape(1, 1), 1));
+plane.addComponent(component);
 plane.name = 'Plane';
 
 const Preview: React.FC = () => {

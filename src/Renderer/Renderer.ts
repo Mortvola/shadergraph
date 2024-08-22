@@ -6,12 +6,12 @@ import {
 } from 'webgpu-utils';
 import Camera from './Camera';
 import { degToRad } from './Math';
-import { isContainerNode } from './Drawables/SceneNodes/ContainerNode';
+import ContainerNode, { isContainerNode } from './Drawables/SceneNodes/ContainerNode';
 import DeferredRenderPass from './RenderPasses/DeferredRenderPass';
 import Light from './Drawables/Light';
 import CartesianAxes from './Drawables/CartesianAxes';
-import DrawableNode from './Drawables/SceneNodes/DrawableNode';
-import { SceneNodeInterface, RendererInterface, ParticleSystemInterface, ContainerNodeInterface, DrawableNodeInterface } from './types';
+import DrawableComponent from './Drawables/DrawableComponent';
+import { SceneNodeInterface, RendererInterface, ParticleSystemInterface, ContainerNodeInterface, DrawableComponentInterface } from './types';
 import { lineMaterial } from './Materials/Line';
 import { lights } from "./shaders/lights";
 import { gpu } from './Gpu';
@@ -106,7 +106,7 @@ class Renderer implements RendererInterface {
 
   outlinePass: OutlinePass | null = null;
 
-  outlineMesh: DrawableNodeInterface | null = null;
+  outlineMesh: DrawableComponentInterface | null = null;
 
   lights: Light[] = [];
 
@@ -118,7 +118,7 @@ class Renderer implements RendererInterface {
 
   debugView = false;
 
-  constructor(frameBindGroupLayout: GPUBindGroupLayout, cartesianAxes: DrawableNode, floor?: SceneNodeInterface) {
+  constructor(frameBindGroupLayout: GPUBindGroupLayout, cartesianAxes: DrawableComponent, floor?: SceneNodeInterface) {
     this.createCameraBindGroups(frameBindGroupLayout);
 
     // this.reticle = reticle;
@@ -158,13 +158,15 @@ class Renderer implements RendererInterface {
     await gpu.ready();
     await pipelineManager.ready();
 
-    const cartesianAxes = await DrawableNode.create(new CartesianAxes(), { shaderDescriptor: lineMaterial })
+    const cartesianAxes = await DrawableComponent.create(new CartesianAxes(), { shaderDescriptor: lineMaterial })
     
-    let floor: DrawableNode | undefined = undefined;
+    let floor: ContainerNode | undefined = undefined;
 
     if (withFloor) {
       const quad = await Mesh.create(plane(50, 50, [1, 1, 1, 1]), 0)
-      floor = await DrawableNode.create(quad, { shaderDescriptor: { lit: true }})
+      floor = new ContainerNode();
+      const component = await DrawableComponent.create(quad, { shaderDescriptor: { lit: true }})
+      floor.addComponent(component)
       floor.postTransforms.push(mat4.fromQuat(quat.fromEuler(degToRad(270), 0, 0, "xyz")))  
     }
 

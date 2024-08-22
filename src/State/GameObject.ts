@@ -3,9 +3,12 @@ import Entity from "./Entity";
 import { GameObjectInterface } from "./types";
 import Http from "../Http/src";
 import { GameObjectItem, GameObjectRecord } from "../Renderer/types";
+import { vec4 } from "wgpu-matrix";
 
 class GameObject extends Entity implements GameObjectInterface {
   items: GameObjectItem[] = []
+
+  translate = vec4.create(0, 0, 0, 0);
 
   constructor(id: number, name: string, items: GameObjectItem[] ) {
     super(id, name)
