@@ -44,7 +44,7 @@ const Inspector: React.FC = observer(() => {
 
   const renderView = () => {
     if (scene.selectedObject) {
-      return <SceneObject gameObject={scene.selectedObject} />
+      return <SceneObject sceneObject={scene.selectedObject} />
     }
 
     if (project.selectedItem) {
@@ -52,7 +52,7 @@ const Inspector: React.FC = observer(() => {
         case 'object':
           return (
             project.selectedItem.item
-              ? <SceneObject gameObject={project.selectedItem.item as SceneObjectInterface} />
+              ? <SceneObject sceneObject={project.selectedItem.item as SceneObjectInterface} />
               : null
           )
 

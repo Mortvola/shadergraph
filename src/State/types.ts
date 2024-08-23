@@ -1,6 +1,6 @@
 import { ProjectInterface } from "../Project/Types/types";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
-import { GameObjectItem, MaterialInterface } from "../Renderer/types";
+import { GameObjectItem, MaterialInterface, SceneNodeInterface } from "../Renderer/types";
 import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
 import { Vec4 } from "wgpu-matrix";
 import Component from "../Renderer/Drawables/Component";
@@ -83,7 +83,7 @@ export interface SceneObjectInterface extends EntityInterface {
 
   items: GameObjectItem[]
 
-  // components: Component[];
+  sceneNode: SceneNodeInterface | null
 
   save(): Promise<void>
 

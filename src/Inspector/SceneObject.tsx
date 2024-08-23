@@ -18,11 +18,11 @@ import LightComponent from './Light';
 import Light from '../Renderer/Drawables/Light';
 
 type PropsType = {
-  gameObject: SceneObjectInterface
+  sceneObject: SceneObjectInterface
 }
 
 const SceneObject: React.FC<PropsType> = observer(({
-  gameObject,
+  sceneObject,
 }) => {
   const store = useStores()
 
@@ -52,23 +52,23 @@ const SceneObject: React.FC<PropsType> = observer(({
       switch (store.draggingItem.type) {
         case 'model':
 
-          gameObject.items = [
-            ...gameObject.items,
+          sceneObject.items = [
+            ...sceneObject.items,
             { item: { id: store.draggingItem.itemId, materials: {} }, type: ComponentType.Mesh },
           ]
   
-          gameObject.save()
+          sceneObject.save()
 
           break;
 
         case 'particle':
 
-          gameObject.items = [
-            ...gameObject.items,
+          sceneObject.items = [
+            ...sceneObject.items,
             { item: { id: store.draggingItem.itemId }, type: ComponentType.Mesh },
           ]
 
-          gameObject.save()
+          sceneObject.save()
           break;
       }
     }
@@ -76,62 +76,62 @@ const SceneObject: React.FC<PropsType> = observer(({
 
   const handleModelChange = (model: ModelItem) => {
     runInAction(() => {
-      const index = gameObject.items.findIndex((item) => (item.item as ModelItem).id === model.id)
+      const index = sceneObject.items.findIndex((item) => (item.item as ModelItem).id === model.id)
 
       if (index !== -1) {
-        gameObject.items = [
-          ...gameObject.items.slice(0, index),
+        sceneObject.items = [
+          ...sceneObject.items.slice(0, index),
           { item: model, type: ComponentType.Mesh },
-          ...gameObject.items.slice(index + 1),
+          ...sceneObject.items.slice(index + 1),
         ]
   
-        gameObject.save()
+        sceneObject.save()
       }  
     })
   }
 
   const handleDecalChange = (decal: DecalItem) => {
     runInAction(() => {
-      const index = gameObject.items.findIndex((item) => item.item === decal)
+      const index = sceneObject.items.findIndex((item) => item.item === decal)
 
       if (index !== -1) {
-        gameObject.items = [
-          ...gameObject.items.slice(0, index),
+        sceneObject.items = [
+          ...sceneObject.items.slice(0, index),
           { item: decal, type: ComponentType.Decal },
-          ...gameObject.items.slice(index + 1),
+          ...sceneObject.items.slice(index + 1),
         ]
   
-        gameObject.save()
+        sceneObject.save()
       }  
     })
   }
 
   const handleLightChange = (light: LightInterface) => {
     runInAction(() => {
-      const index = gameObject.items.findIndex((item) => item.item === light)
+      const index = sceneObject.items.findIndex((item) => item.item === light)
 
       if (index !== -1) {
-        gameObject.items = [
-          ...gameObject.items.slice(0, index),
+        sceneObject.items = [
+          ...sceneObject.items.slice(0, index),
           { item: light, type: ComponentType.Light },
-          ...gameObject.items.slice(index + 1),
+          ...sceneObject.items.slice(index + 1),
         ]
   
-        gameObject.save()
+        sceneObject.save()
       }  
     })
   }
 
   const handleDelete = (item: GameObjectItem) => {
-    const index = gameObject.items.findIndex((i) => i.key === item.key)
+    const index = sceneObject.items.findIndex((i) => i.key === item.key)
 
     if (index !== -1) {
-      gameObject.items = [
-        ...gameObject.items.slice(0, index),
-        ...gameObject.items.slice(index + 1),
+      sceneObject.items = [
+        ...sceneObject.items.slice(0, index),
+        ...sceneObject.items.slice(index + 1),
       ]
 
-      gameObject.save()
+      sceneObject.save()
     }
   }
 
@@ -191,8 +191,8 @@ const SceneObject: React.FC<PropsType> = observer(({
   const addComponent = React.useCallback((type: ComponentType) => {
     switch (type) {
       case ComponentType.Decal:
-        gameObject.items.push({ item: {}, type: ComponentType.Decal })
-        gameObject.save()
+        sceneObject.items.push({ item: {}, type: ComponentType.Decal })
+        sceneObject.save()
         break;
 
       case ComponentType.Light: {
@@ -201,13 +201,13 @@ const SceneObject: React.FC<PropsType> = observer(({
           type: ComponentType.Light
         };
 
-        gameObject.addComponent(light);
+        sceneObject.addComponent(light);
         break;
       }
 
       case ComponentType.Mesh:
-        gameObject.items.push({ item: { id: 0 }, type: ComponentType.Mesh }) 
-        gameObject.save()
+        sceneObject.items.push({ item: { id: 0 }, type: ComponentType.Mesh }) 
+        sceneObject.save()
         break;
 
       case ComponentType.ParticleSystem: {
@@ -224,13 +224,13 @@ const SceneObject: React.FC<PropsType> = observer(({
             }
           }
   
-          gameObject.addComponent(item);  
+          sceneObject.addComponent(item);  
         })()
 
         break;
       }
     }
-  }, [gameObject])
+  }, [sceneObject])
 
   const menuItems = React.useCallback((): MenuItemLike[] => ([
     { name: 'Model', action: () => { addComponent(ComponentType.Mesh)} },
@@ -239,21 +239,39 @@ const SceneObject: React.FC<PropsType> = observer(({
     { name: 'Light', action: () => { addComponent(ComponentType.Light) } },
   ]), [addComponent]);
 
+  const handleTranslateXChange = (x: number) => {
+    if (sceneObject.sceneNode) {
+      sceneObject.sceneNode.translate[0] = x;
+    }
+  }
+
+  const handleTranslateYChange = (y: number) => {
+    if (sceneObject.sceneNode) {
+      sceneObject.sceneNode.translate[1] = y;
+    }
+  }
+
+  const handleTranslateZChange = (z: number) => {
+    if (sceneObject.sceneNode) {
+      sceneObject.sceneNode.translate[2] = z;
+    }
+  }
+
   return (
     <div className={styles.gameObject} onDragOver={handleDragOver} onDrop={handleDrop}>
-      <div>{`Name: ${gameObject.name}`}</div>
+      <div>{`Name: ${sceneObject.name}`}</div>
       <div>
         Translate:
-        <NumberInput value={gameObject.translate[0]} />
-        <NumberInput value={gameObject.translate[1]} />
-        <NumberInput value={gameObject.translate[2]} />
+        <NumberInput value={sceneObject.translate[0]} onChange={handleTranslateXChange} />
+        <NumberInput value={sceneObject.translate[1]} onChange={handleTranslateYChange} />
+        <NumberInput value={sceneObject.translate[2]} onChange={handleTranslateZChange} />
       </div>
       {
-        isGameObject2D(gameObject)
+        isGameObject2D(sceneObject)
           ? (
-            <GameObject2D gameObject={gameObject} />
+            <GameObject2D gameObject={sceneObject} />
           )
-          : gameObject.items.map((item) => (
+          : sceneObject.items.map((item) => (
               <div className={styles.item} key={item.key ?? 0} >
                 <div>
                   <button type="button" onClick={() => handleDelete(item)}>X</button>
