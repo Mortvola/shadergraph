@@ -1,9 +1,9 @@
 import { Vec4, mat4, vec4 } from "wgpu-matrix";
 import DrawableInterface from "./DrawableInterface";
-import { DrawableComponentInterface, MaterialInterface } from "../types";
+import { ComponentType, DrawableComponentInterface, MaterialInterface } from "../types";
 import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
 import { materialManager } from "../Materials/MaterialManager";
-import Component, { ComponentType } from "./Component";
+import Component from "./Component";
 
 class DrawableComponent extends Component implements DrawableComponentInterface {
   name = '';

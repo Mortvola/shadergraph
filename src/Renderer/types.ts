@@ -29,6 +29,8 @@ export interface SceneNodeInterface {
 
   transform: Mat4;
 
+  scene: SceneGraphInterface | null;
+
   computeTransform(transform: Mat4, prepend?: boolean): void;
 
   setFromAngles(x: number, y: number, z: number): void;
@@ -55,6 +57,8 @@ export interface SceneGraphInterface {
   addNode(node: SceneNodeInterface): void;
 
   removeNode(node: SceneNodeInterface): void;
+
+  componentAdded(component: Component): void;
 }
 
 export interface RendererInterface {
@@ -170,19 +174,34 @@ export type DecalItem = {
   height?: number,
 }
 
-export type LightItem = {
-  color: number[],
-  constant: number,
-  linear: number,
-  quadratic: number,
+export enum ComponentType {
+  Drawable = 'Drawable',
+  Light = 'Light',
+  RangeCircle = 'RangeCircle',
+  ParticleSystem = 'ParticleSystem',
+  Mesh = 'Mesh',
+  Decal = 'Decal',
 }
 
-export type ComponentType = 'model' | 'particle' | 'decal' | 'light';
+export interface ComponentInterface {
+  type: ComponentType;
+
+  sceneNode: SceneNodeInterface | null;
+}
+
+export interface LightInterface extends ComponentInterface {
+  color: number[];
+  constant: number;
+  linear: number;
+  quadratic: number;
+}
+
+// export type ComponentType = 'model' | 'particle' | 'decal' | 'light';
 
 export type GameObjectItem = {
   key?: number,
   type: ComponentType,
-  item: ModelItem | ParticleItem | DecalItem | LightItem,
+  item: ModelItem | ParticleItem | DecalItem | LightInterface,
 }
 
 export type GameObject = {

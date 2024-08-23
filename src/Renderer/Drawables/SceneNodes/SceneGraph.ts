@@ -1,6 +1,6 @@
 import ParticleSystem from "../../ParticleSystem/ParticleSystem";
-import { SceneNodeInterface, RendererInterface, SceneGraphInterface } from "../../types";
-import { ComponentType } from "../Component";
+import { SceneNodeInterface, RendererInterface, SceneGraphInterface, ComponentType } from "../../types";
+import Component from "../Component";
 import Light from "../Light";
 import RangeCircle from "../RangeCircle";
 import SceneNode, { isSceneNode } from "./SceneNode";
@@ -15,6 +15,7 @@ class SceneGraph implements SceneGraphInterface {
   particleSystems: Set<ParticleSystem> = new Set();
 
   addNode(node: SceneNodeInterface) {
+    node.scene = this;
     this.scene.addNode(node);
 
     let stack: SceneNodeInterface[] = [node]
@@ -40,6 +41,18 @@ class SceneGraph implements SceneGraphInterface {
           }
         }
       }
+    }
+  }
+
+  componentAdded(component: Component) {
+    if (component.type === ComponentType.Light) {
+      this.lights.add(component as Light)
+    }
+    else if (component.type === ComponentType.RangeCircle) {
+      this.rangeCircles.add(component as RangeCircle)
+    }
+    else if (component.type === ComponentType.ParticleSystem) {
+      this.particleSystems.add(component as ParticleSystem)
     }
   }
 

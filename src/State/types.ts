@@ -86,6 +86,8 @@ export interface SceneObjectInterface extends EntityInterface {
   // components: Component[];
 
   save(): Promise<void>
+
+  addComponent(component: GameObjectItem): void;
 }
 
 export interface GameObject2DInterface extends EntityInterface {

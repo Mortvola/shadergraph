@@ -1,5 +1,5 @@
 import React from 'react';
-import { DrawableComponentInterface, ModelItem } from '../../Renderer/types';
+import { ComponentType, DrawableComponentInterface, ModelItem } from '../../Renderer/types';
 import { useStores } from '../../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './ModelTree.module.scss';
@@ -55,7 +55,7 @@ const MeshNode: React.FC<PropsType> = observer(({
     let name: string | undefined = '';
 
     if (gameObject) {
-      const item = gameObject.items.find((o) => o.type === 'model');
+      const item = gameObject.items.find((o) => o.type === ComponentType.Mesh);
 
       if (item) {
         const modelItem = item.item as ModelItem;

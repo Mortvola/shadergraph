@@ -128,14 +128,14 @@ class Renderer implements RendererInterface {
       this.scene.addNode(floor);
     }
 
-    let lightNode = new SceneNode();
-    lightNode.translate[0] = 0;
-    lightNode.translate[1] = 3;
-    lightNode.translate[2] = 0;
-    lightNode.addComponent(new Light());
-    this.scene.addNode(lightNode);
+    // let lightNode = new SceneNode();
+    // lightNode.translate[0] = 0;
+    // lightNode.translate[1] = 3;
+    // lightNode.translate[2] = 0;
+    // lightNode.addComponent(new Light());
+    // this.scene.addNode(lightNode);
 
-    lightNode = new SceneNode();
+    let lightNode = new SceneNode();
     lightNode.translate[0] = 15;
     lightNode.translate[1] = 4;
     lightNode.translate[2] = -15;
@@ -434,7 +434,7 @@ class Renderer implements RendererInterface {
           light.worldPosition,
           inverseViewtransform,
         ),
-        color: light.lightColor,
+        color: light.color,
         attConstant: light.constant,
         attLinear: light.linear,
         attQuadratic: light.quadratic,

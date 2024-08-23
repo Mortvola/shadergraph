@@ -14,6 +14,7 @@ import {
   SceneNodeInterface,
   DecalItem,
   ModelItem, ParticleItem, ParticleSystemInterface, ShaderRecord,
+  ComponentType,
 } from "../Renderer/types";
 import { renderer2d } from "../Main";
 import Project from "../Project/Types/Project";
@@ -86,14 +87,14 @@ class Store implements StoreInterface {
   async selectItem(item: ProjectItemInterface) {
     if (this.project.selectedItem?.type === 'object' && isGameObject(this.project.selectedItem.item)) {
       for (const item of this.project.selectedItem.item.items) {
-        if (item.type === 'particle') {
+        if (item.type === ComponentType.ParticleSystem) {
           const particleEntry = item.item as ParticleItem;
           const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
           if (particleSystem?.sceneNode) {
             this.mainView.removeSceneNode(particleSystem?.sceneNode)
           }
         }
-        else if (item.type === 'model') {
+        else if (item.type === ComponentType.Mesh) {
           const modelItem = this.project.getItemByItemId((item.item as ModelItem).id, 'model');
 
           if (modelItem) {
@@ -104,7 +105,7 @@ class Store implements StoreInterface {
             }
           }    
         }
-        else if (item.type === 'decal') {
+        else if (item.type === ComponentType.Decal) {
         }
       }  
     }
@@ -144,7 +145,7 @@ class Store implements StoreInterface {
         this.mainViewModeler.assignModel(null)
 
         for (const item  of gameObject.items) {
-          if (item.type === 'model') {
+          if (item.type === ComponentType.Mesh) {
             const modelEntry = item.item as ModelItem;
 
             const modelItem = this.project.getItemByItemId(modelEntry.id, 'model');
@@ -157,7 +158,7 @@ class Store implements StoreInterface {
               }
             }    
           }
-          else if (item.type === 'particle') {
+          else if (item.type === ComponentType.ParticleSystem) {
             const particleEntry = item.item as ParticleItem;
 
             const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
@@ -169,7 +170,7 @@ class Store implements StoreInterface {
               this.mainView.addSceneNode(node)
             }
           }
-          else if (item.type === 'decal') {
+          else if (item.type === ComponentType.Decal) {
             const decal = item.item as DecalItem;
 
             const drawableNode = new SceneNode();

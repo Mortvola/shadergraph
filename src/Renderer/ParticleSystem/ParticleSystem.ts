@@ -5,6 +5,7 @@ import {
   DrawableType,
   MaterialInterface,
   ParticleSystemInterface,
+  ComponentType,
 } from "../types";
 import DrawableComponent from "../Drawables/DrawableComponent";
 import { gravity, intersectionPlane } from "../Math";
@@ -26,7 +27,7 @@ import MaterialItem from "../MaterialItem";
 import { MaterialItemInterface } from "../../State/types";
 import LifetimeVelocity from "./LifetimeVelocity";
 import SceneNode from "../Drawables/SceneNodes/SceneNode";
-import Component, { ComponentType } from "../Drawables/Component";
+import Component from "../Drawables/Component";
 
 class ParticleSystem extends Component implements ParticleSystemInterface {
   id: number

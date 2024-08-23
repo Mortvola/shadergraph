@@ -1,8 +1,8 @@
 import { Mat4, Quat, Vec4, mat4, quat, vec3 } from 'wgpu-matrix';
 import DrawableInterface from "../DrawableInterface";
-import { SceneNodeInterface, RendererInterface } from '../../types';
+import { SceneNodeInterface, RendererInterface, SceneGraphInterface, ComponentType } from '../../types';
 import { isDrawableNode } from './utils';
-import Component, { ComponentType } from '../Component';
+import Component from '../Component';
 import DrawableComponent from '../DrawableComponent';
 import { getEulerAngles } from '../../Math';
 
@@ -32,6 +32,8 @@ class SceneNode implements SceneNodeInterface {
   angles: number[];
 
   scale = vec3.create(1, 1, 1);
+
+  scene: SceneGraphInterface | null = null;
 
   constructor() {
     this.angles = getEulerAngles(this.qRotate);
@@ -103,6 +105,8 @@ class SceneNode implements SceneNodeInterface {
   addComponent(component: Component) {
     this.components.add(component);
     component.sceneNode = this;
+
+    this.scene?.componentAdded(component)
   }
 
   removeComponent(component: Component) {

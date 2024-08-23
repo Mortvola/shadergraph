@@ -1,8 +1,9 @@
 import { vec4, Vec4 } from 'wgpu-matrix';
-import Component, { ComponentType } from './Component';
+import Component from './Component';
+import { ComponentType, LightInterface } from '../types';
 
-class Light extends Component {
-  lightColor = vec4.create(1, 1, 1, 1);
+class Light extends Component implements LightInterface {
+  color: number[] = [1, 1, 1, 1];
 
   constant = 1.0;
 
@@ -28,7 +29,7 @@ class Light extends Component {
 }
 
 export const isLight = (r: unknown): r is Light => (
-  (r as Light).lightColor !== undefined
+  (r as Light).color !== undefined
 )
 
 export default Light;

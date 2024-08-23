@@ -2,8 +2,11 @@ import { makeObservable, observable } from "mobx";
 import Entity from "./Entity";
 import { SceneObjectInterface } from "./types";
 import Http from "../Http/src";
-import { GameObjectItem, GameObjectRecord } from "../Renderer/types";
+import { ComponentType, GameObjectItem, GameObjectRecord, ParticleItem } from "../Renderer/types";
 import { vec4 } from "wgpu-matrix";
+import SceneNode from "../Renderer/Drawables/SceneNodes/SceneNode";
+import { particleSystemManager } from "../Renderer/ParticleSystem/ParticleSystemManager";
+import Light from "../Renderer/Drawables/Light";
 
 let nextObjectId = 0;
 
@@ -16,9 +19,9 @@ const getNextObjectId = () => {
 class SceneObject extends Entity implements SceneObjectInterface {
   items: GameObjectItem[] = []
 
-  // components: Component[] = []
-
   translate = vec4.create(0, 0, 0, 0);
+
+  sceneNode: SceneNode | null = null;
 
   constructor(id = getNextObjectId(), name?: string, items: GameObjectItem[] = [] ) {
     super(id, name ?? `Scene Object ${Math.abs(id)}`)
@@ -73,7 +76,25 @@ class SceneObject extends Entity implements SceneObjectInterface {
     this.items = [
       ...this.items,
       component,
-    ]
+    ];
+
+    if (this.sceneNode) {
+      (async () => {
+        if (this.sceneNode) {
+          if (component.type === ComponentType.ParticleSystem) {
+            const ps = await particleSystemManager.getParticleSystem((component.item as ParticleItem).id)
+      
+            if (ps) {
+              this.sceneNode.addComponent(ps)
+            }
+          }
+          else if (component.type === ComponentType.Light) {
+            const light = new Light();
+            this.sceneNode.addComponent(light);
+          }
+        }
+      })()  
+    }
   }
 }
 

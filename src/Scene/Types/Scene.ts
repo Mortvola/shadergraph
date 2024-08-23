@@ -3,7 +3,7 @@ import SceneObject from "../../State/SceneObject";
 import SceneNode from "../../Renderer/Drawables/SceneNodes/SceneNode";
 import { store } from "../../State/store";
 import { particleSystemManager } from "../../Renderer/ParticleSystem/ParticleSystemManager";
-import { ParticleItem } from "../../Renderer/types";
+import { ComponentType, LightInterface, ParticleItem } from "../../Renderer/types";
 
 class Scene {
   objects: SceneObject[] = [];
@@ -24,19 +24,22 @@ class Scene {
         object,
       ];
 
-      const sceneNode = new SceneNode()
+      object.sceneNode = new SceneNode()
 
       for (const component of object.items) {
-        if (component.type === 'particle') {
+        if (component.type === ComponentType.ParticleSystem) {
           const ps = await particleSystemManager.getParticleSystem((component.item as ParticleItem).id)
 
           if (ps) {
-            sceneNode.addComponent(ps)
+            object.sceneNode.addComponent(ps)
           }
+        }
+        else if (component.type === ComponentType.Light) {
+          object.sceneNode.addComponent(component.item as LightInterface)
         }
       }
 
-      store.mainView.addSceneNode(sceneNode);
+      store.mainView.addSceneNode(object.sceneNode);
     })
   }
 }

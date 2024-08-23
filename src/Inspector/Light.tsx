@@ -1,13 +1,13 @@
 import React from 'react';
 import ColorPicker from '../Color/ColorPicker';
-import { LightItem } from '../Renderer/types';
 import NumberInput from './NumberInput';
 import { MenuItemLike } from '../ContextMenu/types';
 import ContextMenu from '../ContextMenu/ContextMenu';
+import { LightInterface } from '../Renderer/types';
 
 type PropsType = {
-  light: LightItem,
-  onChange: (light: LightItem) => void,
+  light: LightInterface,
+  onChange: (light: LightInterface) => void,
 }
 
 const LightComponent: React.FC<PropsType> = ({

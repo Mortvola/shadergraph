@@ -7,7 +7,8 @@ import Scene from './Types/Scene';
 import SceneObject from '../State/SceneObject';
 import ParticleSystem from '../Renderer/ParticleSystem/ParticleSystem';
 import { particleSystemManager } from '../Renderer/ParticleSystem/ParticleSystemManager';
-import { GameObjectItem, ParticleItem } from '../Renderer/types';
+import { ComponentType, GameObjectItem } from '../Renderer/types';
+import Light from '../Renderer/Drawables/Light';
 
 type PropsType = {
   scene?: Scene,
@@ -57,7 +58,7 @@ const SceneToolbar: React.FC<PropsType> = ({
 
         const item: GameObjectItem = {
           key: particleSystem.id,
-          type: 'particle',
+          type: ComponentType.ParticleSystem,
           item: {
             id: particleSystem.id
           }
@@ -68,6 +69,23 @@ const SceneToolbar: React.FC<PropsType> = ({
         scene.addObject(object);  
       }
     } },
+    { name: 'Create light', action: async () => {
+      if (scene) {
+        const object = new SceneObject()
+
+        const light = new Light();
+
+        const item: GameObjectItem = {
+          type: ComponentType.Light,
+          item: light,
+        }
+
+        object.addComponent(item);
+
+        scene.addObject(object);
+      }
+    } }
+
     // { name: 'Create 2D game object', action: () => { store.project.addNewItem('object2D') } },
     // { name: 'Create particle system', action: () => { store.project.addNewItem('particle') } },
     // { name: 'Create folder', action: () => { store.project.createFolder() } },

@@ -1,5 +1,6 @@
 import { mat4, vec4, Vec4 } from 'wgpu-matrix';
-import Component, { ComponentType } from './Component';
+import Component from './Component';
+import { ComponentType } from '../types';
 
 class RangeCircle extends Component {
   color;

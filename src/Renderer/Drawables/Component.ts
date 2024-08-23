@@ -1,13 +1,6 @@
-import { SceneNodeInterface } from "../types";
+import { ComponentInterface, ComponentType, SceneNodeInterface } from "../types";
 
-export enum ComponentType {
-  Drawable = 'Drawable',
-  Light = 'Light',
-  RangeCircle = 'RangeCircle',
-  ParticleSystem = 'ParticleSystem',
-}
-
-class Component {
+class Component implements ComponentInterface {
   type: ComponentType;
 
   sceneNode: SceneNodeInterface | null = null;
