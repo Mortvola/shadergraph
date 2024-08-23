@@ -6,11 +6,11 @@ import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import Http from '../Http/src';
 import Texture from '../State/Texture';
-import GameObject from './GameObject';
-import { GameObjectInterface, MaterialItemInterface } from '../State/types';
+import SceneObject from './SceneObject';
+import { SceneObjectInterface, MaterialItemInterface } from '../State/types';
 
 const Inspector: React.FC = observer(() => {
-  const { project } = useStores();
+  const { project, scene } = useStores();
 
   if (project.selectedItem?.type === 'texture' && project.selectedItem.item) {
     const selectedTexture = project.selectedItem.item as Texture;
@@ -43,12 +43,16 @@ const Inspector: React.FC = observer(() => {
   }
 
   const renderView = () => {
+    if (scene.selectedObject) {
+      return <SceneObject gameObject={scene.selectedObject} />
+    }
+
     if (project.selectedItem) {
       switch (project.selectedItem.type) {
         case 'object':
           return (
             project.selectedItem.item
-              ? <GameObject gameObject={project.selectedItem.item as GameObjectInterface} />
+              ? <SceneObject gameObject={project.selectedItem.item as SceneObjectInterface} />
               : null
           )
 

@@ -51,20 +51,10 @@ export interface RenderPassInterface {
 export interface RenderPass2DInterface {
 }
 
-export interface SceneObjectInterface {
-  sceneNode: SceneNodeInterface
-
-  update(time: number, elapsedTime: number): Promise<void>
-}
-
 export interface SceneGraphInterface {
   addNode(node: SceneNodeInterface): void;
 
   removeNode(node: SceneNodeInterface): void;
-
-  addSceneObject(object: SceneObjectInterface): void;
-
-  removeSceneObject(object: SceneObjectInterface): void;
 }
 
 export interface RendererInterface {

@@ -2,7 +2,6 @@ import { makeObservable, observable, runInAction } from "mobx";
 import ProjectItem from "./ProjectItem";
 import { FolderInterface, ProjectInterface, ProjectItemInterface, isFolder } from "./types";
 import Http from "../../Http/src";
-import { StoreInterface } from "../../State/types";
 
 class Folder extends ProjectItem implements FolderInterface {
   items: ProjectItemInterface[] = []

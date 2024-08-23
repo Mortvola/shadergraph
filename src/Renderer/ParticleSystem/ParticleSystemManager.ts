@@ -41,6 +41,10 @@ class ParticleSystemManager {
       return particleSystem;
     }  
   }
+
+  add(particleSystem: ParticleSystem) {
+    this.map.set(particleSystem.id, particleSystem)
+  }
 }
 
 export const particleSystemManager = new ParticleSystemManager()

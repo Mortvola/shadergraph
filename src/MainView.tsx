@@ -9,7 +9,7 @@ import { observer } from 'mobx-react-lite';
 import Scene from './Scene/Scene';
 
 const MainView: React.FC = observer(() => {
-  const { mainView } = useStores();
+  const { mainView, scene } = useStores();
   
   const handleWheel: React.WheelEventHandler<HTMLDivElement> = (event) => {
     if (event.ctrlKey) {
@@ -37,7 +37,7 @@ const MainView: React.FC = observer(() => {
         }
       </div>
       <div className={styles.sidebar}>
-        <Scene />
+        <Scene scene={scene} />
         <Project />
       </div>
     </div>

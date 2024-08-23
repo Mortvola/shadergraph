@@ -27,7 +27,7 @@ class PSValue {
   static fromDescriptor(descriptor?: PSValueDescriptor, onChange?: () => void) {
     const psValue = new PSValue(onChange)
 
-    if (descriptor && isPSValue(descriptor)) {
+    if (descriptor) {
       psValue.type = descriptor.type ?? PSValueType.Constant;
       psValue.value = descriptor.value !== undefined
         ? [descriptor.value[0], descriptor.value[1]]

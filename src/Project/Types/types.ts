@@ -1,7 +1,7 @@
 import { SceneNodeInterface, ParticleSystemInterface, ShaderRecord } from "../../Renderer/types";
-import { GameObject2DInterface, GameObjectInterface, GraphInterface, MaterialItemInterface, TextureInterface } from "../../State/types";
+import { GameObject2DInterface, SceneObjectInterface, GraphInterface, MaterialItemInterface, TextureInterface } from "../../State/types";
 
-export type ItemLike = GameObjectInterface | GameObject2DInterface | MaterialItemInterface | TextureInterface
+export type ItemLike = SceneObjectInterface | GameObject2DInterface | MaterialItemInterface | TextureInterface
   | GraphInterface | SceneNodeInterface | ParticleSystemInterface | ShaderRecord | MaterialItemInterface;
 
 export interface ProjectInterface {

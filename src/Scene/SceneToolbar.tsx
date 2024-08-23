@@ -2,9 +2,20 @@ import React from 'react';
 import { MenuItemLike } from '../ContextMenu/types';
 import { useStores } from '../State/store';
 import ContextMenu from '../ContextMenu/ContextMenu';
-import styles from './Project.module.scss'
+import styles from '../Project/Project.module.scss'
+import Scene from './Types/Scene';
+import SceneObject from '../State/SceneObject';
+import ParticleSystem from '../Renderer/ParticleSystem/ParticleSystem';
+import { particleSystemManager } from '../Renderer/ParticleSystem/ParticleSystemManager';
+import { GameObjectItem, ParticleItem } from '../Renderer/types';
 
-const ProjectToolbar: React.FC = () => {
+type PropsType = {
+  scene?: Scene,
+}
+
+const SceneToolbar: React.FC<PropsType> = ({
+  scene,
+}) => {
   const store = useStores();
 
   const [showMenu, setShowMenu] = React.useState<{ x: number, y: number } | null>(null);
@@ -30,26 +41,37 @@ const ProjectToolbar: React.FC = () => {
   const modelInputRef = React.useRef<HTMLInputElement>(null);
 
   const menuItems = React.useCallback((): MenuItemLike[] => ([
-    { name: 'Import texture...', action: () => {
-      const inputElement = textureInputRef.current;
-
-      if (inputElement) {
-        inputElement.value = '';
-        inputElement.click();
-      }  
+    { name: 'Create scene object', action: () => {
+      if (scene) {
+        const object = new SceneObject()
+        scene.addObject(object);  
+      }
     } },
-    { name: 'Import model...', action: () => {
-      const inputElement = modelInputRef.current;
+    { name: 'Create particle system', action: async () => {
+      if (scene) {
+        const object = new SceneObject()
 
-      if (inputElement) {
-        inputElement.value = '';
-        inputElement.click();
-      }  
+        const particleSystem = await ParticleSystem.create(-1);
+  
+        particleSystemManager.add(particleSystem);
+
+        const item: GameObjectItem = {
+          key: particleSystem.id,
+          type: 'particle',
+          item: {
+            id: particleSystem.id
+          }
+        }
+
+        object.addComponent(item);
+  
+        scene.addObject(object);  
+      }
     } },
-    { name: 'Create material', action: () => { store.project.addNewItem('material') } },
-    { name: 'Create shader', action: () => { store.project.addNewItem('shader') } },
-    { name: 'Create folder', action: () => { store.project.createFolder() } },
-  ]), [store.project]);
+    // { name: 'Create 2D game object', action: () => { store.project.addNewItem('object2D') } },
+    // { name: 'Create particle system', action: () => { store.project.addNewItem('particle') } },
+    // { name: 'Create folder', action: () => { store.project.createFolder() } },
+  ]), [scene]);
   
   const handleTextureFileSelection: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
     if (event.target.files && event.target.files[0]) {
@@ -91,4 +113,4 @@ const ProjectToolbar: React.FC = () => {
   )
 }
 
-export default ProjectToolbar;
+export default SceneToolbar;

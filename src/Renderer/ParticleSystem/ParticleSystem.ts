@@ -15,7 +15,7 @@ import Http from "../../Http/src";
 import PSValue from "./PSValue";
 import Particle from "./Particle";
 import LifetimeColor from "./LifetimeColor";
-import { ParticleSystemDescriptor, PSValueType, RenderMode } from "./Types";
+import { ParticleSystemDescriptor, PSValueType, RenderMode, ShapeType } from "./Types";
 import Shape from "./Shapes/Shape";
 import LifetimeSize from "./LIfetimeSize";
 import Collision from "./Collision";
@@ -75,12 +75,12 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     this.id = id
 
     this.duration = descriptor?.duration ?? 5
-    this.rate = descriptor?.rate ?? 10
+    this.rate = descriptor?.rate ?? 2
     this.maxPoints = descriptor?.maxPoints ?? 50
 
-    this.lifetime = PSValue.fromDescriptor(descriptor?.lifetime, this.onChange);
+    this.lifetime = PSValue.fromDescriptor(descriptor?.lifetime ?? { type: PSValueType.Constant, value: [5, 5] }, this.onChange);
 
-    this.shape = Shape.fromDescriptor(descriptor?.shape, this.onChange);
+    this.shape = Shape.fromDescriptor(descriptor?.shape ?? { enabled: true, type: ShapeType.Cone, }, this.onChange);
 
     this.startVelocity = PSValue.fromDescriptor(descriptor?.startVelocity, this.onChange);
     this.startSize = PSValue.fromDescriptor(descriptor?.startSize, this.onChange);

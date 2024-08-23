@@ -8,17 +8,16 @@ import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
 import Http from "../Http/src";
 import { ProjectItemInterface } from "../Project/Types/types";
-import GameObject from "./GameObject";
+import SceneObject from "./SceneObject";
 import Texture from "./Texture";
 import {
   SceneNodeInterface,
-  DecalItem, GameObject2DRecord, GameObjectRecord,
+  DecalItem,
   ModelItem, ParticleItem, ParticleSystemInterface, ShaderRecord,
 } from "../Renderer/types";
 import { renderer2d } from "../Main";
 import Project from "../Project/Types/Project";
 import { particleSystemManager } from "../Renderer/ParticleSystem/ParticleSystemManager";
-import GameObject2D from "./GameObject2D";
 import SceneNode2d from "../Renderer/Drawables/SceneNodes/SceneNode2d";
 import Mesh from "../Renderer/Drawables/Mesh";
 import { box } from "../Renderer/Drawables/Shapes/box";
@@ -27,6 +26,7 @@ import { vec3 } from "wgpu-matrix";
 import { materialManager } from "../Renderer/Materials/MaterialManager";
 import SceneNode from "../Renderer/Drawables/SceneNodes/SceneNode";
 import ParticleSystem from "../Renderer/ParticleSystem/ParticleSystem";
+import Scene from "../Scene/Types/Scene";
 
 class Store implements StoreInterface {
   get graph(): Graph | null {
@@ -48,6 +48,8 @@ class Store implements StoreInterface {
   shaderPreview: Renderer;
 
   project = new Project();
+
+  scene = new Scene();
 
   // projectItems = new Folder(-1, '', null, this)
 
@@ -112,25 +114,32 @@ class Store implements StoreInterface {
     })
 
     if (item.type === 'object') {
-      if (item.item === null) {
-        const response = await Http.get<GameObjectRecord>(`/game-objects/${item.itemId}`)
+      if (item.item === null && item.itemId !== null) {
+        const object = await SceneObject.fromServer(item.itemId);
 
-        if (response.ok) {
-          const objectRecord = await response.body();
-  
+        if (object) {
           runInAction(() => {
-            if (isGameObject2D(objectRecord.object)) {
-              item.item = new GameObject2D(objectRecord.id, objectRecord.name, objectRecord as GameObject2DRecord)
-            }
-            else {
-              item.item = new GameObject(objectRecord.id, objectRecord.name, objectRecord.object.items)
-            }
+            item.item = object;
           })
-        }  
+        }
+        // const response = await Http.get<GameObjectRecord>(`/game-objects/${item.itemId}`)
+
+        // if (response.ok) {
+        //   const objectRecord = await response.body();
+  
+        //   runInAction(() => {
+        //     if (isGameObject2D(objectRecord.object)) {
+        //       item.item = new GameObject2D(objectRecord.id, objectRecord.name, objectRecord as GameObject2DRecord)
+        //     }
+        //     else {
+        //       item.item = new GameObject(objectRecord.id, objectRecord.name, objectRecord.object.items)
+        //     }
+        //   })
+        // }  
       }
 
       if (!isGameObject2D(item.item)) {
-        const gameObject = item.item as GameObject;
+        const gameObject = item.item as SceneObject;
 
         this.mainViewModeler.assignModel(null)
 

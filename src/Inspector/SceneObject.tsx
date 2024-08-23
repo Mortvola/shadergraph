@@ -1,5 +1,5 @@
 import React from 'react';
-import { GameObjectInterface, isGameObject2D } from '../State/types';
+import { SceneObjectInterface, isGameObject2D } from '../State/types';
 import ModelTree from './ModelTree/ModelTree';
 import { useStores } from '../State/store';
 import styles from './Inspector.module.scss'
@@ -15,10 +15,10 @@ import Particle from './ParticleSystem/Particle';
 import NumberInput from './NumberInput';
 
 type PropsType = {
-  gameObject: GameObjectInterface
+  gameObject: SceneObjectInterface
 }
 
-const GameObject: React.FC<PropsType> = observer(({
+const SceneObject: React.FC<PropsType> = observer(({
   gameObject,
 }) => {
   const store = useStores()
@@ -253,4 +253,4 @@ const GameObject: React.FC<PropsType> = observer(({
   )
 })
 
-export default GameObject;
+export default SceneObject;

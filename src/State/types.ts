@@ -3,6 +3,7 @@ import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortI
 import { GameObjectItem, MaterialInterface } from "../Renderer/types";
 import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
 import { Vec4 } from "wgpu-matrix";
+import Component from "../Renderer/Drawables/Component";
 
 export interface ModelerInterface {
   applyMaterial(material: MaterialInterface): void
@@ -73,14 +74,16 @@ export interface EntityInterface {
   name: string;
 }
 
-export const isGameObject = (r: unknown): r is GameObjectInterface => (
-  (r as GameObjectInterface).items !== undefined
+export const isGameObject = (r: unknown): r is SceneObjectInterface => (
+  (r as SceneObjectInterface).items !== undefined
 )
 
-export interface GameObjectInterface extends EntityInterface {
+export interface SceneObjectInterface extends EntityInterface {
   translate: Vec4,
 
   items: GameObjectItem[]
+
+  // components: Component[];
 
   save(): Promise<void>
 }

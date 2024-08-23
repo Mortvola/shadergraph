@@ -1,5 +1,5 @@
 import ParticleSystem from "../../ParticleSystem/ParticleSystem";
-import { SceneNodeInterface, RendererInterface, SceneGraphInterface, SceneObjectInterface } from "../../types";
+import { SceneNodeInterface, RendererInterface, SceneGraphInterface } from "../../types";
 import { ComponentType } from "../Component";
 import Light from "../Light";
 import RangeCircle from "../RangeCircle";
@@ -43,10 +43,6 @@ class SceneGraph implements SceneGraphInterface {
     }
   }
 
-  addSceneObject(object: SceneObjectInterface) {
-    this.addNode(object.sceneNode)
-  }
-
   removeNode(node: SceneNodeInterface) {
     this.scene.removeNode(node);
 
@@ -78,10 +74,6 @@ class SceneGraph implements SceneGraphInterface {
         }
       }
     }
-  }
-
-  removeSceneObject(object: SceneObjectInterface) {
-    this.removeNode(object.sceneNode)
   }
 
   updateTransforms(renderer: RendererInterface | null) {
