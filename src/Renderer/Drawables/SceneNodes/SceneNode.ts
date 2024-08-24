@@ -84,19 +84,21 @@ class SceneNode implements SceneNodeInterface {
   addNode(node: SceneNodeInterface) {
     this.nodes.push(node);
     node.parentNode = this;
+    node.scene = this.scene;
   }
 
   removeNode(node: SceneNodeInterface) {
     const index = this.nodes.findIndex((n) => n === node);
 
-    if (index !== -1) {
-      this.nodes[index].parentNode = null;
-
+    if (index !== -1) {      
       this.nodes = [
         ...this.nodes.slice(0, index),
         ...this.nodes.slice(index + 1)
       ]
     }
+
+    node.parentNode = null;
+    node.scene = null;
   }
 
   detachSelf() {

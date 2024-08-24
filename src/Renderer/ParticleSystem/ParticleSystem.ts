@@ -1,7 +1,6 @@
 import { vec3, vec4 } from "wgpu-matrix"
 import { makeObservable, observable, runInAction } from "mobx";
 import {
-  SceneNodeInterface,
   DrawableType,
   MaterialInterface,
   ParticleSystemInterface,
@@ -138,7 +137,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     this.particles.clear()
   }
 
-  collided(point: Particle, elapsedTime: number, scene: SceneNodeInterface): boolean {
+  collided(point: Particle, elapsedTime: number): boolean {
     if (this.collision.enabled) {
       const planeNormal = vec4.create(0, 1, 0, 0);
       const planeOrigin = vec4.create(0, 0, 0, 1);
@@ -228,7 +227,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     return false;
   }
 
-  async update(time: number, elapsedTime: number, scene: SceneNodeInterface): Promise<void> {
+  async update(time: number, elapsedTime: number): Promise<void> {
     switch (this.renderer.mode) {
       case RenderMode.Billboard:
         if (!this.drawable || this.drawable.type !== 'Billboard') {
@@ -254,18 +253,18 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     if (this.lastEmitTime === 0) {
       this.lastEmitTime = time;
 
-      await this.emitSome(1, time, elapsedTime2, scene)
+      await this.emitSome(1, time, elapsedTime2)
     }
     else {
       // Update existing particles
-      await this.updateParticles(time, elapsedTime, scene);
+      await this.updateParticles(time, elapsedTime);
     
       // Add new particles
-      await this.emit(time, elapsedTime2, scene)
+      await this.emit(time, elapsedTime2)
     }
   }
 
-  private async updateParticles(time: number, elapsedTime: number, scene: SceneNodeInterface) {
+  private async updateParticles(time: number, elapsedTime: number) {
     for (const [, particle] of this.particles) {
       const t = (time - particle.startTime) / (particle.lifetime * 1000);
 
@@ -289,7 +288,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
           particle.velocity = vec4.scale(particle.velocity, this.lifetimeVelocity.speedModifier.getValue(t));
         }
 
-        if (!this.collided(particle,  elapsedTime, scene)) {
+        if (!this.collided(particle,  elapsedTime)) {
           // No collision occured
           // Find new position with current velocity
           particle.position = vec3.addScaled(
@@ -299,12 +298,12 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
           );
         }
 
-        await this.renderParticle(particle, scene, t);
+        await this.renderParticle(particle, t);
       }
     }
   }
 
-  async renderParticle(particle: Particle, scene: SceneNodeInterface, t: number) {
+  async renderParticle(particle: Particle, t: number) {
     if (this.renderer.enabled && this.sceneNode) {
       if (particle.sceneNode === null) {
         particle.sceneNode = new SceneNode();
@@ -343,7 +342,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     }
   }
 
-  private async emit(time: number, t: number, scene: SceneNodeInterface) {
+  private async emit(time: number, t: number) {
     if (this.particles.size < this.maxPoints) {
       const emitElapsedTime = time - this.lastEmitTime;
 
@@ -352,12 +351,12 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       if (numToEmit > 0) {
         this.lastEmitTime = time;
       
-        await this.emitSome(numToEmit, time, t, scene)
+        await this.emitSome(numToEmit, time, t)
       }
     }
   }
 
-  async emitSome(numToEmit: number, startTime: number, t: number, scene: SceneNodeInterface) {
+  async emitSome(numToEmit: number, startTime: number, t: number) {
     for (; numToEmit > 0; numToEmit -= 1) {
       const lifetime = this.lifetime.getValue(t);
       const startVelocity = this.startVelocity.getValue(t);
@@ -376,11 +375,11 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
       this.particles.set(particle.id, particle)
 
-      await this.renderParticle(particle, scene, 0);
+      await this.renderParticle(particle, 0);
     }
   }
 
-  removeParticles(scene: SceneNodeInterface): void {
+  removeParticles(): void {
     for (const [id, particle] of this.particles) {
       if (particle.sceneNode) {
         particle.sceneNode.detachSelf()

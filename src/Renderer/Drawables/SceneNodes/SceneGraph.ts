@@ -82,7 +82,7 @@ class SceneGraph implements SceneGraphInterface {
           else if (component.type === ComponentType.ParticleSystem) {
             const particleSystem = component as ParticleSystem;
 
-            particleSystem.removeParticles(this.scene)
+            particleSystem.removeParticles()
 
             this.particleSystems.delete(component as ParticleSystem)
           }

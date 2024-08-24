@@ -145,9 +145,9 @@ export interface ParticleSystemInterface extends ComponentInterface {
 
   shape: Shape;
 
-  update(time: number, elapsedTime: number, scene: SceneNodeInterface): Promise<void>
+  update(time: number, elapsedTime: number): Promise<void>
 
-  removeParticles(scene: SceneNodeInterface): void
+  removeParticles(): void
 
   reset(): void
 }
