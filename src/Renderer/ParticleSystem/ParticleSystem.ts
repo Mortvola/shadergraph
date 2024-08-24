@@ -270,8 +270,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       const t = (time - particle.startTime) / (particle.lifetime * 1000);
 
       if (t > 1.0) {
-        if (particle.sceneNode && this.sceneNode) {
-          this.sceneNode.removeNode(particle.sceneNode);
+        if (particle.sceneNode) {
+          particle.sceneNode.detachSelf();
           particle.sceneNode = null;
         }
         
@@ -337,8 +337,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       particle.drawable.color[2] = lifetimeColor[2] * particle.startColor[2];
       particle.drawable.color[3] = lifetimeColor[3] * particle.startColor[3];    
     }
-    else if (particle.sceneNode !== null && this.sceneNode !== null) {
-      this.sceneNode.removeNode(particle.sceneNode);
+    else if (particle.sceneNode !== null) {
+      particle.sceneNode.detachSelf();
       particle.sceneNode = null;
     }
   }
@@ -382,8 +382,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
   removeParticles(scene: SceneNodeInterface): void {
     for (const [id, particle] of this.particles) {
-      if (particle.sceneNode && this.sceneNode) {
-        this.sceneNode.removeNode(particle.sceneNode)
+      if (particle.sceneNode) {
+        particle.sceneNode.detachSelf()
         particle.sceneNode = null;
       }
 

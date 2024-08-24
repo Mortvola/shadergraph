@@ -45,6 +45,8 @@ export interface SceneNodeInterface {
 
   removeNode(node: SceneNodeInterface): void;
 
+  detachSelf(): void;
+
   addComponent(component: Component): void;
 
   removeComponent(component: Component): void;

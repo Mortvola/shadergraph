@@ -99,6 +99,12 @@ class SceneNode implements SceneNodeInterface {
     }
   }
 
+  detachSelf() {
+    if (this.parentNode) {
+      this.parentNode.removeNode(this)
+    }
+  }
+
   findNode(node: SceneNode) {
     const index = this.nodes.findIndex((n) => n === node);
 
