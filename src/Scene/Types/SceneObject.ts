@@ -24,7 +24,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
 
   rotate = vec3.create(0, 0, 0);
 
-  scale = vec3.create(0, 0, 0);
+  scale = vec3.create(1, 1, 1);
 
   sceneNode: SceneNode | null = null;
 
@@ -69,7 +69,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
 
             const ps = await ParticleSystem.create(-1, psDescriptor)
             ps.onChange = object.onChange;
-            
+
             return {
               type: c.type,
               item: ps,
@@ -94,6 +94,13 @@ class SceneObject extends Entity implements SceneObjectInterface {
         return undefined
       })))
       .filter((c) => c !== undefined)
+
+      // Fix any scale values that are zero.
+      for (let i = 0; i < object.scale.length; i += 1) {
+        if (object.scale[i] === 0) {
+          object.scale[i] = 1;
+        }  
+      }
     }
 
     return object;

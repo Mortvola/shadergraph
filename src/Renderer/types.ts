@@ -15,6 +15,8 @@ export const maxInstances = 1000;
 export interface SceneNodeInterface {
   nodes: SceneNodeInterface[];
 
+  parentNode: SceneNodeInterface | null;
+
   components: Set<Component>;
 
   name: string;
@@ -32,6 +34,8 @@ export interface SceneNodeInterface {
   scene: SceneGraphInterface | null;
 
   computeTransform(transform: Mat4, prepend?: boolean): void;
+
+  updateTransforms(mat: Mat4, renderer: RendererInterface | null): void;
 
   setFromAngles(x: number, y: number, z: number): void;
 

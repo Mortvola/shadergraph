@@ -256,7 +256,7 @@ const SceneObject: React.FC<PropsType> = observer(({
   const handleTranslateZChange = (z: number) => {
     sceneObject.setTranslate([
       sceneObject.translate[0],
-      sceneObject.translate[2],
+      sceneObject.translate[1],
       z,
     ])
   }

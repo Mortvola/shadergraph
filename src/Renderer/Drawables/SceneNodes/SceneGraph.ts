@@ -14,6 +14,10 @@ class SceneGraph implements SceneGraphInterface {
 
   particleSystems: Set<ParticleSystem> = new Set();
 
+  constructor() {
+    this.scene.scene = this;
+  }
+
   addNode(node: SceneNodeInterface) {
     node.scene = this;
     this.scene.addNode(node);
@@ -24,21 +28,19 @@ class SceneGraph implements SceneGraphInterface {
       const n = stack[0];
       stack = stack.slice(1);
 
-      if (isSceneNode(n)) {
-        stack.push(...n.nodes)
+      stack.push(...n.nodes)
 
-        // Look the set of components for lights and range circles and
-        // add them to the appropriate set.
-        for (const component of Array.from(n.components)) {
-          if (component.type === ComponentType.Light) {
-            this.lights.add(component as Light)
-          }
-          else if (component.type === ComponentType.RangeCircle) {
-            this.rangeCircles.add(component as RangeCircle)
-          }
-          else if (component.type === ComponentType.ParticleSystem) {
-            this.particleSystems.add(component as ParticleSystem)
-          }
+      // Look the set of components for lights and range circles and
+      // add them to the appropriate set.
+      for (const component of Array.from(n.components)) {
+        if (component.type === ComponentType.Light) {
+          this.lights.add(component as Light)
+        }
+        else if (component.type === ComponentType.RangeCircle) {
+          this.rangeCircles.add(component as RangeCircle)
+        }
+        else if (component.type === ComponentType.ParticleSystem) {
+          this.particleSystems.add(component as ParticleSystem)
         }
       }
     }

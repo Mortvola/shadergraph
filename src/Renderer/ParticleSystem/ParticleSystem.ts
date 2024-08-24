@@ -270,8 +270,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       const t = (time - particle.startTime) / (particle.lifetime * 1000);
 
       if (t > 1.0) {
-        if (particle.sceneNode) {
-          scene.removeNode(particle.sceneNode);
+        if (particle.sceneNode && this.sceneNode) {
+          this.sceneNode.removeNode(particle.sceneNode);
           particle.sceneNode = null;
         }
         
@@ -305,10 +305,10 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
   }
 
   async renderParticle(particle: Particle, scene: SceneNodeInterface, t: number) {
-    if (this.renderer.enabled) {
+    if (this.renderer.enabled && this.sceneNode) {
       if (particle.sceneNode === null) {
         particle.sceneNode = new SceneNode();
-        scene.addNode(particle.sceneNode)  
+        this.sceneNode.addNode(particle.sceneNode)  
       }
 
       if (particle.drawable === null) {
@@ -337,8 +337,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       particle.drawable.color[2] = lifetimeColor[2] * particle.startColor[2];
       particle.drawable.color[3] = lifetimeColor[3] * particle.startColor[3];    
     }
-    else if (particle.sceneNode !== null) {
-      scene.removeNode(particle.sceneNode);
+    else if (particle.sceneNode !== null && this.sceneNode !== null) {
+      this.sceneNode.removeNode(particle.sceneNode);
       particle.sceneNode = null;
     }
   }
@@ -382,8 +382,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
   removeParticles(scene: SceneNodeInterface): void {
     for (const [id, particle] of this.particles) {
-      if (particle.sceneNode) {
-        scene.removeNode(particle.sceneNode)
+      if (particle.sceneNode && this.sceneNode) {
+        this.sceneNode.removeNode(particle.sceneNode)
         particle.sceneNode = null;
       }
 

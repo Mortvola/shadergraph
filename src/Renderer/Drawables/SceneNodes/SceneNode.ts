@@ -17,6 +17,8 @@ const rotationOrder: quat.RotationOrder = 'xyz';
 class SceneNode implements SceneNodeInterface {
   nodes: SceneNodeInterface[] = [];
 
+  parentNode: SceneNodeInterface | null = null;
+
   components: Set<Component> = new Set();
   
   name = '';
@@ -81,12 +83,15 @@ class SceneNode implements SceneNodeInterface {
 
   addNode(node: SceneNodeInterface) {
     this.nodes.push(node);
+    node.parentNode = this;
   }
 
   removeNode(node: SceneNodeInterface) {
     const index = this.nodes.findIndex((n) => n === node);
 
     if (index !== -1) {
+      this.nodes[index].parentNode = null;
+
       this.nodes = [
         ...this.nodes.slice(0, index),
         ...this.nodes.slice(index + 1)
@@ -143,6 +148,8 @@ class SceneNode implements SceneNodeInterface {
               }    
             }
           }  
+
+          node.updateTransforms(this.transform, renderer);
         }
       }
       else if (isSceneNode(node)) {
