@@ -48,6 +48,7 @@ const ProjectToolbar: React.FC = () => {
     } },
     { name: 'Create material', action: () => { store.project.addNewItem('material') } },
     { name: 'Create shader', action: () => { store.project.addNewItem('shader') } },
+    { name: 'Create scene', action: () => { store.project.addNewItem('scene')}},
     { name: 'Create folder', action: () => { store.project.createFolder() } },
   ]), [store.project]);
   

@@ -5,7 +5,7 @@ import styles from './Particle.module.scss';
 import { useStores } from '../../State/store';
 import { materialManager } from '../../Renderer/Materials/MaterialManager';
 import { particleSystemManager } from '../../Renderer/ParticleSystem/ParticleSystemManager';
-import { ParticleItem } from '../../Renderer/types';
+import { ParticleItem, ParticleSystemInterface } from '../../Renderer/types';
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import PSValueInput from './PSValueInput';
@@ -16,25 +16,25 @@ import Collision from './Collision';
 import PSRenderer from './PSRenderer';
 
 type PropsType = {
-  particleItem: ParticleItem,
+  particleSystem: ParticleSystem,
 }
 
 const Particle: React.FC<PropsType> = observer(({
-  particleItem,
+  particleSystem,
 }) => {  
   const store = useStores()
 
-  const [particleSystem, setParticleSystem] = React.useState<ParticleSystem | null>(null)
+  // const [particleSystem, setParticleSystem] = React.useState<ParticleSystem | null>(null)
 
-  React.useEffect(() => {
-    (async () => {
-      const ps = await particleSystemManager.getParticleSystem(particleItem.id)
+  // React.useEffect(() => {
+  //   (async () => {
+  //     const ps = await particleSystemManager.getParticleSystem(particleItem.id)
 
-      if (ps) {
-        setParticleSystem(ps);
-      }
-    })()
-  }, [particleItem.id])
+  //     if (ps) {
+  //       setParticleSystem(ps);
+  //     }
+  //   })()
+  // }, [particleItem.id])
 
   if (particleSystem === null) {
     return null
@@ -43,20 +43,29 @@ const Particle: React.FC<PropsType> = observer(({
   const handleDurationChange = (value: number) => {
     runInAction(() => {
       particleSystem.duration = value;
-      particleSystem.save()
+
+      if (particleSystem.handleChange) {
+        particleSystem.handleChange()
+      }
     })
   }
 
   const handleMaxPointsChange = (value: number) => {
     runInAction(() => {
       particleSystem.maxPoints = value;
-      particleSystem.save()
+
+      if (particleSystem.handleChange) {
+        particleSystem.handleChange()
+      }
     })
   }
 
   const handleRateChange = (value: number) => {
     particleSystem.rate = value;
-    particleSystem.save()
+
+    if (particleSystem.handleChange) {
+      particleSystem.handleChange()
+    }
   }
 
   const handleDragOver: React.DragEventHandler = (event) => {

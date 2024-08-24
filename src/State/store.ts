@@ -2,13 +2,13 @@ import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
 import {
-  ModelInterface, StoreInterface, TextureRecord, isGameObject, isGameObject2D,
+  ModelInterface, SceneDescriptor, SceneInterface, StoreInterface, TextureRecord, isGameObject, isGameObject2D,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
 import Http from "../Http/src";
 import { ProjectItemInterface } from "../Project/Types/types";
-import SceneObject from "./SceneObject";
+import SceneObject from "../Scene/Types/SceneObject";
 import Texture from "./Texture";
 import {
   SceneNodeInterface,
@@ -50,7 +50,7 @@ class Store implements StoreInterface {
 
   project = new Project();
 
-  scene = new Scene();
+  scene?: SceneInterface;
 
   // projectItems = new Folder(-1, '', null, this)
 
@@ -66,6 +66,7 @@ class Store implements StoreInterface {
     makeObservable(this, {
       models: observable,
       project: observable,
+      scene: observable,
     })
   }
 
@@ -114,7 +115,24 @@ class Store implements StoreInterface {
       this.project.selectedItem = item;
     })
 
-    if (item.type === 'object') {
+    if (item.type === 'scene') {
+      if (item.item === null) {
+        const response = await Http.get<SceneDescriptor>(`/scenes/${item.itemId}`);
+
+        if (response.ok) {
+          const body = await response.body();
+
+          const scene = await Scene.fromDescriptor(body)
+
+          this.scene = scene;
+
+          await this.scene.renderScene();
+        }
+      }
+
+      // this.scene = item.item as SceneInterface;
+    }
+    else if (item.type === 'object') {
       if (item.item === null && item.itemId !== null) {
         const object = await SceneObject.fromServer(item.itemId);
 
@@ -123,7 +141,7 @@ class Store implements StoreInterface {
             item.item = object;
           })
         }
-        // const response = await Http.get<GameObjectRecord>(`/game-objects/${item.itemId}`)
+        // const response = await Http.get<GameObjectRecord>(`/scene-objects/${item.itemId}`)
 
         // if (response.ok) {
         //   const objectRecord = await response.body();

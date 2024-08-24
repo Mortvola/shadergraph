@@ -135,7 +135,7 @@ class Project implements ProjectInterface {
 
     switch (type) {
       case 'object': {
-        url = '/game-objects'
+        url = '/scene-objects'
         payload = {
           name,
           object: {},
@@ -145,7 +145,7 @@ class Project implements ProjectInterface {
       }
 
       case 'object2D': {
-        url = '/game-objects'
+        url = '/scene-objects'
         payload = {
           name,
           object: {
@@ -185,6 +185,18 @@ class Project implements ProjectInterface {
         payload = {
           name,
           descriptor: {},
+        }
+
+        break
+      }
+
+      case 'scene': {
+        url = '/scenes'
+        payload = {
+          name,
+          scene: {
+            objects: [],
+          },
         }
 
         break

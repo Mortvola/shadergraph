@@ -74,7 +74,7 @@ const LightComponent: React.FC<PropsType> = ({
           <ColorPicker value={light.color} onChange={handleColorChange} />
         </div>
       </label>
-      Parameters:
+      Attenuation:
       <div>
         <label>
           Constant:

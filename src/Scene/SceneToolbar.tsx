@@ -3,15 +3,15 @@ import { MenuItemLike } from '../ContextMenu/types';
 import { useStores } from '../State/store';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import styles from '../Project/Project.module.scss'
-import Scene from './Types/Scene';
-import SceneObject from '../State/SceneObject';
+import SceneObject from './Types/SceneObject';
 import ParticleSystem from '../Renderer/ParticleSystem/ParticleSystem';
 import { particleSystemManager } from '../Renderer/ParticleSystem/ParticleSystemManager';
 import { ComponentType, GameObjectItem } from '../Renderer/types';
 import Light from '../Renderer/Drawables/Light';
+import { SceneInterface } from '../State/types';
 
 type PropsType = {
-  scene?: Scene,
+  scene?: SceneInterface,
 }
 
 const SceneToolbar: React.FC<PropsType> = ({
@@ -42,10 +42,15 @@ const SceneToolbar: React.FC<PropsType> = ({
   const modelInputRef = React.useRef<HTMLInputElement>(null);
 
   const menuItems = React.useCallback((): MenuItemLike[] => ([
-    { name: 'Create scene object', action: () => {
+    { name: 'Create scene object', action: async () => {
       if (scene) {
         const object = new SceneObject()
+
+        await object.save();
+
         scene.addObject(object);  
+
+        scene.setSelectedObject(object);
       }
     } },
     { name: 'Create particle system', action: async () => {
@@ -53,20 +58,20 @@ const SceneToolbar: React.FC<PropsType> = ({
         const object = new SceneObject()
 
         const particleSystem = await ParticleSystem.create(-1);
-  
-        particleSystemManager.add(particleSystem);
 
         const item: GameObjectItem = {
           key: particleSystem.id,
           type: ComponentType.ParticleSystem,
-          item: {
-            id: particleSystem.id
-          }
+          item: particleSystem,
         }
 
         object.addComponent(item);
   
-        scene.addObject(object);  
+        await object.save();
+
+        scene.addObject(object);
+
+        scene.setSelectedObject(object);
       }
     } },
     { name: 'Create light', action: async () => {
@@ -82,7 +87,11 @@ const SceneToolbar: React.FC<PropsType> = ({
 
         object.addComponent(item);
 
+        await object.save();
+
         scene.addObject(object);
+
+        scene.setSelectedObject(object);
       }
     } }
 

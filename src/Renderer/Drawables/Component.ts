@@ -1,9 +1,15 @@
-import { ComponentInterface, ComponentType, SceneNodeInterface } from "../types";
+import { ComponentDescriptor, ComponentInterface, ComponentType, SceneNodeInterface } from "../types";
 
 class Component implements ComponentInterface {
   type: ComponentType;
 
   sceneNode: SceneNodeInterface | null = null;
+
+  onChange?: () => void;
+
+  toDescriptor(): ComponentDescriptor {
+    throw new Error('not implemented')
+  }
 
   constructor(type: ComponentType) {
     this.type = type;

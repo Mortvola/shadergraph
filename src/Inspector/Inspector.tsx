@@ -43,7 +43,7 @@ const Inspector: React.FC = observer(() => {
   }
 
   const renderView = () => {
-    if (scene.selectedObject) {
+    if (scene?.selectedObject) {
       return <SceneObject sceneObject={scene.selectedObject} />
     }
 

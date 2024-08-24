@@ -134,7 +134,7 @@ export interface PipelineManagerInterface {
   ): Promise<PipelineInterface>
 }
 
-export interface ParticleSystemInterface {
+export interface ParticleSystemInterface extends ComponentInterface {
   id: number
 
   shape: Shape;
@@ -159,19 +159,34 @@ export type ShaderRecord = {
   descriptor: ShaderDescriptor,
 }
 
+export type ModelItemDescriptor = {
+
+}
+
 export type ModelItem = {
   id: number,
   materials: Record<string, number>,
+  onChange?: () => void,
+
+  toDescriptor: () => ComponentDescriptor,
 }
 
 export type ParticleItem = {
   id: number,
 }
 
+export type DecalItemDescriptor = {
+
+}
+
 export type DecalItem = {
   materialId?: number,
   width?: number,
   height?: number,
+
+  onChange?: () => void,
+
+  toDescriptor: () => ComponentDescriptor;
 }
 
 export enum ComponentType {
@@ -187,6 +202,22 @@ export interface ComponentInterface {
   type: ComponentType;
 
   sceneNode: SceneNodeInterface | null;
+
+  onChange?: () =>void;
+
+  toDescriptor(): ComponentDescriptor;
+}
+
+export type ComponentDescriptor = {
+  type: ComponentType,
+  item: LightDescriptor | ParticleSystemDescriptor | DecalItemDescriptor | ModelItemDescriptor,
+}
+
+export type LightDescriptor = {
+  color: number[],
+  constant: number,
+  linear: number,
+  quadratic: number,
 }
 
 export interface LightInterface extends ComponentInterface {
@@ -201,7 +232,7 @@ export interface LightInterface extends ComponentInterface {
 export type GameObjectItem = {
   key?: number,
   type: ComponentType,
-  item: ModelItem | ParticleItem | DecalItem | LightInterface,
+  item: ModelItem | ParticleSystemInterface | DecalItem | LightInterface,
 }
 
 export type GameObject = {

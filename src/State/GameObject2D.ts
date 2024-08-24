@@ -27,7 +27,7 @@ class GameObject2D extends Entity implements GameObject2DInterface {
   }
 
   async save(): Promise<void> {
-    const response = await Http.patch<GameObject2DRecord, void>(`/game-objects/${this.id}`, {
+    const response = await Http.patch<GameObject2DRecord, void>(`/scene-objects/${this.id}`, {
       id: this.id,
       name: this.name,
       object: {

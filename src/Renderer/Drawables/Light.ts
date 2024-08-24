@@ -1,6 +1,6 @@
 import { vec4, Vec4 } from 'wgpu-matrix';
 import Component from './Component';
-import { ComponentType, LightInterface } from '../types';
+import { ComponentDescriptor, ComponentType, LightInterface } from '../types';
 
 class Light extends Component implements LightInterface {
   color: number[] = [1, 1, 1, 1];
@@ -25,6 +25,18 @@ class Light extends Component implements LightInterface {
 
   computeCentroid(): Vec4 {
     return vec4.create(0, 0, 0, 1);
+  }
+
+  toDescriptor(): ComponentDescriptor {
+    return ({
+      type: this.type,
+      item: {
+        color: this.color,
+        constant: this.constant,
+        linear: this.linear,
+        quadratic: this.quadratic,  
+      }
+    })
   }
 }
 

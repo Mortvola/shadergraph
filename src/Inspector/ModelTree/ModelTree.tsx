@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { useStores } from '../../State/store';
-import { SceneNodeInterface, DrawableComponentInterface, ModelItem } from '../../Renderer/types';
+import { SceneNodeInterface, DrawableComponentInterface, ModelItem, ComponentType } from '../../Renderer/types';
 import { isSceneNode } from '../../Renderer/Drawables/SceneNodes/SceneNode';
 import { isDrawableNode } from '../../Renderer/Drawables/SceneNodes/utils';
 import MeshNode from './MeshNode';
@@ -35,7 +35,7 @@ const ModelTree: React.FC<PropsType> = observer(({
 
     materials[node.name] = materialId;
 
-    onChange({ id: modelItem.id, materials })
+    onChange({ id: modelItem.id, materials, toDescriptor: () => { return { type: ComponentType.Mesh, item: {} } } })
   }
 
   const renderTree = () => {

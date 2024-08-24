@@ -108,7 +108,6 @@ const ProjectItem: React.FC<PropsType> = observer(({
               runInAction(() => {
                 store.selectItem(newItem);
               })
-        
             }
           }
         },

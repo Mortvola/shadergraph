@@ -5,7 +5,7 @@ import { useStores } from '../State/store';
 import styles from './Inspector.module.scss'
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
-import { ComponentType, DecalItem, GameObjectItem, LightInterface, ModelItem, ParticleItem } from '../Renderer/types';
+import { ComponentType, DecalItem, GameObjectItem, LightInterface, ModelItem, ParticleSystemInterface } from '../Renderer/types';
 import GameObject2D from './GameObject2d';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
@@ -54,22 +54,22 @@ const SceneObject: React.FC<PropsType> = observer(({
 
           sceneObject.items = [
             ...sceneObject.items,
-            { item: { id: store.draggingItem.itemId, materials: {} }, type: ComponentType.Mesh },
+            { item: { id: store.draggingItem.itemId, materials: {}, toDescriptor: () => { return { type: ComponentType.Mesh, item: {} } } }, type: ComponentType.Mesh },
           ]
   
           sceneObject.save()
 
           break;
 
-        case 'particle':
+        // case 'particle':
 
-          sceneObject.items = [
-            ...sceneObject.items,
-            { item: { id: store.draggingItem.itemId }, type: ComponentType.Mesh },
-          ]
+        //   sceneObject.items = [
+        //     ...sceneObject.items,
+        //     { item: { id: store.draggingItem.itemId }, type: ComponentType.ParticleSystem },
+        //   ]
 
-          sceneObject.save()
-          break;
+        //   sceneObject.save()
+        //   break;
       }
     }
   }
@@ -141,7 +141,7 @@ const SceneObject: React.FC<PropsType> = observer(({
         return <ModelTree modelItem={item.item as ModelItem} onChange={handleModelChange} />
 
       case ComponentType.ParticleSystem:
-        return <Particle particleItem={item.item as ParticleItem} />
+        return <Particle particleSystem={item.item as ParticleSystem} />
 
       case ComponentType.Decal:
         return <Decal decalItem={item.item as DecalItem} onChange={handleDecalChange} />
@@ -191,7 +191,7 @@ const SceneObject: React.FC<PropsType> = observer(({
   const addComponent = React.useCallback((type: ComponentType) => {
     switch (type) {
       case ComponentType.Decal:
-        sceneObject.items.push({ item: {}, type: ComponentType.Decal })
+        sceneObject.items.push({ item: { toDescriptor: () => { return { type: ComponentType.Decal, item: {} } }}, type: ComponentType.Decal })
         sceneObject.save()
         break;
 
@@ -206,7 +206,7 @@ const SceneObject: React.FC<PropsType> = observer(({
       }
 
       case ComponentType.Mesh:
-        sceneObject.items.push({ item: { id: 0 }, type: ComponentType.Mesh }) 
+        sceneObject.items.push({ item: { id: 0, materials: {}, toDescriptor: () => { return { type: ComponentType.Mesh, item: {} } } }, type: ComponentType.Mesh }) 
         sceneObject.save()
         break;
 
@@ -219,9 +219,7 @@ const SceneObject: React.FC<PropsType> = observer(({
           const item: GameObjectItem = {
             key: particleSystem.id,
             type: ComponentType.ParticleSystem,
-            item: {
-              id: particleSystem.id
-            }
+            item: particleSystem,
           }
   
           sceneObject.addComponent(item);  
@@ -240,21 +238,27 @@ const SceneObject: React.FC<PropsType> = observer(({
   ]), [addComponent]);
 
   const handleTranslateXChange = (x: number) => {
-    if (sceneObject.sceneNode) {
-      sceneObject.sceneNode.translate[0] = x;
-    }
+    sceneObject.setTranslate([
+      x,
+      sceneObject.translate[1],
+      sceneObject.translate[2],
+    ])
   }
 
   const handleTranslateYChange = (y: number) => {
-    if (sceneObject.sceneNode) {
-      sceneObject.sceneNode.translate[1] = y;
-    }
+    sceneObject.setTranslate([
+      sceneObject.translate[0],
+      y,
+      sceneObject.translate[2],
+    ])
   }
 
   const handleTranslateZChange = (z: number) => {
-    if (sceneObject.sceneNode) {
-      sceneObject.sceneNode.translate[2] = z;
-    }
+    sceneObject.setTranslate([
+      sceneObject.translate[0],
+      sceneObject.translate[2],
+      z,
+    ])
   }
 
   return (

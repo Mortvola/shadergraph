@@ -1,9 +1,8 @@
 import { ProjectInterface } from "../Project/Types/types";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
-import { GameObjectItem, MaterialInterface, SceneNodeInterface } from "../Renderer/types";
+import { ComponentDescriptor, ComponentType, GameObjectItem, MaterialInterface, SceneNodeInterface } from "../Renderer/types";
 import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
-import { Vec4 } from "wgpu-matrix";
-import Component from "../Renderer/Drawables/Component";
+import { Vec3 } from "wgpu-matrix";
 
 export interface ModelerInterface {
   applyMaterial(material: MaterialInterface): void
@@ -78,16 +77,56 @@ export const isGameObject = (r: unknown): r is SceneObjectInterface => (
   (r as SceneObjectInterface).items !== undefined
 )
 
+export interface SceneInterface {
+  name: string;
+
+  selectedObject: SceneObjectInterface | null;
+
+  objects: SceneObjectInterface[];
+
+  addObject(object: SceneObjectInterface): void;
+
+  setSelectedObject(object: SceneObjectInterface): void;
+
+  renderScene(): Promise<void>
+}
+
 export interface SceneObjectInterface extends EntityInterface {
-  translate: Vec4,
+  translate: Vec3;
 
-  items: GameObjectItem[]
+  rotate: Vec3;
 
-  sceneNode: SceneNodeInterface | null
+  scale: Vec3;
 
-  save(): Promise<void>
+  items: GameObjectItem[];
+
+  sceneNode: SceneNodeInterface | null;
+
+  save(): Promise<void>;
 
   addComponent(component: GameObjectItem): void;
+
+  setTranslate(translate: number[]): void;
+}
+
+export type SceneDescriptor = {
+  id?: number,
+  name: string,
+  scene: {
+    objects: number[],
+  }
+}
+
+export type SceneObjectDescriptor = {
+  id?: number,
+  name: string,
+  object: {
+    translate: number[],
+    rotate: number[],
+    scale: number[],
+    components: ComponentDescriptor[],
+    objects: SceneObjectDescriptor[],  
+  }
 }
 
 export interface GameObject2DInterface extends EntityInterface {

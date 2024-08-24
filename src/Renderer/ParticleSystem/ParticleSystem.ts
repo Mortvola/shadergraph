@@ -6,6 +6,7 @@ import {
   MaterialInterface,
   ParticleSystemInterface,
   ComponentType,
+  ComponentDescriptor,
 } from "../types";
 import DrawableComponent from "../Drawables/DrawableComponent";
 import { gravity, intersectionPlane } from "../Math";
@@ -79,33 +80,33 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     this.rate = descriptor?.rate ?? 2
     this.maxPoints = descriptor?.maxPoints ?? 50
 
-    this.lifetime = PSValue.fromDescriptor(descriptor?.lifetime ?? { type: PSValueType.Constant, value: [5, 5] }, this.onChange);
+    this.lifetime = PSValue.fromDescriptor(descriptor?.lifetime ?? { type: PSValueType.Constant, value: [5, 5] }, this.handleChange);
 
-    this.shape = Shape.fromDescriptor(descriptor?.shape ?? { enabled: true, type: ShapeType.Cone, }, this.onChange);
+    this.shape = Shape.fromDescriptor(descriptor?.shape ?? { enabled: true, type: ShapeType.Cone, }, this.handleChange);
 
-    this.startVelocity = PSValue.fromDescriptor(descriptor?.startVelocity, this.onChange);
-    this.startSize = PSValue.fromDescriptor(descriptor?.startSize, this.onChange);
+    this.startVelocity = PSValue.fromDescriptor(descriptor?.startVelocity, this.handleChange);
+    this.startSize = PSValue.fromDescriptor(descriptor?.startSize, this.handleChange);
     
-    this.lifetimeSize = LifetimeSize.fromDescriptor(descriptor?.lifetimeSize, this.onChange);
+    this.lifetimeSize = LifetimeSize.fromDescriptor(descriptor?.lifetimeSize, this.handleChange);
 
-    this.lifetimeVelocity = LifetimeVelocity.fromDescriptor(descriptor?.lifetimeVelocity, this.onChange);
+    this.lifetimeVelocity = LifetimeVelocity.fromDescriptor(descriptor?.lifetimeVelocity, this.handleChange);
 
-    this.startColor = PSColor.fromDescriptor(descriptor?.startColor, this.onChange)
-    this.lifetimeColor = LifetimeColor.fromDescriptor(descriptor?.lifetimeColor, this.onChange)
+    this.startColor = PSColor.fromDescriptor(descriptor?.startColor, this.handleChange)
+    this.lifetimeColor = LifetimeColor.fromDescriptor(descriptor?.lifetimeColor, this.handleChange)
 
     this.gravityModifier = PSValue.fromDescriptor(
       descriptor?.gravityModifier ?? {
         type: PSValueType.Constant,
         value: [0, 0],
       },
-      this.onChange,
+      this.handleChange,
     );
 
-    this.collision = Collision.fromDescriptor(descriptor?.collision, this.onChange)
+    this.collision = Collision.fromDescriptor(descriptor?.collision, this.handleChange)
 
     this.renderer = Renderer.fromDescriptor(
       descriptor?.renderer ?? { enabled: true, mode: RenderMode.Billboard },
-      this.onChange
+      this.handleChange
     );
 
     this.materialItem = materialItem;
@@ -390,22 +391,25 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     }
   }
 
-  toDescriptor(): ParticleSystemDescriptor {
+  toDescriptor(): ComponentDescriptor {
     return ({
-      duration: this.duration,
-      maxPoints: this.maxPoints,
-      rate: this.rate,
-      shape: this.shape.toDescriptor(),
-      lifetime: this.lifetime.toDescriptor(),
-      startVelocity: this.startVelocity.toDescriptor(),
-      startSize: this.startSize.toDescriptor(),
-      lifetimeSize: this.lifetimeSize.toDescriptor(),
-      startColor: this.startColor.toDescriptor(),
-      lifetimeColor: this.lifetimeColor.toDescriptor(),
-      gravityModifier: this.gravityModifier.toDescriptor(),
-      collision: this.collision.toDescriptor(),
-      renderer: this.renderer.toDescriptor(),
-      materialId: this.materialItem?.id,
+      type: this.type,
+      item: {
+        duration: this.duration,
+        maxPoints: this.maxPoints,
+        rate: this.rate,
+        shape: this.shape.toDescriptor(),
+        lifetime: this.lifetime.toDescriptor(),
+        startVelocity: this.startVelocity.toDescriptor(),
+        startSize: this.startSize.toDescriptor(),
+        lifetimeSize: this.lifetimeSize.toDescriptor(),
+        startColor: this.startColor.toDescriptor(),
+        lifetimeColor: this.lifetimeColor.toDescriptor(),
+        gravityModifier: this.gravityModifier.toDescriptor(),
+        collision: this.collision.toDescriptor(),
+        renderer: this.renderer.toDescriptor(),
+        materialId: this.materialItem?.id,
+      }
     })
   }
 
@@ -450,8 +454,10 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     }
   }
 
-  onChange = () => {
-    this.save();
+  handleChange = () => {
+    if (this.onChange) {
+      this.onChange();
+    }
   }
 }
 
