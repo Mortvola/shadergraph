@@ -65,59 +65,67 @@ class SceneObject extends Entity implements SceneObjectInterface {
     if (descriptor) {
       object.id = descriptor.id ?? object.id;
       object.name = descriptor?.name ?? object.name;
-      object.translate = vec3.create(...descriptor.object.translate)
-      object.rotate = vec3.create(...descriptor.object.rotate)
-      object.scale = vec3.create(...descriptor.object.scale)
+      object.translate = vec3.create(...(descriptor.object.translate ?? [0, 0, 0]))
+      object.rotate = vec3.create(...(descriptor.object.rotate ?? [0, 0, 0]))
+      object.scale = vec3.create(...(descriptor.object.scale ?? [1, 1, 1]))
 
-      object.items = (await Promise.all(descriptor.object.components.map(async (c) => {
-        switch (c.type) {
-          case ComponentType.ParticleSystem:
-            const psDescriptor = c.item as ParticleSystemDescriptor;
+      let components = descriptor.object.components;
+      if (!components) {
+        components = descriptor.object.items;
+      }
 
-            const ps = await ParticleSystem.create(-1, psDescriptor)
-            ps.onChange = object.onChange;
+      if (components) {
+        object.items = (await Promise.all(components.map(async (c) => {
+          switch (c.type) {
+            case ComponentType.ParticleSystem:
+              const psDescriptor = c.item as ParticleSystemDescriptor;
 
-            object.sceneNode.addComponent(ps)
+              const ps = await ParticleSystem.create(-1, psDescriptor)
+              ps.onChange = object.onChange;
 
-            return {
-              type: c.type,
-              item: ps,
-            }
+              object.sceneNode.addComponent(ps)
 
-          case ComponentType.Light: {
-            const lightDescriptor = c.item as LightDescriptor;
+              return {
+                type: c.type,
+                item: ps,
+              }
 
-            const light = new Light();
-            light.color = lightDescriptor.color
-            light.constant = lightDescriptor.constant;
-            light.linear = lightDescriptor.linear;
-            light.quadratic = lightDescriptor.quadratic;
+            case ComponentType.Light: {
+              const lightDescriptor = c.item as LightDescriptor;
 
-            object.sceneNode.addComponent(light)
+              const light = new Light();
+              light.color = lightDescriptor.color
+              light.constant = lightDescriptor.constant;
+              light.linear = lightDescriptor.linear;
+              light.quadratic = lightDescriptor.quadratic;
 
-            return {
-              type: c.type,
-              item: light,
+              object.sceneNode.addComponent(light)
+
+              return {
+                type: c.type,
+                item: light,
+              }
             }
           }
-        }
 
-        return undefined
-      })))
-      .filter((c) => c !== undefined)
+          return undefined
+        })))
+        .filter((c) => c !== undefined)
+      }
 
-      object.objects = (await Promise.all(descriptor.object.objects.map(async (id) => {
-        const child = await SceneObject.fromServer(id);
+      if (descriptor.object.objects) {
+        object.objects = (await Promise.all(descriptor.object.objects.map(async (id) => {
+          const child = await SceneObject.fromServer(id);
 
-        if (child) {
-          child.parent = object
-          object.sceneNode.addNode(child.sceneNode)
-        }
+          if (child) {
+            child.parent = object
+            object.sceneNode.addNode(child.sceneNode)
+          }
 
-        return child;
-      })))
-      .filter((o) => o !== undefined);
-
+          return child;
+        })))
+        .filter((o) => o !== undefined);
+      }
 
       // Fix any scale values that are zero.
       for (let i = 0; i < object.scale.length; i += 1) {

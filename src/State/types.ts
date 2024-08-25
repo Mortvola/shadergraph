@@ -74,6 +74,7 @@ export interface EntityInterface {
 }
 
 export const isGameObject = (r: unknown): r is SceneObjectInterface => (
+  r !== undefined && r !== null &&
   (r as SceneObjectInterface).items !== undefined
 )
 
@@ -137,11 +138,12 @@ export type SceneObjectDescriptor = {
   id?: number,
   name: string,
   object: {
-    translate: number[],
-    rotate: number[],
-    scale: number[],
-    components: ComponentDescriptor[],
-    objects: number[],  
+    translate?: number[],
+    rotate?: number[],
+    scale?: number[],
+    components?: ComponentDescriptor[],
+    items?: ComponentDescriptor[],
+    objects?: number[],  
   }
 }
 
