@@ -32,6 +32,7 @@ const PSValueInput: React.FC<PropsType> = observer(({
           () => {
             switch (value.type) {
               case PSValueType.Constant:
+              case PSValueType.Random:
                 return (
                   <NumberInput
                     value={value.value[0]}
