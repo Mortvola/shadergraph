@@ -35,7 +35,7 @@ class Scene implements SceneInterface {
       }
       else {
         scene.rootObject = await SceneObject.fromServer(descriptor.scene.objects) ?? scene.rootObject;
-        scene.rootObject.name = this.name;
+        // scene.rootObject.name = this.name;
       }
     }
 

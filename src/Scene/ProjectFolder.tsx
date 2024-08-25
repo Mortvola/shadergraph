@@ -92,7 +92,14 @@ const ProjectFolder: React.FC<PropsType> = observer(({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
     >
-      { children }
+      <ProjectItem
+        key={folder.id}
+        project={project}
+        item={folder}
+        onSelect={onSelect}
+        selected={folder.id === project.selectedObject?.id}
+        draggable
+      />
       <div
         style={{ paddingLeft: level > 0 ? 16 : 0 }}
       >
@@ -118,16 +125,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
               folder={i}
               onSelect={onSelect}
               level={level + 1}
-            >
-              <ProjectItem
-                key={i.id}
-                project={project}
-                item={i}
-                onSelect={onSelect}
-                selected={i.id === project.selectedObject?.id}
-                draggable
-              />
-            </ProjectFolder>
+            />
           ))
         }
       </div>

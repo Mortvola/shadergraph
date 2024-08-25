@@ -31,9 +31,7 @@ const Scene: React.FC<PropsType> = observer(({
         folder={scene.rootObject}
         onSelect={handleObjectClick}
         level={1}
-      >
-        {scene.name}
-      </ProjectFolder>  
+      />
     </div>
   )
 })
