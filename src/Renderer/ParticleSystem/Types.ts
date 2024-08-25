@@ -6,6 +6,7 @@ export enum RenderMode {
 export type RendererDescriptor = {
   enabled: boolean,
   mode: RenderMode,
+  materialId?: number,
 }
 
 export type AlphaGradientKey = {
@@ -147,6 +148,4 @@ export type ParticleSystemDescriptor = {
   collision: CollisionDescriptor,
 
   renderer: RendererDescriptor,
-
-  materialId?: number,
 }

@@ -24,18 +24,6 @@ const Particle: React.FC<PropsType> = observer(({
 }) => {  
   const store = useStores()
 
-  // const [particleSystem, setParticleSystem] = React.useState<ParticleSystem | null>(null)
-
-  // React.useEffect(() => {
-  //   (async () => {
-  //     const ps = await particleSystemManager.getParticleSystem(particleItem.id)
-
-  //     if (ps) {
-  //       setParticleSystem(ps);
-  //     }
-  //   })()
-  // }, [particleItem.id])
-
   if (particleSystem === null) {
     return null
   }
@@ -68,41 +56,8 @@ const Particle: React.FC<PropsType> = observer(({
     }
   }
 
-  const handleDragOver: React.DragEventHandler = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (
-      event.dataTransfer.types[0] === 'application/project-item'
-      && store.draggingItem
-      && store.draggingItem.type === 'material'
-    ) {
-      event.dataTransfer.dropEffect = 'link';
-    }
-  }
-
-  const handleDrop: React.DragEventHandler = async (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const draggingItem = store.draggingItem;
-
-    if (
-      event.dataTransfer.types[0] === 'application/project-item'
-      && draggingItem
-      && draggingItem.type === 'material'
-      && draggingItem.itemId !== null
-    ) {
-      const materialItem = await materialManager.getItem(draggingItem.itemId, false)
-
-      if (materialItem) {
-        particleSystem.setMaterial(materialItem)
-      }
-    }
-  }
-
   return (
-    <div className={styles.particle} onDragOver={handleDragOver} onDrop={handleDrop}>
+    <div className={styles.particle}>
       <label>
         Duration:
         <NumberInput value={particleSystem.duration} onChange={handleDurationChange} />
@@ -153,16 +108,6 @@ const Particle: React.FC<PropsType> = observer(({
       <PSModule title="Renderer" module={particleSystem.renderer}>
         <PSRenderer value={particleSystem.renderer} />
       </PSModule>
-      <label>
-        Material:
-        <div>
-          {
-            particleSystem.materialItem
-              ? particleSystem.materialItem.name
-              : 'not assigned'
-          }
-        </div>
-      </label>
     </div>
   )
 })

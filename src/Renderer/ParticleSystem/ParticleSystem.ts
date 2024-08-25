@@ -23,7 +23,6 @@ import Collision from "./Collision";
 import Renderer from "./Renderer";
 import HorizontalBillboard from "../Drawables/HorizontalBillboard";
 import { materialManager } from "../Materials/MaterialManager";
-import MaterialItem from "../MaterialItem";
 import { MaterialItemInterface } from "../../State/types";
 import LifetimeVelocity from "./LifetimeVelocity";
 import SceneNode from "../Drawables/SceneNodes/SceneNode";
@@ -66,11 +65,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
   renderer: Renderer;
 
-  materialItem?: MaterialItemInterface;
-
-  drawable: DrawableInterface | null = null;
-
-  private constructor(id: number, descriptor?: ParticleSystemDescriptor, materialItem?: MaterialItem) {
+  private constructor(id: number, renderer: Renderer, descriptor?: ParticleSystemDescriptor) {
     super(ComponentType.ParticleSystem)
   
     this.id = id
@@ -103,12 +98,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
     this.collision = Collision.fromDescriptor(descriptor?.collision, this.handleChange)
 
-    this.renderer = Renderer.fromDescriptor(
-      descriptor?.renderer ?? { enabled: true, mode: RenderMode.Billboard },
-      this.handleChange
-    );
-
-    this.materialItem = materialItem;
+    this.renderer = renderer
+    this.renderer.onChange = this.handleChange
 
     makeObservable(this, {
       lifetime: observable,
@@ -117,18 +108,15 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       lifetimeSize: observable,
       startColor: observable,
       gravityModifier: observable,
-      materialItem: observable,
     })
   }
 
   static async create(id: number, descriptor?: ParticleSystemDescriptor) {
-    let materialItem: MaterialItem | undefined = undefined;
+    const renderer = await Renderer.fromDescriptor(
+      descriptor?.renderer ?? { enabled: true, mode: RenderMode.Billboard },
+    );
 
-    if (descriptor?.materialId !== undefined) {
-      materialItem = await materialManager.getItem(descriptor?.materialId)
-    }
-
-    return new ParticleSystem(id, descriptor, materialItem)
+    return new ParticleSystem(id, renderer, descriptor)
   }
 
   reset() {
@@ -228,22 +216,6 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
   }
 
   async update(time: number, elapsedTime: number): Promise<void> {
-    switch (this.renderer.mode) {
-      case RenderMode.Billboard:
-        if (!this.drawable || this.drawable.type !== 'Billboard') {
-          this.drawable = new Billboard()
-        }
-
-        break;
-
-      case RenderMode.FlatBillboard:
-        if (!this.drawable || this.drawable.type !== 'HorizontalBillboard') {
-          this.drawable = new HorizontalBillboard()
-        }
-
-        break;
-    }
-
     if (this.startTime === 0) {
       this.startTime = time;
     }
@@ -311,7 +283,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       }
 
       if (particle.drawable === null) {
-        particle.drawable = await DrawableComponent.create(this.drawable!, this.materialItem);
+        particle.drawable = await this.renderer.createDrawableComponent()
         particle.sceneNode.addComponent(particle.drawable);
       }
 
@@ -407,39 +379,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         gravityModifier: this.gravityModifier.toDescriptor(),
         collision: this.collision.toDescriptor(),
         renderer: this.renderer.toDescriptor(),
-        materialId: this.materialItem?.id,
       }
-    })
-  }
-
-  getDrawableType(): DrawableType | undefined {
-    switch(this.renderer.mode) {
-      case RenderMode.Billboard:
-        return 'Billboard'
-
-      case RenderMode.FlatBillboard:
-        return 'HorizontalBillboard';
-    }
-  }
-
-  async setMaterial(materialItem: MaterialItemInterface) {
-    let material: MaterialInterface | undefined = undefined;
-
-    const drawableType = this.getDrawableType();
-    if (drawableType) {
-      material = await materialManager.get(materialItem, drawableType, []);
-    }
-
-    runInAction(() => {
-      this.materialItem = materialItem;
-
-      for (const [, particle] of this.particles) {
-        if (particle.drawable && material) {
-          particle.drawable.material = material;
-        }
-      }
-      
-      this.save();
     })
   }
 
