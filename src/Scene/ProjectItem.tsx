@@ -1,25 +1,26 @@
 import React from 'react';
-import { FolderInterface, ProjectItemInterface, ProjectItemType } from './Types/types';
 import styles from './ProjectItem.module.scss';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
-import Http from '../Http/src';
-import { ProjectItemRecord } from '../State/types';
-import Graph from '../State/Graph';
-import { runInAction } from 'mobx';
-import ProjectItemObject from "../Project/Types/ProjectItem";
-import { shaderManager } from '../Renderer/shaders/ShaderManager';
+// import Http from '../Http/src';
+import { SceneInterface, SceneObjectInterface } from '../State/types';
+// import Graph from '../State/Graph';
+// import { runInAction } from 'mobx';
+// import ProjectItemObject from "../Project/Types/ProjectItem";
+// import { shaderManager } from '../Renderer/shaders/ShaderManager';
 
 type PropsType = {
-  item: ProjectItemInterface,
-  onSelect: (item: ProjectItemInterface) => void,
+  project: SceneInterface,
+  item: SceneObjectInterface,
+  onSelect?: (item: SceneObjectInterface) => void,
   selected: boolean,
   draggable?: boolean,
 }
 
 const ProjectItem: React.FC<PropsType> = observer(({
+  project,
   item,
   onSelect,
   selected,
@@ -28,14 +29,16 @@ const ProjectItem: React.FC<PropsType> = observer(({
   const store = useStores();
 
   const handleClick = () => {
-    onSelect(item)
+    if (onSelect) {
+      onSelect(item)
+    }
   }
 
   const handleDragStart: React.DragEventHandler = (event) => {
     event.dataTransfer.clearData();
-    event.dataTransfer.setData("application/project-item", item.id.toString());
+    event.dataTransfer.setData("application/scene-item", item.id.toString());
 
-    store.draggingItem = item;
+    project.draggingItem = item;
   }
 
   const handleDrag = () => {
@@ -43,7 +46,7 @@ const ProjectItem: React.FC<PropsType> = observer(({
   }
 
   const handleDragEnd = () => {
-    store.draggingItem = null;
+    project.draggingItem = null;
   }
 
   const [editing, setEditing] = React.useState<boolean>(false);
@@ -75,47 +78,47 @@ const ProjectItem: React.FC<PropsType> = observer(({
   const [showMenu, setShowMenu] = React.useState<{ x: number, y: number } | null>(null);
 
   const menuItems = React.useCallback((): MenuItemLike[] => {
-    const items = [
-      { name: 'Delete', action: () => { item.delete() } },
+    const items: MenuItemLike[] = [
+      // { name: 'Delete', action: () => { item.delete() } },
     ];
 
-    if (item.type === 'shader') {
-      items.push({
-        name: 'Create Material',
-        action: async () => {
-          if (!item.item && item.itemId) {
-            const descriptor = await shaderManager.getDescriptor(item.itemId)
+    // if (item.type === 'shader') {
+    //   items.push({
+    //     name: 'Create Material',
+    //     action: async () => {
+    //       if (!item.item && item.itemId) {
+    //         const descriptor = await shaderManager.getDescriptor(item.itemId)
 
-            runInAction(() => {
-              item.item = new Graph(store, item.itemId!, item.name, descriptor);    
-            })
-          }
+    //         runInAction(() => {
+    //           item.item = new Graph(store, item.itemId!, item.name, descriptor);    
+    //         })
+    //       }
 
-          if (item.item) {
-            const response = await Http.post<unknown, ProjectItemRecord>('/materials', {
-              name: `${item.name} Material`,
-              shaderId: item.itemId,
-              properties: (item.item as Graph).graph.properties,    
-            })
+    //       if (item.item) {
+    //         const response = await Http.post<unknown, ProjectItemRecord>('/materials', {
+    //           name: `${item.name} Material`,
+    //           shaderId: item.itemId,
+    //           properties: (item.item as Graph).graph.properties,    
+    //         })
 
-            if (response) {
-              const rec = await response.json()
+    //         if (response) {
+    //           const rec = await response.json()
 
-              const newItem = new ProjectItemObject(rec.id, rec.name, rec.type as ProjectItemType, item.parent, rec.itemId);
+    //           const newItem = new ProjectItemObject(rec.id, rec.name, rec.type as ProjectItemType, item.parent, rec.itemId);
 
-              (item.parent as FolderInterface).addItem(newItem)
+    //           (item.parent as FolderInterface).addItem(newItem)
         
-              runInAction(() => {
-                store.selectItem(newItem);
-              })
-            }
-          }
-        },
-      })      
-    }
+    //           runInAction(() => {
+    //             store.selectItem(newItem);
+    //           })
+    //         }
+    //       }
+    //     },
+    //   })      
+    // }
     
     return items;
-  }, [item, store]);
+  }, []);
   
   const handleContextMenu: React.MouseEventHandler = (event) => {
     event.stopPropagation();

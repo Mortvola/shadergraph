@@ -82,7 +82,9 @@ export interface SceneInterface {
 
   selectedObject: SceneObjectInterface | null;
 
-  objects: SceneObjectInterface[];
+  objects: SceneObjectInterface;
+
+  draggingItem: SceneObjectInterface | null;
 
   addObject(object: SceneObjectInterface): void;
 
@@ -100,20 +102,34 @@ export interface SceneObjectInterface extends EntityInterface {
 
   items: GameObjectItem[];
 
+  objects: SceneObjectInterface[];
+
   sceneNode: SceneNodeInterface | null;
+
+  parent: SceneObjectInterface | null;
+
+  changeName(name: string): void;
 
   save(): Promise<void>;
 
   addComponent(component: GameObjectItem): void;
 
   setTranslate(translate: number[]): void;
+
+  isAncestor(item: SceneObjectInterface): boolean;
+
+  addObject(object: SceneObjectInterface): void;
+
+  removeObject(object: SceneObjectInterface): void;
+
+  detachSelf(): void;
 }
 
 export type SceneDescriptor = {
   id?: number,
   name: string,
   scene: {
-    objects: number[],
+    objects: number,
   }
 }
 
@@ -125,7 +141,7 @@ export type SceneObjectDescriptor = {
     rotate: number[],
     scale: number[],
     components: ComponentDescriptor[],
-    objects: SceneObjectDescriptor[],  
+    objects: number[],  
   }
 }
 

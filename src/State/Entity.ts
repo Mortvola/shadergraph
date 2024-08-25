@@ -1,4 +1,4 @@
-import { makeObservable, observable } from "mobx";
+import { makeObservable, observable, runInAction } from "mobx";
 import { EntityInterface } from "./types";
 
 class Entity implements EntityInterface {

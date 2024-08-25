@@ -5,16 +5,18 @@ import { store } from "../../State/store";
 import { particleSystemManager } from "../../Renderer/ParticleSystem/ParticleSystemManager";
 import { ComponentType, LightInterface, ParticleItem, ParticleSystemInterface } from "../../Renderer/types";
 import Http from "../../Http/src";
-import { SceneDescriptor, SceneInterface } from "../../State/types";
+import { SceneDescriptor, SceneInterface, SceneObjectInterface } from "../../State/types";
 
 class Scene implements SceneInterface {
   id?: number;
 
   name = '';
 
-  objects: SceneObject[] = [];
+  objects = new SceneObject();
 
   selectedObject: SceneObject | null = null;
+
+  draggingItem: SceneObject | null = null;
 
   constructor() {
     makeObservable(this, {
@@ -29,10 +31,14 @@ class Scene implements SceneInterface {
     if (descriptor) {
       scene.id = descriptor.id;
       scene.name = descriptor.name;
-      scene.objects = (await Promise.all(descriptor.scene.objects.map(async (id) => {
-        return await SceneObject.fromServer(id);
-      })))
-      .filter((o) => o !== undefined);
+
+      if (descriptor.scene.objects === null) {
+        await scene.objects.save();
+        await scene.saveChanges();
+      }
+      else {
+        scene.objects = await SceneObject.fromServer(descriptor.scene.objects) ?? scene.objects;
+      }
     }
 
     return scene;
@@ -43,7 +49,7 @@ class Scene implements SceneInterface {
       id: this.id,
       name: this.name,
       scene: {
-        objects: this.objects.map((o) => o.id),
+        objects: this.objects.id,
       }
     })
   }
@@ -55,7 +61,7 @@ class Scene implements SceneInterface {
   }
 
   async renderScene() {
-    for (const object of this.objects) {
+    for (const object of this.objects.objects) {
       await this.renderObject(object);
     }
   }
@@ -73,11 +79,7 @@ class Scene implements SceneInterface {
 
     for (const component of object.items) {
       if (component.type === ComponentType.ParticleSystem) {
-        // const ps = await particleSystemManager.getParticleSystem((component.item as ParticleItem).id)
-
-        // if (ps) {
-          object.sceneNode.addComponent(component.item as ParticleSystemInterface)
-        // }
+        object.sceneNode.addComponent(component.item as ParticleSystemInterface)
       }
       else if (component.type === ComponentType.Light) {
         object.sceneNode.addComponent(component.item as LightInterface)
@@ -88,16 +90,7 @@ class Scene implements SceneInterface {
   }
 
   addObject(object: SceneObject) {
-    runInAction(async () => {
-      this.objects = [
-        ...this.objects,
-        object,
-      ];
-
-      this.renderObject(object)
-
-      this.saveChanges();
-    })
+    this.objects.addObject(object)
   }
 
   saveChanges = async () => {

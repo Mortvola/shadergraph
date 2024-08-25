@@ -1,9 +1,8 @@
 import React from 'react';
 import SceneToolbar from './SceneToolbar';
 import { observer } from 'mobx-react-lite';
-import SceneObject from './SceneObject';
-import { runInAction } from 'mobx';
 import { SceneInterface, SceneObjectInterface } from '../State/types';
+import ProjectFolder from './ProjectFolder';
 
 type PropsType = {
   scene?: SceneInterface,
@@ -28,11 +27,14 @@ const Scene: React.FC<PropsType> = observer(({
       <div>{scene.name}</div>
       <SceneToolbar scene={scene} />
       <div>
-        {
-          scene?.objects.map((o) => (
-            <SceneObject key={o.id} object={o} onClick={handleObjectClick} selected={scene.selectedObject === o} />
-          )) ?? null
-        }
+        <ProjectFolder
+          key={'scene'}
+          project={scene}
+          folder={scene.objects}
+          onSelect={handleObjectClick}
+          selected={false}
+          level={0}
+        />  
       </div>
     </div>
   )

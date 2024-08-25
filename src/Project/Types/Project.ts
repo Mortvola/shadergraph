@@ -195,7 +195,7 @@ class Project implements ProjectInterface {
         payload = {
           name,
           scene: {
-            objects: [],
+            objects: null,
           },
         }
 
