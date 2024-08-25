@@ -99,6 +99,7 @@ export type CollisionDescriptor = {
 export enum ShapeType {
   Cone = 'Cone',
   Sphere = 'Sphere',
+  Hemisphere = 'Hemisphere',
   Box = 'Box'
 }
 
@@ -108,7 +109,8 @@ export type ConeDescriptor = {
 }
 
 export type SphereDescriptor = {
-  radius: number;
+  radius?: number;
+  hemisphere?: boolean;
 }
 
 export type ShapeDescriptor = {
@@ -116,6 +118,7 @@ export type ShapeDescriptor = {
   type: ShapeType,
   cone?: ConeDescriptor,
   sphere?: SphereDescriptor,
+  hemisphere?: SphereDescriptor,
 }
 
 export type ParticleSystemDescriptor = {

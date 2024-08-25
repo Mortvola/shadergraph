@@ -13,6 +13,7 @@ const ShapeTypeSelector: React.FC<PropsType> = ({
   <select value={value} onChange={onChange}>
     <option value={ShapeType.Cone}>Cone</option>
     <option value={ShapeType.Sphere}>Sphere</option>
+    <option value={ShapeType.Hemisphere}>Hemisphere</option>
     <option value={ShapeType.Box}>Box</option>
   </select>
 )

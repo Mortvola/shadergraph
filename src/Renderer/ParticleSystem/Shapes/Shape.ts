@@ -14,16 +14,19 @@ class Shape extends PSModule {
 
   sphere: Sphere;
 
+  hemisphere: Sphere;
+
   constructor(onChange?: () => void) {
     super(onChange);
   
     this.cone = new Cone(onChange);
 
-    this.sphere = new Sphere(onChange);
+    this.sphere = new Sphere(false, onChange);
+
+    this.hemisphere = new Sphere(true, onChange);
 
     makeObservable(this, {
       type: observable,
-      cone: observable,
     })
   }
 
@@ -35,6 +38,7 @@ class Shape extends PSModule {
       shape.type = descriptor.type;
       shape.cone = Cone.fromDescriptor(descriptor.cone, onChange);
       shape.sphere = Sphere.fromDescriptor(descriptor.sphere, onChange);
+      shape.hemisphere = Sphere.fromDescriptor({ ...descriptor.hemisphere, hemisphere: true }, onChange);
     }
 
     return shape;
@@ -61,13 +65,16 @@ class Shape extends PSModule {
 
   getPositionAndDirection(): [Vec4, Vec4] {
     if (this.enabled) {
-      if (this.type === ShapeType.Sphere) {
-        return this.sphere.getPositionAndDirection();
+      switch (this.type) {
+        case ShapeType.Sphere:
+          return this.sphere.getPositionAndDirection();
+
+        case ShapeType.Cone:
+          return this.cone.getPositionAndDirection();
+
+        case ShapeType.Hemisphere:
+          return this.hemisphere.getPositionAndDirection();
       }
-  
-      if (this.type === ShapeType.Cone) {
-        return this.cone.getPositionAndDirection();
-      }  
     }
 
     return [vec4.create(0, 0, 0, 1), vec4.create(0, 0, 0, 0)];
