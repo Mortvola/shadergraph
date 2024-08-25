@@ -67,6 +67,7 @@ export type PSValueDescriptor = {
   type?: PSValueType,
   value?: [number, number],
   curve?: [PSCurveDescriptor, PSCurveDescriptor],
+  curveRange?: [number, number],
 }
 
 export const isPSValue = (r: unknown): r is PSValueDescriptor => (

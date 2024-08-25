@@ -25,6 +25,10 @@ const PSValueInput: React.FC<PropsType> = observer(({
     value.setType(event.target.value as PSValueType)
   }
 
+  const handleRangeChange = (range: [number, number]) => {
+    value.setCurveRange(range);
+  }
+
   return (
     <>
       {
@@ -42,7 +46,7 @@ const PSValueInput: React.FC<PropsType> = observer(({
 
               case PSValueType.Curve:
                 return (
-                  <CurveEditor value={value.curve[0]} />
+                  <CurveEditor value={value.curve[0]} range={value.curveRange} onRangeChange={handleRangeChange} />
                 )
             }
 

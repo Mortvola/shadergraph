@@ -4,15 +4,20 @@ import styles from './CurveEditor.module.scss';
 import { observer } from 'mobx-react-lite';
 import CurveGraph from './CurveGraph';
 import PSCurve from '../Renderer/ParticleSystem/PSCurve';
+import NumberInput from '../Inspector/NumberInput';
 
 type PropsType = {
   value: PSCurve,
+  range?: [number, number],
+  onRangeChange?: (range: [number, number]) => void,
   onClose: () => void,
   rect: DOMRect,
 }
 
 const CurveEditorPopup: React.FC<PropsType> = observer(({
   value,
+  range = [0, 1],
+  onRangeChange,
   onClose,
   rect,
 }) => {
@@ -46,14 +51,17 @@ const CurveEditorPopup: React.FC<PropsType> = observer(({
     // }
   }
 
-  // const handlePositionChange = (value: number) => {
-  //   if (selectedAlphaId !== undefined) {
-  //     handleMoveAlphaKey(selectedAlphaId, value)
-  //   }
-  //   else if (selectedColorId !== undefined) {
-  //     handleMoveColorKey(selectedColorId, value)
-  //   }
-  // }
+  const handleMinRangeChange = (min: number) => {
+    if (onRangeChange) {
+      onRangeChange([min, range[1]])
+    }
+  }
+
+  const handleMaxRangeChange = (max: number) => {
+    if (onRangeChange) {
+      onRangeChange([range[0], max])
+    }
+  }
 
   return (
     createPortal(
@@ -71,7 +79,11 @@ const CurveEditorPopup: React.FC<PropsType> = observer(({
                 onClick={handleClick}
                 onKeyDown={handleKeyDown}
               >
-                <div className={`${styles.graph}  ${styles.checkerboard}`}>
+                <div className={styles.range}>
+                <NumberInput value={range[1]} onChange={handleMaxRangeChange} />
+                <NumberInput value={range[0]} onChange={handleMinRangeChange} />
+                </div>
+                <div className={styles.graph}>
                   <CurveGraph value={value} />
                 </div>
               </div>

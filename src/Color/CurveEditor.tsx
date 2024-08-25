@@ -6,10 +6,14 @@ import PSCurve from '../Renderer/ParticleSystem/PSCurve';
 
 type PropsType = {
   value: PSCurve,
+  range?: [number, number],
+  onRangeChange?: (range: [number, number]) => void,
 }
 
 const CurveEditor: React.FC<PropsType> = observer(({
   value,
+  range,
+  onRangeChange,
 }) => {
   const [open, setOpen] = React.useState<DOMRect | null>();
   const ref = React.useRef<HTMLDivElement>(null);
@@ -50,6 +54,8 @@ const CurveEditor: React.FC<PropsType> = observer(({
           ? (
             <CurveEditorPopup
               value={value}
+              range={range}
+              onRangeChange={onRangeChange}
               onClose={handleClose} rect={open}
             />
           )

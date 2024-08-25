@@ -50,6 +50,7 @@ class Shape extends PSModule {
       type: this.type,
       cone: this.cone.toDescriptor(),
       sphere: this.sphere.toDescriptor(),
+      hemisphere: this.hemisphere.toDescriptor(),
     })
   }
 

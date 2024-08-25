@@ -1,6 +1,6 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import { lerp } from "../Math";
-import { isPSValue, PSValueDescriptor, PSValueType } from "./Types";
+import { PSValueDescriptor, PSValueType } from "./Types";
 import PSCurve from "./PSCurve";
 
 class PSValue {
@@ -9,6 +9,8 @@ class PSValue {
   value: [number, number] = [1, 1];
 
   curve: [PSCurve, PSCurve];
+
+  curveRange: [number, number] = [0, 1];
 
   onChange?: () => void;
 
@@ -21,6 +23,7 @@ class PSValue {
       type: observable,
       value: observable,
       curve: observable,
+      curveRange: observable,
     })
   }
 
@@ -36,6 +39,10 @@ class PSValue {
         PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 0) ? descriptor.curve![0] : undefined, onChange),
         PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 1) ? descriptor.curve![1] : undefined, onChange),
       ];
+      psValue.curveRange = [
+        descriptor.curveRange ? descriptor.curveRange[0] : 0,
+        descriptor.curveRange ? descriptor.curveRange[1] : 1,
+      ]
     }
 
     return psValue;
@@ -46,6 +53,7 @@ class PSValue {
       type: this.type,
       value: this.value,
       curve: this.curve,
+      curveRange: this.curveRange,
     })
   }
 
@@ -79,35 +87,15 @@ class PSValue {
     })
   }
 
-  // setMinCurve(min: number) {
-  //   runInAction(() => {
-  //     this.curve = [
-  //       {
-  //         points: [[0, min], [1, this.curve[0].points[1][1]]],
-  //       },
-  //       this.curve[1],
-  //     ]
+  setCurveRange(range: [number, number]) {
+    runInAction(() => {
+      this.curveRange = range;
 
-  //     if (this.onChange) {
-  //       this.onChange();
-  //     }
-  //   })
-  // }
-
-  // setMaxCurve(max: number) {
-  //   runInAction(() => {
-  //     this.curve = [
-  //       {
-  //         points: [[0, this.curve[0].points[0][1]], [1, max]],
-  //       },
-  //       this.curve[1],
-  //     ]
-
-  //     if (this.onChange) {
-  //       this.onChange();
-  //     }
-  //   })
-  // }
+      if (this.onChange) {
+        this.onChange();
+      }
+    })
+  }
 
   getValue(t: number) {
     switch (this.type) {
@@ -118,7 +106,8 @@ class PSValue {
         return lerp(this.value[0], this.value[1], Math.random());
   
       case PSValueType.Curve: {
-        return this.curve[0].getValue(t) ?? 1;
+        const v = this.curve[0].getValue(t) ?? 1;
+        return lerp(this.curveRange[0], this.curveRange[1], v);
       }
     }
   
