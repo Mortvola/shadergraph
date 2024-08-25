@@ -16,3 +16,21 @@
   padding-left: 0.5rem;
   overflow-y: auto;
 }
+
+.collapser {
+  width: 5px;
+  height: 5px;
+  border-top: thin black solid;
+  border-right: thin black solid;
+  transform: rotate(45deg);
+
+  &.open {
+    transform: rotate(135deg);
+  }
+}
+
+.item {
+  display: flex;
+  column-gap: 0.35rem;
+  align-items: center;
+}

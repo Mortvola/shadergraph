@@ -24,7 +24,6 @@ const Scene: React.FC<PropsType> = observer(({
   return (
     <div>
       Scene
-      <div>{scene.name}</div>
       <SceneToolbar scene={scene} />
       <ProjectFolder
         key={'scene'}

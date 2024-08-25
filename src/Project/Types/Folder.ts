@@ -10,6 +10,8 @@ class Folder extends ProjectItem implements FolderInterface {
 
   newItem: string | null = null;
 
+  open = true;
+
   constructor(id: number, name: string, parent: FolderInterface | null, project: ProjectInterface) {
     super(id, name, 'folder', parent, null)
 
@@ -18,6 +20,13 @@ class Folder extends ProjectItem implements FolderInterface {
     makeObservable(this, {
       items: observable,
       newItem: observable,
+      open: observable,
+    })
+  }
+
+  toggleOpen() {
+    runInAction(() => {
+      this.open = !this.open;
     })
   }
 

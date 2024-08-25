@@ -38,6 +38,10 @@ export interface FolderInterface extends ProjectItemInterface {
 
   newItem: string | null
   
+  open: boolean;
+  
+  toggleOpen(): void;
+
   addItem(item: ProjectItemInterface): Promise<void>
 
   addItems(items: ProjectItemInterface[]): void

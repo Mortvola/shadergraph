@@ -90,16 +90,54 @@ const ProjectFolder: React.FC<PropsType> = observer(({
     setName(event.target.value)
   }
 
+  const renderFolderItems = () => (
+    folder.items.map((i) => (
+      i.type === 'folder'
+        ? (
+            <ProjectFolder
+              key={`children:${i.id}`}
+              folder={i as FolderInterface}
+              onSelect={onSelect}
+              selected={i.id === store.project.selectedItem?.id}
+              level={level + 1}
+            >
+              <div className={styles.item}>
+                <div
+                  className={`${styles.collapser} ${(i as FolderInterface).open ? styles.open : ''}`}
+                  onClick={() => { (i as FolderInterface).toggleOpen()}}
+                />
+                <ProjectItem
+                  key={`${i.type}:${i.id}`}
+                  item={i}
+                  onSelect={onSelect}
+                  selected={i.id === store.project.selectedItem?.id}
+                  draggable
+                />
+              </div>
+            </ProjectFolder>
+        )
+        : (
+          <ProjectItem
+            key={`${i.type}:${i.id}`}
+            item={i}
+            onSelect={onSelect}
+            selected={i.id === store.project.selectedItem?.id}
+            draggable
+          />    
+        )
+    ))
+  )
+
   return (
     <div
-      className={droppable ? styles.droppable : ''}
+      className={droppable ? styles.droppable : undefined}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
     >
       { children }
       <div
-        style={{ paddingLeft: level > 0 ? 16 : 0 }}
+        style={{ paddingLeft: level > 0 ? 12 : 0 }}
       >
         {
           folder.newItem
@@ -116,35 +154,9 @@ const ProjectFolder: React.FC<PropsType> = observer(({
             : null
         }
         {
-          folder.items.map((i) => (
-            i.type === 'folder'
-              ? (
-                  <ProjectFolder
-                    key={`children:${i.id}`}
-                    folder={i as FolderInterface}
-                    onSelect={onSelect}
-                    selected={i.id === store.project.selectedItem?.id}
-                    level={level + 1}
-                  >
-                    <ProjectItem
-                      key={`${i.type}:${i.id}`}
-                      item={i}
-                      onSelect={onSelect}
-                      selected={i.id === store.project.selectedItem?.id}
-                      draggable
-                    />
-                  </ProjectFolder>
-              )
-              : (
-                <ProjectItem
-                  key={`${i.type}:${i.id}`}
-                  item={i}
-                  onSelect={onSelect}
-                  selected={i.id === store.project.selectedItem?.id}
-                  draggable
-                />    
-              )
-          ))
+          folder.open
+            ? renderFolderItems()
+            : null
         }
       </div>
     </div>
