@@ -26,18 +26,15 @@ const Scene: React.FC<PropsType> = observer(({
       Scene
       <div>{scene.name}</div>
       <SceneToolbar scene={scene} />
-      <div>
-        <ProjectFolder
-          key={'scene'}
-          project={scene}
-          folder={scene.rootObject}
-          onSelect={handleObjectClick}
-          selected={false}
-          level={1}
-        >
-          {scene.name}
-        </ProjectFolder>  
-      </div>
+      <ProjectFolder
+        key={'scene'}
+        project={scene}
+        folder={scene.rootObject}
+        onSelect={handleObjectClick}
+        level={1}
+      >
+        {scene.name}
+      </ProjectFolder>  
     </div>
   )
 })

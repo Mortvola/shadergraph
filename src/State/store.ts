@@ -124,9 +124,11 @@ class Store implements StoreInterface {
 
           const scene = await Scene.fromDescriptor(body)
 
-          this.scene = scene;
+          runInAction(() => {
+            this.scene = scene;
+          })
 
-          await this.scene.renderScene();
+          await scene.renderScene();
         }
       }
 

@@ -42,6 +42,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
 
     makeObservable(this, {
       items: observable,
+      objects: observable,
       translate: observable,
       rotate: observable,
       scale: observable,

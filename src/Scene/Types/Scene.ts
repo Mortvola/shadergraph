@@ -66,7 +66,6 @@ class Scene implements SceneInterface {
   }
 
   saveChanges = async () => {
-    // console.log(`save scene changes: ${JSON.stringify(this.toDescriptor())}`)
     if (this.id === undefined) {
       await Http.post('/scenes', this.toDescriptor())  
     }

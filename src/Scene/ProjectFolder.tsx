@@ -9,7 +9,6 @@ type PropsType = {
   project: SceneInterface,
   folder: SceneObjectInterface,
   onSelect?: (item: SceneObjectInterface) => void,
-  selected: boolean,
   level: number,
   children?: React.ReactNode,
 }
@@ -18,7 +17,6 @@ const ProjectFolder: React.FC<PropsType> = observer(({
   project,
   folder,
   onSelect,
-  selected,
   level,
   children,
 }) => {
@@ -119,7 +117,6 @@ const ProjectFolder: React.FC<PropsType> = observer(({
               project={project}
               folder={i}
               onSelect={onSelect}
-              selected={i.id === project.selectedObject?.id}
               level={level + 1}
             >
               <ProjectItem
