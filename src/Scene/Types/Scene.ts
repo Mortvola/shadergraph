@@ -1,11 +1,8 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import SceneObject from "./SceneObject";
-import SceneNode from "../../Renderer/Drawables/SceneNodes/SceneNode";
 import { store } from "../../State/store";
-import { particleSystemManager } from "../../Renderer/ParticleSystem/ParticleSystemManager";
-import { ComponentType, LightInterface, ParticleItem, ParticleSystemInterface } from "../../Renderer/types";
 import Http from "../../Http/src";
-import { SceneDescriptor, SceneInterface, SceneObjectInterface } from "../../State/types";
+import { SceneDescriptor, SceneInterface } from "../../State/types";
 
 class Scene implements SceneInterface {
   id?: number;
@@ -62,33 +59,6 @@ class Scene implements SceneInterface {
 
   async renderScene() {
     store.mainView.addSceneNode(this.rootObject.sceneNode);
-
-    // for (const object of this.objects.objects) {
-    //   await this.renderObject(object);
-    // }
-  }
-
-  async renderObject(object: SceneObject) {
-    // object.sceneNode = new SceneNode()
-
-    // object.sceneNode.translate[0] = object.translate[0];
-    // object.sceneNode.translate[1] = object.translate[1];
-    // object.sceneNode.translate[2] = object.translate[2];
-
-    object.sceneNode.scale[0] = object.scale[0];
-    object.sceneNode.scale[1] = object.scale[1];
-    object.sceneNode.scale[2] = object.scale[2];
-
-    // for (const component of object.items) {
-    //   if (component.type === ComponentType.ParticleSystem) {
-    //     object.sceneNode.addComponent(component.item as ParticleSystemInterface)
-    //   }
-    //   else if (component.type === ComponentType.Light) {
-    //     object.sceneNode.addComponent(component.item as LightInterface)
-    //   }
-    // }
-
-    store.mainView.addSceneNode(object.sceneNode);
   }
 
   addObject(object: SceneObject) {

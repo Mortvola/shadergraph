@@ -34,8 +34,6 @@ const ProjectFolder: React.FC<PropsType> = observer(({
     event.stopPropagation();
     event.preventDefault();
 
-    console.log(`Checking drop on ${folder.name}`)
-
     if (
       event.dataTransfer.types[0] === 'application/scene-item'
       && project.draggingItem
