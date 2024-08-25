@@ -2,7 +2,7 @@ import { makeObservable, observable, runInAction } from "mobx";
 import Entity from "../../State/Entity";
 import { SceneObjectDescriptor, SceneObjectInterface } from "../../State/types";
 import Http from "../../Http/src";
-import { ComponentType, GameObjectItem, LightDescriptor, ParticleSystemInterface } from "../../Renderer/types";
+import { ComponentType, GameObjectItem, LightDescriptor, LightInterface, ParticleSystemInterface } from "../../Renderer/types";
 import { vec3 } from "wgpu-matrix";
 import SceneNode from "../../Renderer/Drawables/SceneNodes/SceneNode";
 import Light from "../../Renderer/Drawables/Light";
@@ -67,6 +67,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
       object.translate = vec3.create(...descriptor.object.translate)
       object.rotate = vec3.create(...descriptor.object.rotate)
       object.scale = vec3.create(...descriptor.object.scale)
+
       object.items = (await Promise.all(descriptor.object.components.map(async (c) => {
         switch (c.type) {
           case ComponentType.ParticleSystem:
@@ -74,6 +75,8 @@ class SceneObject extends Entity implements SceneObjectInterface {
 
             const ps = await ParticleSystem.create(-1, psDescriptor)
             ps.onChange = object.onChange;
+
+            object.sceneNode.addComponent(ps)
 
             return {
               type: c.type,
@@ -88,6 +91,8 @@ class SceneObject extends Entity implements SceneObjectInterface {
             light.constant = lightDescriptor.constant;
             light.linear = lightDescriptor.linear;
             light.quadratic = lightDescriptor.quadratic;
+
+            object.sceneNode.addComponent(light)
 
             return {
               type: c.type,
@@ -105,6 +110,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
 
         if (child) {
           child.parent = object
+          object.sceneNode.addNode(child.sceneNode)
         }
 
         return child;
@@ -118,6 +124,10 @@ class SceneObject extends Entity implements SceneObjectInterface {
           object.scale[i] = 1;
         }  
       }
+
+      object.sceneNode.translate[0] = object.translate[0];
+      object.sceneNode.translate[1] = object.translate[1];
+      object.sceneNode.translate[2] = object.translate[2];  
     }
 
     return object;
@@ -177,18 +187,11 @@ class SceneObject extends Entity implements SceneObjectInterface {
 
     component.item.onChange = this.onChange;
 
-    if (this.sceneNode) {
-      (async () => {
-        if (this.sceneNode) {
-          if (component.type === ComponentType.ParticleSystem) {
-            this.sceneNode.addComponent(component.item as ParticleSystemInterface)
-          }
-          else if (component.type === ComponentType.Light) {
-            const light = new Light();
-            this.sceneNode.addComponent(light);
-          }
-        }
-      })()  
+    if (component.type === ComponentType.ParticleSystem) {
+      this.sceneNode.addComponent(component.item as ParticleSystemInterface)
+    }
+    else if (component.type === ComponentType.Light) {
+      this.sceneNode.addComponent(component.item as LightInterface);
     }
   }
 
@@ -201,11 +204,9 @@ class SceneObject extends Entity implements SceneObjectInterface {
       this.save();
     })
     
-    if (this.sceneNode) {
-      this.sceneNode.translate[0] = translate[0];
-      this.sceneNode.translate[1] = translate[1];
-      this.sceneNode.translate[2] = translate[2];
-    }
+    this.sceneNode.translate[0] = translate[0];
+    this.sceneNode.translate[1] = translate[1];
+    this.sceneNode.translate[2] = translate[2];
   }
 
   addObject(object: SceneObject) {
@@ -216,6 +217,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
       ];
 
       object.parent = this;
+      this.sceneNode.addNode(object.sceneNode)
 
       this.save();
     })
@@ -229,7 +231,9 @@ class SceneObject extends Entity implements SceneObjectInterface {
         this.objects = [
           ...this.objects.slice(0, index),
           ...this.objects.slice(index + 1),
-        ]  
+        ]
+
+        this.sceneNode.removeNode(object.sceneNode)
 
         this.save();
       })

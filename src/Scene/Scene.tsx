@@ -30,11 +30,13 @@ const Scene: React.FC<PropsType> = observer(({
         <ProjectFolder
           key={'scene'}
           project={scene}
-          folder={scene.objects}
+          folder={scene.rootObject}
           onSelect={handleObjectClick}
           selected={false}
-          level={0}
-        />  
+          level={1}
+        >
+          {scene.name}
+        </ProjectFolder>  
       </div>
     </div>
   )

@@ -12,7 +12,7 @@ class Scene implements SceneInterface {
 
   name = '';
 
-  objects = new SceneObject();
+  rootObject = new SceneObject();
 
   selectedObject: SceneObject | null = null;
 
@@ -20,7 +20,7 @@ class Scene implements SceneInterface {
 
   constructor() {
     makeObservable(this, {
-      objects: observable,
+      rootObject: observable,
       selectedObject: observable,
     })
   }
@@ -33,11 +33,11 @@ class Scene implements SceneInterface {
       scene.name = descriptor.name;
 
       if (descriptor.scene.objects === null) {
-        await scene.objects.save();
+        await scene.rootObject.save();
         await scene.saveChanges();
       }
       else {
-        scene.objects = await SceneObject.fromServer(descriptor.scene.objects) ?? scene.objects;
+        scene.rootObject = await SceneObject.fromServer(descriptor.scene.objects) ?? scene.rootObject;
       }
     }
 
@@ -49,7 +49,7 @@ class Scene implements SceneInterface {
       id: this.id,
       name: this.name,
       scene: {
-        objects: this.objects.id,
+        objects: this.rootObject.id,
       }
     })
   }
@@ -61,36 +61,38 @@ class Scene implements SceneInterface {
   }
 
   async renderScene() {
-    for (const object of this.objects.objects) {
-      await this.renderObject(object);
-    }
+    store.mainView.addSceneNode(this.rootObject.sceneNode);
+
+    // for (const object of this.objects.objects) {
+    //   await this.renderObject(object);
+    // }
   }
 
   async renderObject(object: SceneObject) {
-    object.sceneNode = new SceneNode()
+    // object.sceneNode = new SceneNode()
 
-    object.sceneNode.translate[0] = object.translate[0];
-    object.sceneNode.translate[1] = object.translate[1];
-    object.sceneNode.translate[2] = object.translate[2];
+    // object.sceneNode.translate[0] = object.translate[0];
+    // object.sceneNode.translate[1] = object.translate[1];
+    // object.sceneNode.translate[2] = object.translate[2];
 
     object.sceneNode.scale[0] = object.scale[0];
     object.sceneNode.scale[1] = object.scale[1];
     object.sceneNode.scale[2] = object.scale[2];
 
-    for (const component of object.items) {
-      if (component.type === ComponentType.ParticleSystem) {
-        object.sceneNode.addComponent(component.item as ParticleSystemInterface)
-      }
-      else if (component.type === ComponentType.Light) {
-        object.sceneNode.addComponent(component.item as LightInterface)
-      }
-    }
+    // for (const component of object.items) {
+    //   if (component.type === ComponentType.ParticleSystem) {
+    //     object.sceneNode.addComponent(component.item as ParticleSystemInterface)
+    //   }
+    //   else if (component.type === ComponentType.Light) {
+    //     object.sceneNode.addComponent(component.item as LightInterface)
+    //   }
+    // }
 
     store.mainView.addSceneNode(object.sceneNode);
   }
 
   addObject(object: SceneObject) {
-    this.objects.addObject(object)
+    this.rootObject.addObject(object)
   }
 
   saveChanges = async () => {

@@ -91,7 +91,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
 
   return (
     <div
-      className={droppable ? styles.droppable : ''}
+      className={droppable ? styles.droppable : undefined}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
@@ -116,36 +116,23 @@ const ProjectFolder: React.FC<PropsType> = observer(({
         } */}
         {
           folder.objects.map((i) => (
-            // i.objects.length > 0
-            //   ? (
-                  <ProjectFolder
-                    key={`children:${i.id}`}
-                    project={project}
-                    folder={i}
-                    onSelect={onSelect}
-                    selected={i.id === project.selectedObject?.id}
-                    level={level + 1}
-                  >
-                    <ProjectItem
-                      key={i.id}
-                      project={project}
-                      item={i}
-                      onSelect={onSelect}
-                      selected={i.id === project.selectedObject?.id}
-                      draggable
-                    />
-                  </ProjectFolder>
-              // )
-              // : (
-              //   <ProjectItem
-              //     key={i.id}
-              //     project={project}
-              //     item={i}
-              //     onSelect={onSelect}
-              //     selected={i.id === project.selectedObject?.id}
-              //     draggable
-              //   />    
-              // )
+            <ProjectFolder
+              key={`children:${i.id}`}
+              project={project}
+              folder={i}
+              onSelect={onSelect}
+              selected={i.id === project.selectedObject?.id}
+              level={level + 1}
+            >
+              <ProjectItem
+                key={i.id}
+                project={project}
+                item={i}
+                onSelect={onSelect}
+                selected={i.id === project.selectedObject?.id}
+                draggable
+              />
+            </ProjectFolder>
           ))
         }
       </div>

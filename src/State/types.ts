@@ -82,7 +82,7 @@ export interface SceneInterface {
 
   selectedObject: SceneObjectInterface | null;
 
-  objects: SceneObjectInterface;
+  rootObject: SceneObjectInterface;
 
   draggingItem: SceneObjectInterface | null;
 
