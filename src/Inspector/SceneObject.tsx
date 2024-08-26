@@ -141,7 +141,7 @@ const SceneObject: React.FC<PropsType> = observer(({
         return <ModelTree modelItem={item.item as ModelItem} onChange={handleModelChange} />
 
       case ComponentType.ParticleSystem:
-        return <Particle particleSystem={item.item as ParticleSystem} />
+        return <Particle particleSystemProps={(item.item as ParticleSystem).props} />
 
       case ComponentType.Decal:
         return <Decal decalItem={item.item as DecalItem} onChange={handleDecalChange} />

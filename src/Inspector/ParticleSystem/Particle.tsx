@@ -1,11 +1,6 @@
 import React from 'react';
-import ParticleSystem from '../../Renderer/ParticleSystem/ParticleSystem';
 import NumberInput from '../NumberInput';
 import styles from './Particle.module.scss';
-import { useStores } from '../../State/store';
-import { materialManager } from '../../Renderer/Materials/MaterialManager';
-import { particleSystemManager } from '../../Renderer/ParticleSystem/ParticleSystemManager';
-import { ParticleItem, ParticleSystemInterface } from '../../Renderer/types';
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
 import PSValueInput from './PSValueInput';
@@ -14,99 +9,98 @@ import ShapeModule from './Shapes/ShapeModule';
 import PSModule from './PSModule';
 import Collision from './Collision';
 import PSRenderer from './PSRenderer';
+import { ParticleSystemProperties } from '../../Renderer/ParticleSystem/Types';
 
 type PropsType = {
-  particleSystem: ParticleSystem,
+  particleSystemProps: ParticleSystemProperties,
 }
 
 const Particle: React.FC<PropsType> = observer(({
-  particleSystem,
+  particleSystemProps,
 }) => {  
-  const store = useStores()
-
-  if (particleSystem === null) {
+  if (particleSystemProps === null) {
     return null
   }
 
   const handleDurationChange = (value: number) => {
     runInAction(() => {
-      particleSystem.duration = value;
+      particleSystemProps.duration = value;
 
-      if (particleSystem.handleChange) {
-        particleSystem.handleChange()
-      }
+      // if (particleSystemProps.handleChange) {
+      //   particleSystemProps.handleChange()
+      // }
     })
   }
 
   const handleMaxPointsChange = (value: number) => {
     runInAction(() => {
-      particleSystem.maxPoints = value;
+      particleSystemProps.maxPoints = value;
 
-      if (particleSystem.handleChange) {
-        particleSystem.handleChange()
-      }
+      // if (particleSystemProps.handleChange) {
+      //   particleSystemProps.handleChange()
+      // }
     })
   }
 
   const handleRateChange = (value: number) => {
-    particleSystem.rate = value;
+    particleSystemProps.rate = value;
 
-    if (particleSystem.handleChange) {
-      particleSystem.handleChange()
-    }
+    // if (particleSystemProps.handleChange) {
+    //   particleSystemProps.handleChange()
+    // }
   }
 
   return (
     <div className={styles.particle}>
       <label>
         Duration:
-        <NumberInput value={particleSystem.duration} onChange={handleDurationChange} />
+        <NumberInput value={particleSystemProps.duration} onChange={handleDurationChange} />
       </label>
       <label>
         Maximum Particles:
-        <NumberInput value={particleSystem.maxPoints} onChange={handleMaxPointsChange} />
+        <NumberInput value={particleSystemProps.maxPoints} onChange={handleMaxPointsChange} />
       </label>
       <label>
         Emission Rate:
-        <NumberInput value={particleSystem.rate} onChange={handleRateChange} />
+        <NumberInput value={particleSystemProps.rate} onChange={handleRateChange} />
       </label>
       <label>
         Lifetime:
-        <PSValueInput value={particleSystem.lifetime} />
+        <PSValueInput value={particleSystemProps.lifetime} />
       </label>
       <label>
         Start Velocity:
-        <PSValueInput value={particleSystem.startVelocity} />
+        <PSValueInput value={particleSystemProps.startVelocity} />
       </label>
       <label>
         Start Size:
-        <PSValueInput value={particleSystem.startSize} />
+        <PSValueInput value={particleSystemProps.startSize} />
       </label>
       <label>
         Start Color:
-        <PSColorInput value={particleSystem.startColor} />
+        <PSColorInput value={particleSystemProps.startColor} />
       </label>
       <label>
         Gravity Modifier:
-        <PSValueInput value={particleSystem.gravityModifier} />
+        <PSValueInput value={particleSystemProps.gravityModifier} />
       </label>
-      <PSModule title="Shape" module={particleSystem.shape}>
-        <ShapeModule shape={particleSystem.shape} />
+      <PSModule title="Shape" module={particleSystemProps.shape}>
+        <ShapeModule shape={particleSystemProps.shape} />
       </PSModule>
-      <PSModule title="Size over lifetime" module={particleSystem.lifetimeSize}>
-        <PSValueInput value={particleSystem.lifetimeSize.size} />
+      <PSModule title="Size over lifetime" module={particleSystemProps.lifetimeSize}>
+        <PSValueInput value={particleSystemProps.lifetimeSize.size} />
       </PSModule>
-      <PSModule title="Color over lifetime" module={particleSystem.lifetimeColor}>
-        <PSColorInput value={particleSystem.lifetimeColor.color} />        
+      <PSModule title="Color over lifetime" module={particleSystemProps.lifetimeColor}>
+        <PSColorInput value={particleSystemProps.lifetimeColor.color} />        
       </PSModule>
-      <PSModule title="Velocity over lifetime" module={particleSystem.lifetimeVelocity}>
-        <PSValueInput value={particleSystem.lifetimeVelocity.speedModifier} />        
+      <PSModule title="Velocity over lifetime" module={particleSystemProps.lifetimeVelocity}>
+        <PSValueInput value={particleSystemProps.lifetimeVelocity.speedModifier} />        
       </PSModule>
-      <PSModule title="Collsion" module={particleSystem.collision}>
-        <Collision value={particleSystem.collision} />
+      <PSModule title="Collsion" module={particleSystemProps.collision}>
+        <Collision value={particleSystemProps.collision} />
       </PSModule>
-      <PSModule title="Renderer" module={particleSystem.renderer}>
-        <PSRenderer value={particleSystem.renderer} />
+      <PSModule title="Renderer" module={particleSystemProps.renderer}>
+        <PSRenderer value={particleSystemProps.renderer} />
       </PSModule>
     </div>
   )

@@ -1,3 +1,12 @@
+import Collision from "./Collision"
+import LifetimeColor from "./LifetimeColor"
+import LifetimeSize from "./LIfetimeSize"
+import LifetimeVelocity from "./LifetimeVelocity"
+import PSColor from "./PSColor"
+import PSValue from "./PSValue"
+import Renderer from "./Renderer"
+import Shape from "./Shapes/Shape"
+
 export enum RenderMode {
   Billboard = 'Billboard',
   FlatBillboard = 'FlatBillboard',
@@ -148,4 +157,34 @@ export type ParticleSystemDescriptor = {
   collision: CollisionDescriptor,
 
   renderer: RendererDescriptor,
+}
+
+export type ParticleSystemProperties = {
+  duration: number;
+
+  maxPoints: number
+
+  rate: number
+
+  shape: Shape;
+
+  lifetime: PSValue;
+
+  startVelocity: PSValue;
+
+  startSize: PSValue;
+
+  startColor: PSColor;
+
+  lifetimeColor: LifetimeColor;
+
+  lifetimeSize: LifetimeSize;
+
+  lifetimeVelocity: LifetimeVelocity;
+
+  gravityModifier: PSValue;
+
+  collision: Collision;
+
+  renderer: Renderer;
 }

@@ -5,7 +5,7 @@ import { PropertyInterface, ValueType } from './ShaderBuilder/Types';
 import { ShaderDescriptor } from './shaders/ShaderDescriptor';
 import SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
 import ShaderGraph from './ShaderBuilder/ShaderGraph';
-import { ParticleSystemDescriptor } from './ParticleSystem/Types';
+import { ParticleSystemDescriptor, ParticleSystemProperties } from './ParticleSystem/Types';
 import Shape from './ParticleSystem/Shapes/Shape';
 import { MaterialItemInterface } from '../State/types';
 import Component from './Drawables/Component';
@@ -143,8 +143,8 @@ export interface PipelineManagerInterface {
 export interface ParticleSystemInterface extends ComponentInterface {
   id: number
 
-  shape: Shape;
-
+  props: ParticleSystemProperties
+  
   update(time: number, elapsedTime: number): Promise<void>
 
   removeParticles(): void

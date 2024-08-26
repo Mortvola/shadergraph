@@ -1,29 +1,20 @@
 import { vec3, vec4 } from "wgpu-matrix"
-import { makeObservable, observable, runInAction } from "mobx";
+import { makeObservable, observable } from "mobx";
 import {
-  DrawableType,
-  MaterialInterface,
   ParticleSystemInterface,
   ComponentType,
   ComponentDescriptor,
 } from "../types";
-import DrawableComponent from "../Drawables/DrawableComponent";
 import { gravity, intersectionPlane } from "../Math";
-import DrawableInterface from "../Drawables/DrawableInterface";
-import Billboard from "../Drawables/Billboard";
 import PSColor from "./PSColor";
-import Http from "../../Http/src";
 import PSValue from "./PSValue";
 import Particle from "./Particle";
 import LifetimeColor from "./LifetimeColor";
-import { ParticleSystemDescriptor, PSValueType, RenderMode, ShapeType } from "./Types";
+import { ParticleSystemDescriptor, ParticleSystemProperties, PSValueType, RenderMode, ShapeType } from "./Types";
 import Shape from "./Shapes/Shape";
 import LifetimeSize from "./LIfetimeSize";
 import Collision from "./Collision";
 import Renderer from "./Renderer";
-import HorizontalBillboard from "../Drawables/HorizontalBillboard";
-import { materialManager } from "../Materials/MaterialManager";
-import { MaterialItemInterface } from "../../State/types";
 import LifetimeVelocity from "./LifetimeVelocity";
 import SceneNode from "../Drawables/SceneNodes/SceneNode";
 import Component from "../Drawables/Component";
@@ -31,77 +22,44 @@ import Component from "../Drawables/Component";
 class ParticleSystem extends Component implements ParticleSystemInterface {
   id: number
 
+  props: ParticleSystemProperties
+
   particles: Map<number, Particle> = new Map();
-
-  duration: number;
-
-  maxPoints: number
-
-  rate: number
-
-  shape: Shape;
 
   startTime = 0;
 
   lastEmitTime = 0;
-
-  lifetime: PSValue;
-
-  startVelocity: PSValue;
-
-  startSize: PSValue;
-
-  startColor: PSColor;
-
-  lifetimeColor: LifetimeColor;
-
-  lifetimeSize: LifetimeSize;
-
-  lifetimeVelocity: LifetimeVelocity;
-
-  gravityModifier: PSValue;
-
-  collision: Collision;
-
-  renderer: Renderer;
 
   private constructor(id: number, renderer: Renderer, descriptor?: ParticleSystemDescriptor) {
     super(ComponentType.ParticleSystem)
   
     this.id = id
 
-    this.duration = descriptor?.duration ?? 5
-    this.rate = descriptor?.rate ?? 2
-    this.maxPoints = descriptor?.maxPoints ?? 50
+    this.props = {
+      duration: descriptor?.duration ?? 5,
+      rate: descriptor?.rate ?? 2,
+      maxPoints: descriptor?.maxPoints ?? 50,
+      lifetime: PSValue.fromDescriptor(descriptor?.lifetime ?? { type: PSValueType.Constant, value: [5, 5] }, this.handleChange),
+      shape: Shape.fromDescriptor(descriptor?.shape ?? { enabled: true, type: ShapeType.Cone, }, this.handleChange),
+      startVelocity: PSValue.fromDescriptor(descriptor?.startVelocity, this.handleChange),
+      startSize: PSValue.fromDescriptor(descriptor?.startSize, this.handleChange),
+      lifetimeSize: LifetimeSize.fromDescriptor(descriptor?.lifetimeSize, this.handleChange),
+      lifetimeVelocity: LifetimeVelocity.fromDescriptor(descriptor?.lifetimeVelocity, this.handleChange),
+      startColor: PSColor.fromDescriptor(descriptor?.startColor, this.handleChange),
+      lifetimeColor: LifetimeColor.fromDescriptor(descriptor?.lifetimeColor, this.handleChange),
+      gravityModifier: PSValue.fromDescriptor(
+        descriptor?.gravityModifier ?? {
+          type: PSValueType.Constant,
+          value: [0, 0],
+        },
+        this.handleChange),
+      collision: Collision.fromDescriptor(descriptor?.collision, this.handleChange),
+      renderer: renderer,
+    }
 
-    this.lifetime = PSValue.fromDescriptor(descriptor?.lifetime ?? { type: PSValueType.Constant, value: [5, 5] }, this.handleChange);
+    renderer.onChange = this.handleChange
 
-    this.shape = Shape.fromDescriptor(descriptor?.shape ?? { enabled: true, type: ShapeType.Cone, }, this.handleChange);
-
-    this.startVelocity = PSValue.fromDescriptor(descriptor?.startVelocity, this.handleChange);
-    this.startSize = PSValue.fromDescriptor(descriptor?.startSize, this.handleChange);
-    
-    this.lifetimeSize = LifetimeSize.fromDescriptor(descriptor?.lifetimeSize, this.handleChange);
-
-    this.lifetimeVelocity = LifetimeVelocity.fromDescriptor(descriptor?.lifetimeVelocity, this.handleChange);
-
-    this.startColor = PSColor.fromDescriptor(descriptor?.startColor, this.handleChange)
-    this.lifetimeColor = LifetimeColor.fromDescriptor(descriptor?.lifetimeColor, this.handleChange)
-
-    this.gravityModifier = PSValue.fromDescriptor(
-      descriptor?.gravityModifier ?? {
-        type: PSValueType.Constant,
-        value: [0, 0],
-      },
-      this.handleChange,
-    );
-
-    this.collision = Collision.fromDescriptor(descriptor?.collision, this.handleChange)
-
-    this.renderer = renderer
-    this.renderer.onChange = this.handleChange
-
-    makeObservable(this, {
+    makeObservable(this.props, {
       lifetime: observable,
       startVelocity: observable,
       startSize: observable,
@@ -126,7 +84,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
   }
 
   collided(point: Particle, elapsedTime: number): boolean {
-    if (this.collision.enabled) {
+    if (this.props.collision.enabled) {
       const planeNormal = vec4.create(0, 1, 0, 0);
       const planeOrigin = vec4.create(0, 0, 0, 1);
 
@@ -180,10 +138,10 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
             // Compute the reflection vector and account for how much bounce.
             const dot = vec4.dot(point.velocity, planeNormal);
 
-            point.velocity = vec4.subtract(point.velocity, vec4.scale(planeNormal, dot + dot * this.collision.bounce))
+            point.velocity = vec4.subtract(point.velocity, vec4.scale(planeNormal, dot + dot * this.props.collision.bounce))
 
             // Allow the collision to dampen the velocity
-            point.velocity = vec4.scale(point.velocity, 1 - this.collision.dampen)  
+            point.velocity = vec4.scale(point.velocity, 1 - this.props.collision.dampen)  
 
             // Move the sphere to the intersection point
             // offset by the radius of the sphere along the plane normal.
@@ -220,7 +178,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       this.startTime = time;
     }
 
-    const elapsedTime2 = ((time - this.startTime) / 1000.0) % this.duration / this.duration;
+    const elapsedTime2 = ((time - this.startTime) / 1000.0) % this.props.duration / this.props.duration;
 
     if (this.lastEmitTime === 0) {
       this.lastEmitTime = time;
@@ -253,11 +211,11 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         particle.velocity = vec4.addScaled(
           particle.velocity,
           [0, 1, 0, 0],
-          this.gravityModifier.getValue(t) * gravity * elapsedTime,
+          this.props.gravityModifier.getValue(t) * gravity * elapsedTime,
         )
 
-        if (this.lifetimeVelocity.enabled) {
-          particle.velocity = vec4.scale(particle.velocity, this.lifetimeVelocity.speedModifier.getValue(t));
+        if (this.props.lifetimeVelocity.enabled) {
+          particle.velocity = vec4.scale(particle.velocity, this.props.lifetimeVelocity.speedModifier.getValue(t));
         }
 
         if (!this.collided(particle,  elapsedTime)) {
@@ -276,14 +234,14 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
   }
 
   async renderParticle(particle: Particle, t: number) {
-    if (this.renderer.enabled && this.sceneNode) {
+    if (this.props.renderer.enabled && this.sceneNode) {
       if (particle.sceneNode === null) {
         particle.sceneNode = new SceneNode();
         this.sceneNode.addNode(particle.sceneNode)  
       }
 
       if (particle.drawable === null) {
-        particle.drawable = await this.renderer.createDrawableComponent()
+        particle.drawable = await this.props.renderer.createDrawableComponent()
         particle.sceneNode.addComponent(particle.drawable);
       }
 
@@ -291,16 +249,16 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
       let size = particle.startSize;
 
-      if (this.lifetimeSize.enabled) {
-        size *= this.lifetimeSize.size.getValue(t);
+      if (this.props.lifetimeSize.enabled) {
+        size *= this.props.lifetimeSize.size.getValue(t);
       }
 
       particle.sceneNode.scale = vec3.create(size, size, size)
 
       let lifetimeColor = [1, 1, 1, 1];
 
-      if (this.lifetimeColor.enabled) {
-        lifetimeColor = this.lifetimeColor.color.getColor(t);
+      if (this.props.lifetimeColor.enabled) {
+        lifetimeColor = this.props.lifetimeColor.color.getColor(t);
       }
 
       particle.drawable.color[0] = lifetimeColor[0] * particle.startColor[0];
@@ -315,10 +273,10 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
   }
 
   private async emit(time: number, t: number) {
-    if (this.particles.size < this.maxPoints) {
+    if (this.particles.size < this.props.maxPoints) {
       const emitElapsedTime = time - this.lastEmitTime;
 
-      let numToEmit = Math.min(Math.trunc((this.rate / 1000) * emitElapsedTime), this.maxPoints - this.particles.size);
+      let numToEmit = Math.min(Math.trunc((this.props.rate / 1000) * emitElapsedTime), this.props.maxPoints - this.particles.size);
 
       if (numToEmit > 0) {
         this.lastEmitTime = time;
@@ -330,11 +288,11 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
   async emitSome(numToEmit: number, startTime: number, t: number) {
     for (; numToEmit > 0; numToEmit -= 1) {
-      const lifetime = this.lifetime.getValue(t);
-      const startVelocity = this.startVelocity.getValue(t);
-      const startSize = this.startSize.getValue(t);
-      const startColor = this.startColor.getColor(t);
-      const [position, direction] = this.shape.getPositionAndDirection();
+      const lifetime = this.props.lifetime.getValue(t);
+      const startVelocity = this.props.startVelocity.getValue(t);
+      const startSize = this.props.startSize.getValue(t);
+      const startColor = this.props.startColor.getColor(t);
+      const [position, direction] = this.props.shape.getPositionAndDirection();
 
       const particle = new Particle(
         position,
@@ -366,32 +324,32 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     return ({
       type: this.type,
       item: {
-        duration: this.duration,
-        maxPoints: this.maxPoints,
-        rate: this.rate,
-        shape: this.shape.toDescriptor(),
-        lifetime: this.lifetime.toDescriptor(),
-        startVelocity: this.startVelocity.toDescriptor(),
-        startSize: this.startSize.toDescriptor(),
-        lifetimeSize: this.lifetimeSize.toDescriptor(),
-        startColor: this.startColor.toDescriptor(),
-        lifetimeColor: this.lifetimeColor.toDescriptor(),
-        gravityModifier: this.gravityModifier.toDescriptor(),
-        collision: this.collision.toDescriptor(),
-        renderer: this.renderer.toDescriptor(),
+        duration: this.props.duration,
+        maxPoints: this.props.maxPoints,
+        rate: this.props.rate,
+        shape: this.props.shape.toDescriptor(),
+        lifetime: this.props.lifetime.toDescriptor(),
+        startVelocity: this.props.startVelocity.toDescriptor(),
+        startSize: this.props.startSize.toDescriptor(),
+        lifetimeSize: this.props.lifetimeSize.toDescriptor(),
+        startColor: this.props.startColor.toDescriptor(),
+        lifetimeColor: this.props.lifetimeColor.toDescriptor(),
+        gravityModifier: this.props.gravityModifier.toDescriptor(),
+        collision: this.props.collision.toDescriptor(),
+        renderer: this.props.renderer.toDescriptor(),
       }
     })
   }
 
-  async save() {
-    const response = await Http.patch(`/particles/${this.id}`, {
-      descriptor: this.toDescriptor(),
-    })
+  // async save() {
+  //   const response = await Http.patch(`/particles/${this.id}`, {
+  //     descriptor: this.toDescriptor(),
+  //   })
 
-    if (response.ok) {
+  //   if (response.ok) {
 
-    }
-  }
+  //   }
+  // }
 
   handleChange = () => {
     if (this.onChange) {
