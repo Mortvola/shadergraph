@@ -1,8 +1,7 @@
 import { ProjectInterface } from "../Project/Types/types";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
-import { ComponentDescriptor, ComponentType, SceneObjectComponent, MaterialInterface, SceneNodeInterface, PrefabComponent } from "../Renderer/types";
+import { ComponentDescriptor, ComponentType, SceneObjectComponent, MaterialInterface, SceneNodeInterface, TransformPropsInterface } from "../Renderer/types";
 import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
-import { Vec3 } from "wgpu-matrix";
 
 export interface ModelerInterface {
   applyMaterial(material: MaterialInterface): void
@@ -111,11 +110,7 @@ export type PrefabObjectDescriptor = {
 }
 
 export interface SceneObjectInterface extends EntityInterface {
-  translate: Vec3;
-
-  rotate: Vec3;
-
-  scale: Vec3;
+  transformProps: TransformPropsInterface;
 
   items: SceneObjectComponent[];
 
@@ -130,8 +125,6 @@ export interface SceneObjectInterface extends EntityInterface {
   save(): Promise<void>;
 
   addComponent(component: SceneObjectComponent): void;
-
-  setTranslate(translate: number[]): void;
 
   isAncestor(item: SceneObjectInterface): boolean;
 

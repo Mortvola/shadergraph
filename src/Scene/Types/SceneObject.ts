@@ -11,6 +11,7 @@ import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import PrefabObject from "./PrefabObject";
 import LightProps from "../../Renderer/Drawables/LightProps";
+import TransformProps from "../../Renderer/TransformProps";
 
 let nextObjectId = 0;
 
@@ -25,11 +26,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
 
   objects: SceneObject[] = [];
 
-  translate = vec3.create(0, 0, 0);
-
-  rotate = vec3.create(0, 0, 0);
-
-  scale = vec3.create(1, 1, 1);
+  transformProps = new TransformProps();
 
   sceneNode = new SceneNode();
 
@@ -48,9 +45,6 @@ class SceneObject extends Entity implements SceneObjectInterface {
     makeObservable(this, {
       items: observable,
       objects: observable,
-      translate: observable,
-      rotate: observable,
-      scale: observable,
     })
   }
 
@@ -70,9 +64,14 @@ class SceneObject extends Entity implements SceneObjectInterface {
     if (descriptor) {
       object.id = descriptor.id ?? object.id;
       object.name = descriptor?.name ?? object.name;
-      object.translate = vec3.create(...(descriptor.object.translate ?? [0, 0, 0]))
-      object.rotate = vec3.create(...(descriptor.object.rotate ?? [0, 0, 0]))
-      object.scale = vec3.create(...(descriptor.object.scale ?? [1, 1, 1]))
+
+      const transformProps = new TransformProps();
+      transformProps.translate = vec3.create(...(descriptor.object.translate ?? [0, 0, 0]));
+      transformProps.rotate = vec3.create(...(descriptor.object.rotate ?? [0, 0, 0]));
+      transformProps.scale = vec3.create(...(descriptor.object.scale ?? [1, 1, 1]));
+      
+      object.transformProps = transformProps;
+      object.transformProps.onChange = object.onChange
 
       let components = descriptor.object.components;
       if (!components) {
@@ -89,14 +88,15 @@ class SceneObject extends Entity implements SceneObjectInterface {
               }
 
               const props = await ParticleSystemProps.create(propsDescriptor);
-              const ps = new ParticleSystem(props)
               props.onChange = object.onChange;
+
+              const ps = new ParticleSystem(props)
 
               object.sceneNode.addComponent(ps)
 
               return {
                 type: c.type,
-                item: props,
+                props,
                 object: ps,
               }
 
@@ -107,13 +107,15 @@ class SceneObject extends Entity implements SceneObjectInterface {
               }
 
               const props = new LightProps(propsDescriptor);
+              props.onChange = object.onChange;
+
               const light = new Light(props);
 
               object.sceneNode.addComponent(light)
 
               return {
                 type: c.type,
-                item: props,
+                props,
                 object: light,
               }
             }
@@ -139,15 +141,13 @@ class SceneObject extends Entity implements SceneObjectInterface {
       }
 
       // Fix any scale values that are zero.
-      for (let i = 0; i < object.scale.length; i += 1) {
-        if (object.scale[i] === 0) {
-          object.scale[i] = 1;
+      for (let i = 0; i < object.transformProps.scale.length; i += 1) {
+        if (object.transformProps.scale[i] === 0) {
+          object.transformProps.scale[i] = 1;
         }  
       }
 
-      object.sceneNode.translate[0] = object.translate[0];
-      object.sceneNode.translate[1] = object.translate[1];
-      object.sceneNode.translate[2] = object.translate[2];  
+      object.sceneNode.translate = object.transformProps.translate;
     }
 
     return object;
@@ -160,12 +160,12 @@ class SceneObject extends Entity implements SceneObjectInterface {
       object: {
         components: this.items.map((c) => ({
           type: c.type,
-          props: c.item.toDescriptor(),
+          props: c.props.toDescriptor(),
         })),
         objects: this.objects.map((o) => o.id),
-        translate: [...this.translate],
-        rotate: [...this.rotate],
-        scale: [...this.scale],  
+        translate: [...this.transformProps.translate],
+        rotate: [...this.transformProps.rotate],
+        scale: [...this.transformProps.scale],  
       }
     })
   }
@@ -208,7 +208,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
       component,
     ];
 
-    component.item.onChange = this.onChange;
+    component.props.onChange = this.onChange;
 
     if (component.type === ComponentType.ParticleSystem) {
       this.sceneNode.addComponent(component.object as ParticleSystemInterface)
@@ -216,20 +216,6 @@ class SceneObject extends Entity implements SceneObjectInterface {
     else if (component.type === ComponentType.Light) {
       this.sceneNode.addComponent(component.object as LightInterface);
     }
-  }
-
-  setTranslate(translate: number[]) {
-    runInAction(() => {
-      this.translate[0] = translate[0];
-      this.translate[1] = translate[1];
-      this.translate[2] = translate[2];
-
-      this.save();
-    })
-    
-    this.sceneNode.translate[0] = translate[0];
-    this.sceneNode.translate[1] = translate[1];
-    this.sceneNode.translate[2] = translate[2];
   }
 
   addObject(object: SceneObject) {
@@ -293,17 +279,20 @@ class SceneObject extends Entity implements SceneObjectInterface {
     // 1. Move the scene node from the original nodes to the new ones
     // 2. Reference the properties for each of the components found in the original nodes
     // 3. Mark the link from the parent to this need as a prefab connection.
-    let stack: SceneObject[] = [this];
+    let stack: { object: SceneObject, parent: PrefabObject | null }[] = [{ object: this, parent: null }];
     let prefabRoot: PrefabObject | undefined = undefined;
 
     while (stack.length > 1) {
-      let object = stack[0];
+      let { object, parent } = stack[0];
       stack = stack.slice(1);
 
-      // Add the current objects children to the stack
-      stack = stack.concat(object.objects);
-
       const prefabObject = new PrefabObject();
+
+      // Add the current objects children to the stack
+      stack = stack.concat(object.objects.map((o) => ({
+        object: o,
+        parent: prefabObject,
+      })));
 
       prefabObject.name = object.name;
 
@@ -311,28 +300,34 @@ class SceneObject extends Entity implements SceneObjectInterface {
       // The root node will get its own copy while all the other nodes
       // will reference the prefab's value.
       if (!prefabRoot) {
-        prefabObject.transformProps.translate = vec3.clone(object.translate);
-        prefabObject.transformProps.rotate = vec3.clone(object.rotate);
-        prefabObject.transformProps.scale = vec3.clone(object.scale);
+        const transformProps = new TransformProps();
+
+        transformProps.translate = vec3.clone(object.transformProps.translate);
+        transformProps.rotate = vec3.clone(object.transformProps.rotate);
+        transformProps.scale = vec3.clone(object.transformProps.scale);
+
+        prefabObject.transformProps = transformProps;
+        transformProps.onChange = prefabObject.onChange;
 
         prefabRoot = prefabObject;
       }
       else {
-        prefabObject.transformProps.translate = object.translate;
-        prefabObject.transformProps.rotate = object.rotate;
-        prefabObject.transformProps.scale = object.scale;  
+        // Have the prefab object referencd the object's transform props.
+        // Set the onChange method on the transform props to the ROOT prefab object.
+        prefabObject.transformProps = object.transformProps;
+        prefabObject.transformProps.onChange = prefabRoot.onChange
       }
 
       // Add a reference to each of the components found in the original node.
       prefabObject.components = object.items.map((item) => ({
         type: item.type,
-        props: item.item,
+        props: item.props,
       }))
 
       // Link the prefabObject with its parent.
-      if (object.parent?.prefab) {
-        prefabObject.parent = object.parent?.prefab;
-        prefabObject.parent.objects.push(prefabObject)
+      if (parent) {
+        prefabObject.parent = parent;
+        parent.objects.push(prefabObject)
       }
 
       object.prefab = prefabObject;

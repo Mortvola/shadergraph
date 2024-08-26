@@ -63,7 +63,7 @@ const SceneToolbar: React.FC<PropsType> = ({
 
         const item: SceneObjectComponent = {
           type: ComponentType.ParticleSystem,
-          item: props,
+          props: props,
           object: particleSystem,
         }
 
@@ -85,7 +85,7 @@ const SceneToolbar: React.FC<PropsType> = ({
 
         const item: SceneObjectComponent = {
           type: ComponentType.Light,
-          item: props,
+          props: props,
           object: light,
         }
 

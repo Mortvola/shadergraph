@@ -244,13 +244,21 @@ export interface LightInterface extends ComponentInterface {
 export type SceneObjectComponent = {
   key?: number,
   type: ComponentType,
-  item: ParticleSystemProps | LightProps,
+  props: ParticleSystemProps | LightProps,
   object?: ParticleSystemInterface | LightInterface,
 }
 
 export type PrefabComponent = {
   type: ComponentType,
   props: ParticleSystemProps | LightProps,
+}
+
+export interface TransformPropsInterface {
+  translate: Vec3;
+  rotate: Vec3;
+  scale: Vec3;
+
+  setTranslate(translate: number[]): void;
 }
 
 export type GameObject = {

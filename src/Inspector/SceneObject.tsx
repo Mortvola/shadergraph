@@ -1,15 +1,12 @@
 import React from 'react';
 import { SceneObjectInterface, isGameObject2D } from '../State/types';
-import ModelTree from './ModelTree/ModelTree';
 import { useStores } from '../State/store';
 import styles from './Inspector.module.scss'
 import { observer } from 'mobx-react-lite';
-import { runInAction } from 'mobx';
-import { ComponentType, DecalItem, SceneObjectComponent, ModelItem } from '../Renderer/types';
+import { ComponentType, SceneObjectComponent } from '../Renderer/types';
 import GameObject2D from './GameObject2d';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
-import Decal from './Decal';
 import Particle from './ParticleSystem/Particle';
 import NumberInput from './NumberInput';
 import ParticleSystem from '../Renderer/ParticleSystem/ParticleSystem';
@@ -83,7 +80,7 @@ const SceneObject: React.FC<PropsType> = observer(({
     }
   }
 
-  const handleModelChange = (model: ModelItem) => {
+  // const handleModelChange = (model: ModelItem) => {
     // runInAction(() => {
     //   const index = sceneObject.items.findIndex((item) => (item.item as ModelItem).id === model.id)
 
@@ -97,9 +94,9 @@ const SceneObject: React.FC<PropsType> = observer(({
     //     sceneObject.save()
     //   }  
     // })
-  }
+  // }
 
-  const handleDecalChange = (decal: DecalItem) => {
+  // const handleDecalChange = (decal: DecalItem) => {
     // runInAction(() => {
     //   const index = sceneObject.items.findIndex((item) => item.item === decal)
 
@@ -113,7 +110,7 @@ const SceneObject: React.FC<PropsType> = observer(({
     //     sceneObject.save()
     //   }  
     // })
-  }
+  // }
 
   const handleDelete = (item: SceneObjectComponent) => {
     const index = sceneObject.items.findIndex((i) => i.key === item.key)
@@ -134,13 +131,13 @@ const SceneObject: React.FC<PropsType> = observer(({
       //   return <ModelTree modelItem={item.item as ModelItem} onChange={handleModelChange} />
 
       case ComponentType.ParticleSystem:
-        return <Particle particleSystemProps={(item.item as ParticleSystemProps)} />
+        return <Particle particleSystemProps={(item.props as ParticleSystemProps)} />
 
       // case ComponentType.Decal:
       //   return <Decal decalItem={item.item as DecalItem} onChange={handleDecalChange} />
 
       case ComponentType.Light:
-        return <LightComponent lightProps={item.item as LightProps} />  
+        return <LightComponent lightProps={item.props as LightProps} />  
     }
 
     return null;
@@ -193,7 +190,7 @@ const SceneObject: React.FC<PropsType> = observer(({
         const light = new Light(props);
         const component: SceneObjectComponent = {
           type: ComponentType.Light,
-          item: props,
+          props: props,
           object: light,
         };
 
@@ -215,7 +212,7 @@ const SceneObject: React.FC<PropsType> = observer(({
   
           const item: SceneObjectComponent = {
             type: ComponentType.ParticleSystem,
-            item: props,
+            props: props,
             object: particleSystem,
           }
   
@@ -235,25 +232,25 @@ const SceneObject: React.FC<PropsType> = observer(({
   ]), [addComponent]);
 
   const handleTranslateXChange = (x: number) => {
-    sceneObject.setTranslate([
+    sceneObject.transformProps.setTranslate([
       x,
-      sceneObject.translate[1],
-      sceneObject.translate[2],
+      sceneObject.transformProps.translate[1],
+      sceneObject.transformProps.translate[2],
     ])
   }
 
   const handleTranslateYChange = (y: number) => {
-    sceneObject.setTranslate([
-      sceneObject.translate[0],
+    sceneObject.transformProps.setTranslate([
+      sceneObject.transformProps.translate[0],
       y,
-      sceneObject.translate[2],
+      sceneObject.transformProps.translate[2],
     ])
   }
 
   const handleTranslateZChange = (z: number) => {
-    sceneObject.setTranslate([
-      sceneObject.translate[0],
-      sceneObject.translate[1],
+    sceneObject.transformProps.setTranslate([
+      sceneObject.transformProps.translate[0],
+      sceneObject.transformProps.translate[1],
       z,
     ])
   }
@@ -263,9 +260,9 @@ const SceneObject: React.FC<PropsType> = observer(({
       <div>{`Name: ${sceneObject.name}`}</div>
       <div>
         Translate:
-        <NumberInput value={sceneObject.translate[0]} onChange={handleTranslateXChange} />
-        <NumberInput value={sceneObject.translate[1]} onChange={handleTranslateYChange} />
-        <NumberInput value={sceneObject.translate[2]} onChange={handleTranslateZChange} />
+        <NumberInput value={sceneObject.transformProps.translate[0]} onChange={handleTranslateXChange} />
+        <NumberInput value={sceneObject.transformProps.translate[1]} onChange={handleTranslateYChange} />
+        <NumberInput value={sceneObject.transformProps.translate[2]} onChange={handleTranslateZChange} />
       </div>
       {
         isGameObject2D(sceneObject)
