@@ -1,6 +1,7 @@
 import Http from "../../Http/src";
 import ParticleSystem from "./ParticleSystem";
 import { ParticleRecord } from "../types";
+import ParticleSystemProps from "./ParticleSystemProps";
 
 class ParticleSystemManager { 
   map: Map<number, ParticleSystem> = new Map()
@@ -36,14 +37,15 @@ class ParticleSystemManager {
     if (response.ok) {
       const rec = await response.body();
 
-      const particleSystem = await ParticleSystem.create(rec.id, rec.descriptor);
+      const props = await ParticleSystemProps.create(rec.descriptor);
+      const particleSystem = new ParticleSystem(props);
 
       return particleSystem;
     }  
   }
 
   add(particleSystem: ParticleSystem) {
-    this.map.set(particleSystem.id, particleSystem)
+    // this.map.set(particleSystem.id, particleSystem)
   }
 }
 

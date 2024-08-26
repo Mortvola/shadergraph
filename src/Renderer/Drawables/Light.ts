@@ -1,18 +1,14 @@
 import { vec4, Vec4 } from 'wgpu-matrix';
 import Component from './Component';
-import { ComponentDescriptor, ComponentType, LightInterface } from '../types';
+import { ComponentType, LightInterface, LightPropsInterface } from '../types';
 
 class Light extends Component implements LightInterface {
-  color: number[] = [1, 1, 1, 1];
+  props: LightPropsInterface;
 
-  constant = 1.0;
-
-  linear = 0.09;
-
-  quadratic = 0.032;
-  
-  constructor() {
+  constructor(props: LightPropsInterface) {
     super(ComponentType.Light)
+
+    this.props = props;
   }
 
   get worldPosition(): Vec4 {
@@ -26,22 +22,6 @@ class Light extends Component implements LightInterface {
   computeCentroid(): Vec4 {
     return vec4.create(0, 0, 0, 1);
   }
-
-  toDescriptor(): ComponentDescriptor {
-    return ({
-      type: this.type,
-      item: {
-        color: this.color,
-        constant: this.constant,
-        linear: this.linear,
-        quadratic: this.quadratic,  
-      }
-    })
-  }
 }
-
-export const isLight = (r: unknown): r is Light => (
-  (r as Light).color !== undefined
-)
 
 export default Light;

@@ -1,6 +1,6 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import ProjectItem from "./ProjectItem";
-import { FolderInterface, ProjectInterface, ProjectItemInterface, isFolder } from "./types";
+import { FolderInterface, ProjectInterface, ProjectItemInterface, ProjectItemType, isFolder } from "./types";
 import Http from "../../Http/src";
 
 class Folder extends ProjectItem implements FolderInterface {
@@ -8,7 +8,7 @@ class Folder extends ProjectItem implements FolderInterface {
 
   project: ProjectInterface
 
-  newItem: string | null = null;
+  newItem: ProjectItemType | null = null;
 
   open = true;
 

@@ -1,28 +1,16 @@
 import { vec3, vec4 } from "wgpu-matrix"
-import { makeObservable, observable } from "mobx";
 import {
   ParticleSystemInterface,
   ComponentType,
-  ComponentDescriptor,
 } from "../types";
 import { gravity, intersectionPlane } from "../Math";
-import PSColor from "./PSColor";
-import PSValue from "./PSValue";
 import Particle from "./Particle";
-import LifetimeColor from "./LifetimeColor";
-import { ParticleSystemDescriptor, ParticleSystemProperties, PSValueType, RenderMode, ShapeType } from "./Types";
-import Shape from "./Shapes/Shape";
-import LifetimeSize from "./LIfetimeSize";
-import Collision from "./Collision";
-import Renderer from "./Renderer";
-import LifetimeVelocity from "./LifetimeVelocity";
+import { ParticleSystemPropsInterface } from "./Types";
 import SceneNode from "../Drawables/SceneNodes/SceneNode";
 import Component from "../Drawables/Component";
 
 class ParticleSystem extends Component implements ParticleSystemInterface {
-  id: number
-
-  props: ParticleSystemProperties
+  props: ParticleSystemPropsInterface
 
   particles: Map<number, Particle> = new Map();
 
@@ -30,51 +18,10 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
   lastEmitTime = 0;
 
-  private constructor(id: number, renderer: Renderer, descriptor?: ParticleSystemDescriptor) {
+  constructor(props: ParticleSystemPropsInterface) {
     super(ComponentType.ParticleSystem)
   
-    this.id = id
-
-    this.props = {
-      duration: descriptor?.duration ?? 5,
-      rate: descriptor?.rate ?? 2,
-      maxPoints: descriptor?.maxPoints ?? 50,
-      lifetime: PSValue.fromDescriptor(descriptor?.lifetime ?? { type: PSValueType.Constant, value: [5, 5] }, this.handleChange),
-      shape: Shape.fromDescriptor(descriptor?.shape ?? { enabled: true, type: ShapeType.Cone, }, this.handleChange),
-      startVelocity: PSValue.fromDescriptor(descriptor?.startVelocity, this.handleChange),
-      startSize: PSValue.fromDescriptor(descriptor?.startSize, this.handleChange),
-      lifetimeSize: LifetimeSize.fromDescriptor(descriptor?.lifetimeSize, this.handleChange),
-      lifetimeVelocity: LifetimeVelocity.fromDescriptor(descriptor?.lifetimeVelocity, this.handleChange),
-      startColor: PSColor.fromDescriptor(descriptor?.startColor, this.handleChange),
-      lifetimeColor: LifetimeColor.fromDescriptor(descriptor?.lifetimeColor, this.handleChange),
-      gravityModifier: PSValue.fromDescriptor(
-        descriptor?.gravityModifier ?? {
-          type: PSValueType.Constant,
-          value: [0, 0],
-        },
-        this.handleChange),
-      collision: Collision.fromDescriptor(descriptor?.collision, this.handleChange),
-      renderer: renderer,
-    }
-
-    renderer.onChange = this.handleChange
-
-    makeObservable(this.props, {
-      lifetime: observable,
-      startVelocity: observable,
-      startSize: observable,
-      lifetimeSize: observable,
-      startColor: observable,
-      gravityModifier: observable,
-    })
-  }
-
-  static async create(id: number, descriptor?: ParticleSystemDescriptor) {
-    const renderer = await Renderer.fromDescriptor(
-      descriptor?.renderer ?? { enabled: true, mode: RenderMode.Billboard },
-    );
-
-    return new ParticleSystem(id, renderer, descriptor)
+    this.props = props;
   }
 
   reset() {
@@ -317,43 +264,6 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       }
 
       this.particles.delete(id)
-    }
-  }
-
-  toDescriptor(): ComponentDescriptor {
-    return ({
-      type: this.type,
-      item: {
-        duration: this.props.duration,
-        maxPoints: this.props.maxPoints,
-        rate: this.props.rate,
-        shape: this.props.shape.toDescriptor(),
-        lifetime: this.props.lifetime.toDescriptor(),
-        startVelocity: this.props.startVelocity.toDescriptor(),
-        startSize: this.props.startSize.toDescriptor(),
-        lifetimeSize: this.props.lifetimeSize.toDescriptor(),
-        startColor: this.props.startColor.toDescriptor(),
-        lifetimeColor: this.props.lifetimeColor.toDescriptor(),
-        gravityModifier: this.props.gravityModifier.toDescriptor(),
-        collision: this.props.collision.toDescriptor(),
-        renderer: this.props.renderer.toDescriptor(),
-      }
-    })
-  }
-
-  // async save() {
-  //   const response = await Http.patch(`/particles/${this.id}`, {
-  //     descriptor: this.toDescriptor(),
-  //   })
-
-  //   if (response.ok) {
-
-  //   }
-  // }
-
-  handleChange = () => {
-    if (this.onChange) {
-      this.onChange();
     }
   }
 }

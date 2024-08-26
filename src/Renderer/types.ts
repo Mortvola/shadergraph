@@ -5,10 +5,11 @@ import { PropertyInterface, ValueType } from './ShaderBuilder/Types';
 import { ShaderDescriptor } from './shaders/ShaderDescriptor';
 import SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
 import ShaderGraph from './ShaderBuilder/ShaderGraph';
-import { ParticleSystemDescriptor, ParticleSystemProperties } from './ParticleSystem/Types';
-import Shape from './ParticleSystem/Shapes/Shape';
+import { ParticleSystemPropsDescriptor, ParticleSystemPropsInterface } from './ParticleSystem/Types';
 import { MaterialItemInterface } from '../State/types';
 import Component from './Drawables/Component';
+import ParticleSystemProps from './ParticleSystem/ParticleSystemProps';
+import LightProps from './Drawables/LightProps';
 
 export const maxInstances = 1000;
 
@@ -141,10 +142,8 @@ export interface PipelineManagerInterface {
 }
 
 export interface ParticleSystemInterface extends ComponentInterface {
-  id: number
+  props: ParticleSystemPropsInterface
 
-  props: ParticleSystemProperties
-  
   update(time: number, elapsedTime: number): Promise<void>
 
   removeParticles(): void
@@ -216,33 +215,46 @@ export interface ComponentInterface {
 
 export type ComponentDescriptor = {
   type: ComponentType,
-  item: LightDescriptor | ParticleSystemDescriptor | DecalItemDescriptor | ModelItemDescriptor,
+  props: LightPropsDescriptor | ParticleSystemPropsDescriptor | DecalItemDescriptor | ModelItemDescriptor,
+  item?: LightPropsDescriptor | ParticleSystemPropsDescriptor | DecalItemDescriptor | ModelItemDescriptor,
 }
 
-export type LightDescriptor = {
+export type LightPropsDescriptor = {
   color: number[],
   constant: number,
   linear: number,
   quadratic: number,
 }
 
+export interface LightPropsInterface {
+  color: number[],
+  constant: number,
+  linear: number,
+  quadratic: number,
+
+  handleChange: () => void,
+}
+
 export interface LightInterface extends ComponentInterface {
-  color: number[];
-  constant: number;
-  linear: number;
-  quadratic: number;
+  props: LightPropsInterface;
 }
 
 // export type ComponentType = 'model' | 'particle' | 'decal' | 'light';
 
-export type GameObjectItem = {
+export type SceneObjectComponent = {
   key?: number,
   type: ComponentType,
-  item: ModelItem | ParticleSystemInterface | DecalItem | LightInterface,
+  item: ParticleSystemProps | LightProps,
+  object?: ParticleSystemInterface | LightInterface,
+}
+
+export type PrefabComponent = {
+  type: ComponentType,
+  props: ParticleSystemProps | LightProps,
 }
 
 export type GameObject = {
-  items: GameObjectItem[],
+  items: SceneObjectComponent[],
 }
 
 export type GameObjectRecord = {
@@ -276,7 +288,7 @@ export const isGameObject2DRecord = (r: unknown): r is GameObject2DRecord => (
 export type ParticleRecord = {
   id: number,
   name: string,
-  descriptor: ParticleSystemDescriptor,
+  descriptor: ParticleSystemPropsDescriptor,
 }
 
 export interface MaterialManagerInterface {

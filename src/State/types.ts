@@ -1,6 +1,6 @@
 import { ProjectInterface } from "../Project/Types/types";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
-import { ComponentDescriptor, ComponentType, GameObjectItem, MaterialInterface, SceneNodeInterface } from "../Renderer/types";
+import { ComponentDescriptor, ComponentType, SceneObjectComponent, MaterialInterface, SceneNodeInterface, PrefabComponent } from "../Renderer/types";
 import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
 import { Vec3 } from "wgpu-matrix";
 
@@ -94,6 +94,22 @@ export interface SceneInterface {
   renderScene(): Promise<void>
 }
 
+export interface PrefabObjectInterface {
+
+}
+
+export type PrefabPropsDescriptor = Record<string, unknown>;
+
+export type PrefabComponentDescriptor = {
+  type: ComponentType,
+  props: PrefabPropsDescriptor,
+}
+
+export type PrefabObjectDescriptor = {
+  components: PrefabComponentDescriptor[],
+  objects: PrefabObjectDescriptor[],
+}
+
 export interface SceneObjectInterface extends EntityInterface {
   translate: Vec3;
 
@@ -101,7 +117,7 @@ export interface SceneObjectInterface extends EntityInterface {
 
   scale: Vec3;
 
-  items: GameObjectItem[];
+  items: SceneObjectComponent[];
 
   objects: SceneObjectInterface[];
 
@@ -113,7 +129,7 @@ export interface SceneObjectInterface extends EntityInterface {
 
   save(): Promise<void>;
 
-  addComponent(component: GameObjectItem): void;
+  addComponent(component: SceneObjectComponent): void;
 
   setTranslate(translate: number[]): void;
 
@@ -124,6 +140,8 @@ export interface SceneObjectInterface extends EntityInterface {
   removeObject(object: SceneObjectInterface): void;
 
   detachSelf(): void;
+
+  createPrefab(): PrefabObjectInterface | undefined;
 }
 
 export type SceneDescriptor = {

@@ -1,3 +1,5 @@
+import { PrefabComponentDescriptor } from "../../State/types"
+import { ComponentDescriptor, PrefabComponent } from "../types"
 import Collision from "./Collision"
 import LifetimeColor from "./LifetimeColor"
 import LifetimeSize from "./LIfetimeSize"
@@ -132,7 +134,7 @@ export type ShapeDescriptor = {
   hemisphere?: SphereDescriptor,
 }
 
-export type ParticleSystemDescriptor = {
+export type ParticleSystemPropsDescriptor = {
   duration?: number,
   maxPoints?: number,
   rate?: number,
@@ -159,7 +161,7 @@ export type ParticleSystemDescriptor = {
   renderer: RendererDescriptor,
 }
 
-export type ParticleSystemProperties = {
+export interface ParticleSystemPropsInterface {
   duration: number;
 
   maxPoints: number
@@ -187,4 +189,8 @@ export type ParticleSystemProperties = {
   collision: Collision;
 
   renderer: Renderer;
+
+  handleChange: () => void;
+
+  toDescriptor(): ParticleSystemPropsDescriptor;
 }

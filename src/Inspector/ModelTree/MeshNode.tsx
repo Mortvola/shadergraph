@@ -58,23 +58,23 @@ const MeshNode: React.FC<PropsType> = observer(({
       const item = gameObject.items.find((o) => o.type === ComponentType.Mesh);
 
       if (item) {
-        const modelItem = item.item as ModelItem;
+        // const modelItem = item.item as ModelItem;
 
-        if (modelItem.materials) {
-          const id = modelItem.materials[node.name];
+        // if (modelItem.materials) {
+        //   const id = modelItem.materials[node.name];
     
-          if (id !== undefined) {
-            const item = store.project.getItemByItemId(id, 'material');
+        //   if (id !== undefined) {
+        //     const item = store.project.getItemByItemId(id, 'material');
     
-            name = item?.name
-          }
-        }
+        //     name = item?.name
+        //   }
+        // }
     
-        if (name) {
-          return (
-            <div>{name}</div>
-          )
-        }    
+        // if (name) {
+        //   return (
+        //     <div>{name}</div>
+        //   )
+        // }    
       }
     }
 

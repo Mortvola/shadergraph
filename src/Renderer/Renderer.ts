@@ -135,19 +135,19 @@ class Renderer implements RendererInterface {
     // lightNode.addComponent(new Light());
     // this.scene.addNode(lightNode);
 
-    let lightNode = new SceneNode();
-    lightNode.translate[0] = 15;
-    lightNode.translate[1] = 4;
-    lightNode.translate[2] = -15;
-    lightNode.addComponent(new Light());
-    this.scene.addNode(lightNode)
+    // let lightNode = new SceneNode();
+    // lightNode.translate[0] = 15;
+    // lightNode.translate[1] = 4;
+    // lightNode.translate[2] = -15;
+    // lightNode.addComponent(new Light());
+    // this.scene.addNode(lightNode)
 
-    lightNode = new SceneNode();
-    lightNode.translate[0] = -15;
-    lightNode.translate[1] = 5;
-    lightNode.translate[2] = -15;
-    lightNode.addComponent(new Light());
-    this.scene.addNode(lightNode)
+    // lightNode = new SceneNode();
+    // lightNode.translate[0] = -15;
+    // lightNode.translate[1] = 5;
+    // lightNode.translate[2] = -15;
+    // lightNode.addComponent(new Light());
+    // this.scene.addNode(lightNode)
 
     this.scene.updateTransforms(null);
   }
@@ -434,10 +434,10 @@ class Renderer implements RendererInterface {
           light.worldPosition,
           inverseViewtransform,
         ),
-        color: light.color,
-        attConstant: light.constant,
-        attLinear: light.linear,
-        attQuadratic: light.quadratic,
+        color: light.props.color,
+        attConstant: light.props.constant,
+        attLinear: light.props.linear,
+        attQuadratic: light.props.quadratic,
       })),
     });
 

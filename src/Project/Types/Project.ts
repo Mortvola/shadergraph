@@ -110,7 +110,7 @@ class Project implements ProjectInterface {
     this.importItem(file, '/textures')
   }
 
-  addNewItem(type: string) {
+  addNewItem(type: ProjectItemType) {
     let parent = this.getNewItemParent()
 
     runInAction(() => {
@@ -124,7 +124,7 @@ class Project implements ProjectInterface {
     })
   }
 
-  async createNewItem(name: string, type: string, folder: FolderInterface) {
+  async createNewItem(name: string, type: ProjectItemType, folder: FolderInterface) {
     let parentId: number | null = folder.id;
     if (parentId === -1) {
       parentId = null;

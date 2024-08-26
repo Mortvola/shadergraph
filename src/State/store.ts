@@ -12,18 +12,13 @@ import SceneObject from "../Scene/Types/SceneObject";
 import Texture from "./Texture";
 import {
   SceneNodeInterface,
-  DecalItem,
-  ModelItem, ParticleItem, ParticleSystemInterface, ShaderRecord,
+  ParticleSystemInterface, ShaderRecord,
   ComponentType,
 } from "../Renderer/types";
 import { renderer2d } from "../Main";
 import Project from "../Project/Types/Project";
 import { particleSystemManager } from "../Renderer/ParticleSystem/ParticleSystemManager";
 import SceneNode2d from "../Renderer/Drawables/SceneNodes/SceneNode2d";
-import Mesh from "../Renderer/Drawables/Mesh";
-import { box } from "../Renderer/Drawables/Shapes/box";
-import DrawableComponent from "../Renderer/Drawables/DrawableComponent";
-import { vec3 } from "wgpu-matrix";
 import { materialManager } from "../Renderer/Materials/MaterialManager";
 import SceneNode from "../Renderer/Drawables/SceneNodes/SceneNode";
 import ParticleSystem from "../Renderer/ParticleSystem/ParticleSystem";
@@ -87,26 +82,26 @@ class Store implements StoreInterface {
 
   async selectItem(item: ProjectItemInterface) {
     if (this.project.selectedItem?.type === 'object' && isGameObject(this.project.selectedItem.item)) {
-      for (const item of this.project.selectedItem.item.items) {
-        if (item.type === ComponentType.ParticleSystem) {
-          const particleEntry = item.item as ParticleItem;
-          const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
-          if (particleSystem?.sceneNode) {
-            this.mainView.removeSceneNode(particleSystem?.sceneNode)
-          }
+      for (const component of this.project.selectedItem.item.items) {
+        if (component.type === ComponentType.ParticleSystem) {
+          // const particleEntry = item.item as ParticleItem;
+          // const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
+          // if (particleSystem?.sceneNode) {
+          //   this.mainView.removeSceneNode(particleSystem?.sceneNode)
+          // }
         }
-        else if (item.type === ComponentType.Mesh) {
-          const modelItem = this.project.getItemByItemId((item.item as ModelItem).id, 'model');
+        else if (component.type === ComponentType.Mesh) {
+          // const modelItem = this.project.getItemByItemId((item.item as ModelItem).id, 'model');
 
-          if (modelItem) {
-            const model = await this.getModel(modelItem)
+          // if (modelItem) {
+          //   const model = await this.getModel(modelItem)
     
-            if (model) {
-              this.mainViewModeler.renderer.removeSceneNode(model)
-            }
-          }    
+          //   if (model) {
+          //     this.mainViewModeler.renderer.removeSceneNode(model)
+          //   }
+          // }    
         }
-        else if (item.type === ComponentType.Decal) {
+        else if (component.type === ComponentType.Decal) {
         }
       }  
     }
@@ -166,43 +161,43 @@ class Store implements StoreInterface {
 
         for (const item  of gameObject.items) {
           if (item.type === ComponentType.Mesh) {
-            const modelEntry = item.item as ModelItem;
+            // const modelEntry = item.item as ModelItem;
 
-            const modelItem = this.project.getItemByItemId(modelEntry.id, 'model');
+            // const modelItem = this.project.getItemByItemId(modelEntry.id, 'model');
 
-            if (modelItem) {
-              const model = await this.getModel(modelItem)
+            // if (modelItem) {
+            //   const model = await this.getModel(modelItem)
       
-              if (model) {
-                this.mainViewModeler.assignModel(model, modelEntry.materials);
-              }
-            }    
+            //   if (model) {
+            //     this.mainViewModeler.assignModel(model, modelEntry.materials);
+            //   }
+            // }    
           }
           else if (item.type === ComponentType.ParticleSystem) {
-            const particleEntry = item.item as ParticleItem;
+            // const particleEntry = item.item as ParticleItem;
 
-            const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
+            // const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
     
-            if (particleSystem) {
-              const node = new SceneNode();
-              node.addComponent(particleSystem)
+            // if (particleSystem) {
+            //   const node = new SceneNode();
+            //   node.addComponent(particleSystem)
 
-              this.mainView.addSceneNode(node)
-            }
+            //   this.mainView.addSceneNode(node)
+            // }
           }
           else if (item.type === ComponentType.Decal) {
-            const decal = item.item as DecalItem;
+            // const decal = item.item as DecalItem;
 
-            const drawableNode = new SceneNode();
-            const drawable = await DrawableComponent.create(
-              await Mesh.create(box(1, 1, 1), 1),
-              decal.materialId,
-            )
-            drawableNode.addComponent(drawable);
+            // const drawableNode = new SceneNode();
+            // const drawable = await DrawableComponent.create(
+            //   await Mesh.create(box(1, 1, 1), 1),
+            //   decal.materialId,
+            // )
+            // drawableNode.addComponent(drawable);
 
-            drawableNode.scale = vec3.create(decal.width ?? 1, 1, decal.height ?? 1)
+            // drawableNode.scale = vec3.create(decal.width ?? 1, 1, decal.height ?? 1)
 
-            this.mainView.scene.addNode(drawableNode)
+            // this.mainView.scene.addNode(drawableNode)
           }
         }
       }

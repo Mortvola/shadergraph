@@ -9,10 +9,10 @@ import ShapeModule from './Shapes/ShapeModule';
 import PSModule from './PSModule';
 import Collision from './Collision';
 import PSRenderer from './PSRenderer';
-import { ParticleSystemProperties } from '../../Renderer/ParticleSystem/Types';
+import ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemProps';
 
 type PropsType = {
-  particleSystemProps: ParticleSystemProperties,
+  particleSystemProps: ParticleSystemProps,
 }
 
 const Particle: React.FC<PropsType> = observer(({
@@ -26,9 +26,9 @@ const Particle: React.FC<PropsType> = observer(({
     runInAction(() => {
       particleSystemProps.duration = value;
 
-      // if (particleSystemProps.handleChange) {
-      //   particleSystemProps.handleChange()
-      // }
+      if (particleSystemProps.handleChange) {
+        particleSystemProps.handleChange()
+      }
     })
   }
 
@@ -36,18 +36,18 @@ const Particle: React.FC<PropsType> = observer(({
     runInAction(() => {
       particleSystemProps.maxPoints = value;
 
-      // if (particleSystemProps.handleChange) {
-      //   particleSystemProps.handleChange()
-      // }
+      if (particleSystemProps.handleChange) {
+        particleSystemProps.handleChange()
+      }
     })
   }
 
   const handleRateChange = (value: number) => {
     particleSystemProps.rate = value;
 
-    // if (particleSystemProps.handleChange) {
-    //   particleSystemProps.handleChange()
-    // }
+    if (particleSystemProps.handleChange) {
+      particleSystemProps.handleChange()
+    }
   }
 
   return (

@@ -5,10 +5,11 @@ import ContextMenu from '../ContextMenu/ContextMenu';
 import styles from '../Project/Project.module.scss'
 import SceneObject from './Types/SceneObject';
 import ParticleSystem from '../Renderer/ParticleSystem/ParticleSystem';
-import { particleSystemManager } from '../Renderer/ParticleSystem/ParticleSystemManager';
-import { ComponentType, GameObjectItem } from '../Renderer/types';
+import { ComponentType, SceneObjectComponent } from '../Renderer/types';
 import Light from '../Renderer/Drawables/Light';
 import { SceneInterface } from '../State/types';
+import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
+import LightProps from '../Renderer/Drawables/LightProps';
 
 type PropsType = {
   scene?: SceneInterface,
@@ -57,12 +58,13 @@ const SceneToolbar: React.FC<PropsType> = ({
       if (scene) {
         const object = new SceneObject()
 
-        const particleSystem = await ParticleSystem.create(-1);
+        const props = await ParticleSystemProps.create();
+        const particleSystem = new ParticleSystem(props);
 
-        const item: GameObjectItem = {
-          key: particleSystem.id,
+        const item: SceneObjectComponent = {
           type: ComponentType.ParticleSystem,
-          item: particleSystem,
+          item: props,
+          object: particleSystem,
         }
 
         object.addComponent(item);
@@ -78,11 +80,13 @@ const SceneToolbar: React.FC<PropsType> = ({
       if (scene) {
         const object = new SceneObject()
 
-        const light = new Light();
+        const props = new LightProps();
+        const light = new Light(props);
 
-        const item: GameObjectItem = {
+        const item: SceneObjectComponent = {
           type: ComponentType.Light,
-          item: light,
+          item: props,
+          object: light,
         }
 
         object.addComponent(item);

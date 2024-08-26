@@ -3,36 +3,42 @@ import ColorPicker from '../Color/ColorPicker';
 import NumberInput from './NumberInput';
 import { MenuItemLike } from '../ContextMenu/types';
 import ContextMenu from '../ContextMenu/ContextMenu';
-import { LightInterface } from '../Renderer/types';
+import { LightPropsInterface } from '../Renderer/types';
+import { runInAction } from 'mobx';
 
 type PropsType = {
-  light: LightInterface,
-  onChange: (light: LightInterface) => void,
+  lightProps: LightPropsInterface,
 }
 
 const LightComponent: React.FC<PropsType> = ({
-  light,
-  onChange,
+  lightProps,
 }) => {
   const handleColorChange = (value: number[]) => {
-    light.color = [...value];
-    
-    onChange(light)
+    runInAction(() => {
+      lightProps.color = [...value];
+      lightProps.handleChange();  
+    })
   }
 
   const handleConstantChange = (value: number) => {
-    light.constant = value;
-    onChange(light)
+    runInAction(() => {
+      lightProps.constant = value;
+      lightProps.handleChange();  
+    })
   }
 
   const handleLinearChange = (value: number) => {
-    light.linear = value;
-    onChange(light)
+    runInAction(() => {
+      lightProps.linear = value;
+      lightProps.handleChange();  
+    })
   }
 
   const handleQuadraticChange = (value: number) => {
-    light.quadratic = value;
-    onChange(light)
+    runInAction(() => {
+      lightProps.quadratic = value;
+      lightProps.handleChange();  
+    })
   }
 
   const [showMenu, setShowMenu] = React.useState<{ x: number, y: number } | null>(null);
@@ -55,12 +61,14 @@ const LightComponent: React.FC<PropsType> = ({
   }
 
   const setPreset = React.useCallback((index: number) => {
-    light.constant = attenuationPresets[index][1];
-    light.linear = attenuationPresets[index][2];
-    light.quadratic = attenuationPresets[index][3];
-
-    onChange(light);
-  }, [light, onChange])
+    runInAction(() => {
+      lightProps.constant = attenuationPresets[index][1];
+      lightProps.linear = attenuationPresets[index][2];
+      lightProps.quadratic = attenuationPresets[index][3];
+  
+      lightProps.handleChange();  
+    })
+  }, [lightProps])
 
   const menuItems = React.useCallback((): MenuItemLike[] => ([
     ...attenuationPresets.map((l, index) => ({ name: l[0].toString(), action: () => {setPreset(index)} }))
@@ -71,22 +79,22 @@ const LightComponent: React.FC<PropsType> = ({
       <label>
         Color:
         <div>
-          <ColorPicker value={light.color} onChange={handleColorChange} />
+          <ColorPicker value={lightProps.color} onChange={handleColorChange} />
         </div>
       </label>
       Attenuation:
       <div>
         <label>
           Constant:
-          <NumberInput value={light.constant} onChange={handleConstantChange} />
+          <NumberInput value={lightProps.constant} onChange={handleConstantChange} />
         </label>
         <label>
           Linear:
-          <NumberInput value={light.linear} onChange={handleLinearChange} />
+          <NumberInput value={lightProps.linear} onChange={handleLinearChange} />
         </label>
         <label>
           Quadratic:
-          <NumberInput value={light.quadratic} onChange={handleQuadraticChange} />
+          <NumberInput value={lightProps.quadratic} onChange={handleQuadraticChange} />
         </label>
         <button ref={presetRef} onClick={handlePresetClick}>Presets</button>
       </div>

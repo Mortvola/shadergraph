@@ -11,7 +11,8 @@ export interface ProjectInterface {
   getItemByItemId(id: number, type: string): ProjectItemInterface | undefined
 }
 
-export type ProjectItemType = 'particle' | 'model' | 'shader' | 'texture' | 'material' | 'object' | 'folder' | 'scene';
+export type ProjectItemType = 'particle' | 'model' | 'shader' | 'texture' | 'material'
+| 'object' | 'folder' | 'scene' | 'object2D' | 'prefab';
 
 export interface ProjectItemInterface {
   id: number
@@ -36,10 +37,10 @@ export interface ProjectItemInterface {
 export interface FolderInterface extends ProjectItemInterface {
   items: ProjectItemInterface[]
 
-  newItem: string | null
+  newItem: ProjectItemType | null
   
   open: boolean;
-  
+
   toggleOpen(): void;
 
   addItem(item: ProjectItemInterface): Promise<void>

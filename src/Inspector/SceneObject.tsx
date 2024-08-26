@@ -5,7 +5,7 @@ import { useStores } from '../State/store';
 import styles from './Inspector.module.scss'
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
-import { ComponentType, DecalItem, GameObjectItem, LightInterface, ModelItem, ParticleSystemInterface } from '../Renderer/types';
+import { ComponentType, DecalItem, SceneObjectComponent, ModelItem } from '../Renderer/types';
 import GameObject2D from './GameObject2d';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
@@ -13,9 +13,10 @@ import Decal from './Decal';
 import Particle from './ParticleSystem/Particle';
 import NumberInput from './NumberInput';
 import ParticleSystem from '../Renderer/ParticleSystem/ParticleSystem';
-import { particleSystemManager } from '../Renderer/ParticleSystem/ParticleSystemManager';
 import LightComponent from './Light';
 import Light from '../Renderer/Drawables/Light';
+import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
+import LightProps from '../Renderer/Drawables/LightProps';
 
 type PropsType = {
   sceneObject: SceneObjectInterface
@@ -50,16 +51,24 @@ const SceneObject: React.FC<PropsType> = observer(({
       && store.draggingItem.itemId !== null
     ) {
       switch (store.draggingItem.type) {
-        case 'model':
+        // case 'model':
 
-          sceneObject.items = [
-            ...sceneObject.items,
-            { item: { id: store.draggingItem.itemId, materials: {}, toDescriptor: () => { return { type: ComponentType.Mesh, item: {} } } }, type: ComponentType.Mesh },
-          ]
+        //   sceneObject.items = [
+        //     ...sceneObject.items,
+        //     {
+        //       item: {
+        //         id: store.draggingItem.itemId,
+        //         materials: {},
+        //         toDescriptor: () => {
+        //           return { type: ComponentType.Mesh, props: {} } }
+        //         },
+        //       type: ComponentType.Mesh,
+        //     },
+        //   ]
   
-          sceneObject.save()
+        //   sceneObject.save()
 
-          break;
+        //   break;
 
         // case 'particle':
 
@@ -75,54 +84,38 @@ const SceneObject: React.FC<PropsType> = observer(({
   }
 
   const handleModelChange = (model: ModelItem) => {
-    runInAction(() => {
-      const index = sceneObject.items.findIndex((item) => (item.item as ModelItem).id === model.id)
+    // runInAction(() => {
+    //   const index = sceneObject.items.findIndex((item) => (item.item as ModelItem).id === model.id)
 
-      if (index !== -1) {
-        sceneObject.items = [
-          ...sceneObject.items.slice(0, index),
-          { item: model, type: ComponentType.Mesh },
-          ...sceneObject.items.slice(index + 1),
-        ]
+    //   if (index !== -1) {
+    //     sceneObject.items = [
+    //       ...sceneObject.items.slice(0, index),
+    //       { item: model, type: ComponentType.Mesh },
+    //       ...sceneObject.items.slice(index + 1),
+    //     ]
   
-        sceneObject.save()
-      }  
-    })
+    //     sceneObject.save()
+    //   }  
+    // })
   }
 
   const handleDecalChange = (decal: DecalItem) => {
-    runInAction(() => {
-      const index = sceneObject.items.findIndex((item) => item.item === decal)
+    // runInAction(() => {
+    //   const index = sceneObject.items.findIndex((item) => item.item === decal)
 
-      if (index !== -1) {
-        sceneObject.items = [
-          ...sceneObject.items.slice(0, index),
-          { item: decal, type: ComponentType.Decal },
-          ...sceneObject.items.slice(index + 1),
-        ]
+    //   if (index !== -1) {
+    //     sceneObject.items = [
+    //       ...sceneObject.items.slice(0, index),
+    //       { item: decal, type: ComponentType.Decal },
+    //       ...sceneObject.items.slice(index + 1),
+    //     ]
   
-        sceneObject.save()
-      }  
-    })
+    //     sceneObject.save()
+    //   }  
+    // })
   }
 
-  const handleLightChange = (light: LightInterface) => {
-    runInAction(() => {
-      const index = sceneObject.items.findIndex((item) => item.item === light)
-
-      if (index !== -1) {
-        sceneObject.items = [
-          ...sceneObject.items.slice(0, index),
-          { item: light, type: ComponentType.Light },
-          ...sceneObject.items.slice(index + 1),
-        ]
-  
-        sceneObject.save()
-      }  
-    })
-  }
-
-  const handleDelete = (item: GameObjectItem) => {
+  const handleDelete = (item: SceneObjectComponent) => {
     const index = sceneObject.items.findIndex((i) => i.key === item.key)
 
     if (index !== -1) {
@@ -135,25 +128,25 @@ const SceneObject: React.FC<PropsType> = observer(({
     }
   }
 
-  const renderItem = (item: GameObjectItem) => {
+  const renderItem = (item: SceneObjectComponent) => {
     switch (item.type) {
-      case ComponentType.Mesh:
-        return <ModelTree modelItem={item.item as ModelItem} onChange={handleModelChange} />
+      // case ComponentType.Mesh:
+      //   return <ModelTree modelItem={item.item as ModelItem} onChange={handleModelChange} />
 
       case ComponentType.ParticleSystem:
-        return <Particle particleSystemProps={(item.item as ParticleSystem).props} />
+        return <Particle particleSystemProps={(item.item as ParticleSystemProps)} />
 
-      case ComponentType.Decal:
-        return <Decal decalItem={item.item as DecalItem} onChange={handleDecalChange} />
+      // case ComponentType.Decal:
+      //   return <Decal decalItem={item.item as DecalItem} onChange={handleDecalChange} />
 
       case ComponentType.Light:
-        return <LightComponent light={item.item as LightInterface} onChange={handleLightChange} />  
+        return <LightComponent lightProps={item.item as LightProps} />  
     }
 
     return null;
   }
 
-  const componentTypeName = (item: GameObjectItem) => {
+  const componentTypeName = (item: SceneObjectComponent) => {
     switch (item.type) {
       case ComponentType.Mesh:
         return 'Model';
@@ -190,36 +183,40 @@ const SceneObject: React.FC<PropsType> = observer(({
 
   const addComponent = React.useCallback((type: ComponentType) => {
     switch (type) {
-      case ComponentType.Decal:
-        sceneObject.items.push({ item: { toDescriptor: () => { return { type: ComponentType.Decal, item: {} } }}, type: ComponentType.Decal })
-        sceneObject.save()
-        break;
+      // case ComponentType.Decal:
+      //   sceneObject.items.push({ item: { toDescriptor: () => { return { type: ComponentType.Decal, props: {} } }}, type: ComponentType.Decal })
+      //   sceneObject.save()
+      //   break;
 
       case ComponentType.Light: {
-        const light: GameObjectItem = {
-          item: new Light(),
-          type: ComponentType.Light
+        const props = new LightProps()
+        const light = new Light(props);
+        const component: SceneObjectComponent = {
+          type: ComponentType.Light,
+          item: props,
+          object: light,
         };
 
-        sceneObject.addComponent(light);
+        sceneObject.addComponent(component);
         break;
       }
 
-      case ComponentType.Mesh:
-        sceneObject.items.push({ item: { id: 0, materials: {}, toDescriptor: () => { return { type: ComponentType.Mesh, item: {} } } }, type: ComponentType.Mesh }) 
-        sceneObject.save()
-        break;
+      // case ComponentType.Mesh:
+      //   sceneObject.items.push({ item: { id: 0, materials: {}, toDescriptor: () => { return { type: ComponentType.Mesh, props: {} } } }, type: ComponentType.Mesh }) 
+      //   sceneObject.save()
+      //   break;
 
       case ComponentType.ParticleSystem: {
         (async () => {
-          const particleSystem = await ParticleSystem.create(-1);
+          const props = await ParticleSystemProps.create();
+          const particleSystem = new ParticleSystem(props);
   
-          particleSystemManager.add(particleSystem);
+          // particleSystemManager.add(particleSystem);
   
-          const item: GameObjectItem = {
-            key: particleSystem.id,
+          const item: SceneObjectComponent = {
             type: ComponentType.ParticleSystem,
-            item: particleSystem,
+            item: props,
+            object: particleSystem,
           }
   
           sceneObject.addComponent(item);  

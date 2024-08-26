@@ -1,9 +1,12 @@
 import React from 'react';
-import { FolderInterface, ProjectItemInterface } from './Types/types';
+import { FolderInterface, ProjectItemInterface, ProjectItemType } from './Types/types';
 import ProjectItem from './ProjectItem';
+import ProjectItemData from './Types/ProjectItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
+import Http from '../Http/src';
+import { ProjectItemRecord } from '../State/types';
 
 type PropsType = {
   folder: FolderInterface,
@@ -42,6 +45,13 @@ const ProjectFolder: React.FC<PropsType> = observer(({
       event.dataTransfer.dropEffect = 'link';
       setDroppable(true);
     }
+    else if (
+      event.dataTransfer.types[0] === 'application/scene-item'
+      && store.scene?.draggingItem
+    ) {
+      event.dataTransfer.dropEffect = 'link';
+      setDroppable(true);
+    }
   }
 
   const handleDragLeave = () => {
@@ -53,17 +63,53 @@ const ProjectFolder: React.FC<PropsType> = observer(({
     event.preventDefault();
 
     if (droppable) {
-      const item = store.draggingItem;
+      if (event.dataTransfer.types[0] === 'application/project-item') {
+        const item = store.draggingItem;
 
-      (
-        async () => {
-          if (item && item.parent && !folder.isAncestor(item)) {
-            await item.parent.removeItem(item)
-            await folder.addItem(item)
+        (
+          async () => {
+            if (item && item.parent && !folder.isAncestor(item)) {
+              await item.parent.removeItem(item)
+              await folder.addItem(item)
+            }
           }
+        )()
+      }
+      else if (event.dataTransfer.types[0] === 'application/scene-item') {
+        console.log(event.dataTransfer.types[0])
+        const sceneObject = store.scene?.draggingItem
+
+        if (sceneObject) {
+          ( async () => {
+            type Payload = {
+              name: string,
+              parentId: number,
+              itemId: number,
+              type: ProjectItemType,
+            }
+
+            const prefab = sceneObject.createPrefab()
+
+            
+            const response = await Http.post<Payload, ProjectItemRecord>('/folders/item', {
+              name: sceneObject.name,
+              itemId: sceneObject.id,
+              parentId: folder.id,
+              type: 'prefab',
+            });
+        
+            if (response.ok) {
+              const rec = await response.body();
+        
+              const item = new ProjectItemData(rec.id, rec.name, 'object', folder, sceneObject.id)
+              folder.addItem(item);
+
+              // sceneObject.convertToPrefab()
+            }  
+          })()
         }
-      )()
-  
+      }
+    
       setDroppable(false);
     }
   }
