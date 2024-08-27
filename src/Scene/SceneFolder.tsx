@@ -39,7 +39,10 @@ const SceneFolder: React.FC<PropsType> = observer(({
       && project.draggingItem.parent !== folder
       && project.draggingItem !== folder
       && !folder.isAncestor(project.draggingItem)
-    ) || (
+    )) {
+      event.dataTransfer.dropEffect = 'move';
+      setDroppable(true);      
+    } else if ((
       event.dataTransfer.types[0] === 'application/project-item'
       && store.draggingItem?.type === 'prefab'  
     )) {

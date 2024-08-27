@@ -38,12 +38,18 @@ const ProjectFolder: React.FC<PropsType> = observer(({
       && store.draggingItem.parent !== folder
       && store.draggingItem.id !== folder.id
       && !folder.isAncestor(store.draggingItem)
-    ) || (
+    )) {
+      event.dataTransfer.dropEffect = 'move';
+      setDroppable(true);
+    } else if ((
       event.dataTransfer.types[0] === 'application/scene-item'
       && store.scene?.draggingItem
     )) {
-      event.dataTransfer.dropEffect = 'link';
+      event.dataTransfer.dropEffect = 'copy';
       setDroppable(true);
+    }
+    else {
+      event.dataTransfer.dropEffect = 'none';
     }
   }
 
