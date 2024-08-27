@@ -10,7 +10,6 @@ import { ProjectItemRecord } from '../State/types';
 import Graph from '../State/Graph';
 import { runInAction } from 'mobx';
 import ProjectItemObject from "../Project/Types/ProjectItem";
-import { shaderManager } from '../Renderer/shaders/ShaderManager';
 
 type PropsType = {
   item: ProjectItemInterface,
