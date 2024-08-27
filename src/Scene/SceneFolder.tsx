@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
 import { PrefabNodeInterface, PrefabObjectInterface, SceneInterface, SceneObjectInterface } from '../State/types';
 import SceneObject from './Types/SceneObject';
+import { isPrefabItem, isSceneItem } from '../Project/Types/types';
 
 type PropsType = {
   project: SceneInterface,
@@ -77,8 +78,8 @@ const SceneFolder: React.FC<PropsType> = observer(({
         (async () => {
           const item = store.draggingItem;
 
-          if (item) {
-            const prefab: PrefabObjectInterface | null = await item.getItem();
+          if (isPrefabItem(item)) {
+            const prefab = await item.getItem();
   
             if (prefab) {
               const object = SceneObject.fromPrefab(prefab);

@@ -4,9 +4,18 @@ import {
   TextureInterface, SceneInterface, PrefabObjectInterface,
 } from "../../State/types";
 
-export type ProjectItemLike = SceneObjectInterface | GameObject2DInterface | MaterialItemInterface | TextureInterface
-  | GraphInterface | SceneNodeInterface | ParticleSystemInterface | ShaderRecord | MaterialItemInterface
-  | SceneInterface | PrefabObjectInterface;
+export type ProjectItemLike =
+  ProjectItemInterface<SceneObjectInterface> |
+  ProjectItemInterface<GameObject2DInterface> |
+  ProjectItemInterface<MaterialItemInterface> |
+  ProjectItemInterface<TextureInterface> |
+  ProjectItemInterface<GraphInterface> |
+  ProjectItemInterface<SceneNodeInterface> |
+  ProjectItemInterface<ParticleSystemInterface> |
+  ProjectItemInterface<ShaderRecord> |
+  ProjectItemInterface<SceneInterface> |
+  ProjectItemInterface<PrefabObjectInterface> |
+  ProjectItemInterface<FolderInterface>;
 
 export enum ProjectItemType {
   Particle = 'particle',
@@ -22,12 +31,12 @@ export enum ProjectItemType {
 }
 
 export interface ProjectInterface {
-  selectedItem: ProjectItemInterface | null
+  selectedItem: ProjectItemLike | null
 
-  getItemByItemId(id: number, type: string): ProjectItemInterface | undefined
+  getItemByItemId(id: number, type: string): ProjectItemLike | undefined
 }
 
-export interface ProjectItemInterface {
+export interface ProjectItemInterface<T> {
   id: number
 
   name: string
@@ -38,17 +47,37 @@ export interface ProjectItemInterface {
 
   parent: FolderInterface | null
 
-  item: ProjectItemLike | null
+  item: T | null
 
   changeName(name: string): Promise<void>
 
   delete(): Promise<void>
 
-  getItem<T>(): Promise<T | null>
+  getItem(): Promise<T | null>
 }
 
-export interface FolderInterface extends ProjectItemInterface {
-  items: ProjectItemInterface[]
+export const isSceneItem = (r: ProjectItemLike | null | undefined): r is ProjectItemInterface<SceneInterface> => (
+  r !== null && r !== undefined
+  && (r.type === ProjectItemType.Scene)
+)
+
+export const isPrefabItem = (r: ProjectItemLike | null | undefined): r is ProjectItemInterface<PrefabObjectInterface> => (
+  r !== null && r !== undefined
+  && (r.type === ProjectItemType.Prefab)
+)
+
+export const isShaderItem = (r: ProjectItemLike | null | undefined): r is ProjectItemInterface<GraphInterface> => (
+  r !== null && r !== undefined
+  && (r.type === ProjectItemType.Shader)
+)
+
+export const isModelItem = (r: ProjectItemLike | null | undefined): r is ProjectItemInterface<SceneNodeInterface> => (
+  r !== null && r !== undefined
+  && (r.type === ProjectItemType.Model)
+)
+
+export interface FolderInterface extends ProjectItemInterface<FolderInterface> {
+  items: ProjectItemLike[]
 
   newItemType: ProjectItemType | null
   
@@ -56,15 +85,15 @@ export interface FolderInterface extends ProjectItemInterface {
 
   toggleOpen(): void;
 
-  addItem(item: ProjectItemInterface): Promise<void>
+  addItem(item: ProjectItemLike): Promise<void>
 
-  addItems(items: ProjectItemInterface[]): void
+  addItems(items: ProjectItemLike[]): void
 
-  removeItem(item: ProjectItemInterface): Promise<void>
+  removeItem(item: ProjectItemLike): Promise<void>
 
-  isAncestor(item: ProjectItemInterface): boolean
+  isAncestor(item: ProjectItemLike): boolean
 
-  deleteItem(item: ProjectItemInterface): Promise<void>
+  deleteItem(item: ProjectItemLike): Promise<void>
 }
 
 export const isFolder = (r: unknown): r is FolderInterface => (

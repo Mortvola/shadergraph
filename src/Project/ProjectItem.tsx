@@ -1,19 +1,18 @@
 import React from 'react';
-import { FolderInterface, ProjectItemInterface, ProjectItemType } from './Types/types';
+import { FolderInterface, isShaderItem, ProjectItemLike, ProjectItemType } from './Types/types';
 import styles from './ProjectItem.module.scss';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
 import Http from '../Http/src';
-import { ProjectItemRecord } from '../State/types';
-import Graph from '../State/Graph';
+import { MaterialItemInterface, ProjectItemRecord } from '../State/types';
 import { runInAction } from 'mobx';
 import ProjectItemObject from "../Project/Types/ProjectItem";
 
 type PropsType = {
-  item: ProjectItemInterface,
-  onSelect: (item: ProjectItemInterface) => void,
+  item: ProjectItemLike,
+  onSelect: (item: ProjectItemLike) => void,
   selected: boolean,
   draggable?: boolean,
 }
@@ -78,11 +77,11 @@ const ProjectItem: React.FC<PropsType> = observer(({
       { name: 'Delete', action: () => { item.delete() } },
     ];
 
-    if (item.type === 'shader') {
+    if (isShaderItem(item)) {
       items.push({
         name: 'Create Material',
         action: async () => {
-          const shader: Graph | null = await item.getItem();
+          const shader = await item.getItem();
 
           if (shader) {
             const response = await Http.post<unknown, ProjectItemRecord>('/materials', {
@@ -92,9 +91,11 @@ const ProjectItem: React.FC<PropsType> = observer(({
             })
 
             if (response) {
-              const rec = await response.json()
+              const rec = await response.body()
 
-              const newItem = new ProjectItemObject(rec.id, rec.name, rec.type as ProjectItemType, item.parent, rec.itemId);
+              const newItem = new ProjectItemObject<MaterialItemInterface>(
+                rec.id, rec.name, rec.type as ProjectItemType, item.parent, rec.itemId,
+              );
 
               (item.parent as FolderInterface).addItem(newItem)
         

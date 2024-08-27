@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProjectItemInterface } from './Types/types';
+import { ProjectItemLike } from './Types/types';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import ProjectFolder from './ProjectFolder';
@@ -9,7 +9,7 @@ import styles from './Project.module.scss';
 const Project: React.FC = observer(() => {
   const store = useStores();
 
-  const handleSelect = async (item: ProjectItemInterface) => {
+  const handleSelect = async (item: ProjectItemLike) => {
     store.selectItem(item);
   }
 

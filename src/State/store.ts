@@ -6,7 +6,7 @@ import {
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
-import { ProjectItemInterface } from "../Project/Types/types";
+import { isSceneItem, isShaderItem, ProjectItemInterface, ProjectItemLike } from "../Project/Types/types";
 import {
   SceneNodeInterface,
   ComponentType,
@@ -39,7 +39,7 @@ class Store implements StoreInterface {
 
   // projectItems = new Folder(-1, '', null, this)
 
-  draggingItem: ProjectItemInterface | null = null;
+  draggingItem: ProjectItemLike | null = null;
 
   private constructor(mainRenderer: Renderer, previewRenderer: Renderer) {
     this.mainView = mainRenderer;
@@ -70,7 +70,7 @@ class Store implements StoreInterface {
     return this.dragObject;
   }
 
-  async selectItem(item: ProjectItemInterface) {
+  async selectItem(item: ProjectItemLike) {
     if (this.project.selectedItem?.type === 'object' && isGameObject(this.project.selectedItem.item)) {
       for (const component of this.project.selectedItem.item.components) {
         if (component.type === ComponentType.ParticleSystem) {
@@ -102,27 +102,31 @@ class Store implements StoreInterface {
 
     switch (item.type) {
       case 'scene': {
-        const scene: SceneInterface | null = await item.getItem();
+        if (isSceneItem(item)) {
+          const scene = await item.getItem();
 
-        if (scene) {
-          runInAction(() => {
-            this.scene = scene;
-          })
-  
-          await scene.renderScene();
+          if (scene) {
+            runInAction(() => {
+              this.scene = scene;
+            })
+    
+            await scene.renderScene();
+          }  
         }
   
         break;
       }
 
       case 'shader': {
-        const shader: Graph | null = await item.getItem();
+        if (isShaderItem(item)) {
+          const shader = await item.getItem();
 
-        if (shader) {
-          runInAction(() => {
-            renderer2d.setTranslation(0, 0)
-            this.graph?.applyMaterial()  
-          })  
+          if (shader) {
+            runInAction(() => {
+              renderer2d.setTranslation(0, 0)
+              this.graph?.applyMaterial()  
+            })  
+          }  
         }
 
         break;
@@ -130,7 +134,7 @@ class Store implements StoreInterface {
     }
   }
 
-  async getModel(item: ProjectItemInterface) {
+  async getModel(item: ProjectItemInterface<SceneNodeInterface>) {
     let model: SceneNodeInterface | null = await item.getItem();
 
     if (!model && item.itemId) {

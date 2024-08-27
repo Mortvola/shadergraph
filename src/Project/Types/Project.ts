@@ -1,14 +1,15 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import Http from "../../Http/src";
-import { ProjectItemRecord } from "../../State/types";
+import { GameObject2DInterface, GraphInterface, MaterialItemInterface, PrefabObjectInterface, ProjectItemRecord, SceneInterface, SceneObjectInterface, TextureInterface } from "../../State/types";
 import Folder from "./Folder";
 import ProjectItem from "./ProjectItem";
-import { FolderInterface, ProjectInterface, ProjectItemInterface, ProjectItemType, isFolder } from "./types";
+import { FolderInterface, ProjectInterface, ProjectItemLike, ProjectItemType, isFolder } from "./types";
+import { ParticleSystemInterface, SceneNodeInterface } from "../../Renderer/types";
 
 class Project implements ProjectInterface {
   projectItems: Folder
 
-  selectedItem: ProjectItemInterface | null = null;
+  selectedItem: ProjectItemLike | null = null;
 
   constructor() {
     this.projectItems = new Folder(-1, '', null, this)
@@ -30,7 +31,9 @@ class Project implements ProjectInterface {
             return new Folder(i.id, i.name, folder, this)
           }
 
-          return new ProjectItem(i.id, i.name, i.type as ProjectItemType, folder, i.itemId)
+          const item = Project.constructProjectItem(i, folder);
+
+          return item;
         }));
       }
     })()
@@ -92,7 +95,7 @@ class Project implements ProjectInterface {
     if (response.ok) {
       const rec = await response.json() as ProjectItemRecord
 
-      const item = new ProjectItem(rec.id, rec.name, rec.type as ProjectItemType, parent, rec.itemId)
+      const item = Project.constructProjectItem(rec, parent);
 
       parent.addItem(item)
 
@@ -267,7 +270,8 @@ class Project implements ProjectInterface {
       if (response.ok) {
         const rec = await response.body();
   
-        const item = new ProjectItem(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+        const item = Project.constructProjectItem(rec, folder);
+    
         folder.addItem(item);
 
         return item;
@@ -275,8 +279,74 @@ class Project implements ProjectInterface {
     }
   }
 
-  getItemByItemId(itemId: number, type: string): ProjectItemInterface | undefined {
-    let stack: ProjectItemInterface[] = [this.projectItems]
+  private static constructProjectItem(rec: ProjectItemRecord, folder: FolderInterface) {
+    let item: ProjectItemLike | undefined = undefined;
+        
+    switch (rec.type) {
+      case 'prefab': {
+        item = new ProjectItem<PrefabObjectInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+
+        break;
+      }
+
+      case 'object': {
+        item = new ProjectItem<SceneObjectInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+
+        break
+      }
+
+      case 'object2D': {
+        item = new ProjectItem<GameObject2DInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+
+        break
+      }
+
+      case 'shader': {
+        item = new ProjectItem<GraphInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+
+        break
+      }
+
+      case 'material': {
+        item = new ProjectItem<MaterialItemInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+
+        break;
+      }
+
+      case 'particle': {
+        item = new ProjectItem<ParticleSystemInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+
+        break
+      }
+
+      case 'scene': {
+        item = new ProjectItem<SceneInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+
+        break
+      }
+
+      case 'model': {
+        item = new ProjectItem<SceneNodeInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+
+        break
+      }
+
+      case 'texture': {
+        item = new ProjectItem<TextureInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+
+        break
+      }
+    }
+
+    if (item === undefined) {
+      throw new Error(`unknown project item: ${rec.type}`)
+    }
+
+    return item;
+  }
+
+  getItemByItemId(itemId: number, type: string): ProjectItemLike | undefined {
+    let stack: ProjectItemLike[] = [this.projectItems]
 
     while (stack.length > 0) {
       const item = stack[0];
@@ -292,9 +362,9 @@ class Project implements ProjectInterface {
     }
   }
 
-  getAllItemsOfType(type: string): ProjectItemInterface[] {
-    let stack: ProjectItemInterface[] = [this.projectItems]
-    const items: ProjectItemInterface[] = [];
+  getAllItemsOfType(type: string): ProjectItemLike[] {
+    let stack: ProjectItemLike[] = [this.projectItems]
+    const items: ProjectItemLike[] = [];
 
     while (stack.length > 0) {
       const item = stack[0];

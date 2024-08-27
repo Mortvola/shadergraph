@@ -1,6 +1,6 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import Http from "../../Http/src";
-import { FolderInterface, ProjectItemLike, ProjectItemInterface, ProjectItemType } from "./types";
+import { FolderInterface, ProjectItemInterface, ProjectItemLike, ProjectItemType } from "./types";
 import { PrefabObjectDescriptor, SceneDescriptor, TextureRecord } from "../../State/types";
 import GameObject2DData from '../../State/GameObject2D'
 import SceneData from '../../Scene/Types/Scene'
@@ -14,7 +14,7 @@ import { store } from "../../State/store";
 import { particleSystemManager } from "../../Renderer/ParticleSystem/ParticleSystemManager";
 import PrefabObject from "../../Scene/Types/PrefabObject";
 
-class ProjectItem implements ProjectItemInterface {
+class ProjectItem<T> implements ProjectItemInterface<T> {
   id: number
 
   name: string
@@ -25,7 +25,7 @@ class ProjectItem implements ProjectItemInterface {
 
   parent: FolderInterface | null = null;
 
-  item: ProjectItemLike | null = null;
+  item: T | null = null;
 
   constructor(id: number, name: string, type: ProjectItemType, parent: FolderInterface | null, itemId: number | null) {
     this.id = id;
@@ -53,10 +53,10 @@ class ProjectItem implements ProjectItemInterface {
   }
 
   async delete(): Promise<void> {
-    return this.parent?.deleteItem(this);
+    return this.parent?.deleteItem(this as ProjectItemLike);
   }
 
-  async getItem<T>(): Promise<T | null> {
+  async getItem(): Promise<T | null> {
     let item: T | null = this.item as (T | null);
 
     if (!item) {
@@ -73,7 +73,7 @@ class ProjectItem implements ProjectItemInterface {
               item = scene as T;
 
               runInAction(() => {
-                this.item = scene;
+                this.item = item;
               })  
             }
           }
@@ -89,7 +89,7 @@ class ProjectItem implements ProjectItemInterface {
               item = object as T;
 
               runInAction(() => {
-                this.item = object;
+                this.item = item;
               })
             }
             // const response = await Http.get<GameObjectRecord>(`/scene-objects/${item.itemId}`)
@@ -185,7 +185,7 @@ class ProjectItem implements ProjectItemInterface {
               item = prefab as T;
 
               runInAction(() => {
-                this.item = prefab;
+                this.item = item;
               })  
             }
           }
@@ -201,7 +201,7 @@ class ProjectItem implements ProjectItemInterface {
               item = materialItem as T;
 
               runInAction(() => {
-                this.item = materialItem;
+                this.item = item;
               })  
             }
           }
@@ -220,7 +220,7 @@ class ProjectItem implements ProjectItemInterface {
             item = texture as T;
 
             runInAction(() => {
-              this.item = texture;
+              this.item = item;
             })
           }
   
@@ -238,7 +238,7 @@ class ProjectItem implements ProjectItemInterface {
             item = shader as T;
 
             runInAction(() => {
-              this.item = shader
+              this.item = item
             })
           }  
       
@@ -252,7 +252,7 @@ class ProjectItem implements ProjectItemInterface {
             item = particleSystem as T;
 
             runInAction(() => {
-              this.item = particleSystem
+              this.item = item
             })  
           }
       

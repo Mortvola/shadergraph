@@ -1,5 +1,5 @@
 import React from 'react';
-import { FolderInterface, ProjectItemInterface, ProjectItemType } from './Types/types';
+import { FolderInterface, ProjectItemLike, ProjectItemType } from './Types/types';
 import ProjectItem from './ProjectItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
@@ -7,7 +7,7 @@ import styles from './Project.module.scss';
 
 type PropsType = {
   folder: FolderInterface,
-  onSelect: (item: ProjectItemInterface) => void,
+  onSelect: (item: ProjectItemLike) => void,
   selected: boolean,
   level: number,
   children?: React.ReactNode,

@@ -7,6 +7,7 @@ import Mesh from '../Renderer/Drawables/Mesh';
 import { plane as planeShape } from '../Renderer/Drawables/Shapes/plane';
 import DrawableComponent from '../Renderer/Drawables/DrawableComponent';
 import SceneNode from '../Renderer/Drawables/SceneNodes/SceneNode';
+import { isModelItem } from '../Project/Types/types';
 
 const plane = new SceneNode();
 const component = await DrawableComponent.create(await Mesh.create(planeShape(1, 1), 1));
@@ -57,7 +58,7 @@ const Preview: React.FC = () => {
     else {
       const modelItem = store.project.getItemByItemId(parseInt(event.target.value, 10), 'model')
 
-      if (modelItem) {
+      if (isModelItem(modelItem)) {
         const model = await store.getModel(modelItem)
 
         if (model) {

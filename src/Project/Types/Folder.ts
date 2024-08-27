@@ -1,10 +1,10 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import ProjectItem from "./ProjectItem";
-import { FolderInterface, ProjectInterface, ProjectItemInterface, ProjectItemType, isFolder } from "./types";
+import { FolderInterface, ProjectInterface, ProjectItemLike, ProjectItemType, isFolder } from "./types";
 import Http from "../../Http/src";
 
-class Folder extends ProjectItem implements FolderInterface {
-  items: ProjectItemInterface[] = []
+class Folder extends ProjectItem<FolderInterface> implements FolderInterface {
+  items: ProjectItemLike[] = []
 
   project: ProjectInterface
 
@@ -30,7 +30,7 @@ class Folder extends ProjectItem implements FolderInterface {
     })
   }
 
-  isAncestor(item: ProjectItemInterface): boolean {
+  isAncestor(item: ProjectItemLike): boolean {
     if (isFolder(item)) {
       let child: FolderInterface | null = this;
       for (;;) {
@@ -67,7 +67,7 @@ class Folder extends ProjectItem implements FolderInterface {
     })
   }
 
-  async addItem(item: ProjectItemInterface): Promise<void> {
+  async addItem(item: ProjectItemLike): Promise<void> {
     if (this.isAncestor(item)) {
       throw new Error('item is an ancestor of the destination')
     }
@@ -87,7 +87,7 @@ class Folder extends ProjectItem implements FolderInterface {
     }
   }
 
-  addItems(items: ProjectItemInterface[]): void {
+  addItems(items: ProjectItemLike[]): void {
     runInAction(() => {
       this.items = items;
 
@@ -99,7 +99,7 @@ class Folder extends ProjectItem implements FolderInterface {
     })
   }
 
-  async removeItem(item: ProjectItemInterface): Promise<void> {
+  async removeItem(item: ProjectItemLike): Promise<void> {
     const response = await Http.patch(`/folders/${item.id}`, {
       parentId: null,
     })
@@ -121,7 +121,7 @@ class Folder extends ProjectItem implements FolderInterface {
     }
   }
 
-  async deleteItem(item: ProjectItemInterface) {
+  async deleteItem(item: ProjectItemLike) {
     const response = await Http.delete(`/folders/${item.id}`)
 
     if (response.ok) {
