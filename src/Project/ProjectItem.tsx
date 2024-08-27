@@ -48,6 +48,8 @@ const ProjectItem: React.FC<PropsType> = observer(({
   const [name, setName] = React.useState<string>(item.name);
 
   const handleKeyDown: React.KeyboardEventHandler = (event) => {
+    event.stopPropagation();
+
     if (event.code === 'Enter') {
       setEditing((prev) => {
         if (prev) {

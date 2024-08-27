@@ -49,7 +49,7 @@ export interface ProjectItemInterface<T> {
 
   item: T | null
 
-  changeName(name: string): Promise<void>
+  changeName(name: string): Promise<boolean>
 
   delete(): Promise<void>
 

@@ -10,6 +10,22 @@ class SceneProjectItem extends ProjectItem<SceneInterface> {
     super(id, name, ProjectItemType.Scene, parent, itemId);
   }
 
+  async changeName(name: string): Promise<boolean> {
+    const changed = await super.changeName(name);
+
+    if (changed) {
+      runInAction(() => {
+        if (this.item?.rootObject) {
+          this.item.rootObject.name = name;
+        }  
+      })
+      
+      return true;
+    }
+
+    return false;
+  }
+
   async getItem(): Promise<SceneInterface | null> {
     if (this.item) {
       return this.item;

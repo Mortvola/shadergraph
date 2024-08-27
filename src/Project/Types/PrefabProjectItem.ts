@@ -10,6 +10,22 @@ class PrefabProjectItem extends ProjectItem<PrefabObjectInterface> {
     super(id, name, ProjectItemType.Prefab, parent, itemId);
   }
 
+  async changeName(name: string): Promise<boolean> {
+    const changed = await super.changeName(name);
+
+    if (changed) {
+      runInAction(() => {
+        if (this.item?.root) {
+          this.item.root.name = name;
+        }  
+      })
+
+      return true;
+    }
+
+    return false;
+  }
+
   async getItem(): Promise<PrefabObjectInterface | null> {
     if (this.item) {
       return this.item;

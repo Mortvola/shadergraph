@@ -29,16 +29,22 @@ class ProjectItem<T> implements ProjectItemInterface<T> {
     })
   }
 
-  async changeName(name: string): Promise<void> {
-    const response = await Http.patch(`/folders/${this.id}`, {
-      name,
-    })
-
-    if (response) {
-      runInAction(() => {
-        this.name = name;
+  async changeName(name: string): Promise<boolean> {
+    if (name !== this.name) {
+      const response = await Http.patch(`/folders/${this.id}`, {
+        name,
       })
+  
+      if (response) {
+        runInAction(() => {
+          this.name = name;
+        })
+      }
+
+      return true;
     }
+
+    return false;
   }
 
   async delete(): Promise<void> {
