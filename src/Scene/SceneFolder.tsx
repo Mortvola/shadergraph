@@ -68,13 +68,19 @@ const SceneFolder: React.FC<PropsType> = observer(({
         event.dataTransfer.types[0] === 'application/project-item'
         && store.draggingItem?.type === 'prefab'
       ) {
-        const item = store.draggingItem;
+        (async () => {
+          const item = store.draggingItem;
 
-        if (item.item) {
-          const object = SceneObject.fromPrefab(item.item as PrefabObjectInterface);
-
-          folder.addObject(object);
-        }
+          if (item) {
+            const prefab = await item.getItem() as (PrefabObjectInterface | null);
+  
+            if (prefab) {
+              const object = SceneObject.fromPrefab(prefab);
+    
+              folder.addObject(object);
+            }  
+          }
+        })()
       }
 
       setDroppable(false);

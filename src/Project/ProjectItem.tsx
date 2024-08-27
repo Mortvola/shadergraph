@@ -83,19 +83,13 @@ const ProjectItem: React.FC<PropsType> = observer(({
       items.push({
         name: 'Create Material',
         action: async () => {
-          if (!item.item && item.itemId) {
-            const descriptor = await shaderManager.getDescriptor(item.itemId)
+          const shader = await item.getItem() as (Graph | null);
 
-            runInAction(() => {
-              item.item = new Graph(store, item.itemId!, item.name, descriptor);    
-            })
-          }
-
-          if (item.item) {
+          if (shader) {
             const response = await Http.post<unknown, ProjectItemRecord>('/materials', {
               name: `${item.name} Material`,
               shaderId: item.itemId,
-              properties: (item.item as Graph).graph.properties,    
+              properties: shader.graph.properties,    
             })
 
             if (response) {

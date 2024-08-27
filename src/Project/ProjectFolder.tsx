@@ -1,13 +1,9 @@
 import React from 'react';
-import { FolderInterface, ProjectItemInterface, ProjectItemType } from './Types/types';
+import { FolderInterface, ProjectItemInterface } from './Types/types';
 import ProjectItem from './ProjectItem';
-import ProjectItemData from './Types/ProjectItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
-import Http from '../Http/src';
-import { ProjectItemRecord } from '../State/types';
-import { runInAction } from 'mobx';
 
 type PropsType = {
   folder: FolderInterface,

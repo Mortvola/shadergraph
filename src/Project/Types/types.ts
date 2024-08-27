@@ -31,7 +31,7 @@ export interface ProjectItemInterface {
 
   delete(): Promise<void>
 
-  getItem<T>(): T | null
+  getItem(): Promise<ItemLike | null>
 }
 
 export interface FolderInterface extends ProjectItemInterface {
