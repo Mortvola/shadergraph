@@ -63,7 +63,11 @@ export interface RenderPass2DInterface {
 export interface SceneGraphInterface {
   addNode(node: SceneNodeInterface): void;
 
+  nodeAdded(node: SceneNodeInterface): void;
+
   removeNode(node: SceneNodeInterface): void;
+
+  nodeRemoved(node: SceneNodeInterface): void;
 
   componentAdded(component: Component): void;
 }

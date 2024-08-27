@@ -8,7 +8,7 @@ class Folder extends ProjectItem implements FolderInterface {
 
   project: ProjectInterface
 
-  newItem: ProjectItemType | null = null;
+  newItemType: ProjectItemType | null = null;
 
   open = true;
 
@@ -19,7 +19,7 @@ class Folder extends ProjectItem implements FolderInterface {
 
     makeObservable(this, {
       items: observable,
-      newItem: observable,
+      newItemType: observable,
       open: observable,
     })
   }

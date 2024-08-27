@@ -1,7 +1,8 @@
 import { ProjectInterface } from "../Project/Types/types";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
-import { ComponentDescriptor, ComponentType, SceneObjectComponent, MaterialInterface, SceneNodeInterface, TransformPropsInterface } from "../Renderer/types";
+import { ComponentDescriptor, ComponentType, SceneObjectComponent, MaterialInterface, SceneNodeInterface, TransformPropsInterface, LightPropsDescriptor, PrefabComponent } from "../Renderer/types";
 import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
+import { ParticleSystemPropsDescriptor } from "../Renderer/ParticleSystem/Types";
 
 export interface ModelerInterface {
   applyMaterial(material: MaterialInterface): void
@@ -94,18 +95,31 @@ export interface SceneInterface {
 }
 
 export interface PrefabObjectInterface {
+  name: string;
 
+  components: PrefabComponent[]
+
+  objects: PrefabObjectInterface[]
+
+  toDescriptor(): PrefabObjectDescriptor;
 }
 
-export type PrefabPropsDescriptor = Record<string, unknown>;
+export type PrefabPropsDescriptor = ParticleSystemPropsDescriptor | LightPropsDescriptor;
 
 export type PrefabComponentDescriptor = {
   type: ComponentType,
   props: PrefabPropsDescriptor,
 }
 
+export type TransformPropsDescriptor = {
+  translate: number[],
+  rotate: number[],
+  scale: number[],
+}
+
 export type PrefabObjectDescriptor = {
   components: PrefabComponentDescriptor[],
+  transformProps?: TransformPropsDescriptor,
   objects: PrefabObjectDescriptor[],
 }
 

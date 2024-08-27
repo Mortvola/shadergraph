@@ -7,6 +7,7 @@ import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
 import Http from '../Http/src';
 import { ProjectItemRecord } from '../State/types';
+import { runInAction } from 'mobx';
 
 type PropsType = {
   folder: FolderInterface,
@@ -35,20 +36,16 @@ const ProjectFolder: React.FC<PropsType> = observer(({
     event.stopPropagation();
     event.preventDefault();
 
-    if (
+    if ((
       event.dataTransfer.types[0] === 'application/project-item'
       && store.draggingItem
       && store.draggingItem.parent !== folder
       && store.draggingItem.id !== folder.id
       && !folder.isAncestor(store.draggingItem)
-    ) {
-      event.dataTransfer.dropEffect = 'link';
-      setDroppable(true);
-    }
-    else if (
+    ) || (
       event.dataTransfer.types[0] === 'application/scene-item'
       && store.scene?.draggingItem
-    ) {
+    )) {
       event.dataTransfer.dropEffect = 'link';
       setDroppable(true);
     }
@@ -81,31 +78,21 @@ const ProjectFolder: React.FC<PropsType> = observer(({
 
         if (sceneObject) {
           ( async () => {
-            type Payload = {
-              name: string,
-              parentId: number,
-              itemId: number,
-              type: ProjectItemType,
+            const prefab = sceneObject.createPrefab();
+
+            if (prefab) {
+              const descriptor = prefab.toDescriptor();
+
+              const item = await store.project.createNewItem(prefab.name, 'prefab', folder, {
+                parentId: folder.id,
+                name: prefab.name,
+                prefab: descriptor,
+              })
+
+              if (item) {
+                item.item = prefab;
+              }
             }
-
-            const prefab = sceneObject.createPrefab()
-
-            
-            const response = await Http.post<Payload, ProjectItemRecord>('/folders/item', {
-              name: sceneObject.name,
-              itemId: sceneObject.id,
-              parentId: folder.id,
-              type: 'prefab',
-            });
-        
-            if (response.ok) {
-              const rec = await response.body();
-        
-              const item = new ProjectItemData(rec.id, rec.name, 'object', folder, sceneObject.id)
-              folder.addItem(item);
-
-              // sceneObject.convertToPrefab()
-            }  
           })()
         }
       }
@@ -119,12 +106,12 @@ const ProjectFolder: React.FC<PropsType> = observer(({
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (event.code === 'Escape') {
       store.project.cancelNewItem(folder)
-      setName('');
     }
     else if (event.code === 'Enter' && name.length > 0) {
-      store.project.createNewItem(name, folder.newItem!, folder)
-      setName('');
+      store.project.createNewItem(name, folder.newItemType!, folder)
     }
+
+    setName('');
   }
 
   const handleBlur = () => {
@@ -186,7 +173,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
         style={{ paddingLeft: level > 0 ? 12 : 0 }}
       >
         {
-          folder.newItem
+          folder.newItemType
             ? (
               <input
                 type="text"

@@ -1,6 +1,7 @@
 import { vec3 } from "wgpu-matrix";
 import { TransformPropsInterface } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
+import { TransformPropsDescriptor } from "../State/types";
 
 class TransformProps implements TransformPropsInterface {
   translate = vec3.create(0, 0, 0);
@@ -9,7 +10,12 @@ class TransformProps implements TransformPropsInterface {
   
   scale = vec3.create(1, 1, 1);
 
-  constructor() {
+  constructor(descriptor?: TransformPropsDescriptor) {
+    if (descriptor) {
+      this.translate = vec3.create(...descriptor.translate)
+      this.rotate = vec3.create(...descriptor.rotate)
+      this.scale = vec3.create(...descriptor.scale)
+    }
     makeObservable(this, {
       translate: observable,
       rotate: observable,
@@ -30,6 +36,14 @@ class TransformProps implements TransformPropsInterface {
   }
 
   onChange?: () => void;
+
+  toDescriptor(): TransformPropsDescriptor {
+    return ({
+      translate: [...this.translate],
+      rotate: [...this.rotate],
+      scale: [...this.scale],
+    })
+  }
 }
 
 export default TransformProps;

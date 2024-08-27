@@ -1,12 +1,12 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import Entity from "../../State/Entity";
-import { SceneObjectDescriptor, SceneObjectInterface } from "../../State/types";
+import { PrefabObjectInterface, SceneObjectDescriptor, SceneObjectInterface } from "../../State/types";
 import Http from "../../Http/src";
-import { ComponentType, SceneObjectComponent, LightInterface, ParticleSystemInterface, LightPropsDescriptor } from "../../Renderer/types";
+import { ComponentType, SceneObjectComponent, LightInterface, ParticleSystemInterface, LightPropsDescriptor, LightPropsInterface } from "../../Renderer/types";
 import { vec3 } from "wgpu-matrix";
 import SceneNode from "../../Renderer/Drawables/SceneNodes/SceneNode";
 import Light from "../../Renderer/Drawables/Light";
-import { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
+import { ParticleSystemPropsDescriptor, ParticleSystemPropsInterface } from "../../Renderer/ParticleSystem/Types";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import PrefabObject from "./PrefabObject";
@@ -32,7 +32,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
 
   parent: SceneObject | null = null;
 
-  prefab: PrefabObject | null = null;
+  prefab: PrefabObjectInterface | null = null;
 
   constructor(id = getNextObjectId(), name?: string, items: SceneObjectComponent[] = []) {
     super(id, name ?? `Scene Object ${Math.abs(id)}`)
@@ -153,6 +153,55 @@ class SceneObject extends Entity implements SceneObjectInterface {
     return object;
   }
 
+  static fromPrefab(prefab: PrefabObjectInterface): SceneObject {
+    const object = new SceneObject();
+
+    object.name = prefab.name;
+
+    object.items = prefab.components.map((c) => {
+      switch (c.type) {
+        case ComponentType.ParticleSystem:
+          const ps = new ParticleSystem(c.props as ParticleSystemPropsInterface)
+
+          object.sceneNode.addComponent(ps)
+
+          return {
+            type: c.type,
+            props: c.props,
+            object: ps,
+          }
+
+        case ComponentType.Light: {
+          const light = new Light(c.props as LightPropsInterface);
+
+          object.sceneNode.addComponent(light)
+
+          return {
+            type: c.type,
+            props: c.props,
+            object: light,
+          }
+        }
+      }
+
+      return undefined
+    })
+    .filter((c) => c !== undefined)
+    
+    object.objects = prefab.objects.map((p) => SceneObject.fromPrefab(p));
+
+    for (const child of object.objects) {
+      child.parent = object;
+      object.sceneNode.addNode(child.sceneNode)
+    }
+
+    object.sceneNode.translate = object.transformProps.translate;
+
+    object.prefab = prefab;
+
+    return object;
+  }
+
   toDescriptor(): SceneObjectDescriptor {
     return ({
       id: this.id,
@@ -171,23 +220,25 @@ class SceneObject extends Entity implements SceneObjectInterface {
   }
 
   async save(): Promise<void> {
-    if (this.id < 0) {
-      const response = await Http.post<SceneObjectDescriptor, SceneObjectDescriptor>(`/scene-objects`, this.toDescriptor());
+    if (!this.prefab) {
+      if (this.id < 0) {
+        const response = await Http.post<SceneObjectDescriptor, SceneObjectDescriptor>(`/scene-objects`, this.toDescriptor());
 
-      if (response.ok) {
-        const body = await response.body();
+        if (response.ok) {
+          const body = await response.body();
 
-        if (body.id !== undefined) {
-          this.id = body.id;
-        }
-      }  
-    }
-    else {
-      const response = await Http.patch<SceneObjectDescriptor, void>(`/scene-objects/${this.id}`, this.toDescriptor());
+          if (body.id !== undefined) {
+            this.id = body.id;
+          }
+        }  
+      }
+      else {
+        const response = await Http.patch<SceneObjectDescriptor, void>(`/scene-objects/${this.id}`, this.toDescriptor());
 
-      if (response.ok) {
-  
-      }  
+        if (response.ok) {
+    
+        }  
+      }      
     }
   }
 
@@ -281,12 +332,14 @@ class SceneObject extends Entity implements SceneObjectInterface {
     // 3. Mark the link from the parent to this need as a prefab connection.
     let stack: { object: SceneObject, parent: PrefabObject | null }[] = [{ object: this, parent: null }];
     let prefabRoot: PrefabObject | undefined = undefined;
+    let id = 0;
 
-    while (stack.length > 1) {
+    while (stack.length > 0) {
       let { object, parent } = stack[0];
       stack = stack.slice(1);
 
-      const prefabObject = new PrefabObject();
+      const prefabObject = new PrefabObject(id);
+      id += 1;
 
       // Add the current objects children to the stack
       stack = stack.concat(object.objects.map((o) => ({

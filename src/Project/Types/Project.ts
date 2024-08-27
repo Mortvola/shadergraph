@@ -114,28 +114,30 @@ class Project implements ProjectInterface {
     let parent = this.getNewItemParent()
 
     runInAction(() => {
-      parent.newItem = type;
+      parent.newItemType = type;
     })
   }
 
   cancelNewItem(folder: FolderInterface) {
     runInAction(() => {
-      folder.newItem = null;
+      folder.newItemType = null;
     })
   }
 
-  async createNewItem(name: string, type: ProjectItemType, folder: FolderInterface) {
-    let parentId: number | null = folder.id;
-    if (parentId === -1) {
-      parentId = null;
-    }
-
-    let url: string | undefined = undefined;
+  static getDefaultPayload(name: string, type: ProjectItemType) {
     let payload: unknown = {};
 
     switch (type) {
+      case 'prefab': {
+        payload = {
+          name,
+          object: {},
+        }
+
+        break;
+      }
+
       case 'object': {
-        url = '/scene-objects'
         payload = {
           name,
           object: {},
@@ -145,7 +147,6 @@ class Project implements ProjectInterface {
       }
 
       case 'object2D': {
-        url = '/scene-objects'
         payload = {
           name,
           object: {
@@ -160,7 +161,6 @@ class Project implements ProjectInterface {
       }
 
       case 'shader': {
-        url = '/shader-descriptors'
         payload = {
           name,
           descriptor: {},
@@ -170,8 +170,6 @@ class Project implements ProjectInterface {
       }
 
       case 'material': {
-        url = '/materials'
-
         payload = {
           name,
           shaderId: -1,
@@ -181,7 +179,6 @@ class Project implements ProjectInterface {
       }
 
       case 'particle': {
-        url = '/particles'
         payload = {
           name,
           descriptor: {},
@@ -191,7 +188,6 @@ class Project implements ProjectInterface {
       }
 
       case 'scene': {
-        url = '/scenes'
         payload = {
           name,
           scene: {
@@ -203,19 +199,79 @@ class Project implements ProjectInterface {
       }
     }
 
+    return payload;
+  }
+
+  async createNewItem(name: string, type: ProjectItemType, folder: FolderInterface, payload?: unknown) {
+    let parentId: number | null = folder.id;
+    if (parentId === -1) {
+      parentId = null;
+    }
+
+    let url: string | undefined = undefined;
+
+    switch (type) {
+      case 'prefab': {
+        url = '/prefabs'
+
+        break;
+      }
+
+      case 'object': {
+        url = '/scene-objects'
+
+        break
+      }
+
+      case 'object2D': {
+        url = '/scene-objects'
+
+        break
+      }
+
+      case 'shader': {
+        url = '/shader-descriptors'
+
+        break
+      }
+
+      case 'material': {
+        url = '/materials'
+
+        break;
+      }
+
+      case 'particle': {
+        url = '/particles'
+
+        break
+      }
+
+      case 'scene': {
+        url = '/scenes'
+
+        break
+      }
+    }
+
+    runInAction(() => {
+      folder.newItemType = null;
+    })  
+
     if (url) {
-      const response = await Http.post<unknown, ProjectItemRecord>(`${url}?parentId=${parentId}`, payload)
+      const response = await Http.post<unknown, ProjectItemRecord>(
+        `${url}?parentId=${parentId}`,
+        payload ?? Project.getDefaultPayload(name, type),
+      )
 
       if (response.ok) {
         const rec = await response.body();
   
         const item = new ProjectItem(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
         folder.addItem(item);
-      }
-  
-      runInAction(() => {
-        folder.newItem = null;
-      })  
+
+        return item;
+      }  
     }
   }
 

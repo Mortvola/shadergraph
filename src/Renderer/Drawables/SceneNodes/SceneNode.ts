@@ -84,7 +84,8 @@ class SceneNode implements SceneNodeInterface {
   addNode(node: SceneNodeInterface) {
     this.nodes.push(node);
     node.parentNode = this;
-    node.scene = this.scene;
+
+    this.scene?.nodeAdded(node);
   }
 
   removeNode(node: SceneNodeInterface) {
@@ -98,7 +99,8 @@ class SceneNode implements SceneNodeInterface {
     }
 
     node.parentNode = null;
-    node.scene = null;
+
+    node.scene?.nodeRemoved(node)
   }
 
   detachSelf() {

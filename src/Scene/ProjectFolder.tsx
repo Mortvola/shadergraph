@@ -3,7 +3,8 @@ import ProjectItem from './ProjectItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
-import { SceneInterface, SceneObjectInterface } from '../State/types';
+import { PrefabObjectInterface, SceneInterface, SceneObjectInterface } from '../State/types';
+import SceneObject from './Types/SceneObject';
 
 type PropsType = {
   project: SceneInterface,
@@ -32,13 +33,16 @@ const ProjectFolder: React.FC<PropsType> = observer(({
     event.stopPropagation();
     event.preventDefault();
 
-    if (
+    if ((
       event.dataTransfer.types[0] === 'application/scene-item'
       && project.draggingItem
       && project.draggingItem.parent !== folder
       && project.draggingItem !== folder
       && !folder.isAncestor(project.draggingItem)
-    ) {
+    ) || (
+      event.dataTransfer.types[0] === 'application/project-item'
+      && store.draggingItem?.type === 'prefab'  
+    )) {
       event.dataTransfer.dropEffect = 'link';
       setDroppable(true);
     }
@@ -52,13 +56,27 @@ const ProjectFolder: React.FC<PropsType> = observer(({
     event.stopPropagation();
     event.preventDefault();
 
-    if (droppable && project.draggingItem) {
-      const item = project.draggingItem;
+    if (droppable) {
+      if (project.draggingItem && event.dataTransfer.types[0] === 'application/scene-item') {
+        const item = project.draggingItem;
 
-      item.detachSelf();
+        item.detachSelf();
 
-      folder.addObject(item);
-  
+        folder.addObject(item);    
+      }
+      else if (
+        event.dataTransfer.types[0] === 'application/project-item'
+        && store.draggingItem?.type === 'prefab'
+      ) {
+        const item = store.draggingItem;
+
+        if (item.item) {
+          const object = SceneObject.fromPrefab(item.item as PrefabObjectInterface);
+
+          folder.addObject(object);
+        }
+      }
+
       setDroppable(false);
     }
   }

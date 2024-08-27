@@ -1,7 +1,10 @@
-import { PrefabComponent } from "../../Renderer/types";
+import { ComponentType, PrefabComponent } from "../../Renderer/types";
 import Entity from "../../State/Entity";
 import { PrefabObjectDescriptor, PrefabObjectInterface } from "../../State/types";
 import TransformProps from "../../Renderer/TransformProps";
+import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
+import { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
+import LightProps from "../../Renderer/Drawables/LightProps";
 
 class PrefabObject extends Entity implements PrefabObjectInterface {
   components: PrefabComponent[] = []
@@ -16,12 +19,50 @@ class PrefabObject extends Entity implements PrefabObjectInterface {
     super(-1, name ?? 'Test Prefab')
   }
 
+  static async fromDescriptor(descriptor?: PrefabObjectDescriptor): Promise<PrefabObject> {
+    const prefab = new PrefabObject();
+
+    if (descriptor) {
+      prefab.transformProps = new TransformProps(descriptor.transformProps)
+
+      prefab.components = (await Promise.all(
+        descriptor.components.map(async (component) => {
+          switch (component.type) {
+            case ComponentType.ParticleSystem: {
+              const props = await ParticleSystemProps.create(component.props as ParticleSystemPropsDescriptor)
+
+              return ({ type: component.type, props })
+            }
+
+            case ComponentType.Light: {
+              const props = new LightProps(component.props as LightProps)
+
+              return ({ type: component.type, props })
+            }
+          }
+        })
+      ))
+      .filter((c) => c !== undefined)
+
+      prefab.objects = await Promise.all(descriptor.objects.map(async (objectDescriptor) => {
+        return PrefabObject.fromDescriptor(objectDescriptor)
+      }))
+
+      for (const object of prefab.objects) {
+        object.parent = prefab;
+      }
+    }
+
+    return prefab;
+  }
+
   toDescriptor(): PrefabObjectDescriptor {
     return ({
       components: this.components.map((c) => ({
         type: c.type,
         props: c.props.toDescriptor(),
       })),
+      transformProps: this.transformProps.toDescriptor(),
       objects: this.objects.map((o) => o.toDescriptor()),
     })
   }

@@ -2,7 +2,7 @@ import React from "react";
 import Graph from "./Graph";
 import Modeler from "./Modeler";
 import {
-  ModelInterface, SceneDescriptor, SceneInterface, StoreInterface, TextureRecord, isGameObject, isGameObject2D,
+  ModelInterface, PrefabObjectDescriptor, SceneDescriptor, SceneInterface, StoreInterface, TextureRecord, isGameObject, isGameObject2D,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
@@ -23,6 +23,7 @@ import { materialManager } from "../Renderer/Materials/MaterialManager";
 import SceneNode from "../Renderer/Drawables/SceneNodes/SceneNode";
 import ParticleSystem from "../Renderer/ParticleSystem/ParticleSystem";
 import Scene from "../Scene/Types/Scene";
+import PrefabObject from "../Scene/Types/PrefabObject";
 
 class Store implements StoreInterface {
   get graph(): Graph | null {
@@ -110,171 +111,207 @@ class Store implements StoreInterface {
       this.project.selectedItem = item;
     })
 
-    if (item.type === 'scene') {
-      if (item.item === null) {
-        const response = await Http.get<SceneDescriptor>(`/scenes/${item.itemId}`);
+    switch (item.type) {
+      case 'scene': {
+        if (item.item === null) {
+          const response = await Http.get<SceneDescriptor>(`/scenes/${item.itemId}`);
+  
+          if (response.ok) {
+            const body = await response.body();
+  
+            const scene = await Scene.fromDescriptor(body)
+  
+            runInAction(() => {
+              this.scene = scene;
+              item.item = scene;
+            })
+  
+            await scene.renderScene();
+          }
+        }
+  
+        // this.scene = item.item as SceneInterface;
 
+        break;
+      }
+
+      case 'object': {
+        if (item.item === null && item.itemId !== null) {
+          const object = await SceneObject.fromServer(item.itemId);
+  
+          if (object) {
+            runInAction(() => {
+              item.item = object;
+            })
+          }
+          // const response = await Http.get<GameObjectRecord>(`/scene-objects/${item.itemId}`)
+  
+          // if (response.ok) {
+          //   const objectRecord = await response.body();
+    
+          //   runInAction(() => {
+          //     if (isGameObject2D(objectRecord.object)) {
+          //       item.item = new GameObject2D(objectRecord.id, objectRecord.name, objectRecord as GameObject2DRecord)
+          //     }
+          //     else {
+          //       item.item = new GameObject(objectRecord.id, objectRecord.name, objectRecord.object.items)
+          //     }
+          //   })
+          // }  
+        }
+  
+        if (!isGameObject2D(item.item)) {
+          const gameObject = item.item as SceneObject;
+  
+          this.mainViewModeler.assignModel(null)
+  
+          for (const item  of gameObject.items) {
+            if (item.type === ComponentType.Mesh) {
+              // const modelEntry = item.item as ModelItem;
+  
+              // const modelItem = this.project.getItemByItemId(modelEntry.id, 'model');
+  
+              // if (modelItem) {
+              //   const model = await this.getModel(modelItem)
+        
+              //   if (model) {
+              //     this.mainViewModeler.assignModel(model, modelEntry.materials);
+              //   }
+              // }    
+            }
+            else if (item.type === ComponentType.ParticleSystem) {
+              // const particleEntry = item.item as ParticleItem;
+  
+              // const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
+      
+              // if (particleSystem) {
+              //   const node = new SceneNode();
+              //   node.addComponent(particleSystem)
+  
+              //   this.mainView.addSceneNode(node)
+              // }
+            }
+            else if (item.type === ComponentType.Decal) {
+              // const decal = item.item as DecalItem;
+  
+              // const drawableNode = new SceneNode();
+              // const drawable = await DrawableComponent.create(
+              //   await Mesh.create(box(1, 1, 1), 1),
+              //   decal.materialId,
+              // )
+              // drawableNode.addComponent(drawable);
+  
+              // drawableNode.scale = vec3.create(decal.width ?? 1, 1, decal.height ?? 1)
+  
+              // this.mainView.scene.addNode(drawableNode)
+            }
+          }
+        }
+        else {
+          this.mainViewModeler.assignModel(null);
+  
+          const test = new SceneNode2d()
+          test.x = item.item.x;
+          test.y = item.item.y;
+          test.width = item.item.width
+          test.height = item.item.height
+          // test.material = await materialManager.get(item.item.material!, '2D', [])
+  
+          this.mainView.scene2d.scene2d.nodes.push(test)
+        }
+
+        break;
+      }
+
+      case 'prefab': {
+        const response = await Http.get<{ prefab: PrefabObjectDescriptor }>(`/prefabs/${item.itemId}`);
+  
         if (response.ok) {
           const body = await response.body();
 
-          const scene = await Scene.fromDescriptor(body)
+          const prefab = await PrefabObject.fromDescriptor(body.prefab);
 
           runInAction(() => {
-            this.scene = scene;
+            item.item = prefab;
           })
-
-          await scene.renderScene();
         }
+
+        break;
       }
 
-      // this.scene = item.item as SceneInterface;
-    }
-    else if (item.type === 'object') {
-      if (item.item === null && item.itemId !== null) {
-        const object = await SceneObject.fromServer(item.itemId);
-
-        if (object) {
-          runInAction(() => {
-            item.item = object;
-          })
-        }
-        // const response = await Http.get<GameObjectRecord>(`/scene-objects/${item.itemId}`)
-
-        // if (response.ok) {
-        //   const objectRecord = await response.body();
+      case 'material': {
+        if (item.item === null && item.itemId !==  null) {
+          const materialItem = await materialManager.getItem(item.itemId) ?? null;
   
-        //   runInAction(() => {
-        //     if (isGameObject2D(objectRecord.object)) {
-        //       item.item = new GameObject2D(objectRecord.id, objectRecord.name, objectRecord as GameObject2DRecord)
-        //     }
-        //     else {
-        //       item.item = new GameObject(objectRecord.id, objectRecord.name, objectRecord.object.items)
-        //     }
-        //   })
-        // }  
+          runInAction(() => {
+            item.item = materialItem;
+          })
+        }
+
+        break;
       }
 
-      if (!isGameObject2D(item.item)) {
-        const gameObject = item.item as SceneObject;
-
-        this.mainViewModeler.assignModel(null)
-
-        for (const item  of gameObject.items) {
-          if (item.type === ComponentType.Mesh) {
-            // const modelEntry = item.item as ModelItem;
-
-            // const modelItem = this.project.getItemByItemId(modelEntry.id, 'model');
-
-            // if (modelItem) {
-            //   const model = await this.getModel(modelItem)
-      
-            //   if (model) {
-            //     this.mainViewModeler.assignModel(model, modelEntry.materials);
-            //   }
-            // }    
-          }
-          else if (item.type === ComponentType.ParticleSystem) {
-            // const particleEntry = item.item as ParticleItem;
-
-            // const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
-    
-            // if (particleSystem) {
-            //   const node = new SceneNode();
-            //   node.addComponent(particleSystem)
-
-            //   this.mainView.addSceneNode(node)
-            // }
-          }
-          else if (item.type === ComponentType.Decal) {
-            // const decal = item.item as DecalItem;
-
-            // const drawableNode = new SceneNode();
-            // const drawable = await DrawableComponent.create(
-            //   await Mesh.create(box(1, 1, 1), 1),
-            //   decal.materialId,
-            // )
-            // drawableNode.addComponent(drawable);
-
-            // drawableNode.scale = vec3.create(decal.width ?? 1, 1, decal.height ?? 1)
-
-            // this.mainView.scene.addNode(drawableNode)
+      case 'texture': {
+        if (item.item === null) {
+          const response = await Http.get<TextureRecord>(`/textures/${item.itemId}`);
+  
+          if (response.ok) {
+            const record = await response.body();
+  
+            runInAction(() => {
+              item.item = new Texture(record.id, record.name, record.flipY);
+            })
           }
         }
+
+        break;
       }
-      else {
+
+      case 'shader': {
+        if (item.item === null) {
+          const response = await Http.get<ShaderRecord>(`/shader-descriptors/${item.itemId}`)
+  
+          if (response.ok) {
+            const descriptor = await response.body();
+  
+            runInAction(() => {
+              item.item = new Graph(store, descriptor.id, descriptor.name, descriptor.descriptor);    
+            })
+          }  
+        }
+  
+        runInAction(() => {
+          // this.graph = item.item as Graph;
+          renderer2d.setTranslation(0, 0)
+          this.graph?.applyMaterial()  
+        })
+
+        break;
+      }
+
+      case 'particle': {
+        if (item.item === null) {
+          const particleSystem = await particleSystemManager.getParticleSystem(item.itemId!)
+  
+          if (particleSystem) {
+            runInAction(() => {
+              item.item = particleSystem
+            })  
+          }
+        }
+  
+        const particleSystem: ParticleSystemInterface | null = item.getItem()
+        if (particleSystem) {
+          const node = new SceneNode();
+          node.addComponent(particleSystem as ParticleSystem)
+  
+          this.mainView.addSceneNode(node)
+        }
+  
         this.mainViewModeler.assignModel(null);
 
-        const test = new SceneNode2d()
-        test.x = item.item.x;
-        test.y = item.item.y;
-        test.width = item.item.width
-        test.height = item.item.height
-        // test.material = await materialManager.get(item.item.material!, '2D', [])
-
-        this.mainView.scene2d.scene2d.nodes.push(test)
+        break;
       }
-    }
-    else if (item.type === 'material') {
-      if (item.item === null && item.itemId !==  null) {
-        const materialItem = await materialManager.getItem(item.itemId) ?? null;
-
-        runInAction(() => {
-          item.item = materialItem;
-        })
-      }
-    }
-    else if (item.type === 'texture') {
-      if (item.item === null) {
-        const response = await Http.get<TextureRecord>(`/textures/${item.itemId}`);
-
-        if (response.ok) {
-          const record = await response.body();
-
-          runInAction(() => {
-            item.item = new Texture(record.id, record.name, record.flipY);
-          })
-        }
-      }
-    }
-    else if (item.type === 'shader') {
-      if (item.item === null) {
-        const response = await Http.get<ShaderRecord>(`/shader-descriptors/${item.itemId}`)
-
-        if (response.ok) {
-          const descriptor = await response.body();
-
-          runInAction(() => {
-            item.item = new Graph(store, descriptor.id, descriptor.name, descriptor.descriptor);    
-          })
-        }  
-      }
-
-      runInAction(() => {
-        // this.graph = item.item as Graph;
-        renderer2d.setTranslation(0, 0)
-        this.graph?.applyMaterial()  
-      })
-    }
-    else if (item.type === 'particle') {
-      if (item.item === null) {
-        const particleSystem = await particleSystemManager.getParticleSystem(item.itemId!)
-
-        if (particleSystem) {
-          runInAction(() => {
-            item.item = particleSystem
-          })  
-        }
-      }
-
-      const particleSystem: ParticleSystemInterface | null = item.getItem()
-      if (particleSystem) {
-        const node = new SceneNode();
-        node.addComponent(particleSystem as ParticleSystem)
-
-        this.mainView.addSceneNode(node)
-      }
-
-      this.mainViewModeler.assignModel(null);
     }
   }
 

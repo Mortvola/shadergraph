@@ -1,9 +1,9 @@
 import { SceneNodeInterface, ParticleSystemInterface, ShaderRecord } from "../../Renderer/types";
-import { GameObject2DInterface, SceneObjectInterface, GraphInterface, MaterialItemInterface, TextureInterface, SceneInterface } from "../../State/types";
+import { GameObject2DInterface, SceneObjectInterface, GraphInterface, MaterialItemInterface, TextureInterface, SceneInterface, PrefabObjectInterface } from "../../State/types";
 
 export type ItemLike = SceneObjectInterface | GameObject2DInterface | MaterialItemInterface | TextureInterface
   | GraphInterface | SceneNodeInterface | ParticleSystemInterface | ShaderRecord | MaterialItemInterface
-  | SceneInterface;
+  | SceneInterface | PrefabObjectInterface;
 
 export interface ProjectInterface {
   selectedItem: ProjectItemInterface | null
@@ -37,7 +37,7 @@ export interface ProjectItemInterface {
 export interface FolderInterface extends ProjectItemInterface {
   items: ProjectItemInterface[]
 
-  newItem: ProjectItemType | null
+  newItemType: ProjectItemType | null
   
   open: boolean;
 
