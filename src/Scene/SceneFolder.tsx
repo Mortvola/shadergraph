@@ -1,5 +1,5 @@
 import React from 'react';
-import ProjectItem from './ProjectItem';
+import SceneItem from './SceneItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
@@ -14,7 +14,7 @@ type PropsType = {
   children?: React.ReactNode,
 }
 
-const ProjectFolder: React.FC<PropsType> = observer(({
+const SceneFolder: React.FC<PropsType> = observer(({
   project,
   folder,
   onSelect,
@@ -110,7 +110,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
     >
-      <ProjectItem
+      <SceneItem
         key={folder.id}
         project={project}
         item={folder}
@@ -137,7 +137,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
         } */}
         {
           folder.objects.map((i) => (
-            <ProjectFolder
+            <SceneFolder
               key={`children:${i.id}`}
               project={project}
               folder={i}
@@ -151,4 +151,4 @@ const ProjectFolder: React.FC<PropsType> = observer(({
   )
 })
 
-export default ProjectFolder;
+export default SceneFolder;

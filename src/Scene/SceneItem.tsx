@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './ProjectItem.module.scss';
+import styles from './SceneItem.module.scss';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
@@ -19,7 +19,7 @@ type PropsType = {
   draggable?: boolean,
 }
 
-const ProjectItem: React.FC<PropsType> = observer(({
+const SceneItem: React.FC<PropsType> = observer(({
   project,
   item,
   onSelect,
@@ -161,4 +161,4 @@ const ProjectItem: React.FC<PropsType> = observer(({
   )
 })
 
-export default ProjectItem;
+export default SceneItem;

@@ -2,7 +2,7 @@ import React from 'react';
 import SceneToolbar from './SceneToolbar';
 import { observer } from 'mobx-react-lite';
 import { SceneInterface, SceneObjectInterface } from '../State/types';
-import ProjectFolder from './ProjectFolder';
+import SceneFolder from './SceneFolder';
 
 type PropsType = {
   scene?: SceneInterface,
@@ -25,7 +25,7 @@ const Scene: React.FC<PropsType> = observer(({
     <div>
       Scene
       <SceneToolbar scene={scene} />
-      <ProjectFolder
+      <SceneFolder
         key={'scene'}
         project={scene}
         folder={scene.rootObject}
