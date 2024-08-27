@@ -99,13 +99,23 @@ export interface PrefabObjectInterface {
 
   name: string;
 
+  root?: PrefabNodeInterface;
+
+  toDescriptor(): PrefabObjectDescriptor;
+}
+
+export interface PrefabNodeInterface {
+  id: number;
+
+  name: string;
+
   components: PrefabComponent[]
 
-  objects: PrefabObjectInterface[]
+  nodes: PrefabNodeInterface[]
 
   transformProps: TransformPropsInterface;
 
-  toDescriptor(): PrefabObjectDescriptor;
+  toDescriptor(): PrefabNodeDescriptor;
 }
 
 export type PrefabPropsDescriptor = ParticleSystemPropsDescriptor | LightPropsDescriptor;
@@ -124,9 +134,15 @@ export type TransformPropsDescriptor = {
 export type PrefabObjectDescriptor = {
   id: number,
   name: string,
+  root?: PrefabNodeDescriptor,
+}
+
+export type PrefabNodeDescriptor = {
+  id: number,
+  name: string,
   components: PrefabComponentDescriptor[],
   transformProps?: TransformPropsDescriptor,
-  objects: PrefabObjectDescriptor[],
+  nodes: PrefabNodeDescriptor[],
 }
 
 export interface SceneObjectInterface extends EntityInterface {

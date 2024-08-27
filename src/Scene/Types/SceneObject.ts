@@ -1,6 +1,6 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import Entity from "../../State/Entity";
-import { PrefabObjectInterface, SceneObjectDescriptor, SceneObjectInterface } from "../../State/types";
+import { PrefabNodeInterface, PrefabObjectInterface, SceneObjectDescriptor, SceneObjectInterface } from "../../State/types";
 import Http from "../../Http/src";
 import { ComponentType, SceneObjectComponent, LightInterface, ParticleSystemInterface, LightPropsDescriptor, LightPropsInterface } from "../../Renderer/types";
 import { vec3 } from "wgpu-matrix";
@@ -9,9 +9,10 @@ import Light from "../../Renderer/Drawables/Light";
 import { ParticleSystemPropsDescriptor, ParticleSystemPropsInterface } from "../../Renderer/ParticleSystem/Types";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
-import PrefabObject from "./PrefabObject";
+import PrefabNode from "./PrefabNode";
 import LightProps from "../../Renderer/Drawables/LightProps";
 import TransformProps from "../../Renderer/TransformProps";
+import PrefabObject from "./PrefabObject";
 
 let nextObjectId = 0;
 
@@ -32,7 +33,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
 
   parent: SceneObject | null = null;
 
-  prefab: PrefabObjectInterface | null = null;
+  prefabNode: PrefabNodeInterface | null = null;
 
   constructor(id = getNextObjectId(), name?: string, items: SceneObjectComponent[] = []) {
     super(id, name ?? `Scene Object ${Math.abs(id)}`)
@@ -154,57 +155,63 @@ class SceneObject extends Entity implements SceneObjectInterface {
   }
 
   static fromPrefab(prefab: PrefabObjectInterface): SceneObject {
+    return SceneObject.fromPrefabNode(prefab, prefab.root);
+  }
+
+  private static fromPrefabNode(prefab: PrefabObjectInterface, prefabNode?: PrefabNodeInterface): SceneObject {
     const object = new SceneObject();
 
-    object.name = prefab.name;
+    if (prefabNode) {
+      object.name = prefabNode.name;
 
-    object.components = prefab.components.map((c) => {
-      switch (c.type) {
-        case ComponentType.ParticleSystem:
-          const ps = new ParticleSystem(c.props as ParticleSystemPropsInterface)
+      object.components = prefabNode.components.map((c) => {
+        switch (c.type) {
+          case ComponentType.ParticleSystem:
+            const ps = new ParticleSystem(c.props as ParticleSystemPropsInterface)
 
-          object.sceneNode.addComponent(ps)
+            object.sceneNode.addComponent(ps)
 
-          return {
-            type: c.type,
-            props: c.props,
-            object: ps,
-          }
+            return {
+              type: c.type,
+              props: c.props,
+              object: ps,
+            }
 
-        case ComponentType.Light: {
-          const light = new Light(c.props as LightPropsInterface);
+          case ComponentType.Light: {
+            const light = new Light(c.props as LightPropsInterface);
 
-          object.sceneNode.addComponent(light)
+            object.sceneNode.addComponent(light)
 
-          return {
-            type: c.type,
-            props: c.props,
-            object: light,
+            return {
+              type: c.type,
+              props: c.props,
+              object: light,
+            }
           }
         }
+
+        return undefined
+      })
+      .filter((c) => c !== undefined)
+      
+      object.objects = prefabNode.nodes.map((node) => SceneObject.fromPrefabNode(prefab, node));
+
+      for (const child of object.objects) {
+        child.parent = object;
+        object.sceneNode.addNode(child.sceneNode)
       }
 
-      return undefined
-    })
-    .filter((c) => c !== undefined)
-    
-    object.objects = prefab.objects.map((p) => SceneObject.fromPrefab(p));
+      // The node id of the root node of a prefab is always zero.
+      // The root node always has its own copy of the transform props.
+      // All other nodes shall reference the corresponding node's prefab transforms.
+      if (prefabNode.id !== 0) {
+        object.transformProps = prefabNode.transformProps;
+      }
 
-    for (const child of object.objects) {
-      child.parent = object;
-      object.sceneNode.addNode(child.sceneNode)
+      object.sceneNode.translate = object.transformProps.translate;
+
+      object.prefabNode = prefabNode;
     }
-
-    // The node id of the root node of a prefab is always zero.
-    // The root node always has its own copy of the transform props.
-    // All other nodes shall reference the corresponding node's prefab transforms.
-    if (prefab.id !== 0) {
-      object.transformProps = prefab.transformProps;
-    }
-
-    object.sceneNode.translate = object.transformProps.translate;
-
-    object.prefab = prefab;
 
     return object;
   }
@@ -227,7 +234,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
   }
 
   async save(): Promise<void> {
-    if (!this.prefab) {
+    if (!this.prefabNode) {
       if (this.id < 0) {
         const response = await Http.post<SceneObjectDescriptor, SceneObjectDescriptor>(`/scene-objects`, this.toDescriptor());
 
@@ -331,69 +338,68 @@ class SceneObject extends Entity implements SceneObjectInterface {
   }
 
   createPrefab(): PrefabObject | undefined {
-    // Are we currently linked into the scene?
-
     // Traverse the object tree and clone each of the nodes. We will need to
     // 1. Move the scene node from the original nodes to the new ones
     // 2. Reference the properties for each of the components found in the original nodes
     // 3. Mark the link from the parent to this need as a prefab connection.
-    let stack: { object: SceneObject, parent: PrefabObject | null }[] = [{ object: this, parent: null }];
-    let prefabRoot: PrefabObject | undefined = undefined;
+    let stack: { object: SceneObject, parent: PrefabNode | null }[] = [{ object: this, parent: null }];
     let id = 0;
+
+    const prefab = new PrefabObject(-1, this.name);
 
     while (stack.length > 0) {
       let { object, parent } = stack[0];
       stack = stack.slice(1);
 
-      const prefabObject = new PrefabObject(id);
+      const prefabNode = new PrefabNode(prefab, id);
       id += 1;
 
       // Add the current objects children to the stack
       stack = stack.concat(object.objects.map((o) => ({
         object: o,
-        parent: prefabObject,
+        parent: prefabNode,
       })));
 
-      prefabObject.name = object.name;
+      prefabNode.name = object.name;
 
       // Set the transform values (translate, rotate and scale)
       // The root node will get its own copy while all the other nodes
       // will reference the prefab's value.
-      if (!prefabRoot) {
+      if (!prefab.root) {
         const transformProps = new TransformProps();
 
         transformProps.translate = vec3.clone(object.transformProps.translate);
         transformProps.rotate = vec3.clone(object.transformProps.rotate);
         transformProps.scale = vec3.clone(object.transformProps.scale);
 
-        prefabObject.transformProps = transformProps;
-        transformProps.onChange = prefabObject.onChange;
+        prefabNode.transformProps = transformProps;
+        transformProps.onChange = prefabNode.onChange;
 
-        prefabRoot = prefabObject;
+        prefab.root = prefabNode;
       }
       else {
         // Have the prefab object referencd the object's transform props.
         // Set the onChange method on the transform props to the ROOT prefab object.
-        prefabObject.transformProps = object.transformProps;
-        prefabObject.transformProps.onChange = prefabRoot.onChange
+        prefabNode.transformProps = object.transformProps;
+        prefabNode.transformProps.onChange = prefab.root.onChange
       }
 
       // Add a reference to each of the components found in the original node.
-      prefabObject.components = object.components.map((item) => ({
+      prefabNode.components = object.components.map((item) => ({
         type: item.type,
         props: item.props,
       }))
 
       // Link the prefabObject with its parent.
       if (parent) {
-        prefabObject.parent = parent;
-        parent.objects.push(prefabObject)
+        prefabNode.parentNode = parent;
+        parent.nodes.push(prefabNode)
       }
 
-      object.prefab = prefabObject;
+      object.prefabNode = prefabNode;
     }
 
-    return prefabRoot;
+    return prefab;
   }
 }
 

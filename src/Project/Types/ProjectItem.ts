@@ -1,17 +1,18 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import Http from "../../Http/src";
-import { FolderInterface, ItemLike, ProjectItemInterface, ProjectItemType } from "./types";
-import { isGameObject2D, PrefabObjectDescriptor, SceneDescriptor, TextureRecord } from "../../State/types";
+import { FolderInterface, ProjectItemLike, ProjectItemInterface, ProjectItemType } from "./types";
+import { isGameObject2D, PrefabNodeDescriptor, PrefabObjectDescriptor, SceneDescriptor, TextureRecord } from "../../State/types";
 import SceneData from '../../Scene/Types/Scene'
 import SceneObject from "../../Scene/Types/SceneObject";
 import { ComponentType, ShaderRecord } from "../../Renderer/types";
 import SceneNode2d from "../../Renderer/Drawables/SceneNodes/SceneNode2d";
-import PrefabObject from "../../Scene/Types/PrefabObject";
+import PrefabNode from "../../Scene/Types/PrefabNode";
 import { materialManager } from "../../Renderer/Materials/MaterialManager";
 import Texture from "../../State/Texture";
 import Graph from "../../State/Graph";
 import { store } from "../../State/store";
 import { particleSystemManager } from "../../Renderer/ParticleSystem/ParticleSystemManager";
+import PrefabObject from "../../Scene/Types/PrefabObject";
 
 class ProjectItem implements ProjectItemInterface {
   id: number
@@ -24,7 +25,7 @@ class ProjectItem implements ProjectItemInterface {
 
   parent: FolderInterface | null = null;
 
-  item: ItemLike | null = null;
+  item: ProjectItemLike | null = null;
 
   constructor(id: number, name: string, type: ProjectItemType, parent: FolderInterface | null, itemId: number | null) {
     this.id = id;
@@ -55,8 +56,8 @@ class ProjectItem implements ProjectItemInterface {
     return this.parent?.deleteItem(this);
   }
 
-  async getItem(): Promise<ItemLike | null> {
-    let item: ItemLike | null = this.item;
+  async getItem(): Promise<ProjectItemLike | null> {
+    let item: ProjectItemLike | null = this.item;
 
     if (!item) {
       switch (this.type) {

@@ -1,18 +1,21 @@
 import { SceneNodeInterface, ParticleSystemInterface, ShaderRecord } from "../../Renderer/types";
-import { GameObject2DInterface, SceneObjectInterface, GraphInterface, MaterialItemInterface, TextureInterface, SceneInterface, PrefabObjectInterface } from "../../State/types";
+import {
+  GameObject2DInterface, SceneObjectInterface, GraphInterface, MaterialItemInterface,
+  TextureInterface, SceneInterface, PrefabObjectInterface,
+} from "../../State/types";
 
-export type ItemLike = SceneObjectInterface | GameObject2DInterface | MaterialItemInterface | TextureInterface
+export type ProjectItemLike = SceneObjectInterface | GameObject2DInterface | MaterialItemInterface | TextureInterface
   | GraphInterface | SceneNodeInterface | ParticleSystemInterface | ShaderRecord | MaterialItemInterface
   | SceneInterface | PrefabObjectInterface;
+
+export type ProjectItemType = 'particle' | 'model' | 'shader' | 'texture' | 'material'
+  | 'object' | 'folder' | 'scene' | 'object2D' | 'prefab';
 
 export interface ProjectInterface {
   selectedItem: ProjectItemInterface | null
 
   getItemByItemId(id: number, type: string): ProjectItemInterface | undefined
 }
-
-export type ProjectItemType = 'particle' | 'model' | 'shader' | 'texture' | 'material'
-| 'object' | 'folder' | 'scene' | 'object2D' | 'prefab';
 
 export interface ProjectItemInterface {
   id: number
@@ -25,13 +28,13 @@ export interface ProjectItemInterface {
 
   parent: FolderInterface | null
 
-  item: ItemLike | null
+  item: ProjectItemLike | null
 
   changeName(name: string): Promise<void>
 
   delete(): Promise<void>
 
-  getItem(): Promise<ItemLike | null>
+  getItem(): Promise<ProjectItemLike | null>
 }
 
 export interface FolderInterface extends ProjectItemInterface {
