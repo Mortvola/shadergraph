@@ -30,6 +30,9 @@ const PSRenderer: React.FC<PropsType> = observer(({
     ) {
       event.dataTransfer.dropEffect = 'link';
     }
+    else {
+      event.dataTransfer.dropEffect = 'none';
+    }
   }
 
   const handleDrop: React.DragEventHandler = async (event) => {

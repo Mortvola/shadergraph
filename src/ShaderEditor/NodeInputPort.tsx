@@ -87,6 +87,9 @@ const NodeInputPort: React.FC<PropsType> = observer(({
 
       graph.deleteEdge(port.edge);
     }
+    else {
+      event.dataTransfer.dropEffect = 'none';
+    }
   }
 
   const handleDrag: React.DragEventHandler = (event) => {

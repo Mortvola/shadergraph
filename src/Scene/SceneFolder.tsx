@@ -46,6 +46,9 @@ const SceneFolder: React.FC<PropsType> = observer(({
       event.dataTransfer.dropEffect = 'link';
       setDroppable(true);
     }
+    else {
+      event.dataTransfer.dropEffect = 'none';
+    }
   }
 
   const handleDragLeave = () => {

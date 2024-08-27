@@ -123,6 +123,7 @@ export type TransformPropsDescriptor = {
 
 export type PrefabObjectDescriptor = {
   id: number,
+  name: string,
   components: PrefabComponentDescriptor[],
   transformProps?: TransformPropsDescriptor,
   objects: PrefabObjectDescriptor[],

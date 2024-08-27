@@ -24,6 +24,7 @@ class PrefabObject extends Entity implements PrefabObjectInterface {
 
     if (descriptor) {
       prefab.id = descriptor.id;
+      prefab.name = descriptor.name;
 
       prefab.transformProps = new TransformProps(descriptor.transformProps)
 
@@ -61,6 +62,7 @@ class PrefabObject extends Entity implements PrefabObjectInterface {
   toDescriptor(): PrefabObjectDescriptor {
     return ({
       id: this.id,
+      name: this.name,
       components: this.components.map((c) => ({
         type: c.type,
         props: c.props.toDescriptor(),

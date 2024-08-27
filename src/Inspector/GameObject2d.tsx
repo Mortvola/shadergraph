@@ -22,6 +22,9 @@ const GameObject2D: React.FC<PropsType> = ({
     ) {
       event.dataTransfer.dropEffect = 'link';
     }
+    else {
+      event.dataTransfer.dropEffect = 'none';
+    }
   }
 
   const handleDrop: React.DragEventHandler = (event) => {
