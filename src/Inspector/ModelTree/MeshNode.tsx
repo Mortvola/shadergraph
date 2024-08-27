@@ -55,7 +55,7 @@ const MeshNode: React.FC<PropsType> = observer(({
     let name: string | undefined = '';
 
     if (gameObject) {
-      const item = gameObject.items.find((o) => o.type === ComponentType.Mesh);
+      const item = gameObject.components.find((o) => o.type === ComponentType.Mesh);
 
       if (item) {
         // const modelItem = item.item as ModelItem;

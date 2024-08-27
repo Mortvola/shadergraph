@@ -113,7 +113,7 @@ class ProjectItem implements ProjectItemInterface {
       
               // this.mainViewModeler.assignModel(null)
       
-              for (const component  of gameObject.items) {
+              for (const component  of gameObject.components) {
                 if (component.type === ComponentType.Mesh) {
                   // const modelEntry = item as ModelItem;
       

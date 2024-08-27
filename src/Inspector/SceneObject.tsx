@@ -113,12 +113,12 @@ const SceneObject: React.FC<PropsType> = observer(({
   // }
 
   const handleDelete = (item: SceneObjectComponent) => {
-    const index = sceneObject.items.findIndex((i) => i.key === item.key)
+    const index = sceneObject.components.findIndex((i) => i.key === item.key)
 
     if (index !== -1) {
-      sceneObject.items = [
-        ...sceneObject.items.slice(0, index),
-        ...sceneObject.items.slice(index + 1),
+      sceneObject.components = [
+        ...sceneObject.components.slice(0, index),
+        ...sceneObject.components.slice(index + 1),
       ]
 
       sceneObject.save()
@@ -269,7 +269,7 @@ const SceneObject: React.FC<PropsType> = observer(({
           ? (
             <GameObject2D gameObject={sceneObject} />
           )
-          : sceneObject.items.map((item) => (
+          : sceneObject.components.map((item) => (
               <div className={styles.item} key={item.key ?? 0} >
                 <div>
                   <button type="button" onClick={() => handleDelete(item)}>X</button>

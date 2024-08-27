@@ -22,7 +22,7 @@ const getNextObjectId = () => {
 }
 
 class SceneObject extends Entity implements SceneObjectInterface {
-  items: SceneObjectComponent[] = []
+  components: SceneObjectComponent[] = []
 
   objects: SceneObject[] = [];
 
@@ -37,13 +37,13 @@ class SceneObject extends Entity implements SceneObjectInterface {
   constructor(id = getNextObjectId(), name?: string, items: SceneObjectComponent[] = []) {
     super(id, name ?? `Scene Object ${Math.abs(id)}`)
     
-    this.items = items.map((i, index) => ({
+    this.components = items.map((i, index) => ({
       ...i,
       key: index,
     }));
 
     makeObservable(this, {
-      items: observable,
+      components: observable,
       objects: observable,
     })
   }
@@ -79,7 +79,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
       }
 
       if (components) {
-        object.items = (await Promise.all(components.map(async (c) => {
+        object.components = (await Promise.all(components.map(async (c) => {
           switch (c.type) {
             case ComponentType.ParticleSystem:
               let propsDescriptor = c.props as ParticleSystemPropsDescriptor;
@@ -158,7 +158,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
 
     object.name = prefab.name;
 
-    object.items = prefab.components.map((c) => {
+    object.components = prefab.components.map((c) => {
       switch (c.type) {
         case ComponentType.ParticleSystem:
           const ps = new ParticleSystem(c.props as ParticleSystemPropsInterface)
@@ -207,7 +207,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
       id: this.id,
       name: this.name,
       object: {
-        components: this.items.map((c) => ({
+        components: this.components.map((c) => ({
           type: c.type,
           props: c.props.toDescriptor(),
         })),
@@ -254,8 +254,8 @@ class SceneObject extends Entity implements SceneObjectInterface {
   }
 
   addComponent(component: SceneObjectComponent) {
-    this.items = [
-      ...this.items,
+    this.components = [
+      ...this.components,
       component,
     ];
 
@@ -372,7 +372,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
       }
 
       // Add a reference to each of the components found in the original node.
-      prefabObject.components = object.items.map((item) => ({
+      prefabObject.components = object.components.map((item) => ({
         type: item.type,
         props: item.props,
       }))

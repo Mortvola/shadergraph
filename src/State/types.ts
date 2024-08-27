@@ -75,7 +75,7 @@ export interface EntityInterface {
 
 export const isGameObject = (r: unknown): r is SceneObjectInterface => (
   r !== undefined && r !== null &&
-  (r as SceneObjectInterface).items !== undefined
+  (r as SceneObjectInterface).components !== undefined
 )
 
 export interface SceneInterface {
@@ -126,7 +126,7 @@ export type PrefabObjectDescriptor = {
 export interface SceneObjectInterface extends EntityInterface {
   transformProps: TransformPropsInterface;
 
-  items: SceneObjectComponent[];
+  components: SceneObjectComponent[];
 
   objects: SceneObjectInterface[];
 

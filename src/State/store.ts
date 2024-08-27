@@ -72,7 +72,7 @@ class Store implements StoreInterface {
 
   async selectItem(item: ProjectItemInterface) {
     if (this.project.selectedItem?.type === 'object' && isGameObject(this.project.selectedItem.item)) {
-      for (const component of this.project.selectedItem.item.items) {
+      for (const component of this.project.selectedItem.item.components) {
         if (component.type === ComponentType.ParticleSystem) {
           // const particleEntry = item.item as ParticleItem;
           // const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
