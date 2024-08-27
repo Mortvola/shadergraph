@@ -82,7 +82,7 @@ const ProjectItem: React.FC<PropsType> = observer(({
       items.push({
         name: 'Create Material',
         action: async () => {
-          const shader = await item.getItem() as (Graph | null);
+          const shader: Graph | null = await item.getItem();
 
           if (shader) {
             const response = await Http.post<unknown, ProjectItemRecord>('/materials', {

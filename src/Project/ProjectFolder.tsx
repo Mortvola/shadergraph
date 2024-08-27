@@ -1,5 +1,5 @@
 import React from 'react';
-import { FolderInterface, ProjectItemInterface } from './Types/types';
+import { FolderInterface, ProjectItemInterface, ProjectItemType } from './Types/types';
 import ProjectItem from './ProjectItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
@@ -85,7 +85,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
             if (prefab) {
               const descriptor = prefab.toDescriptor();
 
-              const item = await store.project.createNewItem(prefab.name, 'prefab', folder, {
+              const item = await store.project.createNewItem(prefab.name, ProjectItemType.Prefab, folder, {
                 parentId: folder.id,
                 name: prefab.name,
                 prefab: descriptor,

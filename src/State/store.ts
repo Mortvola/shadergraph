@@ -102,7 +102,7 @@ class Store implements StoreInterface {
 
     switch (item.type) {
       case 'scene': {
-        const scene = await item.getItem() as (SceneInterface | null);
+        const scene: SceneInterface | null = await item.getItem();
 
         if (scene) {
           runInAction(() => {
@@ -116,7 +116,7 @@ class Store implements StoreInterface {
       }
 
       case 'shader': {
-        const shader = await item.getItem();
+        const shader: Graph | null = await item.getItem();
 
         if (shader) {
           runInAction(() => {
@@ -131,7 +131,7 @@ class Store implements StoreInterface {
   }
 
   async getModel(item: ProjectItemInterface) {
-    let model: SceneNodeInterface | null = await item.getItem() as (SceneNodeInterface | null);
+    let model: SceneNodeInterface | null = await item.getItem();
 
     if (!model && item.itemId) {
       model = await this.previewModeler.getModel(item.itemId) ?? null;

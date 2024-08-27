@@ -1,12 +1,12 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import Http from "../../Http/src";
 import { FolderInterface, ProjectItemLike, ProjectItemInterface, ProjectItemType } from "./types";
-import { isGameObject2D, PrefabNodeDescriptor, PrefabObjectDescriptor, SceneDescriptor, TextureRecord } from "../../State/types";
+import { PrefabObjectDescriptor, SceneDescriptor, TextureRecord } from "../../State/types";
+import GameObject2DData from '../../State/GameObject2D'
 import SceneData from '../../Scene/Types/Scene'
 import SceneObject from "../../Scene/Types/SceneObject";
 import { ComponentType, ShaderRecord } from "../../Renderer/types";
 import SceneNode2d from "../../Renderer/Drawables/SceneNodes/SceneNode2d";
-import PrefabNode from "../../Scene/Types/PrefabNode";
 import { materialManager } from "../../Renderer/Materials/MaterialManager";
 import Texture from "../../State/Texture";
 import Graph from "../../State/Graph";
@@ -56,8 +56,8 @@ class ProjectItem implements ProjectItemInterface {
     return this.parent?.deleteItem(this);
   }
 
-  async getItem(): Promise<ProjectItemLike | null> {
-    let item: ProjectItemLike | null = this.item;
+  async getItem<T>(): Promise<T | null> {
+    let item: T | null = this.item as (T | null);
 
     if (!item) {
       switch (this.type) {
@@ -70,7 +70,7 @@ class ProjectItem implements ProjectItemInterface {
             const scene = await SceneData.fromDescriptor(body)
 
             if (scene) {
-              item = scene;
+              item = scene as T;
 
               runInAction(() => {
                 this.item = scene;
@@ -86,7 +86,7 @@ class ProjectItem implements ProjectItemInterface {
             const object = await SceneObject.fromServer(this.itemId);
     
             if (object) {
-              item = object;
+              item = object as T;
 
               runInAction(() => {
                 this.item = object;
@@ -109,7 +109,7 @@ class ProjectItem implements ProjectItemInterface {
           }
     
           if (item) {
-            if (!isGameObject2D(item)) {
+            if (item instanceof SceneObject) {
               const gameObject = item as SceneObject;
       
               // this.mainViewModeler.assignModel(null)
@@ -156,7 +156,7 @@ class ProjectItem implements ProjectItemInterface {
                 }
               }
             }
-            else {
+            else if (item instanceof GameObject2DData) {
               // this.mainViewModeler.assignModel(null);
       
               const test = new SceneNode2d()
@@ -182,7 +182,7 @@ class ProjectItem implements ProjectItemInterface {
             const prefab = await PrefabObject.fromDescriptor(body.prefab);
   
             if (prefab) {
-              item = prefab;
+              item = prefab as T;
 
               runInAction(() => {
                 this.item = prefab;
@@ -198,7 +198,7 @@ class ProjectItem implements ProjectItemInterface {
             const materialItem = await materialManager.getItem(this.itemId) ?? null;
     
             if (materialItem) {
-              item = materialItem;
+              item = materialItem as T;
 
               runInAction(() => {
                 this.item = materialItem;
@@ -215,10 +215,12 @@ class ProjectItem implements ProjectItemInterface {
           if (response.ok) {
             const record = await response.body();
   
-            item = new Texture(record.id, record.name, record.flipY);
+            const texture = new Texture(record.id, record.name, record.flipY);
+
+            item = texture as T;
 
             runInAction(() => {
-              this.item = item;
+              this.item = texture;
             })
           }
   
@@ -231,10 +233,12 @@ class ProjectItem implements ProjectItemInterface {
           if (response.ok) {
             const descriptor = await response.body();
   
-            item = new Graph(store, descriptor.id, descriptor.name, descriptor.descriptor);
+            const shader = new Graph(store, descriptor.id, descriptor.name, descriptor.descriptor);
+
+            item = shader as T;
 
             runInAction(() => {
-              this.item = item
+              this.item = shader
             })
           }  
       
@@ -245,7 +249,7 @@ class ProjectItem implements ProjectItemInterface {
           const particleSystem = await particleSystemManager.getParticleSystem(this.itemId!)
   
           if (particleSystem) {
-            item = particleSystem;
+            item = particleSystem as T;
 
             runInAction(() => {
               this.item = particleSystem

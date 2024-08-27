@@ -13,7 +13,7 @@ class Folder extends ProjectItem implements FolderInterface {
   open = true;
 
   constructor(id: number, name: string, parent: FolderInterface | null, project: ProjectInterface) {
-    super(id, name, 'folder', parent, null)
+    super(id, name, ProjectItemType.Folder, parent, null)
 
     this.project = project;
 

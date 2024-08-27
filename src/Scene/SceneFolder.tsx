@@ -78,7 +78,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
           const item = store.draggingItem;
 
           if (item) {
-            const prefab = await item.getItem() as (PrefabObjectInterface | null);
+            const prefab: PrefabObjectInterface | null = await item.getItem();
   
             if (prefab) {
               const object = SceneObject.fromPrefab(prefab);

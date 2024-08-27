@@ -8,8 +8,18 @@ export type ProjectItemLike = SceneObjectInterface | GameObject2DInterface | Mat
   | GraphInterface | SceneNodeInterface | ParticleSystemInterface | ShaderRecord | MaterialItemInterface
   | SceneInterface | PrefabObjectInterface;
 
-export type ProjectItemType = 'particle' | 'model' | 'shader' | 'texture' | 'material'
-  | 'object' | 'folder' | 'scene' | 'object2D' | 'prefab';
+export enum ProjectItemType {
+  Particle = 'particle',
+  Model = 'model', 
+  Shader = 'shader',
+  Texture = 'texture',
+  Material = 'material',
+  Object = 'object',
+  Folder = 'folder',
+  Scene = 'scene',
+  Object2D = 'object2D',
+  Prefab = 'prefab',
+}
 
 export interface ProjectInterface {
   selectedItem: ProjectItemInterface | null
@@ -34,7 +44,7 @@ export interface ProjectItemInterface {
 
   delete(): Promise<void>
 
-  getItem(): Promise<ProjectItemLike | null>
+  getItem<T>(): Promise<T | null>
 }
 
 export interface FolderInterface extends ProjectItemInterface {

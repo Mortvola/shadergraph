@@ -3,6 +3,7 @@ import { MenuItemLike } from '../ContextMenu/types';
 import { useStores } from '../State/store';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import styles from './Project.module.scss'
+import { ProjectItemType } from './Types/types';
 
 const ProjectToolbar: React.FC = () => {
   const store = useStores();
@@ -46,9 +47,9 @@ const ProjectToolbar: React.FC = () => {
         inputElement.click();
       }  
     } },
-    { name: 'Create material', action: () => { store.project.addNewItem('material') } },
-    { name: 'Create shader', action: () => { store.project.addNewItem('shader') } },
-    { name: 'Create scene', action: () => { store.project.addNewItem('scene')}},
+    { name: 'Create material', action: () => { store.project.addNewItem(ProjectItemType.Material) } },
+    { name: 'Create shader', action: () => { store.project.addNewItem(ProjectItemType.Shader) } },
+    { name: 'Create scene', action: () => { store.project.addNewItem(ProjectItemType.Scene)}},
     { name: 'Create folder', action: () => { store.project.createFolder() } },
   ]), [store.project]);
   
