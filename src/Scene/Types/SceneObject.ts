@@ -195,6 +195,13 @@ class SceneObject extends Entity implements SceneObjectInterface {
       object.sceneNode.addNode(child.sceneNode)
     }
 
+    // The node id of the root node of a prefab is always zero.
+    // The root node always has its own copy of the transform props.
+    // All other nodes shall reference the corresponding node's prefab transforms.
+    if (prefab.id !== 0) {
+      object.transformProps = prefab.transformProps;
+    }
+
     object.sceneNode.translate = object.transformProps.translate;
 
     object.prefab = prefab;

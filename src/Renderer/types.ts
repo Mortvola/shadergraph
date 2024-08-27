@@ -6,7 +6,7 @@ import { ShaderDescriptor } from './shaders/ShaderDescriptor';
 import SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
 import ShaderGraph from './ShaderBuilder/ShaderGraph';
 import { ParticleSystemPropsDescriptor, ParticleSystemPropsInterface } from './ParticleSystem/Types';
-import { MaterialItemInterface } from '../State/types';
+import { MaterialItemInterface, TransformPropsDescriptor } from '../State/types';
 import Component from './Drawables/Component';
 import ParticleSystemProps from './ParticleSystem/ParticleSystemProps';
 import LightProps from './Drawables/LightProps';
@@ -263,6 +263,8 @@ export interface TransformPropsInterface {
   scale: Vec3;
 
   setTranslate(translate: number[]): void;
+
+  toDescriptor(): TransformPropsDescriptor;
 }
 
 export type GameObject = {

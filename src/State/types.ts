@@ -95,11 +95,15 @@ export interface SceneInterface {
 }
 
 export interface PrefabObjectInterface {
+  id: number;
+
   name: string;
 
   components: PrefabComponent[]
 
   objects: PrefabObjectInterface[]
+
+  transformProps: TransformPropsInterface;
 
   toDescriptor(): PrefabObjectDescriptor;
 }
@@ -118,6 +122,7 @@ export type TransformPropsDescriptor = {
 }
 
 export type PrefabObjectDescriptor = {
+  id: number,
   components: PrefabComponentDescriptor[],
   transformProps?: TransformPropsDescriptor,
   objects: PrefabObjectDescriptor[],

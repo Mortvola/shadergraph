@@ -16,13 +16,15 @@ class PrefabObject extends Entity implements PrefabObjectInterface {
   transformProps = new TransformProps();
 
   constructor(id = -1, name?: string) {
-    super(-1, name ?? 'Test Prefab')
+    super(id, name ?? 'Test Prefab')
   }
 
   static async fromDescriptor(descriptor?: PrefabObjectDescriptor): Promise<PrefabObject> {
     const prefab = new PrefabObject();
 
     if (descriptor) {
+      prefab.id = descriptor.id;
+
       prefab.transformProps = new TransformProps(descriptor.transformProps)
 
       prefab.components = (await Promise.all(
@@ -58,6 +60,7 @@ class PrefabObject extends Entity implements PrefabObjectInterface {
 
   toDescriptor(): PrefabObjectDescriptor {
     return ({
+      id: this.id,
       components: this.components.map((c) => ({
         type: c.type,
         props: c.props.toDescriptor(),
