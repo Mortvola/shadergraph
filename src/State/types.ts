@@ -1,4 +1,4 @@
-import { ProjectInterface } from "../Project/Types/types";
+import { ProjectInterface, ProjectItemType } from "../Project/Types/types";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
 import { ComponentDescriptor, ComponentType, SceneObjectComponent, MaterialInterface, SceneNodeInterface, TransformPropsInterface, LightPropsDescriptor, PrefabComponent } from "../Renderer/types";
 import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
@@ -245,6 +245,6 @@ export type ProjectItemRecord = {
   id: number,
   parentId: number,
   name: string,
-  type: string,
+  type: ProjectItemType,
   itemId: number | null,
 }

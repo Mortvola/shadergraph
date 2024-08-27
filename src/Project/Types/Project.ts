@@ -1,10 +1,16 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import Http from "../../Http/src";
-import { GameObject2DInterface, GraphInterface, MaterialItemInterface, PrefabObjectInterface, ProjectItemRecord, SceneInterface, SceneObjectInterface, TextureInterface } from "../../State/types";
+import { GameObject2DInterface, ProjectItemRecord } from "../../State/types";
 import Folder from "./Folder";
 import ProjectItem from "./ProjectItem";
 import { FolderInterface, ProjectInterface, ProjectItemLike, ProjectItemType, isFolder } from "./types";
 import { ParticleSystemInterface, SceneNodeInterface } from "../../Renderer/types";
+import SceneProjectItem from "./SceneProjectItem";
+import PrefabProjectItem from "./PrefabProjectItem";
+import ShaderProjectItem from "./ShaderProjectItem";
+import MaterialProjectItem from "./MaterialProjectItem";
+import TextureProjectItem from "./TextureProjectItem";
+import SceneObjectProjectItem from "./SceneObjectProjectItem";
 
 class Project implements ProjectInterface {
   projectItems: Folder
@@ -27,13 +33,7 @@ class Project implements ProjectInterface {
         const list = await response.body();
 
         folder.addItems(list.map((i) => {
-          if (i.type === 'folder') {
-            return new Folder(i.id, i.name, folder, this)
-          }
-
-          const item = Project.constructProjectItem(i, folder);
-
-          return item;
+          return this.constructProjectItem(i, folder);
         }));
       }
     })()
@@ -95,7 +95,7 @@ class Project implements ProjectInterface {
     if (response.ok) {
       const rec = await response.json() as ProjectItemRecord
 
-      const item = Project.constructProjectItem(rec, parent);
+      const item = this.constructProjectItem(rec, parent);
 
       parent.addItem(item)
 
@@ -270,7 +270,7 @@ class Project implements ProjectInterface {
       if (response.ok) {
         const rec = await response.body();
   
-        const item = Project.constructProjectItem(rec, folder);
+        const item = this.constructProjectItem(rec, folder);
     
         folder.addItem(item);
 
@@ -279,70 +279,38 @@ class Project implements ProjectInterface {
     }
   }
 
-  private static constructProjectItem(rec: ProjectItemRecord, folder: FolderInterface) {
-    let item: ProjectItemLike | undefined = undefined;
-        
+  private constructProjectItem(rec: ProjectItemRecord, folder: FolderInterface) {
     switch (rec.type) {
-      case 'prefab': {
-        item = new ProjectItem<PrefabObjectInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+      case ProjectItemType.Folder:
+        return new Folder(rec.id, rec.name, folder, this)
 
-        break;
-      }
+      case ProjectItemType.Prefab:
+        return new PrefabProjectItem(rec.id, rec.name, folder, rec.itemId)
 
-      case 'object': {
-        item = new ProjectItem<SceneObjectInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+      case ProjectItemType.SceneObject:
+        return new SceneObjectProjectItem(rec.id, rec.name, folder, rec.itemId)
 
-        break
-      }
+      case ProjectItemType.Object2D:
+        return new ProjectItem<GameObject2DInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
 
-      case 'object2D': {
-        item = new ProjectItem<GameObject2DInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+      case ProjectItemType.Shader:
+        return new ShaderProjectItem(rec.id, rec.name, folder, rec.itemId)
 
-        break
-      }
+      case ProjectItemType.Material:
+        return new MaterialProjectItem(rec.id, rec.name, folder, rec.itemId)
 
-      case 'shader': {
-        item = new ProjectItem<GraphInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+      case ProjectItemType.Particle:
+        return new ProjectItem<ParticleSystemInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
 
-        break
-      }
+      case ProjectItemType.Scene:
+        return new SceneProjectItem(rec.id, rec.name, folder, rec.itemId)
 
-      case 'material': {
-        item = new ProjectItem<MaterialItemInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+      case ProjectItemType.Model:
+        return new ProjectItem<SceneNodeInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
 
-        break;
-      }
-
-      case 'particle': {
-        item = new ProjectItem<ParticleSystemInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
-
-        break
-      }
-
-      case 'scene': {
-        item = new ProjectItem<SceneInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
-
-        break
-      }
-
-      case 'model': {
-        item = new ProjectItem<SceneNodeInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
-
-        break
-      }
-
-      case 'texture': {
-        item = new ProjectItem<TextureInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
-
-        break
-      }
+      case ProjectItemType.Texture:
+        return new TextureProjectItem(rec.id, rec.name, folder, rec.itemId)
     }
-
-    if (item === undefined) {
-      throw new Error(`unknown project item: ${rec.type}`)
-    }
-
-    return item;
   }
 
   getItemByItemId(itemId: number, type: string): ProjectItemLike | undefined {

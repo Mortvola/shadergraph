@@ -94,7 +94,7 @@ const ProjectItem: React.FC<PropsType> = observer(({
               const rec = await response.body()
 
               const newItem = new ProjectItemObject<MaterialItemInterface>(
-                rec.id, rec.name, rec.type as ProjectItemType, item.parent, rec.itemId,
+                rec.id, rec.name, rec.type, item.parent, rec.itemId,
               );
 
               (item.parent as FolderInterface).addItem(newItem)

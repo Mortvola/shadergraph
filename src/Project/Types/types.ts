@@ -23,7 +23,7 @@ export enum ProjectItemType {
   Shader = 'shader',
   Texture = 'texture',
   Material = 'material',
-  Object = 'object',
+  SceneObject = 'object',
   Folder = 'folder',
   Scene = 'scene',
   Object2D = 'object2D',
