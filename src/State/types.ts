@@ -199,11 +199,6 @@ export type SceneDescriptor = {
   }
 }
 
-export enum ObjectType {
-  Object = 'object',
-  Prefab = 'prefab',
-}
-
 export type SceneObjectDescriptor = {
   id: number,
   name: string,
@@ -213,7 +208,7 @@ export type SceneObjectDescriptor = {
     scale?: number[],
     components?: ComponentDescriptor[],
     items?: ComponentDescriptor[],
-    objects?: (number | { type: ObjectType, id: number } )[],  
+    objects?: number[],  
   }
 }
 

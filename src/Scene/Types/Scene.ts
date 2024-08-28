@@ -2,7 +2,7 @@ import { makeObservable, observable, runInAction } from "mobx";
 import SceneObject from "./SceneObject";
 import { store } from "../../State/store";
 import Http from "../../Http/src";
-import { ObjectType, SceneDescriptor, SceneInterface } from "../../State/types";
+import { SceneDescriptor, SceneInterface } from "../../State/types";
 
 class Scene implements SceneInterface {
   id?: number;
@@ -34,7 +34,7 @@ class Scene implements SceneInterface {
         await scene.saveChanges();
       }
       else {
-        scene.rootObject = await SceneObject.fromServer(ObjectType.Object, descriptor.scene.objects) ?? scene.rootObject;
+        scene.rootObject = await SceneObject.fromServer(descriptor.scene.objects) ?? scene.rootObject;
       }
     }
 

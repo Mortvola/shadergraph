@@ -1,7 +1,7 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import Entity from "../../State/Entity";
 import {
-  ObjectType, PrefabNodeInterface, SceneObjectDescriptor, SceneObjectInterface,
+  PrefabNodeInterface, SceneObjectDescriptor, SceneObjectInterface,
   PrefabInstanceDescriptor, isPrefabInstanceDescriptor,
   PrefabInstanceInterface,
 } from "../../State/types";
@@ -44,26 +44,21 @@ class SceneObject extends Entity implements SceneObjectInterface {
     })
   }
 
-  static async fromServer(objectType: ObjectType, itemId: number): Promise<SceneObject | undefined> {
-    if (objectType === ObjectType.Object) {
-      const response = await Http.get<SceneObjectDescriptor | PrefabInstanceDescriptor>(`/scene-objects/${itemId}`)
+  static async fromServer(itemId: number): Promise<SceneObject | undefined> {
+    const response = await Http.get<SceneObjectDescriptor | PrefabInstanceDescriptor>(`/scene-objects/${itemId}`)
 
-      if (response.ok) {
-        const descriptor = await response.body();
-  
-        if (isPrefabInstanceDescriptor(descriptor)) {
-          const prefabInstace = await PrefabInstance.fromDescriptor(descriptor);
+    if (response.ok) {
+      const descriptor = await response.body();
 
-          return prefabInstace?.root;
-          // return undefined
-        }
+      if (isPrefabInstanceDescriptor(descriptor)) {
+        const prefabInstace = await PrefabInstance.fromDescriptor(descriptor);
 
-        return SceneObject.fromDescriptor(descriptor)
-      }  
-    }
-    else if (objectType === ObjectType.Prefab) {
+        return prefabInstace?.root;
+        // return undefined
+      }
 
-    }
+      return SceneObject.fromDescriptor(descriptor)
+    }  
   }
 
   static async fromDescriptor(descriptor?: SceneObjectDescriptor) {
@@ -136,13 +131,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
 
       if (descriptor.object.objects) {
         object.objects = (await Promise.all(descriptor.object.objects.map(async (id) => {
-          let child: SceneObject | undefined = undefined;
-          if (typeof id === 'number') {
-            child = await SceneObject.fromServer(ObjectType.Object, id);
-          }
-          else {
-            child = await SceneObject.fromServer(id.type, id.id);
-          }
+          const child = await SceneObject.fromServer(id);
 
           if (child) {
             child.parent = object

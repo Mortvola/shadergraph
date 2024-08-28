@@ -1,6 +1,6 @@
 import { runInAction } from "mobx";
 import SceneObject from "../../Scene/Types/SceneObject";
-import { ObjectType, SceneObjectInterface } from "../../State/types";
+import { SceneObjectInterface } from "../../State/types";
 import ProjectItem from "./ProjectItem";
 import { ComponentType } from "../../Renderer/types";
 import { FolderInterface, ProjectItemType } from "./types";
@@ -16,7 +16,7 @@ class SceneObjectProjectItem extends ProjectItem<SceneObjectInterface> {
     }
 
     if (this.itemId !== null) {
-      const object = await SceneObject.fromServer(ObjectType.Object, this.itemId) ?? null;
+      const object = await SceneObject.fromServer(this.itemId) ?? null;
 
       runInAction(() => {
         this.item = object;
