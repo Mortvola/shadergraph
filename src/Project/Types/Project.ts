@@ -134,7 +134,7 @@ class Project implements ProjectInterface {
       case 'prefab': {
         payload = {
           name,
-          object: {},
+          prefab: {},
         }
 
         break;

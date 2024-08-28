@@ -87,8 +87,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
 
               const item = await store.project.createNewItem(prefab.name, ProjectItemType.Prefab, folder, {
                 parentId: folder.id,
-                name: prefab.name,
-                prefab: descriptor,
+                ...descriptor,
               })
 
               if (item) {

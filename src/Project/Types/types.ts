@@ -1,7 +1,7 @@
 import { SceneNodeInterface, ParticleSystemInterface, ShaderRecord } from "../../Renderer/types";
 import {
   GameObject2DInterface, SceneObjectInterface, GraphInterface, MaterialItemInterface,
-  TextureInterface, SceneInterface, PrefabObjectInterface,
+  TextureInterface, SceneInterface, PrefabInterface,
 } from "../../State/types";
 
 export type ProjectItemLike =
@@ -14,7 +14,7 @@ export type ProjectItemLike =
   ProjectItemInterface<ParticleSystemInterface> |
   ProjectItemInterface<ShaderRecord> |
   ProjectItemInterface<SceneInterface> |
-  ProjectItemInterface<PrefabObjectInterface> |
+  ProjectItemInterface<PrefabInterface> |
   ProjectItemInterface<FolderInterface>;
 
 export enum ProjectItemType {
@@ -61,7 +61,7 @@ export const isSceneItem = (r: ProjectItemLike | null | undefined): r is Project
   && (r.type === ProjectItemType.Scene)
 )
 
-export const isPrefabItem = (r: ProjectItemLike | null | undefined): r is ProjectItemInterface<PrefabObjectInterface> => (
+export const isPrefabItem = (r: ProjectItemLike | null | undefined): r is ProjectItemInterface<PrefabInterface> => (
   r !== null && r !== undefined
   && (r.type === ProjectItemType.Prefab)
 )

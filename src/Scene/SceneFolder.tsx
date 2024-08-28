@@ -3,9 +3,10 @@ import SceneItem from './SceneItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
-import { PrefabNodeInterface, PrefabObjectInterface, SceneInterface, SceneObjectInterface } from '../State/types';
+import { PrefabNodeInterface, PrefabInterface, SceneInterface, SceneObjectInterface } from '../State/types';
 import SceneObject from './Types/SceneObject';
 import { isPrefabItem, isSceneItem } from '../Project/Types/types';
+import PrefabInstance from './Types/PrefabInstance';
 
 type PropsType = {
   project: SceneInterface,
@@ -82,10 +83,16 @@ const SceneFolder: React.FC<PropsType> = observer(({
             const prefab = await item.getItem();
   
             if (prefab) {
-              const object = SceneObject.fromPrefab(prefab);
+              const prefabInstance = PrefabInstance.fromPrefab(prefab);
     
-              folder.addObject(object);
-            }  
+              if (prefabInstance) {
+                await prefabInstance.save();
+                
+                if (prefabInstance.root) {
+                  folder.addObject(prefabInstance.root);
+                }
+              }
+            }
           }
         })()
       }

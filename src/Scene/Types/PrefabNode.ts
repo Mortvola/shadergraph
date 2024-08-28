@@ -1,6 +1,6 @@
 import { ComponentType, PrefabComponent } from "../../Renderer/types";
 import Entity from "../../State/Entity";
-import { PrefabNodeDescriptor, PrefabNodeInterface, PrefabObjectInterface } from "../../State/types";
+import { PrefabNodeDescriptor, PrefabNodeInterface, PrefabInterface } from "../../State/types";
 import TransformProps from "../../Renderer/TransformProps";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
@@ -13,17 +13,17 @@ class PrefabNode extends Entity implements PrefabNodeInterface {
 
   parentNode: PrefabNode | null = null;
 
-  prefab: PrefabObjectInterface;
+  prefab: PrefabInterface;
 
   transformProps = new TransformProps();
 
-  constructor(prefab: PrefabObjectInterface, id = -1, name?: string) {
+  constructor(prefab: PrefabInterface, id = -1, name?: string) {
     super(id, name ?? `Prefab Node ${Math.abs(id)}`)
 
     this.prefab = prefab;
   }
 
-  static async fromDescriptor(prefab: PrefabObjectInterface, descriptor?: PrefabNodeDescriptor): Promise<PrefabNode> {
+  static async fromDescriptor(prefab: PrefabInterface, descriptor?: PrefabNodeDescriptor): Promise<PrefabNode> {
     const prefabNode = new PrefabNode(prefab);
 
     if (descriptor) {

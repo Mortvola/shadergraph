@@ -94,14 +94,14 @@ export interface SceneInterface {
   renderScene(): Promise<void>
 }
 
-export interface PrefabObjectInterface {
+export interface PrefabInterface {
   id: number;
 
   name: string;
 
   root?: PrefabNodeInterface;
 
-  toDescriptor(): PrefabObjectDescriptor;
+  toDescriptor(): PrefabDescriptor;
 }
 
 export interface PrefabNodeInterface {
@@ -114,6 +114,8 @@ export interface PrefabNodeInterface {
   nodes: PrefabNodeInterface[]
 
   transformProps: TransformPropsInterface;
+
+  prefab: PrefabInterface;
 
   toDescriptor(): PrefabNodeDescriptor;
 }
@@ -131,10 +133,14 @@ export type TransformPropsDescriptor = {
   scale: number[],
 }
 
-export type PrefabObjectDescriptor = {
+export type TransformPropsOverrides = Partial<TransformPropsDescriptor>
+
+export type PrefabDescriptor = {
   id: number,
   name: string,
-  root?: PrefabNodeDescriptor,
+  prefab: {
+    root?: PrefabNodeDescriptor,
+  }
 }
 
 export type PrefabNodeDescriptor = {
@@ -162,6 +168,8 @@ export interface SceneObjectInterface extends EntityInterface {
 
   addComponent(component: SceneObjectComponent): void;
 
+  removeComponent(component: SceneObjectComponent): void;
+
   isAncestor(item: SceneObjectInterface): boolean;
 
   addObject(object: SceneObjectInterface): void;
@@ -170,7 +178,13 @@ export interface SceneObjectInterface extends EntityInterface {
 
   detachSelf(): void;
 
-  createPrefab(): PrefabObjectInterface | undefined;
+  createPrefab(): PrefabInterface | undefined;
+}
+
+export interface PrefabInstanceInterface {
+  id: number
+
+  save(): Promise<void>
 }
 
 export type SceneDescriptor = {
@@ -179,6 +193,11 @@ export type SceneDescriptor = {
   scene: {
     objects: number,
   }
+}
+
+export enum ObjectType {
+  Object = 'object',
+  Prefab = 'prefab',
 }
 
 export type SceneObjectDescriptor = {
@@ -190,9 +209,22 @@ export type SceneObjectDescriptor = {
     scale?: number[],
     components?: ComponentDescriptor[],
     items?: ComponentDescriptor[],
-    objects?: number[],  
+    objects?: (number | { type: ObjectType, id: number } )[],  
   }
 }
+
+export type PrefabInstanceDescriptor = {
+  id: number,
+  name: string,
+  object: {
+    prefabId: number,
+  }
+}
+
+export const isPrefabInstanceDescriptor = (r: unknown): r is PrefabInstanceDescriptor => (
+  r !== undefined && r !== undefined
+  && (r as PrefabInstanceDescriptor).object?.prefabId !== undefined
+)
 
 export interface GameObject2DInterface extends EntityInterface {
   width: number

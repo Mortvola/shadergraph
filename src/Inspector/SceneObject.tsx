@@ -115,17 +115,8 @@ const SceneObject: React.FC<PropsType> = observer(({
     // })
   // }
 
-  const handleDelete = (item: SceneObjectComponent) => {
-    const index = sceneObject.components.findIndex((i) => i.key === item.key)
-
-    if (index !== -1) {
-      sceneObject.components = [
-        ...sceneObject.components.slice(0, index),
-        ...sceneObject.components.slice(index + 1),
-      ]
-
-      sceneObject.save()
-    }
+  const handleDelete = (component: SceneObjectComponent) => {
+    sceneObject.removeComponent(component);
   }
 
   const renderItem = (item: SceneObjectComponent) => {

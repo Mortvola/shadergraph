@@ -161,6 +161,8 @@ export type ParticleSystemPropsDescriptor = {
   renderer: RendererDescriptor,
 }
 
+export type ParticleSystemPropsOverrides = Partial<ParticleSystemPropsDescriptor>;
+
 export interface ParticleSystemPropsInterface {
   duration: number;
 

@@ -69,8 +69,6 @@ const SceneToolbar: React.FC<PropsType> = ({
 
         object.addComponent(item);
   
-        await object.save();
-
         scene.addObject(object);
 
         scene.setSelectedObject(object);
@@ -90,8 +88,6 @@ const SceneToolbar: React.FC<PropsType> = ({
         }
 
         object.addComponent(item);
-
-        await object.save();
 
         scene.addObject(object);
 

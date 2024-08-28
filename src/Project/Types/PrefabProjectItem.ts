@@ -1,11 +1,11 @@
 import { runInAction } from "mobx";
 import Http from "../../Http/src";
-import PrefabObject from "../../Scene/Types/PrefabObject";
-import { PrefabObjectDescriptor, PrefabObjectInterface } from "../../State/types";
+import Prefab from "../../Scene/Types/Prefab";
+import { PrefabDescriptor, PrefabInterface } from "../../State/types";
 import ProjectItem from "./ProjectItem";
 import { FolderInterface, ProjectItemType } from "./types";
 
-class PrefabProjectItem extends ProjectItem<PrefabObjectInterface> {
+class PrefabProjectItem extends ProjectItem<PrefabInterface> {
   constructor(id: number, name: string, parent: FolderInterface | null, itemId: number | null) {
     super(id, name, ProjectItemType.Prefab, parent, itemId);
   }
@@ -26,25 +26,29 @@ class PrefabProjectItem extends ProjectItem<PrefabObjectInterface> {
     return false;
   }
 
-  async getItem(): Promise<PrefabObjectInterface | null> {
+  async getItem(): Promise<PrefabInterface | null> {
     if (this.item) {
       return this.item;
     }
 
-    const response = await Http.get<{ prefab: PrefabObjectDescriptor }>(`/prefabs/${this.itemId}`);
+    if (this.itemId) {
+      const response = await Http.get<PrefabDescriptor>(`/prefabs/${this.itemId}`);
     
-    if (response.ok) {
-      const body = await response.body();
-
-      const prefab = await PrefabObject.fromDescriptor(body.prefab);
-
-      if (prefab) {
-        runInAction(() => {
-          this.item = prefab;
-        })
-
-        return prefab;
-      }
+      if (response.ok) {
+        const body = await response.body();
+  
+        const prefab = await Prefab.fromDescriptor(body);
+  
+        if (prefab) {
+          prefab.id = this.itemId;
+  
+          runInAction(() => {
+            this.item = prefab;
+          })
+  
+          return prefab;
+        }
+      }  
     }
 
     return null;

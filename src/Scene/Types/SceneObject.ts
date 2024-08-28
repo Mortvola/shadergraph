@@ -1,26 +1,19 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import Entity from "../../State/Entity";
-import { PrefabNodeInterface, PrefabObjectInterface, SceneObjectDescriptor, SceneObjectInterface } from "../../State/types";
+import { ObjectType, PrefabNodeInterface, SceneObjectDescriptor, SceneObjectInterface, PrefabInstanceDescriptor, isPrefabInstanceDescriptor, PrefabInstanceInterface } from "../../State/types";
 import Http from "../../Http/src";
-import { ComponentType, SceneObjectComponent, LightInterface, ParticleSystemInterface, LightPropsDescriptor, LightPropsInterface } from "../../Renderer/types";
+import { ComponentType, SceneObjectComponent, LightPropsDescriptor } from "../../Renderer/types";
 import { vec3 } from "wgpu-matrix";
 import SceneNode from "../../Renderer/Drawables/SceneNodes/SceneNode";
 import Light from "../../Renderer/Drawables/Light";
-import { ParticleSystemPropsDescriptor, ParticleSystemPropsInterface } from "../../Renderer/ParticleSystem/Types";
+import { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import PrefabNode from "./PrefabNode";
 import LightProps from "../../Renderer/Drawables/LightProps";
 import TransformProps from "../../Renderer/TransformProps";
-import PrefabObject from "./PrefabObject";
-
-let nextObjectId = 0;
-
-const getNextObjectId = () => {
-  nextObjectId -= 1;
-  
-  return nextObjectId;
-}
+import Prefab from "./Prefab";
+import PrefabInstance from "./PrefabInstance";
 
 class SceneObject extends Entity implements SceneObjectInterface {
   components: SceneObjectComponent[] = []
@@ -35,8 +28,8 @@ class SceneObject extends Entity implements SceneObjectInterface {
 
   prefabNode: PrefabNodeInterface | null = null;
 
-  constructor(id = getNextObjectId(), name?: string, items: SceneObjectComponent[] = []) {
-    super(id, name ?? `Scene Object ${Math.abs(id)}`)
+  constructor(id?: number, name?: string, items: SceneObjectComponent[] = []) {
+    super(id, name ?? `Scene Object ${Math.abs(id ?? 0)}`)
     
     this.components = items.map((i, index) => ({
       ...i,
@@ -49,14 +42,26 @@ class SceneObject extends Entity implements SceneObjectInterface {
     })
   }
 
-  static async fromServer(itemId: number): Promise<SceneObject | undefined> {
-    const response = await Http.get<SceneObjectDescriptor>(`/scene-objects/${itemId}`)
+  static async fromServer(objectType: ObjectType, itemId: number): Promise<SceneObject | undefined> {
+    if (objectType === ObjectType.Object) {
+      const response = await Http.get<SceneObjectDescriptor | PrefabInstanceDescriptor>(`/scene-objects/${itemId}`)
 
-    if (response.ok) {
-      const descriptor = await response.body();
+      if (response.ok) {
+        const descriptor = await response.body();
+  
+        if (isPrefabInstanceDescriptor(descriptor)) {
+          const prefabInstace = await PrefabInstance.fromDescriptor(descriptor);
 
-      return SceneObject.fromDescriptor(descriptor)
-    }  
+          return prefabInstace?.root;
+          // return undefined
+        }
+
+        return SceneObject.fromDescriptor(descriptor)
+      }  
+    }
+    else if (objectType === ObjectType.Prefab) {
+
+    }
   }
 
   static async fromDescriptor(descriptor?: SceneObjectDescriptor) {
@@ -129,7 +134,13 @@ class SceneObject extends Entity implements SceneObjectInterface {
 
       if (descriptor.object.objects) {
         object.objects = (await Promise.all(descriptor.object.objects.map(async (id) => {
-          const child = await SceneObject.fromServer(id);
+          let child: SceneObject | undefined = undefined;
+          if (typeof id === 'number') {
+            child = await SceneObject.fromServer(ObjectType.Object, id);
+          }
+          else {
+            child = await SceneObject.fromServer(id.type, id.id);
+          }
 
           if (child) {
             child.parent = object
@@ -154,66 +165,8 @@ class SceneObject extends Entity implements SceneObjectInterface {
     return object;
   }
 
-  static fromPrefab(prefab: PrefabObjectInterface): SceneObject {
-    return SceneObject.fromPrefabNode(prefab, prefab.root);
-  }
-
-  private static fromPrefabNode(prefab: PrefabObjectInterface, prefabNode?: PrefabNodeInterface): SceneObject {
-    const object = new SceneObject();
-
-    if (prefabNode) {
-      object.name = prefabNode.name;
-
-      object.components = prefabNode.components.map((c) => {
-        switch (c.type) {
-          case ComponentType.ParticleSystem:
-            const ps = new ParticleSystem(c.props as ParticleSystemPropsInterface)
-
-            object.sceneNode.addComponent(ps)
-
-            return {
-              type: c.type,
-              props: c.props,
-              object: ps,
-            }
-
-          case ComponentType.Light: {
-            const light = new Light(c.props as LightPropsInterface);
-
-            object.sceneNode.addComponent(light)
-
-            return {
-              type: c.type,
-              props: c.props,
-              object: light,
-            }
-          }
-        }
-
-        return undefined
-      })
-      .filter((c) => c !== undefined)
-      
-      object.objects = prefabNode.nodes.map((node) => SceneObject.fromPrefabNode(prefab, node));
-
-      for (const child of object.objects) {
-        child.parent = object;
-        object.sceneNode.addNode(child.sceneNode)
-      }
-
-      // The node id of the root node of a prefab is always zero.
-      // The root node always has its own copy of the transform props.
-      // All other nodes shall reference the corresponding node's prefab transforms.
-      if (prefabNode.id !== 0) {
-        object.transformProps = prefabNode.transformProps;
-      }
-
-      object.sceneNode.translate = object.transformProps.translate;
-
-      object.prefabNode = prefabNode;
-    }
-
-    return object;
+  getObjectId(): number {
+    return this.id
   }
 
   toDescriptor(): SceneObjectDescriptor {
@@ -225,7 +178,9 @@ class SceneObject extends Entity implements SceneObjectInterface {
           type: c.type,
           props: c.props.toDescriptor(),
         })),
-        objects: this.objects.map((o) => o.id),
+        objects: this.objects.map((o) => {
+          return (o.getObjectId())
+        }),
         translate: [...this.transformProps.translate],
         rotate: [...this.transformProps.rotate],
         scale: [...this.transformProps.scale],  
@@ -259,7 +214,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
   changeName(name: string) {
     runInAction(() => {
       this.name = name;
-      this.save();
+      this.onChange();
     })
   }
 
@@ -275,11 +230,27 @@ class SceneObject extends Entity implements SceneObjectInterface {
 
     component.props.onChange = this.onChange;
 
-    if (component.type === ComponentType.ParticleSystem) {
-      this.sceneNode.addComponent(component.object as ParticleSystemInterface)
+    if (component.object) {
+      this.sceneNode.addComponent(component.object)
     }
-    else if (component.type === ComponentType.Light) {
-      this.sceneNode.addComponent(component.object as LightInterface);
+
+    this.onChange()
+  }
+
+  removeComponent(component: SceneObjectComponent) {
+    const index = this.components.findIndex((i) => i.key === component.key)
+
+    if (index !== -1) {
+      this.components = [
+        ...this.components.slice(0, index),
+        ...this.components.slice(index + 1),
+      ]
+
+      if (component.object) {
+        this.sceneNode.removeComponent(component.object)
+      }
+
+      this.onChange()
     }
   }
 
@@ -293,7 +264,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
       object.parent = this;
       this.sceneNode.addNode(object.sceneNode)
 
-      this.save();
+      this.onChange();
     })
   }
 
@@ -309,7 +280,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
 
         this.sceneNode.removeNode(object.sceneNode)
 
-        this.save();
+        this.onChange();
       })
     }
   }
@@ -337,7 +308,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
     return false;
   }
 
-  createPrefab(): PrefabObject | undefined {
+  createPrefab(): Prefab | undefined {
     // Traverse the object tree and clone each of the nodes. We will need to
     // 1. Move the scene node from the original nodes to the new ones
     // 2. Reference the properties for each of the components found in the original nodes
@@ -345,7 +316,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
     let stack: { object: SceneObject, parent: PrefabNode | null }[] = [{ object: this, parent: null }];
     let id = 0;
 
-    const prefab = new PrefabObject(-1, this.name);
+    const prefab = new Prefab(-1, this.name);
 
     while (stack.length > 0) {
       let { object, parent } = stack[0];
@@ -400,6 +371,26 @@ class SceneObject extends Entity implements SceneObjectInterface {
     }
 
     return prefab;
+  }
+}
+
+export class PrefabInstanceObject extends SceneObject {
+  prefabInstance: PrefabInstanceInterface;
+
+  constructor(prefabInstance: PrefabInstanceInterface) {
+    super()
+
+    this.prefabInstance = prefabInstance;
+  }
+
+  getObjectId(): number {
+    return this.prefabInstance.id
+  }
+
+  onChange = () => {
+    console.log('PrefabInstanceObject changed')
+
+    this.prefabInstance?.save();
   }
 }
 
