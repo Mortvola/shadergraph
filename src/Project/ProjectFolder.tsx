@@ -92,6 +92,11 @@ const ProjectFolder: React.FC<PropsType> = observer(({
               })
 
               if (item) {
+                if (item.itemId === null) {
+                  throw new Error('itemId is null')
+                }
+                
+                prefab.id = item.itemId;
                 item.item = prefab;
                 store.selectItem(item);
               }
