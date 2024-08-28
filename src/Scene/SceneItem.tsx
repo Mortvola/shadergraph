@@ -4,12 +4,7 @@ import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
-// import Http from '../Http/src';
 import { SceneInterface, SceneObjectInterface } from '../State/types';
-// import Graph from '../State/Graph';
-// import { runInAction } from 'mobx';
-// import ProjectItemObject from "../Project/Types/ProjectItem";
-// import { shaderManager } from '../Renderer/shaders/ShaderManager';
 
 type PropsType = {
   project: SceneInterface,
@@ -79,7 +74,7 @@ const SceneItem: React.FC<PropsType> = observer(({
 
   const menuItems = React.useCallback((): MenuItemLike[] => {
     const items: MenuItemLike[] = [
-      // { name: 'Delete', action: () => { item.delete() } },
+      { name: 'Delete', action: () => { item.delete() } },
     ];
 
     // if (item.type === 'shader') {

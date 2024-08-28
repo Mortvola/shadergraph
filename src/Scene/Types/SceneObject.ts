@@ -224,6 +224,10 @@ class SceneObject extends Entity implements SceneObjectInterface {
     this.save();
   }
 
+  delete(): void {
+    console.log('delete scene object')    
+  }
+
   addComponent(component: SceneObjectComponent) {
     this.components = [
       ...this.components,
@@ -328,6 +332,12 @@ export class PrefabInstanceObject extends SceneObject {
     console.log('PrefabInstanceObject changed')
 
     this.prefabInstance?.save();
+  }
+
+  delete(): void {
+    // Since one cannot delete an individual node in a pref instance,
+    // for all node delete request, send them to the prefab instance
+    this.prefabInstance.delete()
   }
 }
 

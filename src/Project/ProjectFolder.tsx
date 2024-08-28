@@ -84,7 +84,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
             const prefab = Prefab.fromSceneObject(sceneObject);
 
             if (prefab) {
-              const descriptor = prefab.toDescriptor();
+              const { id, ...descriptor } = prefab.toDescriptor();
 
               const item = await store.project.createNewItem(prefab.name, ProjectItemType.Prefab, folder, {
                 parentId: folder.id,
@@ -93,6 +93,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
 
               if (item) {
                 item.item = prefab;
+                store.selectItem(item);
               }
             }
           })()

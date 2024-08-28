@@ -68,21 +68,34 @@ class Folder extends ProjectItem<FolderInterface> implements FolderInterface {
   }
 
   async addItem(item: ProjectItemLike): Promise<void> {
-    if (this.isAncestor(item)) {
-      throw new Error('item is an ancestor of the destination')
+    if (item.parent !== this) {
+      if (this.isAncestor(item)) {
+        throw new Error('item is an ancestor of the destination')
+      }
+  
+      const response = await Http.patch(`/folders/${item.id}`, {
+        parentId: this.id === -1 ? null : this.id,
+      })
+  
+      if (response.ok) {
+        runInAction(() => {
+          this.items = this.items.concat([item]);
+  
+          this.sortItems()
+  
+          item.parent = this;
+        })
+      }  
     }
-
-    const response = await Http.patch(`/folders/${item.id}`, {
-      parentId: this.id === -1 ? null : this.id,
-    })
-
-    if (response.ok) {
+    else {
       runInAction(() => {
-        this.items = this.items.concat([item]);
+        const index = this.items.findIndex((i) => (i.id === item.id))
 
-        this.sortItems()
+        if (index === -1) {
+          this.items = this.items.concat([item]);
 
-        item.parent = this;
+          this.sortItems()
+        }
       })
     }
   }

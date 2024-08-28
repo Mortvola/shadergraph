@@ -158,7 +158,7 @@ export interface SceneObjectInterface extends EntityInterface {
 
   objects: SceneObjectInterface[];
 
-  sceneNode: SceneNodeInterface | null;
+  sceneNode: SceneNodeInterface;
 
   parent: SceneObjectInterface | null;
 
@@ -179,12 +179,16 @@ export interface SceneObjectInterface extends EntityInterface {
   removeObject(object: SceneObjectInterface): void;
 
   detachSelf(): void;
+
+  delete(): void;
 }
 
 export interface PrefabInstanceInterface {
   id: number
 
   save(): Promise<void>
+
+  delete(): Promise<void>
 }
 
 export type SceneDescriptor = {
