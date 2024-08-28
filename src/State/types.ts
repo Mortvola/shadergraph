@@ -162,6 +162,8 @@ export interface SceneObjectInterface extends EntityInterface {
 
   parent: SceneObjectInterface | null;
 
+  prefabNode: PrefabNodeInterface | null;
+
   changeName(name: string): void;
 
   save(): Promise<void>;
@@ -177,8 +179,6 @@ export interface SceneObjectInterface extends EntityInterface {
   removeObject(object: SceneObjectInterface): void;
 
   detachSelf(): void;
-
-  createPrefab(): PrefabInterface | undefined;
 }
 
 export interface PrefabInstanceInterface {

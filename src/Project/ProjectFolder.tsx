@@ -4,6 +4,7 @@ import ProjectItem from './ProjectItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
+import Prefab from '../Scene/Types/Prefab';
 
 type PropsType = {
   folder: FolderInterface,
@@ -80,7 +81,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
 
         if (sceneObject) {
           ( async () => {
-            const prefab = sceneObject.createPrefab();
+            const prefab = Prefab.fromSceneObject(sceneObject);
 
             if (prefab) {
               const descriptor = prefab.toDescriptor();

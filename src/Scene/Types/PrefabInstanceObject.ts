@@ -1,24 +1,24 @@
-import { PrefabInstanceInterface } from "../../State/types";
-import SceneObject from "./SceneObject";
+// import { PrefabInstanceInterface } from "../../State/types";
+// import SceneObject from "./SceneObject";
 
-class PrefabInstanceObject extends SceneObject {
-  prefabInstance: PrefabInstanceInterface;
+// class PrefabInstanceObject extends SceneObject {
+//   prefabInstance: PrefabInstanceInterface;
 
-  constructor(prefabInstance: PrefabInstanceInterface) {
-    super()
+//   constructor(prefabInstance: PrefabInstanceInterface) {
+//     super()
 
-    this.prefabInstance = prefabInstance;
-  }
+//     this.prefabInstance = prefabInstance;
+//   }
 
-  getObjectId(): number {
-    return this.prefabInstance.id
-  }
+//   getObjectId(): number {
+//     return this.prefabInstance.id
+//   }
 
-  onChange = () => {
-    console.log('PrefabInstanceObject changed')
+//   onChange = () => {
+//     console.log('PrefabInstanceObject changed')
 
-    this.prefabInstance?.save();
-  }
-}
+//     this.prefabInstance?.save();
+//   }
+// }
 
-export default PrefabInstanceObject;
+// export default PrefabInstanceObject;
