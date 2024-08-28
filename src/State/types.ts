@@ -205,7 +205,7 @@ export enum ObjectType {
 }
 
 export type SceneObjectDescriptor = {
-  id?: number,
+  id: number,
   name: string,
   object: {
     translate?: number[],

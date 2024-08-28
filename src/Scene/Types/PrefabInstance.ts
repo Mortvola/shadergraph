@@ -126,7 +126,9 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
 
   async save(): Promise<void> {
     if (this.id < 0) {
-      const response = await Http.post<PrefabInstanceDescriptor, PrefabInstanceDescriptor>(`/scene-objects`, this.toDescriptor());
+      const { id, ...descriptor } = this.toDescriptor();
+
+      const response = await Http.post<Omit<PrefabInstanceDescriptor, 'id'>, PrefabInstanceDescriptor>(`/scene-objects`, descriptor);
 
       if (response.ok) {
         const body = await response.body();

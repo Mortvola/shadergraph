@@ -70,7 +70,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
     const object = new SceneObject();
 
     if (descriptor) {
-      object.id = descriptor.id ?? object.id;
+      object.id = descriptor.id;
       object.name = descriptor?.name ?? object.name;
 
       const transformProps = new TransformProps();
@@ -193,14 +193,14 @@ class SceneObject extends Entity implements SceneObjectInterface {
   async save(): Promise<void> {
     if (!this.prefabNode) {
       if (this.id < 0) {
-        const response = await Http.post<SceneObjectDescriptor, SceneObjectDescriptor>(`/scene-objects`, this.toDescriptor());
+        const { id, ...descriptor } = this.toDescriptor();
+
+        const response = await Http.post<Omit<SceneObjectDescriptor, 'id'>, SceneObjectDescriptor>(`/scene-objects`, descriptor);
 
         if (response.ok) {
           const body = await response.body();
 
-          if (body.id !== undefined) {
-            this.id = body.id;
-          }
+          this.id = body.id;
         }  
       }
       else {
