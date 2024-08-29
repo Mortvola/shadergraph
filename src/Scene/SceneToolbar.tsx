@@ -5,7 +5,7 @@ import ContextMenu from '../ContextMenu/ContextMenu';
 import styles from '../Project/Project.module.scss'
 import SceneObject from './Types/SceneObject';
 import ParticleSystem from '../Renderer/ParticleSystem/ParticleSystem';
-import { ComponentType, SceneObjectComponent } from '../Renderer/types';
+import { ComponentType, NewSceneObjectComponent } from '../Renderer/types';
 import Light from '../Renderer/Drawables/Light';
 import { SceneInterface } from '../State/types';
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
@@ -61,7 +61,7 @@ const SceneToolbar: React.FC<PropsType> = ({
         const props = await ParticleSystemProps.create();
         const particleSystem = new ParticleSystem(props);
 
-        const item: SceneObjectComponent = {
+        const item: NewSceneObjectComponent = {
           type: ComponentType.ParticleSystem,
           props: props,
           object: particleSystem,
@@ -81,7 +81,7 @@ const SceneToolbar: React.FC<PropsType> = ({
         const props = new LightProps();
         const light = new Light(props);
 
-        const item: SceneObjectComponent = {
+        const item: NewSceneObjectComponent = {
           type: ComponentType.Light,
           props: props,
           object: light,

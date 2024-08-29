@@ -5,6 +5,7 @@ import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
 import Prefab from '../Scene/Types/Prefab';
+import { isSceneObject } from '../State/types';
 
 type PropsType = {
   folder: FolderInterface,
@@ -79,7 +80,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
         console.log(event.dataTransfer.types[0])
         const sceneObject = store.scene?.draggingItem
 
-        if (sceneObject) {
+        if (isSceneObject(sceneObject)) {
           ( async () => {
             const prefab = Prefab.fromSceneObject(sceneObject);
 

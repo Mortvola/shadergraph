@@ -5,7 +5,7 @@ import { PropertyInterface, ValueType } from './ShaderBuilder/Types';
 import { ShaderDescriptor } from './shaders/ShaderDescriptor';
 import SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
 import ShaderGraph from './ShaderBuilder/ShaderGraph';
-import { ParticleSystemPropsDescriptor, ParticleSystemPropsInterface } from './ParticleSystem/Types';
+import { ParticleSystemPropsDescriptor, ParticleSystemPropsInterface, ParticleSystemPropsOverrides } from './ParticleSystem/Types';
 import { MaterialItemInterface, TransformPropsDescriptor } from '../State/types';
 import Component from './Drawables/Component';
 import ParticleSystemProps from './ParticleSystem/ParticleSystemProps';
@@ -218,6 +218,7 @@ export interface ComponentInterface {
 }
 
 export type ComponentDescriptor = {
+  id?: number,
   type: ComponentType,
   props: LightPropsDescriptor | ParticleSystemPropsDescriptor | DecalItemDescriptor | ModelItemDescriptor,
   item?: LightPropsDescriptor | ParticleSystemPropsDescriptor | DecalItemDescriptor | ModelItemDescriptor,
@@ -245,16 +246,25 @@ export interface LightInterface extends ComponentInterface {
   props: LightPropsInterface;
 }
 
-// export type ComponentType = 'model' | 'particle' | 'decal' | 'light';
+export type ComponentOverrides = {
+  id: number,
+  type: ComponentType,
+  overrides: ParticleSystemPropsOverrides | LightPropsOverrides,
+  props: ParticleSystemProps | LightProps,
+  object?: ParticleSystemInterface | LightInterface,
+}
 
 export type SceneObjectComponent = {
-  key?: number,
+  id: number,
   type: ComponentType,
   props: ParticleSystemProps | LightProps,
   object?: ParticleSystemInterface | LightInterface,
 }
 
+export type NewSceneObjectComponent = Omit<SceneObjectComponent, 'id'>
+
 export type PrefabComponent = {
+  id: number,
   type: ComponentType,
   props: ParticleSystemProps | LightProps,
 }

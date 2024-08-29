@@ -4,12 +4,12 @@ import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
-import { SceneInterface, SceneObjectInterface } from '../State/types';
+import { SceneInterface, SceneObjectBaseInterface } from '../State/types';
 
 type PropsType = {
   project: SceneInterface,
-  item: SceneObjectInterface,
-  onSelect?: (item: SceneObjectInterface) => void,
+  item: SceneObjectBaseInterface,
+  onSelect?: (item: SceneObjectBaseInterface) => void,
   selected: boolean,
   draggable?: boolean,
 }
@@ -113,7 +113,7 @@ const SceneItem: React.FC<PropsType> = observer(({
     // }
     
     return items;
-  }, []);
+  }, [item]);
   
   const handleContextMenu: React.MouseEventHandler = (event) => {
     event.stopPropagation();

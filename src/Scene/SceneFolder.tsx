@@ -3,15 +3,14 @@ import SceneItem from './SceneItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
-import { PrefabNodeInterface, PrefabInterface, SceneInterface, SceneObjectInterface } from '../State/types';
-import SceneObject from './Types/SceneObject';
-import { isPrefabItem, isSceneItem } from '../Project/Types/types';
+import { SceneInterface, SceneObjectBaseInterface } from '../State/types';
+import { isPrefabItem } from '../Project/Types/types';
 import PrefabInstance from './Types/PrefabInstance';
 
 type PropsType = {
   project: SceneInterface,
-  folder: SceneObjectInterface,
-  onSelect?: (item: SceneObjectInterface) => void,
+  folder: SceneObjectBaseInterface,
+  onSelect?: (item: SceneObjectBaseInterface) => void,
   level: number,
   children?: React.ReactNode,
 }

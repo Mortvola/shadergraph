@@ -7,7 +7,7 @@ import Entity from "../../State/Entity";
 import {
   PrefabDescriptor, PrefabInstanceDescriptor, PrefabInstanceInterface,
   PrefabInterface, PrefabNodeInterface,
-  SceneObjectInterface,
+  SceneObjectBaseInterface,
 } from "../../State/types";
 import Prefab from "./Prefab";
 import { PrefabInstanceObject } from "./SceneObject";
@@ -56,8 +56,10 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
             object.sceneNode.addComponent(ps)
 
             return {
+              id: c.id,
               type: c.type,
               props: c.props,
+              overrides: {},
               object: ps,
             }
 
@@ -67,8 +69,10 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
             object.sceneNode.addComponent(light)
 
             return {
+              id: c.id,
               type: c.type,
               props: c.props,
+              overrides: {},
               object: light,
             }
           }
@@ -156,7 +160,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
 
     if (response.ok) {
       if (this.root) {
-        let stack: SceneObjectInterface[] = [this.root];
+        let stack: SceneObjectBaseInterface[] = [this.root];
   
         while (stack.length > 0) {
           const instanceObject = stack[0];

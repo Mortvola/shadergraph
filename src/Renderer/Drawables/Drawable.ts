@@ -5,7 +5,7 @@ import { gpu } from '../Gpu';
 import { DrawableType, maxInstances } from '../types';
 import { PropertyInterface } from '../ShaderBuilder/Types';
 import { meshInstances } from '../shaders/meshInstances';
-import { makeShaderDataDefinitions, makeStructuredView, makeTypedArrayViews } from 'webgpu-utils';
+import { makeShaderDataDefinitions, makeStructuredView } from 'webgpu-utils';
 
 const dataDefs = makeShaderDataDefinitions(meshInstances)
 

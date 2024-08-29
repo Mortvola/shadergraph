@@ -1,7 +1,7 @@
 import { vec3 } from "wgpu-matrix";
 import TransformProps from "../../Renderer/TransformProps";
 import Entity from "../../State/Entity";
-import { PrefabDescriptor, PrefabInterface, SceneObjectInterface } from "../../State/types";
+import { PrefabDescriptor, PrefabInterface, SceneObjectBaseInterface, SceneObjectInterface } from "../../State/types";
 import PrefabNode from "./PrefabNode";
 
 class Prefab extends Entity implements PrefabInterface {
@@ -32,7 +32,7 @@ class Prefab extends Entity implements PrefabInterface {
     // 1. Move the scene node from the original nodes to the new ones
     // 2. Reference the properties for each of the components found in the original nodes
     // 3. Mark the link from the parent to this need as a prefab connection.
-    let stack: { object: SceneObjectInterface, parent: PrefabNode | null }[] = [{ object: startingObject, parent: null }];
+    let stack: { object: SceneObjectBaseInterface, parent: PrefabNode | null }[] = [{ object: startingObject, parent: null }];
     let id = 0;
 
     const prefab = new Prefab(-1, this.name);
@@ -76,6 +76,7 @@ class Prefab extends Entity implements PrefabInterface {
 
       // Add a reference to each of the components found in the original node.
       prefabNode.components = object.components.map((item) => ({
+        id: item.id,
         type: item.type,
         props: item.props,
       }))
@@ -86,7 +87,7 @@ class Prefab extends Entity implements PrefabInterface {
         parent.nodes.push(prefabNode)
       }
 
-      object.prefabNode = prefabNode;
+      // object.prefabNode = prefabNode;
     }
 
     return prefab;

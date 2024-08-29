@@ -1,5 +1,5 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import { ConeDescriptor, ShapeType } from "../Types";
+import { ConeDescriptor } from "../Types";
 import { mat4, Vec4, vec4 } from "wgpu-matrix";
 import { degToRad } from "../../Math";
 

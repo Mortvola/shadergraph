@@ -38,13 +38,13 @@ class PrefabNode extends Entity implements PrefabNodeInterface {
             case ComponentType.ParticleSystem: {
               const props = await ParticleSystemProps.create(component.props as ParticleSystemPropsDescriptor)
 
-              return ({ type: component.type, props })
+              return ({ id: component.id, type: component.type, props })
             }
 
             case ComponentType.Light: {
               const props = new LightProps(component.props as LightProps)
 
-              return ({ type: component.type, props })
+              return ({ id: component.id, type: component.type, props })
             }
           }
         })
@@ -68,6 +68,7 @@ class PrefabNode extends Entity implements PrefabNodeInterface {
       id: this.id,
       name: this.name,
       components: this.components.map((c) => ({
+        id: c.id,
         type: c.type,
         props: c.props.toDescriptor(),
       })),

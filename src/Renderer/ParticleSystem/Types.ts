@@ -1,5 +1,3 @@
-import { PrefabComponentDescriptor } from "../../State/types"
-import { ComponentDescriptor, PrefabComponent } from "../types"
 import Collision from "./Collision"
 import LifetimeColor from "./LifetimeColor"
 import LifetimeSize from "./LIfetimeSize"

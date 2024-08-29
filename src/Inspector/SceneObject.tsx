@@ -1,9 +1,9 @@
 import React from 'react';
-import { SceneObjectInterface, isGameObject2D } from '../State/types';
+import { SceneObjectBaseInterface, isGameObject2D } from '../State/types';
 import { useStores } from '../State/store';
 import styles from './Inspector.module.scss'
 import { observer } from 'mobx-react-lite';
-import { ComponentType, SceneObjectComponent } from '../Renderer/types';
+import { ComponentType, NewSceneObjectComponent, SceneObjectComponent } from '../Renderer/types';
 import GameObject2D from './GameObject2d';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
@@ -16,7 +16,7 @@ import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps'
 import LightProps from '../Renderer/Drawables/LightProps';
 
 type PropsType = {
-  sceneObject: SceneObjectInterface
+  sceneObject: SceneObjectBaseInterface
 }
 
 const SceneObject: React.FC<PropsType> = observer(({
@@ -182,7 +182,7 @@ const SceneObject: React.FC<PropsType> = observer(({
       case ComponentType.Light: {
         const props = new LightProps()
         const light = new Light(props);
-        const component: SceneObjectComponent = {
+        const component: NewSceneObjectComponent = {
           type: ComponentType.Light,
           props: props,
           object: light,
@@ -204,7 +204,7 @@ const SceneObject: React.FC<PropsType> = observer(({
   
           // particleSystemManager.add(particleSystem);
   
-          const item: SceneObjectComponent = {
+          const item: NewSceneObjectComponent = {
             type: ComponentType.ParticleSystem,
             props: props,
             object: particleSystem,
@@ -263,14 +263,14 @@ const SceneObject: React.FC<PropsType> = observer(({
           ? (
             <GameObject2D gameObject={sceneObject} />
           )
-          : sceneObject.components.map((item) => (
-              <div className={styles.item} key={item.key ?? 0} >
+          : sceneObject.components.map((component) => (
+              <div className={styles.item} key={component.id ?? 0} >
                 <div>
-                  <button type="button" onClick={() => handleDelete(item)}>X</button>
-                  { componentTypeName(item) }
+                  <button type="button" onClick={() => handleDelete(component)}>X</button>
+                  { componentTypeName(component) }
                 </div>
                 {
-                  renderItem(item)
+                  renderItem(component)
                 }
               </div>
         ))

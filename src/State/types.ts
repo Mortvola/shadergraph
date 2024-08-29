@@ -1,6 +1,6 @@
 import { ProjectInterface, ProjectItemType } from "../Project/Types/types";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
-import { ComponentDescriptor, ComponentType, SceneObjectComponent, MaterialInterface, SceneNodeInterface, TransformPropsInterface, LightPropsDescriptor, PrefabComponent } from "../Renderer/types";
+import { ComponentDescriptor, ComponentType, SceneObjectComponent, MaterialInterface, SceneNodeInterface, TransformPropsInterface, LightPropsDescriptor, PrefabComponent, NewSceneObjectComponent } from "../Renderer/types";
 import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
 import { ParticleSystemPropsDescriptor } from "../Renderer/ParticleSystem/Types";
 
@@ -81,15 +81,15 @@ export const isGameObject = (r: unknown): r is SceneObjectInterface => (
 export interface SceneInterface {
   name: string;
 
-  selectedObject: SceneObjectInterface | null;
+  selectedObject: SceneObjectBaseInterface | null;
 
-  rootObject: SceneObjectInterface;
+  rootObject: SceneObjectInterface | PrefabInstanceObjectInterface;
 
-  draggingItem: SceneObjectInterface | null;
+  draggingItem: SceneObjectBaseInterface | null;
 
   addObject(object: SceneObjectInterface): void;
 
-  setSelectedObject(object: SceneObjectInterface): void;
+  setSelectedObject(object: SceneObjectBaseInterface): void;
 
   renderScene(): Promise<void>
 }
@@ -123,6 +123,7 @@ export interface PrefabNodeInterface {
 export type PrefabPropsDescriptor = ParticleSystemPropsDescriptor | LightPropsDescriptor;
 
 export type PrefabComponentDescriptor = {
+  id: number,
   type: ComponentType,
   props: PrefabPropsDescriptor,
 }
@@ -151,37 +152,53 @@ export type PrefabNodeDescriptor = {
   nodes: PrefabNodeDescriptor[],
 }
 
-export interface SceneObjectInterface extends EntityInterface {
-  transformProps: TransformPropsInterface;
-
+export interface SceneObjectBaseInterface extends EntityInterface {
   components: SceneObjectComponent[];
 
-  objects: SceneObjectInterface[];
+  objects: SceneObjectBaseInterface[];
+
+  transformProps: TransformPropsInterface;
+
+  parent: (SceneObjectBaseInterface | SceneObjectInterface | PrefabInstanceObjectInterface) | null;
 
   sceneNode: SceneNodeInterface;
 
-  parent: SceneObjectInterface | null;
+  addObject(object: SceneObjectBaseInterface): void;
 
-  prefabNode: PrefabNodeInterface | null;
+  removeObject(object: SceneObjectBaseInterface): void;
 
-  changeName(name: string): void;
-
-  save(): Promise<void>;
-
-  addComponent(component: SceneObjectComponent): void;
+  addComponent(component: NewSceneObjectComponent): void;
 
   removeComponent(component: SceneObjectComponent): void;
 
-  isAncestor(item: SceneObjectInterface): boolean;
+  isAncestor(item: SceneObjectBaseInterface): boolean;
 
-  addObject(object: SceneObjectInterface): void;
-
-  removeObject(object: SceneObjectInterface): void;
+  changeName(name: string): void;
 
   detachSelf(): void;
 
   delete(): void;
 }
+
+export interface PrefabInstanceObjectInterface extends SceneObjectBaseInterface {
+  prefabNode: PrefabNodeInterface | null;
+
+}
+
+export interface SceneObjectInterface extends SceneObjectBaseInterface {
+  components: SceneObjectComponent[];
+
+  save(): Promise<void>;
+
+  delete(): void;
+
+  getNextComponentId(): number;
+}
+
+export const isSceneObject = (r: unknown): r is SceneObjectInterface => (
+  r !== null && r !== undefined
+  && (r as PrefabInstanceObjectInterface).prefabNode === undefined
+)
 
 export interface PrefabInstanceInterface {
   id: number
@@ -209,6 +226,7 @@ export type SceneObjectDescriptor = {
     components?: ComponentDescriptor[],
     items?: ComponentDescriptor[],
     objects?: number[],  
+    nextComponentId?: number,
   }
 }
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FolderInterface, isShaderItem, ProjectItemLike, ProjectItemType } from './Types/types';
+import { FolderInterface, isShaderItem, ProjectItemLike } from './Types/types';
 import styles from './ProjectItem.module.scss';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';

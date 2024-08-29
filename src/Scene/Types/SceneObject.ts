@@ -4,9 +4,11 @@ import {
   PrefabNodeInterface, SceneObjectDescriptor, SceneObjectInterface,
   PrefabInstanceDescriptor, isPrefabInstanceDescriptor,
   PrefabInstanceInterface,
+  PrefabInstanceObjectInterface,
+  SceneObjectBaseInterface,
 } from "../../State/types";
 import Http from "../../Http/src";
-import { ComponentType, SceneObjectComponent, LightPropsDescriptor } from "../../Renderer/types";
+import { ComponentType, SceneObjectComponent, LightPropsDescriptor, NewSceneObjectComponent, ComponentOverrides } from "../../Renderer/types";
 import { vec3 } from "wgpu-matrix";
 import SceneNode from "../../Renderer/Drawables/SceneNodes/SceneNode";
 import Light from "../../Renderer/Drawables/Light";
@@ -17,34 +19,128 @@ import LightProps from "../../Renderer/Drawables/LightProps";
 import TransformProps from "../../Renderer/TransformProps";
 import PrefabInstance from "./PrefabInstance";
 
-class SceneObject extends Entity implements SceneObjectInterface {
+export class SceneObjectBase extends Entity implements SceneObjectBaseInterface {
   components: SceneObjectComponent[] = []
 
-  objects: SceneObject[] = [];
+  objects: SceneObjectBase[] = [];
 
   transformProps = new TransformProps();
 
   sceneNode = new SceneNode();
 
-  parent: SceneObject | null = null;
+  parent: (SceneObjectBase | SceneObject | PrefabInstanceObject) | null = null;
 
-  prefabNode: PrefabNodeInterface | null = null;
+  nextComponentId = 0;
 
-  constructor(id?: number, name?: string, items: SceneObjectComponent[] = []) {
+  constructor(id?: number, name?: string) {
     super(id, name ?? `Scene Object ${Math.abs(id ?? 0)}`)
-    
-    this.components = items.map((i, index) => ({
-      ...i,
-      key: index,
-    }));
+  }
 
+  getObjectId(): number {
+    throw new Error('not implemented')
+  }
+
+  onChange = (): void => {
+    throw new Error('not implemented')
+  }
+
+  delete(): void {
+    throw new Error('not implemented')
+  }
+
+  async save(): Promise<void> {
+    throw new Error('not implemented')
+  }
+
+  addComponent(component: NewSceneObjectComponent) {
+    throw new Error('not implemented')
+  }
+
+  removeComponent(component: SceneObjectComponent) {
+    throw new Error('not implemented')
+  }
+
+  addObject(object: SceneObjectBase) {
+    runInAction(async () => {
+      this.objects = [
+        ...this.objects,
+        object,
+      ];
+
+      object.parent = this;
+      this.sceneNode.addNode(object.sceneNode)
+
+      this.onChange();
+    })
+  }
+
+  removeObject(object: SceneObjectBase) {
+    const index = this.objects.findIndex((o) => o === object)
+
+    if (index !== -1) {
+      runInAction(() => {
+        this.objects = [
+          ...this.objects.slice(0, index),
+          ...this.objects.slice(index + 1),
+        ]
+
+        this.sceneNode.removeNode(object.sceneNode)
+
+        this.onChange();
+      })
+    }
+  }
+
+  detachSelf() {
+    if (this.parent) {
+      this.parent.removeObject(this);
+    }
+  }
+
+  changeName(name: string) {
+    runInAction(() => {
+      this.name = name;
+      this.onChange();
+    })
+  }
+
+  isAncestor(item: SceneObjectBase): boolean {
+    let child: SceneObjectBase | null = this;
+    for (;;) {
+      if (child === null || child.parent === item) {
+        break;
+      }
+
+      child = child.parent;
+    }
+
+    if (child) {
+      return true;
+    }
+
+    return false;
+  }
+
+  getNextComponentId(): number {
+    const nextComponentId = this.nextComponentId;
+    this.nextComponentId += 1;
+
+    return nextComponentId;    
+  }
+}
+
+
+class SceneObject extends SceneObjectBase implements SceneObjectInterface {
+  constructor(id?: number, name?: string) {
+    super(id, name)
+    
     makeObservable(this, {
       components: observable,
       objects: observable,
     })
   }
 
-  static async fromServer(itemId: number): Promise<SceneObject | undefined> {
+  static async fromServer(itemId: number): Promise<SceneObject | PrefabInstanceObject | undefined> {
     const response = await Http.get<SceneObjectDescriptor | PrefabInstanceDescriptor>(`/scene-objects/${itemId}`)
 
     if (response.ok) {
@@ -98,6 +194,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
               object.sceneNode.addComponent(ps)
 
               return {
+                id: c.id ?? object.getNextComponentId(),
                 type: c.type,
                 props,
                 object: ps,
@@ -117,6 +214,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
               object.sceneNode.addComponent(light)
 
               return {
+                id: c.id ?? object.getNextComponentId(),
                 type: c.type,
                 props,
                 object: light,
@@ -166,6 +264,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
       name: this.name,
       object: {
         components: this.components.map((c) => ({
+          id: c.id,
           type: c.type,
           props: c.props.toDescriptor(),
         })),
@@ -175,38 +274,30 @@ class SceneObject extends Entity implements SceneObjectInterface {
         translate: [...this.transformProps.translate],
         rotate: [...this.transformProps.rotate],
         scale: [...this.transformProps.scale],  
+        nextComponentId: this.nextComponentId,
       }
     })
   }
 
   async save(): Promise<void> {
-    if (!this.prefabNode) {
-      if (this.id < 0) {
-        const { id, ...descriptor } = this.toDescriptor();
+    if (this.id < 0) {
+      const { id, ...descriptor } = this.toDescriptor();
 
-        const response = await Http.post<Omit<SceneObjectDescriptor, 'id'>, SceneObjectDescriptor>(`/scene-objects`, descriptor);
+      const response = await Http.post<Omit<SceneObjectDescriptor, 'id'>, SceneObjectDescriptor>(`/scene-objects`, descriptor);
 
-        if (response.ok) {
-          const body = await response.body();
+      if (response.ok) {
+        const body = await response.body();
 
-          this.id = body.id;
-        }  
-      }
-      else {
-        const response = await Http.patch<SceneObjectDescriptor, void>(`/scene-objects/${this.id}`, this.toDescriptor());
-
-        if (response.ok) {
-    
-        }  
-      }      
+        this.id = body.id;
+      }  
     }
-  }
+    else {
+      const response = await Http.patch<SceneObjectDescriptor, void>(`/scene-objects/${this.id}`, this.toDescriptor());
 
-  changeName(name: string) {
-    runInAction(() => {
-      this.name = name;
-      this.onChange();
-    })
+      if (response.ok) {
+  
+      }  
+    }      
   }
 
   onChange = () => {
@@ -217,10 +308,13 @@ class SceneObject extends Entity implements SceneObjectInterface {
     console.log('delete scene object')    
   }
 
-  addComponent(component: SceneObjectComponent) {
+  addComponent(component: NewSceneObjectComponent) {
     this.components = [
       ...this.components,
-      component,
+      {
+        id: this.getNextComponentId(),
+        ...component,
+      }
     ];
 
     component.props.onChange = this.onChange;
@@ -233,7 +327,7 @@ class SceneObject extends Entity implements SceneObjectInterface {
   }
 
   removeComponent(component: SceneObjectComponent) {
-    const index = this.components.findIndex((i) => i.key === component.key)
+    const index = this.components.findIndex((i) => i.id === component.id)
 
     if (index !== -1) {
       this.components = [
@@ -248,64 +342,14 @@ class SceneObject extends Entity implements SceneObjectInterface {
       this.onChange()
     }
   }
-
-  addObject(object: SceneObject) {
-    runInAction(async () => {
-      this.objects = [
-        ...this.objects,
-        object,
-      ];
-
-      object.parent = this;
-      this.sceneNode.addNode(object.sceneNode)
-
-      this.onChange();
-    })
-  }
-
-  removeObject(object: SceneObject) {
-    const index = this.objects.findIndex((o) => o === object)
-
-    if (index !== -1) {
-      runInAction(() => {
-        this.objects = [
-          ...this.objects.slice(0, index),
-          ...this.objects.slice(index + 1),
-        ]
-
-        this.sceneNode.removeNode(object.sceneNode)
-
-        this.onChange();
-      })
-    }
-  }
-
-  detachSelf() {
-    if (this.parent) {
-      this.parent.removeObject(this);
-    }
-  }
-
-  isAncestor(item: SceneObjectInterface): boolean {
-    let child: SceneObjectInterface | null = this;
-    for (;;) {
-      if (child === null || child.parent === item) {
-        break;
-      }
-
-      child = child.parent;
-    }
-
-    if (child) {
-      return true;
-    }
-
-    return false;
-  }
 }
 
-export class PrefabInstanceObject extends SceneObject {
+export class PrefabInstanceObject extends SceneObjectBase implements PrefabInstanceObjectInterface {
+  // components: ComponentOverrides[] = [];
+
   prefabInstance: PrefabInstanceInterface;
+
+  prefabNode: PrefabNodeInterface | null = null;
 
   constructor(prefabInstance: PrefabInstanceInterface) {
     super()

@@ -1,19 +1,19 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import SceneObject from "./SceneObject";
+import SceneObject, { PrefabInstanceObject } from "./SceneObject";
 import { store } from "../../State/store";
 import Http from "../../Http/src";
-import { SceneDescriptor, SceneInterface } from "../../State/types";
+import { SceneDescriptor, SceneInterface, SceneObjectBaseInterface } from "../../State/types";
 
 class Scene implements SceneInterface {
   id?: number;
 
   name = '';
 
-  rootObject = new SceneObject();
+  rootObject: SceneObject | PrefabInstanceObject = new SceneObject();
 
-  selectedObject: SceneObject | null = null;
+  selectedObject: SceneObjectBaseInterface | null = null;
 
-  draggingItem: SceneObject | null = null;
+  draggingItem: SceneObjectBaseInterface | null = null;
 
   constructor() {
     makeObservable(this, {
@@ -51,7 +51,7 @@ class Scene implements SceneInterface {
     })
   }
 
-  setSelectedObject(object: SceneObject) {
+  setSelectedObject(object: SceneObjectBaseInterface) {
     runInAction(() => {
       this.selectedObject = object;
     })
