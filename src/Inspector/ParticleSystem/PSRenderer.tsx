@@ -16,7 +16,7 @@ const PSRenderer: React.FC<PropsType> = observer(({
   const store = useStores();
 
   const handleModeChange = (mode: RenderMode) => {
-    value.setRenderMode(mode);
+    value.mode = mode;
   }
 
   const handleDragOver: React.DragEventHandler = (event) => {
@@ -50,7 +50,7 @@ const PSRenderer: React.FC<PropsType> = observer(({
       const materialItem = await materialManager.getItem(draggingItem.itemId, false)
 
       if (materialItem) {
-        value.setMaterial(materialItem)
+        value.material = materialItem
       }
     }
   }

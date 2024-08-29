@@ -1,3 +1,4 @@
+import { autorun, makeObservable, observable, reaction, runInAction } from "mobx"
 import Collision from "./Collision"
 import LifetimeColor from "./LifetimeColor"
 import LifetimeSize from "./LIfetimeSize"
@@ -6,6 +7,7 @@ import PSColor from "./PSColor"
 import PSValue from "./PSValue"
 import Renderer from "./Renderer"
 import Shape from "./Shapes/Shape"
+import { MaterialItemInterface } from "../../State/types"
 
 export enum RenderMode {
   Billboard = 'Billboard',
@@ -149,7 +151,8 @@ export type ParticleSystemPropsDescriptor = {
 
   lifetimeVelocity?: LifetimeVelocityDescriptor,
 
-  startColor?: PSColorDescriptor
+  startColor?: PSColorDescriptor,
+
   lifetimeColor?: LifetimeColorDescriptor,
 
   gravityModifier?: PSValueDescriptor,
@@ -161,12 +164,77 @@ export type ParticleSystemPropsDescriptor = {
 
 export type ParticleSystemPropsOverrides = Partial<ParticleSystemPropsDescriptor>;
 
+export class Property {
+  override = false;
+
+  onChange?: () => void;
+
+  constructor(onChange?: () => void) {
+    this.onChange = onChange
+  }
+
+  reactOnChange(f: () => any) {
+    reaction(f, () => {
+      if (this.onChange) {
+        this.onChange()
+      }
+    })
+  }
+}
+
+export class PSScalarType<T> extends Property {
+  v: T;
+
+  get value(): T {
+    return this.v;
+  }
+
+  set value(newValue: T) {
+    runInAction(() => {
+      this.v = newValue;
+    })
+  }
+
+  constructor(value: T, onChange?: () => void) {
+    super(onChange)
+    
+    this.v = value;
+
+    makeObservable(this, {
+      v: observable,
+    })
+
+    this.reactOnChange(() => this.v)
+  }
+}
+
+export class PSBoolean extends PSScalarType<boolean> {
+  constructor(value = false, onChange?: () => void) {
+    super(value, onChange)
+  }
+}
+
+export class PSNumber extends PSScalarType<number> {
+  constructor(value = 0, onChange?: () => void) {
+    super(value, onChange)
+  }
+}
+
+export class PSRenderMode extends PSScalarType<RenderMode> {
+  constructor(value = RenderMode.Billboard, onChange?: () => void) {
+    super(value, onChange)
+  }
+}
+
+export class PSMaterialItem extends PSScalarType<MaterialItemInterface | undefined> {
+}
+
 export interface ParticleSystemPropsInterface {
-  duration: number;
+  duration: PSNumber;
 
-  maxPoints: number
+  maxPoints: PSNumber
 
-  rate: number
+  rate: PSNumber;
 
   shape: Shape;
 

@@ -6,8 +6,6 @@ import Sphere from "./Sphere";
 import PSModule from "../PSModule";
 
 class Shape extends PSModule {
-  enabled = false;
-
   type = ShapeType.Cone;
 
   cone: Cone;

@@ -1,25 +1,51 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import { lerp } from "../Math";
-import { PSColorDescriptor, PSColorType } from "./Types";
+import { Property, PSColorDescriptor, PSColorType } from "./Types";
 import Gradient from './Gradient';
 
-class PSColor {
-  type = PSColorType.Constant;
+type Color = [number[], number[]];
 
-  color: [number[], number[]] = [[1, 1, 1, 1], [1, 1, 1, 1]];
+class PSColor extends Property {
+  _type = PSColorType.Constant;
+
+  get type(): PSColorType {
+    return this._type
+  }
+
+  set type(newValue: PSColorType) {
+    runInAction(() => {
+      this._type = newValue;
+    })
+  }
+
+  _color: [number[], number[]] = [[1, 1, 1, 1], [1, 1, 1, 1]];
+
+  get color(): Color {
+    return this._color;
+  }
+
+  set color(newValue) {
+    runInAction(() => {
+      this._color = newValue;
+    })
+  }
 
   gradients: [Gradient, Gradient];
 
-  onChange?: () => void;
-
   constructor(onChange?: () => void) {
+    super();
+
     this.gradients = [new Gradient(), new Gradient()]
     this.onChange = onChange;
 
     makeObservable(this, {
-      type: observable,
-      color: observable,
+      _type: observable,
+      _color: observable,
     })
+
+    this.reactOnChange(() => this._type);
+    this.reactOnChange(() => this._color);
+    this.reactOnChange(() => this.gradients);
   }
 
   static fromDescriptor(descriptor: PSColorDescriptor | undefined, onChange?: () => void) {
@@ -49,42 +75,6 @@ class PSColor {
       type: this.type,
       color: [this.color[0].slice(), this.color[1].slice()],
       gradients: [this.gradients[0].toDescriptor(), this.gradients[1].toDescriptor()],
-    })
-  }
-
-  setType(type: PSColorType) {
-    runInAction(() => {
-      this.type = type;
-
-      if (this.onChange) {
-        this.onChange()
-      }
-    })
-  }
-
-  setMinColor(color: number[]) {
-    runInAction(() => {
-      this.color = [
-        color,
-        this.color[1],
-      ]
-
-      if (this.onChange) {
-        this.onChange()
-      }
-    })
-  }
-
-  setMaxColor(color: number[]) {
-    runInAction(() => {
-      this.color = [
-        this.color[0],
-        color,
-      ]
-
-      if (this.onChange) {
-        this.onChange()
-      }
     })
   }
 

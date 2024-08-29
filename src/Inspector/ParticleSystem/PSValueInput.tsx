@@ -14,19 +14,19 @@ const PSValueInput: React.FC<PropsType> = observer(({
   value,
 }) => {
   const handleMinChange = (min: number) => {
-    value.setMinValue(min)
+    value.value = [min, value.value[1]]
   }
 
   const handleMaxChange = (max: number) => {
-    value.setMaxValue(max)
+    value.value = [value.value[0], max]
   }
 
   const handleTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    value.setType(event.target.value as PSValueType)
+    value.type = event.target.value as PSValueType
   }
 
   const handleRangeChange = (range: [number, number]) => {
-    value.setCurveRange(range);
+    value.value = range;
   }
 
   return (

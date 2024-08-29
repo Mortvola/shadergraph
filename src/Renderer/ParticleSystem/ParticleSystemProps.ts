@@ -6,14 +6,18 @@ import PSColor from "./PSColor";
 import PSValue from "./PSValue";
 import Renderer from "./Renderer";
 import Shape from "./Shapes/Shape";
-import { ParticleSystemPropsDescriptor, ParticleSystemPropsInterface, PSValueType, RenderMode, ShapeType } from "./Types";
+import {
+  ParticleSystemPropsDescriptor, ParticleSystemPropsInterface,
+  PSNumber,
+  PSValueType, RenderMode, ShapeType,
+} from "./Types";
 
 class ParticleSystemProps implements ParticleSystemPropsInterface {
-  duration: number;
+  duration: PSNumber;
 
-  maxPoints: number
-
-  rate: number
+  maxPoints: PSNumber
+  
+  rate: PSNumber
 
   shape: Shape;
 
@@ -38,9 +42,9 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
   renderer: Renderer;
 
   private constructor(renderer: Renderer, descriptor?: ParticleSystemPropsDescriptor) {
-    this.duration = descriptor?.duration ?? 5;
-    this.rate = descriptor?.rate ?? 2;
-    this.maxPoints = descriptor?.maxPoints ?? 50;
+    this.duration = new PSNumber(descriptor?.duration ?? 5, this.handleChange);
+    this.rate = new PSNumber(descriptor?.rate ?? 2, this.handleChange);
+    this.maxPoints = new PSNumber(descriptor?.maxPoints ?? 50, this.handleChange);
     this.lifetime = PSValue.fromDescriptor(descriptor?.lifetime ?? { type: PSValueType.Constant, value: [5, 5] }, this.handleChange);
     this.shape = Shape.fromDescriptor(descriptor?.shape ?? { enabled: true, type: ShapeType.Cone, }, this.handleChange);
     this.startVelocity = PSValue.fromDescriptor(descriptor?.startVelocity, this.handleChange);
@@ -71,16 +75,17 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
   onChange?: () => void;
 
   handleChange = () => {
-    if (this.onChange) {
-      this.onChange();
-    }
+    console.log('handle change')
+    // if (this.onChange) {
+    //   this.onChange();
+    // }
   }
 
   toDescriptor(): ParticleSystemPropsDescriptor {
     return ({
-      duration: this.duration,
-      maxPoints: this.maxPoints,
-      rate: this.rate,
+      duration: this.duration.value,
+      maxPoints: this.maxPoints.value,
+      rate: this.rate.value,
       shape: this.shape.toDescriptor(),
       lifetime: this.lifetime.toDescriptor(),
       startVelocity: this.startVelocity.toDescriptor(),

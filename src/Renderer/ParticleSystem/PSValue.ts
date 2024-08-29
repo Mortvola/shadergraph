@@ -1,30 +1,68 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import { lerp } from "../Math";
-import { PSValueDescriptor, PSValueType } from "./Types";
+import { Property, PSValueDescriptor, PSValueType } from "./Types";
 import PSCurve from "./PSCurve";
 
-class PSValue {
-  type = PSValueType.Constant;
+class PSValue extends Property {
+  // Methods for type
+  _type = PSValueType.Constant;
 
-  value: [number, number] = [1, 1];
+  get type(): PSValueType {
+    return this._type
+  }
 
+  set type(newValue: PSValueType) {
+    runInAction(() => {
+      this._type = newValue;
+    })
+  }
+
+  // Methods for value
+  _value: [number, number] = [1, 1];
+
+  get value(): [number, number] {
+    return this._value;
+  }
+
+  set value(newValue: [number,  number]) {
+    runInAction(() => {
+      this._value = newValue;
+    })
+  }
+
+  // Methods for curve
   curve: [PSCurve, PSCurve];
 
-  curveRange: [number, number] = [0, 1];
+  // Methods for curve range
+  _curveRange: [number, number] = [0, 1];
 
-  onChange?: () => void;
+  get curveRange(): [number, number] {
+    return this._curveRange;
+  }
+
+  set curveRange(newValue: [number,  number]) {
+    runInAction(() => {
+      this._curveRange = newValue;
+    })
+  }
 
   constructor(onChange?: () => void) {
+    super()
+    
     this.onChange = onChange;
 
     this.curve = [new PSCurve(onChange), new PSCurve(onChange)]
 
     makeObservable(this, {
-      type: observable,
-      value: observable,
+      _type: observable,
+      _value: observable,
       curve: observable,
-      curveRange: observable,
+      _curveRange: observable,
     })
+
+    this.reactOnChange(() => this._type)
+    this.reactOnChange(() => this._value)
+    this.reactOnChange(() => this._curveRange)
   }
 
   static fromDescriptor(descriptor?: PSValueDescriptor, onChange?: () => void) {
@@ -54,46 +92,6 @@ class PSValue {
       value: this.value,
       curve: this.curve,
       curveRange: this.curveRange,
-    })
-  }
-
-  setType(type: PSValueType) {
-    runInAction(() => {
-      this.type = type;
-
-      if (this.onChange) {
-        this.onChange();
-      }
-    })
-  }
-
-  setMinValue(min: number) {
-    runInAction(() => {
-      this.value = [min, this.value[1]]
-
-      if (this.onChange) {
-        this.onChange();
-      }
-    })
-  }
-
-  setMaxValue(max: number) {
-    runInAction(() => {
-      this.value = [this.value[0], max]
-
-      if (this.onChange) {
-        this.onChange();
-      }
-    })
-  }
-
-  setCurveRange(range: [number, number]) {
-    runInAction(() => {
-      this.curveRange = range;
-
-      if (this.onChange) {
-        this.onChange();
-      }
     })
   }
 

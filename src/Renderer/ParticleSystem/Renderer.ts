@@ -1,6 +1,6 @@
-import { makeObservable, observable, runInAction } from "mobx";
+import { makeObservable, observable } from "mobx";
 import PSModule from "./PSModule";
-import { RendererDescriptor, RenderMode } from "./Types";
+import { PSMaterialItem, PSRenderMode, RendererDescriptor, RenderMode } from "./Types";
 import { MaterialItemInterface } from "../../State/types";
 import { materialManager } from "../Materials/MaterialManager";
 import { DrawableType } from "../types";
@@ -10,18 +10,37 @@ import HorizontalBillboard from "../Drawables/HorizontalBillboard";
 import DrawableComponent from "../Drawables/DrawableComponent";
 
 class Renderer extends PSModule {
-  mode = RenderMode.Billboard;
+  _mode: PSRenderMode;
 
-  material?: MaterialItemInterface;
+  get mode(): RenderMode {
+    return this._mode.value
+  }
+
+  set mode(newValue: RenderMode) {
+    this._mode.value = newValue;
+  }
+
+  _material: PSMaterialItem;
+
+  get material(): MaterialItemInterface | undefined {
+    return this._material.value
+  }
+
+  set material(newValue: MaterialItemInterface | undefined) {
+    this._material.value = newValue;
+  }
 
   drawable: DrawableInterface | null = null;
 
   constructor(onChange?: () => void) {
     super(onChange);
 
+    this._mode = new PSRenderMode(RenderMode.Billboard, onChange);
+    this._material = new PSMaterialItem(undefined, onChange);
+
     makeObservable(this, {
-      mode: observable,
-      material: observable,
+      _mode: observable,
+      _material: observable,
     })
   }
 
@@ -50,6 +69,18 @@ class Renderer extends PSModule {
     })
   }
 
+  protected setOnChange(onChange: () => void) {
+    super.setOnChange(onChange)
+
+    if (this._mode !== undefined) {
+      this._mode.onChange = onChange;
+    }
+
+    if (this._material !== undefined) {
+      this._material.onChange = onChange;
+    }
+  }
+
   private createDrawable() {
     switch (this.mode) {
       case RenderMode.Billboard:
@@ -68,18 +99,6 @@ class Renderer extends PSModule {
     }
   }
 
-  setRenderMode(mode: RenderMode) {
-    runInAction(() => {
-      this.mode = mode;
-
-      this.createDrawable()
-
-      if (this.onChange) {
-        this.onChange()
-      }
-    })
-  }
-
   getDrawableType(): DrawableType | undefined {
     switch(this.mode) {
       case RenderMode.Billboard:
@@ -92,16 +111,6 @@ class Renderer extends PSModule {
 
   async createDrawableComponent() {
     return await DrawableComponent.create(this.drawable!, this.material);
-  }
-
-  async setMaterial(materialItem: MaterialItemInterface) {
-    runInAction(() => {
-      this.material = materialItem;
-      
-      if (this.onChange) {
-        this.onChange()
-      }
-    })
   }
 }
 

@@ -1,26 +1,38 @@
-import { makeObservable, observable, runInAction } from "mobx";
+import { PSBoolean } from "./Types";
 
 class PSModule {
-  enabled = false;
+  _enabled: PSBoolean;
 
-  onChange?: () => void;
+  get enabled(): boolean {
+    return this._enabled.value
+  }
+
+  set enabled(newValue: boolean) {
+    this._enabled.value = newValue;
+  }
+
+  _onChange?: () => void;
+
+  get onChange(): (() => void) | undefined {
+    return this._onChange
+  }
+
+  set onChange(newValue: (() => void) | undefined) {
+    this.setOnChange(newValue)
+  }
 
   constructor(onChange?: () => void) {
     this.onChange = onChange;
 
-    makeObservable(this, {
-      enabled: observable,
-    })
+    this._enabled = new PSBoolean(false, this.onChange)
   }
 
-  setEnabled(enabled: boolean) {
-    runInAction(() => {
-      this.enabled = enabled
+  protected setOnChange(onChange?: () => void) {
+    this._onChange = onChange;
 
-      if (this.onChange) {
-        this.onChange();
-      }
-    })
+    if (this._enabled !== undefined) {
+      this._enabled.onChange = onChange;
+    }
   }
 }
 

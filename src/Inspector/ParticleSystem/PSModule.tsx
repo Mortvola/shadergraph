@@ -22,7 +22,7 @@ const PSModule: React.FC<PropsType> = observer(({
   }
 
   const handleEnableChange = (value: boolean) => {
-    module.setEnabled(value)
+    module.enabled = value
   }
 
   return (

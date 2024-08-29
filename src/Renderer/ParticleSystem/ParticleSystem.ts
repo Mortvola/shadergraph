@@ -85,10 +85,10 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
             // Compute the reflection vector and account for how much bounce.
             const dot = vec4.dot(point.velocity, planeNormal);
 
-            point.velocity = vec4.subtract(point.velocity, vec4.scale(planeNormal, dot + dot * this.props.collision.bounce))
+            point.velocity = vec4.subtract(point.velocity, vec4.scale(planeNormal, dot + dot * this.props.collision.bounce.value))
 
             // Allow the collision to dampen the velocity
-            point.velocity = vec4.scale(point.velocity, 1 - this.props.collision.dampen)  
+            point.velocity = vec4.scale(point.velocity, 1 - this.props.collision.dampen.value)  
 
             // Move the sphere to the intersection point
             // offset by the radius of the sphere along the plane normal.
@@ -125,7 +125,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       this.startTime = time;
     }
 
-    const elapsedTime2 = ((time - this.startTime) / 1000.0) % this.props.duration / this.props.duration;
+    const elapsedTime2 = ((time - this.startTime) / 1000.0) % this.props.duration.value / this.props.duration.value;
 
     if (this.lastEmitTime === 0) {
       this.lastEmitTime = time;
@@ -220,10 +220,10 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
   }
 
   private async emit(time: number, t: number) {
-    if (this.particles.size < this.props.maxPoints) {
+    if (this.particles.size < this.props.maxPoints.value) {
       const emitElapsedTime = time - this.lastEmitTime;
 
-      let numToEmit = Math.min(Math.trunc((this.props.rate / 1000) * emitElapsedTime), this.props.maxPoints - this.particles.size);
+      let numToEmit = Math.min(Math.trunc((this.props.rate.value / 1000) * emitElapsedTime), this.props.maxPoints.value - this.particles.size);
 
       if (numToEmit > 0) {
         this.lastEmitTime = time;
