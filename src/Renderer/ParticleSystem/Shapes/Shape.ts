@@ -1,12 +1,20 @@
-import { makeObservable, observable, runInAction } from "mobx";
-import { ShapeDescriptor, ShapeType } from "../Types";
+import { makeObservable, observable } from "mobx";
+import { PSShapeType, ShapeDescriptor, ShapeType } from "../Types";
 import Cone from "./Cone";
 import { vec4, Vec4 } from "wgpu-matrix";
 import Sphere from "./Sphere";
 import PSModule from "../PSModule";
 
 class Shape extends PSModule {
-  type = ShapeType.Cone;
+  _type: PSShapeType;
+
+  get type(): ShapeType {
+    return this._type.value
+  }
+
+  set type(newValue: ShapeType) {
+    this._type.value = newValue;
+  }
 
   cone: Cone;
 
@@ -17,14 +25,13 @@ class Shape extends PSModule {
   constructor(onChange?: () => void) {
     super(onChange);
   
+    this._type = new PSShapeType(ShapeType.Cone, onChange)
     this.cone = new Cone(onChange);
-
     this.sphere = new Sphere(false, onChange);
-
     this.hemisphere = new Sphere(true, onChange);
 
     makeObservable(this, {
-      type: observable,
+      _type: observable,
     })
   }
 
@@ -50,16 +57,6 @@ class Shape extends PSModule {
       sphere: this.sphere.toDescriptor(),
       hemisphere: this.hemisphere.toDescriptor(),
     })
-  }
-
-  setType(type: ShapeType) {
-    runInAction((() => {
-      this.type = type;
-
-      if (this.onChange) {
-        this.onChange();
-      }
-    }))
   }
 
   getPositionAndDirection(): [Vec4, Vec4] {

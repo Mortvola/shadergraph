@@ -1,20 +1,26 @@
-import { makeObservable, observable, runInAction } from "mobx";
-import { SphereDescriptor } from "../Types";
+import { makeObservable, observable } from "mobx";
+import { PSNumber, SphereDescriptor } from "../Types";
 import { Vec4, vec4 } from "wgpu-matrix";
 
 class Sphere {
-  radius = 1;
+  _radius: PSNumber;
+
+  get radius(): number {
+    return this._radius.value
+  }
+
+  set radius(newValue: number) {
+    this._radius.value = newValue;
+  }
 
   hemisphere = false;
 
-  onChange?: () => void;
-
   constructor(hemisphere = false, onChange?: () => void) {
+    this._radius = new PSNumber(1, onChange)
     this.hemisphere = hemisphere;
-    this.onChange = onChange;
 
     makeObservable(this, {
-      radius: observable,
+      _radius: observable,
     })
   }
 
@@ -32,16 +38,6 @@ class Sphere {
     return ({
       radius: this.radius,
       hemisphere: this.hemisphere
-    })
-  }
-
-  setRadius(radius: number) {
-    runInAction(() => {
-      this.radius = radius;
-
-      if (this.onChange) {
-        this.onChange();
-      }
     })
   }
 

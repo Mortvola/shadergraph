@@ -1,21 +1,36 @@
-import { makeObservable, observable, runInAction } from "mobx";
-import { ConeDescriptor } from "../Types";
+import { makeObservable, observable } from "mobx";
+import { ConeDescriptor, PSNumber } from "../Types";
 import { mat4, Vec4, vec4 } from "wgpu-matrix";
 import { degToRad } from "../../Math";
 
 class Cone {
-  angle = 25;
+  _angle: PSNumber;
 
-  originRadius = 1;
+  get angle(): number {
+    return this._angle.value
+  }
 
-  onChange?: () => void;
+  set angle(newValue: number) {
+    this._angle.value = newValue;
+  }
+
+  _originRadius: PSNumber;
+
+  get originRadius(): number {
+    return this._originRadius.value
+  }
+
+  set originRadius(newValue: number) {
+    this._originRadius.value = newValue;
+  }
 
   constructor(onChange?: () => void) {
-    this.onChange = onChange
+    this._angle = new PSNumber(25, onChange);
+    this._originRadius = new PSNumber(1, onChange);
 
     makeObservable(this, {
-      angle: observable,
-      originRadius: observable,
+      _angle: observable,
+      _originRadius: observable,
     })
   }
 
@@ -35,26 +50,6 @@ class Cone {
       angle: this.angle,
       originRadius: this.originRadius,
     }
-  }
-
-  setAngle(angle: number) {
-    runInAction(() => {
-      this.angle = angle;
-
-      if (this.onChange) {
-        this.onChange();
-      }
-    })
-  }
-
-  setOriginRadius(radius: number) {
-    runInAction(() => {
-      this.originRadius = radius;
-
-      if (this.onChange) {
-        this.onChange()
-      }
-    })
   }
 
   getPositionAndDirection(): [Vec4, Vec4] {

@@ -3,19 +3,35 @@ import PSModule from "./PSModule";
 import { CollisionDescriptor, PSNumber } from "./Types";
 
 class Collision extends PSModule {
-  bounce: PSNumber;
+  _bounce: PSNumber;
 
-  dampen: PSNumber;
+  get bounce(): number {
+    return this._bounce.value
+  }
+
+  set bounce(newValue: number) {
+    this._bounce.value = newValue
+  }
+
+  _dampen: PSNumber;
+
+  get dampen(): number {
+    return this._dampen.value
+  }
+
+  set dampen(newValue: number) {
+    this._dampen.value = newValue
+  }
 
   constructor(onChange?: () => void) {
     super(onChange);
 
-    this.bounce = new PSNumber(1, onChange);
-    this.dampen = new PSNumber(0, onChange);
+    this._bounce = new PSNumber(1, onChange);
+    this._dampen = new PSNumber(0, onChange);
   
     makeObservable(this, {
-      bounce: observable,
-      dampen: observable,
+      _bounce: observable,
+      _dampen: observable,
     })
   }
 
@@ -24,8 +40,8 @@ class Collision extends PSModule {
 
     if (descriptor) {
       collision.enabled = descriptor.enabled;
-      collision.bounce.value = descriptor.bounce;
-      collision.dampen.value = descriptor.dampen;
+      collision.bounce = descriptor.bounce;
+      collision.dampen = descriptor.dampen;
     }
 
     return collision;
@@ -34,20 +50,20 @@ class Collision extends PSModule {
   toDescriptor(): CollisionDescriptor {
     return ({
       enabled: this.enabled,
-      bounce: this.bounce.value,
-      dampen: this.dampen.value,
+      bounce: this.bounce,
+      dampen: this.dampen,
     })
   }
 
   protected setOnChange(onChange: () => void) {
     super.setOnChange(onChange)
 
-    if (this.bounce !== undefined) {
-      this.bounce.onChange = onChange;
+    if (this._bounce !== undefined) {
+      this._bounce.onChange = onChange;
     }
 
-    if (this.dampen !== undefined) {
-      this.dampen.onChange = onChange;
+    if (this._dampen !== undefined) {
+      this._dampen.onChange = onChange;
     }
   }
 }

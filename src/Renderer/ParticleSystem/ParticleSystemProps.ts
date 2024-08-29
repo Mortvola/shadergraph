@@ -13,11 +13,35 @@ import {
 } from "./Types";
 
 class ParticleSystemProps implements ParticleSystemPropsInterface {
-  duration: PSNumber;
+  _duration: PSNumber;
 
-  maxPoints: PSNumber
+  get duration(): number {
+    return this._duration.value;
+  }
+
+  set duration(newValue: number) {
+    this._duration.value = newValue;
+  }
+
+  _maxPoints: PSNumber
+
+  get maxPoints(): number {
+    return this._maxPoints.value
+  }
+
+  set maxPoints(newValue: number) {
+    this._maxPoints.value = newValue;
+  }
   
-  rate: PSNumber
+  _rate: PSNumber
+
+  get rate(): number {
+    return this._rate.value;
+  }
+
+  set rate(newValue: number) {
+    this._rate.value = newValue;
+  }
 
   shape: Shape;
 
@@ -42,9 +66,9 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
   renderer: Renderer;
 
   private constructor(renderer: Renderer, descriptor?: ParticleSystemPropsDescriptor) {
-    this.duration = new PSNumber(descriptor?.duration ?? 5, this.handleChange);
-    this.rate = new PSNumber(descriptor?.rate ?? 2, this.handleChange);
-    this.maxPoints = new PSNumber(descriptor?.maxPoints ?? 50, this.handleChange);
+    this._duration = new PSNumber(descriptor?.duration ?? 5, this.handleChange);
+    this._rate = new PSNumber(descriptor?.rate ?? 2, this.handleChange);
+    this._maxPoints = new PSNumber(descriptor?.maxPoints ?? 50, this.handleChange);
     this.lifetime = PSValue.fromDescriptor(descriptor?.lifetime ?? { type: PSValueType.Constant, value: [5, 5] }, this.handleChange);
     this.shape = Shape.fromDescriptor(descriptor?.shape ?? { enabled: true, type: ShapeType.Cone, }, this.handleChange);
     this.startVelocity = PSValue.fromDescriptor(descriptor?.startVelocity, this.handleChange);
@@ -75,17 +99,17 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
   onChange?: () => void;
 
   handleChange = () => {
-    console.log('handle change')
-    // if (this.onChange) {
-    //   this.onChange();
-    // }
+    if (this.onChange) {
+      console.log('handle change')
+      //   this.onChange();
+    }
   }
 
   toDescriptor(): ParticleSystemPropsDescriptor {
     return ({
-      duration: this.duration.value,
-      maxPoints: this.maxPoints.value,
-      rate: this.rate.value,
+      duration: this.duration,
+      maxPoints: this.maxPoints,
+      rate: this.rate,
       shape: this.shape.toDescriptor(),
       lifetime: this.lifetime.toDescriptor(),
       startVelocity: this.startVelocity.toDescriptor(),

@@ -10,22 +10,22 @@ const Collision: React.FC<PropsType> = ({
   value
 }) => {
   const handleBounceChange = (bounce: number) => {
-    value.bounce.value = bounce
+    value.bounce = bounce
   }
 
   const handleDampenChange = (dampen: number) => {
-    value.dampen.value = dampen;
+    value.dampen = dampen;
   }
 
   return (
     <>
       <label>
         Bounce:
-        <NumberInput value={value.bounce.value} onChange={handleBounceChange} />
+        <NumberInput value={value.bounce} onChange={handleBounceChange} />
       </label>
       <label>
         Dampen:
-        <NumberInput value={value.dampen.value} onChange={handleDampenChange} />
+        <NumberInput value={value.dampen} onChange={handleDampenChange} />
       </label>
     </>
   )

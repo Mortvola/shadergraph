@@ -11,11 +11,11 @@ const Cone: React.FC<PropsType> = observer(({
   cone,
 }) => {
   const handleAngleChange = (value: number) => {
-    cone.setAngle(value)
+    cone.angle = value
   }
 
   const handleRadiusChange = (value: number) => {
-    cone.setOriginRadius(value);
+    cone.originRadius = value;
   }
 
   return (

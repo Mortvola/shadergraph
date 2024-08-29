@@ -15,7 +15,7 @@ const ShapeModule: React.FC<PropsType> = observer(({
   shape,
 }) => {
   const handleShapeTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    shape.setType(event.target.value as ShapeType)
+    shape.type = event.target.value as ShapeType;
   }
 
   return (

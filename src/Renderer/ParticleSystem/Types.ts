@@ -226,15 +226,21 @@ export class PSRenderMode extends PSScalarType<RenderMode> {
   }
 }
 
+export class PSShapeType extends PSScalarType<ShapeType> {
+  constructor(value = ShapeType.Cone, onChange?: () => void) {
+    super(value, onChange)
+  }
+}
+
 export class PSMaterialItem extends PSScalarType<MaterialItemInterface | undefined> {
 }
 
 export interface ParticleSystemPropsInterface {
-  duration: PSNumber;
+  duration: number;
 
-  maxPoints: PSNumber
+  maxPoints: number;
 
-  rate: PSNumber;
+  rate: number;
 
   shape: Shape;
 

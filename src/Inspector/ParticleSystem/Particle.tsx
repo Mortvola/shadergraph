@@ -23,30 +23,30 @@ const Particle: React.FC<PropsType> = observer(({
   }
 
   const handleDurationChange = (value: number) => {
-    particleSystemProps.duration.value = value;
+    particleSystemProps.duration = value;
   }
 
   const handleMaxPointsChange = (value: number) => {
-    particleSystemProps.maxPoints.value = value;
+    particleSystemProps.maxPoints = value;
   }
 
   const handleRateChange = (value: number) => {
-    particleSystemProps.rate.value = value;
+    particleSystemProps.rate = value;
   }
 
   return (
     <div className={styles.particle}>
       <label>
         Duration:
-        <NumberInput value={particleSystemProps.duration.value} onChange={handleDurationChange} />
+        <NumberInput value={particleSystemProps.duration} onChange={handleDurationChange} />
       </label>
       <label>
         Maximum Particles:
-        <NumberInput value={particleSystemProps.maxPoints.value} onChange={handleMaxPointsChange} />
+        <NumberInput value={particleSystemProps.maxPoints} onChange={handleMaxPointsChange} />
       </label>
       <label>
         Emission Rate:
-        <NumberInput value={particleSystemProps.rate.value} onChange={handleRateChange} />
+        <NumberInput value={particleSystemProps.rate} onChange={handleRateChange} />
       </label>
       <label>
         Lifetime:
