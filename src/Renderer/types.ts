@@ -22,13 +22,11 @@ export interface SceneNodeInterface {
 
   name: string;
 
-  translate: Vec3;
+  transformProps: TransformPropsInterface
 
   qRotate: Quat;
 
   angles: number[];
-
-  scale: Vec3;
 
   transform: Mat4;
 
@@ -273,8 +271,6 @@ export interface TransformPropsInterface {
   translate: Vec3;
   rotate: Vec3;
   scale: Vec3;
-
-  setTranslate(translate: number[]): void;
 
   toDescriptor(): TransformPropsDescriptor;
 }

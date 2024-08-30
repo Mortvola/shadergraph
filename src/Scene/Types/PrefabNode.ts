@@ -1,7 +1,7 @@
-import { ComponentType, PrefabComponent } from "../../Renderer/Types";
+import { ComponentType, PrefabComponent, TransformPropsInterface } from "../../Renderer/Types";
 import Entity from "../../State/Entity";
 import { PrefabNodeDescriptor, PrefabNodeInterface, PrefabInterface } from "../../State/types";
-import TransformProps from "../../Renderer/TransformProps";
+import TransformProps from "../../Renderer/Properties/TransformProps";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
 import LightProps from "../../Renderer/Drawables/LightProps";
@@ -15,7 +15,7 @@ class PrefabNode extends Entity implements PrefabNodeInterface {
 
   prefab: PrefabInterface;
 
-  transformProps = new TransformProps();
+  transformProps: TransformPropsInterface = new TransformProps();
 
   constructor(prefab: PrefabInterface, id = -1, name?: string) {
     super(id, name ?? `Prefab Node ${Math.abs(id)}`)

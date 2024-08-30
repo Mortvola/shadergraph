@@ -1,6 +1,6 @@
 import { makeObservable, observable } from "mobx";
 import PSModule from "./PSModule";
-import { PSMaterialItem, PSRenderMode, RendererDescriptor, RenderMode } from "./Types";
+import { RendererDescriptor, RenderMode } from "./Types";
 import { MaterialItemInterface } from "../../State/types";
 import { materialManager } from "../Materials/MaterialManager";
 import { DrawableType } from "../Types";
@@ -8,6 +8,7 @@ import DrawableInterface from "../Drawables/DrawableInterface";
 import Billboard from "../Drawables/Billboard";
 import HorizontalBillboard from "../Drawables/HorizontalBillboard";
 import DrawableComponent from "../Drawables/DrawableComponent";
+import { PSMaterialItem, PSRenderMode } from "../Properties/Types";
 
 class Renderer extends PSModule {
   _mode: PSRenderMode;

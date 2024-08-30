@@ -1,6 +1,7 @@
 import { makeObservable, observable } from "mobx";
 import PSModule from "./PSModule";
-import { CollisionDescriptor, PSNumber } from "./Types";
+import { CollisionDescriptor } from "./Types";
+import { PSNumber } from "../Properties/Types";
 
 class Collision extends PSModule {
   _bounce: PSNumber;

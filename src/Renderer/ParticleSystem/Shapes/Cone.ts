@@ -1,7 +1,8 @@
 import { makeObservable, observable } from "mobx";
-import { ConeDescriptor, PSNumber } from "../Types";
+import { ConeDescriptor } from "../Types";
 import { mat4, Vec4, vec4 } from "wgpu-matrix";
 import { degToRad } from "../../Math";
+import { PSNumber } from "../../Properties/Types";
 
 class Cone {
   _angle: PSNumber;

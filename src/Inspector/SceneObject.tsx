@@ -226,27 +226,27 @@ const SceneObject: React.FC<PropsType> = observer(({
   ]), [addComponent]);
 
   const handleTranslateXChange = (x: number) => {
-    sceneObject.transformProps.setTranslate([
+    sceneObject.transformProps.translate = [
       x,
       sceneObject.transformProps.translate[1],
       sceneObject.transformProps.translate[2],
-    ])
+    ]
   }
 
   const handleTranslateYChange = (y: number) => {
-    sceneObject.transformProps.setTranslate([
+    sceneObject.transformProps.translate = [
       sceneObject.transformProps.translate[0],
       y,
       sceneObject.transformProps.translate[2],
-    ])
+    ]
   }
 
   const handleTranslateZChange = (z: number) => {
-    sceneObject.transformProps.setTranslate([
+    sceneObject.transformProps.translate = [
       sceneObject.transformProps.translate[0],
       sceneObject.transformProps.translate[1],
       z,
-    ])
+    ]
   }
 
   return (

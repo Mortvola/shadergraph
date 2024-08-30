@@ -147,8 +147,8 @@ const parseFbxModel = async (
   if (isFbxContainerNode(node)) {
     const container = new SceneNode();
 
-    container.scale = node.scale;
-    container.translate = node.translate;
+    container.transformProps.scale = node.scale;
+    container.transformProps.translate = node.translate;
     container.qRotate = node.qRotate;
     container.angles = node.angles.map((a) => a);
 
@@ -202,8 +202,8 @@ const parseFbxModel = async (
     drawableNode.addComponent(drawable);
     
     drawableNode.name = node.name;
-    drawableNode.scale = node.scale;
-    drawableNode.translate = node.translate;
+    drawableNode.transformProps.scale = node.scale;
+    drawableNode.transformProps.translate = node.translate;
     drawableNode.qRotate = node.qRotate;
     drawableNode.angles = node.angles.map((a) => a);
 

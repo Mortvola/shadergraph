@@ -96,7 +96,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
         object.transformProps = prefabNode.transformProps;
       }
 
-      object.sceneNode.translate = object.transformProps.translate;
+      object.sceneNode.transformProps = object.transformProps;
 
       object.prefabNode = prefabNode;
     }

@@ -1,5 +1,5 @@
 import { vec3 } from "wgpu-matrix";
-import TransformProps from "../../Renderer/TransformProps";
+import TransformProps from "../../Renderer/Properties/TransformProps";
 import Entity from "../../State/Entity";
 import { PrefabDescriptor, PrefabInterface, SceneObjectBaseInterface, SceneObjectInterface } from "../../State/types";
 import PrefabNode from "./PrefabNode";
@@ -56,14 +56,11 @@ class Prefab extends Entity implements PrefabInterface {
       // The root node will get its own copy while all the other nodes
       // will reference the prefab's value.
       if (!prefab.root) {
-        const transformProps = new TransformProps();
-
-        transformProps.translate = vec3.clone(object.transformProps.translate);
-        transformProps.rotate = vec3.clone(object.transformProps.rotate);
-        transformProps.scale = vec3.clone(object.transformProps.scale);
-
-        prefabNode.transformProps = transformProps;
-        transformProps.onChange = prefabNode.onChange;
+        prefabNode.transformProps = new TransformProps({
+          translate: [...object.transformProps.translate],
+          rotate: [...object.transformProps.rotate],
+          scale: [...object.transformProps.scale],
+        }, prefabNode.onChange);
 
         prefab.root = prefabNode;
       }
@@ -71,7 +68,7 @@ class Prefab extends Entity implements PrefabInterface {
         // Have the prefab object referencd the object's transform props.
         // Set the onChange method on the transform props to the ROOT prefab object.
         prefabNode.transformProps = object.transformProps;
-        prefabNode.transformProps.onChange = prefab.root.onChange
+        // prefabNode.transformProps.onChange = prefab.root.onChange
       }
 
       // Add a reference to each of the components found in the original node.

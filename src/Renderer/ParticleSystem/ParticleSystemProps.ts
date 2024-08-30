@@ -1,3 +1,4 @@
+import { PSNumber } from "../Properties/Types";
 import Collision from "./Collision";
 import LifetimeColor from "./LifetimeColor";
 import LifetimeSize from "./LIfetimeSize";
@@ -8,7 +9,6 @@ import Renderer from "./Renderer";
 import Shape from "./Shapes/Shape";
 import {
   ParticleSystemPropsDescriptor, ParticleSystemPropsInterface,
-  PSNumber,
   PSValueType, RenderMode, ShapeType,
 } from "./Types";
 

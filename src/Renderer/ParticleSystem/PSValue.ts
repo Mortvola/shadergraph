@@ -1,7 +1,8 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import { lerp } from "../Math";
-import { Property, PSValueDescriptor, PSValueType } from "./Types";
+import { PSValueDescriptor, PSValueType } from "./Types";
 import PSCurve from "./PSCurve";
+import { Property } from "../Properties/Types";
 
 class PSValue extends Property {
   // Methods for type

@@ -8,7 +8,7 @@ import {
   SceneObjectBaseInterface,
 } from "../../State/types";
 import Http from "../../Http/src";
-import { ComponentType, SceneObjectComponent, LightPropsDescriptor, NewSceneObjectComponent, ComponentOverrides } from "../../Renderer/Types";
+import { ComponentType, SceneObjectComponent, LightPropsDescriptor, NewSceneObjectComponent, ComponentOverrides, TransformPropsInterface } from "../../Renderer/Types";
 import { vec3 } from "wgpu-matrix";
 import SceneNode from "../../Renderer/Drawables/SceneNodes/SceneNode";
 import Light from "../../Renderer/Drawables/Light";
@@ -16,7 +16,7 @@ import { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Typ
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import LightProps from "../../Renderer/Drawables/LightProps";
-import TransformProps from "../../Renderer/TransformProps";
+import TransformProps from "../../Renderer/Properties/TransformProps";
 import PrefabInstance from "./PrefabInstance";
 
 export class SceneObjectBase extends Entity implements SceneObjectBaseInterface {
@@ -24,7 +24,7 @@ export class SceneObjectBase extends Entity implements SceneObjectBaseInterface 
 
   objects: SceneObjectBase[] = [];
 
-  transformProps = new TransformProps();
+  transformProps: TransformPropsInterface = new TransformProps();
 
   sceneNode = new SceneNode();
 
@@ -164,13 +164,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
       object.id = descriptor.id;
       object.name = descriptor?.name ?? object.name;
 
-      const transformProps = new TransformProps();
-      transformProps.translate = vec3.create(...(descriptor.object.translate ?? [0, 0, 0]));
-      transformProps.rotate = vec3.create(...(descriptor.object.rotate ?? [0, 0, 0]));
-      transformProps.scale = vec3.create(...(descriptor.object.scale ?? [1, 1, 1]));
-      
-      object.transformProps = transformProps;
-      object.transformProps.onChange = object.onChange
+      object.transformProps = new TransformProps(descriptor.object, object.onChange);
 
       let components = descriptor.object.components;
       if (!components) {
@@ -248,7 +242,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
         }  
       }
 
-      object.sceneNode.translate = object.transformProps.translate;
+      object.sceneNode.transformProps = object.transformProps;
     }
 
     return object;

@@ -192,7 +192,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         particle.sceneNode.addComponent(particle.drawable);
       }
 
-      particle.sceneNode.translate = particle.position;
+      particle.sceneNode.transformProps.translate = particle.position;
 
       let size = particle.startSize;
 
@@ -200,7 +200,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         size *= this.props.lifetimeSize.size.getValue(t);
       }
 
-      particle.sceneNode.scale = vec3.create(size, size, size)
+      particle.sceneNode.transformProps.scale = vec3.create(size, size, size)
 
       let lifetimeColor = [1, 1, 1, 1];
 

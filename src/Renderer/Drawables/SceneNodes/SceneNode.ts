@@ -1,10 +1,11 @@
-import { Mat4, Quat, Vec4, mat4, quat, vec3 } from 'wgpu-matrix';
+import { Mat4, Quat, Vec4, mat4, quat } from 'wgpu-matrix';
 import DrawableInterface from "../DrawableInterface";
-import { SceneNodeInterface, RendererInterface, SceneGraphInterface, ComponentType } from '../../Types';
+import { SceneNodeInterface, RendererInterface, SceneGraphInterface, ComponentType, TransformPropsInterface } from '../../Types';
 import { isDrawableNode } from './utils';
 import Component from '../Component';
 import DrawableComponent from '../DrawableComponent';
 import { getEulerAngles } from '../../Math';
+import TransformProps from '../../Properties/TransformProps';
 
 export type HitTestResult = {
   drawable: DrawableInterface,
@@ -27,13 +28,11 @@ class SceneNode implements SceneNodeInterface {
 
   postTransforms: Mat4[] = [];
 
-  translate = vec3.create(0, 0, 0);
+  transformProps: TransformPropsInterface = new TransformProps()
 
   qRotate = quat.fromEuler(0, 0, 0, rotationOrder);
 
   angles: number[];
-
-  scale = vec3.create(1, 1, 1);
 
   scene: SceneGraphInterface | null = null;
 
@@ -68,9 +67,9 @@ class SceneNode implements SceneNodeInterface {
   }
 
   computeTransform(transform = mat4.identity(), prepend = true) {
-    mat4.translate(transform, this.translate, this.transform);
+    mat4.translate(transform, this.transformProps.translate, this.transform);
     mat4.multiply(this.transform, this.getRotation(), this.transform);
-    mat4.scale(this.transform, this.scale, this.transform);
+    mat4.scale(this.transform, this.transformProps.scale, this.transform);
 
     for (const t of this.postTransforms) {
       mat4.multiply(this.transform, t, this.transform)

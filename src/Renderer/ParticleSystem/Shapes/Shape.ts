@@ -1,9 +1,10 @@
 import { makeObservable, observable } from "mobx";
-import { PSShapeType, ShapeDescriptor, ShapeType } from "../Types";
+import { ShapeDescriptor, ShapeType } from "../Types";
 import Cone from "./Cone";
 import { vec4, Vec4 } from "wgpu-matrix";
 import Sphere from "./Sphere";
 import PSModule from "../PSModule";
+import { PSShapeType } from "../../Properties/Types";
 
 class Shape extends PSModule {
   _type: PSShapeType;

@@ -1,6 +1,7 @@
 import { makeObservable, observable } from "mobx";
-import { PSNumber, SphereDescriptor } from "../Types";
+import { PSNumber } from "../../Properties/Types";
 import { Vec4, vec4 } from "wgpu-matrix";
+import { SphereDescriptor } from "../Types";
 
 class Sphere {
   _radius: PSNumber;

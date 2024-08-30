@@ -1,4 +1,4 @@
-import { PSBoolean } from "./Types";
+import { PSBoolean } from "../Properties/Types";
 
 class PSModule {
   _enabled: PSBoolean;

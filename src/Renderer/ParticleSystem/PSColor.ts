@@ -1,7 +1,8 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import { lerp } from "../Math";
-import { Property, PSColorDescriptor, PSColorType } from "./Types";
+import { PSColorDescriptor, PSColorType } from "./Types";
 import Gradient from './Gradient';
+import { Property } from "../Properties/Types";
 
 type Color = [number[], number[]];
 
