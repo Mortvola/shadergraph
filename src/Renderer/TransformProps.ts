@@ -1,5 +1,5 @@
 import { vec3 } from "wgpu-matrix";
-import { TransformPropsInterface } from "./types";
+import { TransformPropsInterface } from "./Types";
 import { makeObservable, observable, runInAction } from "mobx";
 import { TransformPropsDescriptor } from "../State/types";
 

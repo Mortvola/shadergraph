@@ -1,7 +1,7 @@
 import { runInAction } from "mobx";
 import { MaterialItemInterface } from "../State/types";
 import { PropertyInterface } from "./ShaderBuilder/Types";
-import { MaterialManagerInterface, MaterialRecordDescriptor } from "./types";
+import { MaterialManagerInterface, MaterialRecordDescriptor } from "./Types";
 import { ShaderDescriptor } from "./shaders/ShaderDescriptor";
 import { shaderManager } from "./shaders/ShaderManager";
 import Value from "./ShaderBuilder/Value";

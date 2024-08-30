@@ -1,5 +1,5 @@
 import { Vec4, Mat4 } from 'wgpu-matrix';
-import { DrawableType } from '../types';
+import { DrawableType } from '../Types';
 import { PropertyInterface } from '../ShaderBuilder/Types';
 import { StructuredView } from 'webgpu-utils';
 

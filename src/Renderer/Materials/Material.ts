@@ -1,6 +1,6 @@
 import { gpu } from "../Gpu";
 import { pipelineManager } from "../Pipelines/PipelineManager";
-import { DrawableType, MaterialInterface, PipelineInterface, StageBindings } from "../types";
+import { DrawableType, MaterialInterface, PipelineInterface, StageBindings } from "../Types";
 import { PropertyInterface, ValueType } from "../ShaderBuilder/Types";
 import Http from "../../Http/src";
 import { MaterialDescriptor } from "./MaterialDescriptor";

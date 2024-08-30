@@ -1,6 +1,6 @@
 import { ProjectInterface, ProjectItemType } from "../Project/Types/types";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
-import { ComponentDescriptor, ComponentType, SceneObjectComponent, MaterialInterface, SceneNodeInterface, TransformPropsInterface, LightPropsDescriptor, PrefabComponent, NewSceneObjectComponent } from "../Renderer/types";
+import { ComponentDescriptor, ComponentType, SceneObjectComponent, MaterialInterface, SceneNodeInterface, TransformPropsInterface, LightPropsDescriptor, PrefabComponent, NewSceneObjectComponent } from "../Renderer/Types";
 import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
 import { ParticleSystemPropsDescriptor } from "../Renderer/ParticleSystem/Types";
 

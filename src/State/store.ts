@@ -10,7 +10,7 @@ import { isSceneItem, isShaderItem, ProjectItemInterface, ProjectItemLike } from
 import {
   SceneNodeInterface,
   ComponentType,
-} from "../Renderer/types";
+} from "../Renderer/Types";
 import { renderer2d } from "../Main";
 import Project from "../Project/Types/Project";
 

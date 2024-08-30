@@ -11,7 +11,7 @@ import DeferredRenderPass from './RenderPasses/DeferredRenderPass';
 import Light from './Drawables/Light';
 import CartesianAxes from './Drawables/CartesianAxes';
 import DrawableComponent from './Drawables/DrawableComponent';
-import { RendererInterface, SceneNodeInterface, DrawableComponentInterface } from './types';
+import { RendererInterface, SceneNodeInterface, DrawableComponentInterface } from './Types';
 import { lineMaterial } from './Materials/Line';
 import { lights } from "./shaders/lights";
 import { gpu } from './Gpu';

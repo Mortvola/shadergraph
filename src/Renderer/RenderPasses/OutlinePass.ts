@@ -4,7 +4,7 @@ import { gpu } from "../Gpu";
 import { outputFormat } from "../RenderSetings";
 import { outlineShader } from "../shaders/outline";
 import { outlineApplyShader } from "../shaders/outlineApply";
-import { DrawableComponentInterface } from "../types";
+import { DrawableComponentInterface } from "../Types";
 
 const label = 'outline pass';
 

@@ -2,7 +2,7 @@ import { runInAction } from "mobx";
 import SceneObject from "../../Scene/Types/SceneObject";
 import { SceneObjectInterface } from "../../State/types";
 import ProjectItem from "./ProjectItem";
-import { ComponentType } from "../../Renderer/types";
+import { ComponentType } from "../../Renderer/Types";
 import { FolderInterface, ProjectItemType } from "./types";
 
 class SceneObjectProjectItem extends ProjectItem<SceneObjectInterface> {

@@ -3,7 +3,7 @@ import { SceneObjectBaseInterface, isGameObject2D } from '../State/types';
 import { useStores } from '../State/store';
 import styles from './Inspector.module.scss'
 import { observer } from 'mobx-react-lite';
-import { ComponentType, NewSceneObjectComponent, SceneObjectComponent } from '../Renderer/types';
+import { ComponentType, NewSceneObjectComponent, SceneObjectComponent } from '../Renderer/Types';
 import GameObject2D from './GameObject2d';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';

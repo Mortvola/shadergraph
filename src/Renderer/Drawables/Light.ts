@@ -1,6 +1,6 @@
 import { vec4, Vec4 } from 'wgpu-matrix';
 import Component from './Component';
-import { ComponentType, LightInterface, LightPropsInterface } from '../types';
+import { ComponentType, LightInterface, LightPropsInterface } from '../Types';
 
 class Light extends Component implements LightInterface {
   props: LightPropsInterface;

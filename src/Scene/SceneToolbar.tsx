@@ -5,7 +5,7 @@ import ContextMenu from '../ContextMenu/ContextMenu';
 import styles from '../Project/Project.module.scss'
 import SceneObject from './Types/SceneObject';
 import ParticleSystem from '../Renderer/ParticleSystem/ParticleSystem';
-import { ComponentType, NewSceneObjectComponent } from '../Renderer/types';
+import { ComponentType, NewSceneObjectComponent } from '../Renderer/Types';
 import Light from '../Renderer/Drawables/Light';
 import { SceneInterface } from '../State/types';
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';

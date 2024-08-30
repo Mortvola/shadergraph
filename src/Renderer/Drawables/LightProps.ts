@@ -1,5 +1,5 @@
 import { makeObservable, observable } from "mobx";
-import { LightPropsDescriptor, LightPropsInterface } from "../types";
+import { LightPropsDescriptor, LightPropsInterface } from "../Types";
 
 class LightProps implements LightPropsInterface {
   color: number[] = [1, 1, 1, 1];

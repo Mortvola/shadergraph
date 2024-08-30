@@ -1,4 +1,4 @@
-import { ComponentType, PrefabComponent } from "../../Renderer/types";
+import { ComponentType, PrefabComponent } from "../../Renderer/Types";
 import Entity from "../../State/Entity";
 import { PrefabNodeDescriptor, PrefabNodeInterface, PrefabInterface } from "../../State/types";
 import TransformProps from "../../Renderer/TransformProps";

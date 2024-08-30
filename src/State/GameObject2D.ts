@@ -1,5 +1,5 @@
 import Entity from "./Entity";
-import { GameObject2DRecord } from "../Renderer/types";
+import { GameObject2DRecord } from "../Renderer/Types";
 import { GameObject2DInterface } from "./types";
 import Http from "../Http/src";
 

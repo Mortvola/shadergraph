@@ -3,7 +3,7 @@ import PSModule from "./PSModule";
 import { PSMaterialItem, PSRenderMode, RendererDescriptor, RenderMode } from "./Types";
 import { MaterialItemInterface } from "../../State/types";
 import { materialManager } from "../Materials/MaterialManager";
-import { DrawableType } from "../types";
+import { DrawableType } from "../Types";
 import DrawableInterface from "../Drawables/DrawableInterface";
 import Billboard from "../Drawables/Billboard";
 import HorizontalBillboard from "../Drawables/HorizontalBillboard";

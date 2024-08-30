@@ -2,7 +2,7 @@ import { vec3, vec4 } from "wgpu-matrix"
 import {
   ParticleSystemInterface,
   ComponentType,
-} from "../types";
+} from "../Types";
 import { gravity, intersectionPlane } from "../Math";
 import Particle from "./Particle";
 import { ParticleSystemPropsInterface } from "./Types";

@@ -2,7 +2,7 @@ import Http from "../../Http/src";
 import Light from "../../Renderer/Drawables/Light";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import { ParticleSystemPropsInterface } from "../../Renderer/ParticleSystem/Types";
-import { ComponentType, LightPropsInterface } from "../../Renderer/types";
+import { ComponentType, LightPropsInterface } from "../../Renderer/Types";
 import Entity from "../../State/Entity";
 import {
   PrefabDescriptor, PrefabInstanceDescriptor, PrefabInstanceInterface,

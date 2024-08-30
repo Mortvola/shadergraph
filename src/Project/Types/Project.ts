@@ -4,7 +4,7 @@ import { GameObject2DInterface, ProjectItemRecord } from "../../State/types";
 import Folder from "./Folder";
 import ProjectItem from "./ProjectItem";
 import { FolderInterface, ProjectInterface, ProjectItemLike, ProjectItemType, isFolder } from "./types";
-import { ParticleSystemInterface, SceneNodeInterface } from "../../Renderer/types";
+import { ParticleSystemInterface, SceneNodeInterface } from "../../Renderer/Types";
 import SceneProjectItem from "./SceneProjectItem";
 import PrefabProjectItem from "./PrefabProjectItem";
 import ShaderProjectItem from "./ShaderProjectItem";

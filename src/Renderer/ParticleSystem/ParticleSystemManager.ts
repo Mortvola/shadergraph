@@ -1,6 +1,6 @@
 import Http from "../../Http/src";
 import ParticleSystem from "./ParticleSystem";
-import { ParticleRecord } from "../types";
+import { ParticleRecord } from "../Types";
 import ParticleSystemProps from "./ParticleSystemProps";
 
 class ParticleSystemManager { 

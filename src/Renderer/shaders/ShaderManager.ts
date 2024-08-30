@@ -1,5 +1,5 @@
 import Http from "../../Http/src";
-import { ShaderRecord } from "../types";
+import { ShaderRecord } from "../Types";
 import { ShaderDescriptor } from "./ShaderDescriptor";
 
 class ShaderManager {

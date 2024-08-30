@@ -4,7 +4,7 @@ import SceneNode, { isSceneNode } from "../Renderer/Drawables/SceneNodes/SceneNo
 import DrawableComponent from "../Renderer/Drawables/DrawableComponent";
 import { isDrawableNode } from "../Renderer/Drawables/SceneNodes/utils";
 import Renderer from "../Renderer/Renderer";
-import { SceneNodeInterface, DrawableComponentInterface, MaterialInterface } from "../Renderer/types";
+import { SceneNodeInterface, DrawableComponentInterface, MaterialInterface } from "../Renderer/Types";
 import { ModelerInterface, NodeMaterials, StoreInterface } from "./types";
 import { downloadFbx } from "../Fbx/LoadFbx";
 import { FbxNodeInterface, isFbxContainerNode, isFbxGeometryNode } from "../Fbx/types";

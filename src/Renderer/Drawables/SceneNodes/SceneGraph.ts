@@ -1,5 +1,5 @@
 import ParticleSystem from "../../ParticleSystem/ParticleSystem";
-import { SceneNodeInterface, RendererInterface, SceneGraphInterface, ComponentType } from "../../types";
+import { SceneNodeInterface, RendererInterface, SceneGraphInterface, ComponentType } from "../../Types";
 import Component from "../Component";
 import Light from "../Light";
 import RangeCircle from "../RangeCircle";

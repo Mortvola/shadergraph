@@ -1,5 +1,5 @@
 import React from 'react';
-import { ComponentType, DrawableComponentInterface } from '../../Renderer/types';
+import { ComponentType, DrawableComponentInterface } from '../../Renderer/Types';
 import { useStores } from '../../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './ModelTree.module.scss';

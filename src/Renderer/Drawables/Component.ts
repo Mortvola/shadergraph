@@ -1,4 +1,4 @@
-import { ComponentDescriptor, ComponentInterface, ComponentType, SceneNodeInterface } from "../types";
+import { ComponentDescriptor, ComponentInterface, ComponentType, SceneNodeInterface } from "../Types";
 
 class Component implements ComponentInterface {
   type: ComponentType;

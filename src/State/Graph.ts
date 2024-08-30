@@ -2,7 +2,7 @@ import { makeObservable, observable, runInAction } from "mobx";
 import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
 import GraphEdge from "../Renderer/ShaderBuilder/GraphEdge";
 import Display from "../Renderer/ShaderBuilder/Nodes/Display";
-import { MaterialInterface } from "../Renderer/types";
+import { MaterialInterface } from "../Renderer/Types";
 import { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
 import Material from "../Renderer/Materials/Material";
 import { CullMode, GraphInterface, StoreInterface } from "./types";

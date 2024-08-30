@@ -9,7 +9,7 @@ import { ShaderDescriptor, ShaderType } from "../shaders/ShaderDescriptor";
 import { twirlFunction } from "../shaders/twirlFunction";
 import { getVertexStage } from "../shaders/vertexStage";
 import { voronoiFunction } from "../shaders/voronoiFunction";
-import { DrawableType } from "../types";
+import { DrawableType } from "../Types";
 import { GraphDescriptor } from "./GraphDescriptor";
 import Property from "./Property";
 import StageGraph from "./StageGraph";

@@ -1,4 +1,4 @@
-import { MaterialInterface } from "../../types";
+import { MaterialInterface } from "../../Types";
 import SceneNode2d from "./SceneNode2d";
 
 export type Style = {

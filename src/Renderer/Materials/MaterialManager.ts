@@ -2,7 +2,7 @@ import Http from "../../Http/src";
 import MaterialItem from "../MaterialItem";
 import { PropertyInterface } from "../ShaderBuilder/Types";
 import { shaderManager } from "../shaders/ShaderManager";
-import { DrawableType, MaterialManagerInterface, MaterialRecordDescriptor } from "../types";
+import { DrawableType, MaterialManagerInterface, MaterialRecordDescriptor } from "../Types";
 import Material from "./Material";
 import { MaterialDescriptor } from "./MaterialDescriptor";
 

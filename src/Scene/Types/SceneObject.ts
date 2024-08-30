@@ -8,7 +8,7 @@ import {
   SceneObjectBaseInterface,
 } from "../../State/types";
 import Http from "../../Http/src";
-import { ComponentType, SceneObjectComponent, LightPropsDescriptor, NewSceneObjectComponent, ComponentOverrides } from "../../Renderer/types";
+import { ComponentType, SceneObjectComponent, LightPropsDescriptor, NewSceneObjectComponent, ComponentOverrides } from "../../Renderer/Types";
 import { vec3 } from "wgpu-matrix";
 import SceneNode from "../../Renderer/Drawables/SceneNodes/SceneNode";
 import Light from "../../Renderer/Drawables/Light";

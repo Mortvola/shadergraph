@@ -1,4 +1,4 @@
-import { DrawableComponentInterface } from "../../types";
+import { DrawableComponentInterface } from "../../Types";
 
 export const isDrawableNode = (r: unknown): r is DrawableComponentInterface => (
   r !== undefined

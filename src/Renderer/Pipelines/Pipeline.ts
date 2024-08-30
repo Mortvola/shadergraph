@@ -1,4 +1,4 @@
-import { PipelineInterface, StageBindings } from "../types";
+import { PipelineInterface, StageBindings } from "../Types";
 
 class Pipeline implements PipelineInterface {
   pipeline: GPURenderPipeline;

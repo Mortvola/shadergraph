@@ -2,7 +2,7 @@ import { makeShaderDataDefinitions, makeStructuredView } from "webgpu-utils";
 import { bindGroups } from "../BindGroups";
 import { gpu } from "../Gpu";
 import { GraphNodeInterface, PropertyInterface } from "../ShaderBuilder/Types";
-import { DrawableType, PipelineInterface, PipelineManagerInterface, StageBindings } from "../types";
+import { DrawableType, PipelineInterface, PipelineManagerInterface, StageBindings } from "../Types";
 import LinePipeline from "./LinePipeline";
 import Pipeline from "./Pipeline";
 // import ReticlePipeline from "./ReticlePipeline";
