@@ -23,6 +23,10 @@ export default defineConfig({
       '/api': 'http://localhost:3333'
     }
   },
+  build: {
+    // minify: false,
+    sourcemap: true,
+  },
   esbuild: {
     supported: {
       'top-level-await': true,

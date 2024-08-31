@@ -40,12 +40,35 @@ interface NodeConstructor {
   new (nodeDescriptor: GraphNodeDescriptor): GraphNodeInterface
 }
 
-const nodeTable: NodeConstructor[] = [
-  SampleTexture, Display, Distance, Divide, UV, Time,
-  TileAndScroll, Fraction, FWidth, Inverse, Max,
-  Min, Multiply, Add,
-  PhongShading, Split, Clamp, Combine, Power, Twirl, Voronoi, Lerp, Step, Subtract,
-  TextureSize, VertexColor, Preview,
+const nodeTable: { name: string, constructor: NodeConstructor }[] = [
+  { name: 'SampleTexture', constructor: SampleTexture },
+  { name: 'SampleTexture', constructor: SampleTexture },
+  { name: 'Display', constructor: Display },
+  { name: 'Distance', constructor: Distance },
+  { name: 'Divide', constructor: Divide },
+  { name: 'UV', constructor: UV },
+  { name: 'Time', constructor: Time },
+  { name: 'TileAndScroll', constructor: TileAndScroll },
+  { name: 'Fraction', constructor: Fraction },
+  { name: 'FWidth', constructor: FWidth },
+  { name: 'Inverse', constructor: Inverse },
+  { name: 'Max', constructor: Max },
+  { name: 'Min', constructor: Min },
+  { name: 'Multiply', constructor: Multiply },
+  { name: 'Add', constructor: Add },
+  { name: 'PhongShading', constructor: PhongShading },
+  { name: 'Split', constructor: Split },
+  { name: 'Clamp', constructor: Clamp },
+  { name: 'Combine', constructor: Combine },
+  { name: 'Power', constructor: Power },
+  { name: 'Twirl', constructor: Twirl },
+  { name: 'Voronoi', constructor: Voronoi },
+  { name: 'Lerp', constructor: Lerp },
+  { name: 'Step', constructor: Step },
+  { name: 'Subtract', constructor: Subtract },
+  { name: 'TextureSize', constructor: TextureSize },
+  { name: 'VertexColor', constructor: VertexColor },
+  { name: 'Preview', constructor: Preview },
 ]
 
 class StageGraph {
@@ -92,7 +115,7 @@ class StageGraph {
       const tableEntry = nodeTable.find((entry) => entry.name === nodeDescr.type);
   
       if (tableEntry) {
-        node = new tableEntry(nodeDescr)
+        node = new tableEntry.constructor(nodeDescr)
       }
       else {
         switch (nodeDescr.type) {
