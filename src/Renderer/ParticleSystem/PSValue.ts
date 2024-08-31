@@ -6,6 +6,7 @@ import { Property } from "../Properties/Types";
 
 class PSValue extends Property {
   // Methods for type
+  @observable
   _type = PSValueType.Constant;
 
   get type(): PSValueType {
@@ -19,6 +20,7 @@ class PSValue extends Property {
   }
 
   // Methods for value
+  @observable
   _value: [number, number] = [1, 1];
 
   get value(): [number, number] {
@@ -32,9 +34,11 @@ class PSValue extends Property {
   }
 
   // Methods for curve
+  @observable
   curve: [PSCurve, PSCurve];
 
   // Methods for curve range
+  @observable
   _curveRange: [number, number] = [0, 1];
 
   get curveRange(): [number, number] {
@@ -53,13 +57,6 @@ class PSValue extends Property {
     this.onChange = onChange;
 
     this.curve = [new PSCurve(onChange), new PSCurve(onChange)]
-
-    makeObservable(this, {
-      _type: observable,
-      _value: observable,
-      curve: observable,
-      _curveRange: observable,
-    })
 
     this.reactOnChange(() => this._type)
     this.reactOnChange(() => this._value)

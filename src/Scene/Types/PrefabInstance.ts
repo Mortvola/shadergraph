@@ -180,6 +180,8 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
               props,
             }  
           }
+
+          return undefined
         })
           .filter((c) => c !== undefined)
 

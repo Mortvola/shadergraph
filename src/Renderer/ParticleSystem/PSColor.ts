@@ -7,6 +7,7 @@ import { Property } from "../Properties/Types";
 type Color = [number[], number[]];
 
 class PSColor extends Property {
+  @observable
   _type = PSColorType.Constant;
 
   get type(): PSColorType {
@@ -19,6 +20,7 @@ class PSColor extends Property {
     })
   }
 
+  @observable
   _color: [number[], number[]] = [[1, 1, 1, 1], [1, 1, 1, 1]];
 
   get color(): Color {
@@ -38,11 +40,6 @@ class PSColor extends Property {
 
     this.gradients = [new Gradient(), new Gradient()]
     this.onChange = onChange;
-
-    makeObservable(this, {
-      _type: observable,
-      _color: observable,
-    })
 
     this.reactOnChange(() => this._type);
     this.reactOnChange(() => this._color);

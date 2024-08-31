@@ -1,10 +1,10 @@
-import { makeObservable, observable, reaction, runInAction } from "mobx";
+import { observable, reaction, runInAction } from "mobx";
 import { MaterialItemInterface } from "../../State/types";
 import { RenderMode, ShapeType } from "../ParticleSystem/Types";
 import { vec3, Vec3 } from "wgpu-matrix";
 
 export class Property {
-  override = false;
+  @observable accessor override = false;
 
   onChange?: () => void;
 
@@ -22,7 +22,7 @@ export class Property {
 }
 
 export class PSScalarType<T> extends Property {
-  v: T;
+  @observable accessor v: T;
 
   get value(): T {
     return this.v;
@@ -38,10 +38,6 @@ export class PSScalarType<T> extends Property {
     super(onChange)
     
     this.v = value;
-
-    makeObservable(this, {
-      v: observable,
-    })
 
     this.reactOnChange(() => this.v)
   }
