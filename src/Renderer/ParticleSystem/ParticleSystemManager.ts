@@ -32,7 +32,7 @@ class ParticleSystemManager {
   }
 
   private async load(id: number) {
-    const response = await Http.get<ParticleRecord>(`/particles/${id}`)
+    const response = await Http.get<ParticleRecord>(`/api/particless/${id}`)
 
     if (response.ok) {
       const rec = await response.body();

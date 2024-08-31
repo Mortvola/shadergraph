@@ -24,7 +24,7 @@ class ShaderManager {
         this.shaders.set(id, shaderRecord)
       }
       else {
-        const response = await Http.get<ShaderRecord>(`/shader-descriptors/${id}`)
+        const response = await Http.get<ShaderRecord>(`/api/shader-descriptors/${id}`)
 
         if (response.ok) {
           shaderRecord = await response.body();

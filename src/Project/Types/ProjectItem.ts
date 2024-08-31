@@ -31,7 +31,7 @@ class ProjectItem<T> implements ProjectItemInterface<T> {
 
   async changeName(name: string): Promise<boolean> {
     if (name !== this.name) {
-      const response = await Http.patch(`/folders/${this.id}`, {
+      const response = await Http.patch(`/api/folders/${this.id}`, {
         name,
       })
   

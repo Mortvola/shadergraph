@@ -90,7 +90,7 @@ const SceneItem: React.FC<PropsType> = observer(({
     //       }
 
     //       if (item.item) {
-    //         const response = await Http.post<unknown, ProjectItemRecord>('/materials', {
+    //         const response = await Http.post<unknown, ProjectItemRecord>('/api/materials', {
     //           name: `${item.name} Material`,
     //           shaderId: item.itemId,
     //           properties: (item.item as Graph).graph.properties,    

@@ -73,7 +73,7 @@ class Folder extends ProjectItem<FolderInterface> implements FolderInterface {
         throw new Error('item is an ancestor of the destination')
       }
   
-      const response = await Http.patch(`/folders/${item.id}`, {
+      const response = await Http.patch(`/api/folders/${item.id}`, {
         parentId: this.id === -1 ? null : this.id,
       })
   
@@ -113,7 +113,7 @@ class Folder extends ProjectItem<FolderInterface> implements FolderInterface {
   }
 
   async removeItem(item: ProjectItemLike): Promise<void> {
-    const response = await Http.patch(`/folders/${item.id}`, {
+    const response = await Http.patch(`/api/folders/${item.id}`, {
       parentId: null,
     })
 
@@ -135,7 +135,7 @@ class Folder extends ProjectItem<FolderInterface> implements FolderInterface {
   }
 
   async deleteItem(item: ProjectItemLike) {
-    const response = await Http.delete(`/folders/${item.id}`)
+    const response = await Http.delete(`/api/folders/${item.id}`)
 
     if (response.ok) {
       runInAction(() => {

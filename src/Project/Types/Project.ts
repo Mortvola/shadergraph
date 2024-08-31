@@ -27,7 +27,7 @@ class Project implements ProjectInterface {
 
   getFolder(folder: FolderInterface) {
     (async () => {
-      const response = await Http.get<ProjectItemRecord[]>(`/folders${ folder.id === -1 ? '' : `/${folder.id}`}`);
+      const response = await Http.get<ProjectItemRecord[]>(`/api/folders${ folder.id === -1 ? '' : `/${folder.id}`}`);
 
       if (response.ok) {
         const list = await response.body();
@@ -106,11 +106,11 @@ class Project implements ProjectInterface {
   }
 
   importModel(file: File) {
-    this.importItem(file, '/models')
+    this.importItem(file, '/api/models')
   }
 
   importTexture(file: File) {
-    this.importItem(file, '/textures')
+    this.importItem(file, '/api/textures')
   }
 
   addNewItem(type: ProjectItemType) {
@@ -215,43 +215,43 @@ class Project implements ProjectInterface {
 
     switch (type) {
       case 'prefab': {
-        url = '/prefabs'
+        url = '/api/prefabs'
 
         break;
       }
 
       case 'object': {
-        url = '/scene-objects'
+        url = '/api/scene-objects'
 
         break
       }
 
       case 'object2D': {
-        url = '/scene-objects'
+        url = '/api/scene-objects'
 
         break
       }
 
       case 'shader': {
-        url = '/shader-descriptors'
+        url = '/api/shader-descriptors'
 
         break
       }
 
       case 'material': {
-        url = '/materials'
+        url = '/api/materials'
 
         break;
       }
 
       case 'particle': {
-        url = '/particles'
+        url = '/api/particless'
 
         break
       }
 
       case 'scene': {
-        url = '/scenes'
+        url = '/api/scenes'
 
         break
       }

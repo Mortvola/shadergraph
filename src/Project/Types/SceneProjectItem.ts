@@ -31,7 +31,7 @@ class SceneProjectItem extends ProjectItem<SceneInterface> {
       return this.item;
     }
 
-    const response = await Http.get<SceneDescriptor>(`/scenes/${this.itemId}`);
+    const response = await Http.get<SceneDescriptor>(`/api/scenes/${this.itemId}`);
 
     if (response.ok) {
       const body = await response.body();

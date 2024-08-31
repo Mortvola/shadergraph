@@ -9,13 +9,13 @@
 
   transform-origin: top left;
   
+  cursor: default;
+
   &.resizable {
     padding: 5px;
     background-color: gray;
     border-radius: 8px;  
   }
-
-  cursor: default;
 
   &.resizeEW {
     cursor: ew-resize;

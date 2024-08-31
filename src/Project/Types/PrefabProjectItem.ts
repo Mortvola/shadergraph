@@ -32,7 +32,7 @@ class PrefabProjectItem extends ProjectItem<PrefabInterface> {
     }
 
     if (this.itemId) {
-      const response = await Http.get<PrefabDescriptor>(`/prefabs/${this.itemId}`);
+      const response = await Http.get<PrefabDescriptor>(`/api/prefabs/${this.itemId}`);
     
       if (response.ok) {
         const body = await response.body();

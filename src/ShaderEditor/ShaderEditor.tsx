@@ -73,13 +73,13 @@ const ShaderEditor: React.FC<PropsType> = observer(({
     const descriptor = graph.graph.createShaderDescriptor();
 
     if (graph.id !== null) {
-      await Http.patch<unknown, void>(`/shader-descriptors/${graph.id}`, {
+      await Http.patch<unknown, void>(`/api/shader-descriptors/${graph.id}`, {
         name: graph.name,
         descriptor,
       })
     }
     else {
-      const response = await Http.post<unknown, { id: number }>('/shader-descriptors', {
+      const response = await Http.post<unknown, { id: number }>('/api/shader-descriptors', {
         name:  graph.name,
         descriptor,
       })

@@ -67,10 +67,10 @@ class Scene implements SceneInterface {
 
   saveChanges = async () => {
     if (this.id === undefined) {
-      await Http.post('/scenes', this.toDescriptor())  
+      await Http.post('/api/scenes', this.toDescriptor())  
     }
     else {
-      await Http.patch(`/scenes/${this.id}`, this.toDescriptor())  
+      await Http.patch(`/api/scenes/${this.id}`, this.toDescriptor())  
     }
   }
 }

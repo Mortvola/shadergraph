@@ -36,7 +36,7 @@ const PropertyTexture: React.FC<PropsType> = ({
   React.useEffect(() => {
     (
       async () => {
-        const response = await Http.get<{ id: number, name: string }[]>('/textures-list')
+        const response = await Http.get<{ id: number, name: string }[]>('/api/textures-list')
 
         if (response.ok) {
           const list = await response.body();

@@ -145,7 +145,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
   }
 
   static async fromServer(itemId: number): Promise<SceneObject | PrefabInstanceObject | undefined> {
-    const response = await Http.get<SceneObjectDescriptor | PrefabInstanceDescriptor>(`/scene-objects/${itemId}`)
+    const response = await Http.get<SceneObjectDescriptor | PrefabInstanceDescriptor>(`/api/scene-objects/${itemId}`)
 
     if (response.ok) {
       const descriptor = await response.body();
@@ -284,7 +284,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
     if (this.id < 0) {
       const { id, ...descriptor } = this.toDescriptor();
 
-      const response = await Http.post<Omit<SceneObjectDescriptor, 'id'>, SceneObjectDescriptor>(`/scene-objects`, descriptor);
+      const response = await Http.post<Omit<SceneObjectDescriptor, 'id'>, SceneObjectDescriptor>(`/api/scene-objects`, descriptor);
 
       if (response.ok) {
         const body = await response.body();
@@ -293,7 +293,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
       }  
     }
     else {
-      const response = await Http.patch<SceneObjectDescriptor, void>(`/scene-objects/${this.id}`, this.toDescriptor());
+      const response = await Http.patch<SceneObjectDescriptor, void>(`/api/scene-objects/${this.id}`, this.toDescriptor());
 
       if (response.ok) {
   

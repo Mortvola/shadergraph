@@ -136,7 +136,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
   }
 
   static async fromDescriptor(descriptor: PrefabInstanceDescriptor): Promise<PrefabInstance | undefined> {
-    const response = await Http.get<PrefabDescriptor>(`/prefabs/${descriptor.object.prefabId}`)
+    const response = await Http.get<PrefabDescriptor>(`/api/prefabs/${descriptor.object.prefabId}`)
 
     if (response.ok) {
       const body = await response.body();
@@ -203,7 +203,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     if (this.id < 0) {
       const { id, ...descriptor } = this.toDescriptor();
 
-      const response = await Http.post<Omit<PrefabInstanceDescriptor, 'id'>, PrefabInstanceDescriptor>(`/scene-objects`, descriptor);
+      const response = await Http.post<Omit<PrefabInstanceDescriptor, 'id'>, PrefabInstanceDescriptor>(`/api/scene-objects`, descriptor);
 
       if (response.ok) {
         const body = await response.body();
@@ -216,7 +216,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     else {
       const descriptor = this.toDescriptor();
 
-      const response = await Http.patch<PrefabInstanceDescriptor, void>(`/scene-objects/${this.id}`, descriptor);
+      const response = await Http.patch<PrefabInstanceDescriptor, void>(`/api/scene-objects/${this.id}`, descriptor);
 
       if (response.ok) {
   
@@ -229,7 +229,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
   }
 
   async delete(): Promise<void> {
-    const response = await Http.delete(`/scene-objects/${this.id}`);
+    const response = await Http.delete(`/api/scene-objects/${this.id}`);
 
     if (response.ok) {
       if (this.root) {

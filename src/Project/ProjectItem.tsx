@@ -86,7 +86,7 @@ const ProjectItem: React.FC<PropsType> = observer(({
           const shader = await item.getItem();
 
           if (shader) {
-            const response = await Http.post<unknown, ProjectItemRecord>('/materials', {
+            const response = await Http.post<unknown, ProjectItemRecord>('/api/materials', {
               name: `${item.name} Material`,
               shaderId: item.itemId,
               properties: shader.graph.properties,    

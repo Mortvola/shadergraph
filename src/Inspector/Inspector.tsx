@@ -19,7 +19,7 @@ const Inspector: React.FC = observer(() => {
       const checked = event.target.checked;
 
       if (selectedTexture) {
-        await Http.patch(`/textures/${selectedTexture.id}`, {
+        await Http.patch(`/api/textures/${selectedTexture.id}`, {
           flipY: checked
         })  
       }

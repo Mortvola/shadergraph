@@ -17,7 +17,7 @@ class ShaderProjectItem extends ProjectItem<GraphInterface> {
       return this.item;
     }
 
-    const response = await Http.get<ShaderRecord>(`/shader-descriptors/${this.itemId}`)
+    const response = await Http.get<ShaderRecord>(`/api/shader-descriptors/${this.itemId}`)
   
     if (response.ok) {
       const descriptor = await response.body();

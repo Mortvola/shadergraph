@@ -15,7 +15,7 @@ class MaterialManager implements MaterialManagerInterface {
     let materialItem = this.materialItems.get(id)
 
     if (!materialItem) {
-      const response = await Http.get<MaterialRecordDescriptor>(`/materials/${id}`);
+      const response = await Http.get<MaterialRecordDescriptor>(`/api/materials/${id}`);
 
       if (response.ok) {
         const materialItemDescriptor = await response.body();
@@ -107,7 +107,7 @@ class MaterialManager implements MaterialManagerInterface {
 
   async saveItem(materialItem: MaterialItem): Promise<void> {
     const descriptor = await materialItem.toDescriptor();
-    const response = await Http.patch<MaterialRecordDescriptor, void>(`/materials/${materialItem.id}`, descriptor);
+    const response = await Http.patch<MaterialRecordDescriptor, void>(`/api/materials/${materialItem.id}`, descriptor);
   }
 }
 

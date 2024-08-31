@@ -31,7 +31,7 @@ class Modeler implements ModelerInterface {
   }
 
   async getModel(id: number, materials?: NodeMaterials) {
-    const url = `/models/${id}`;
+    const url = `/api/models/${id}`;
 
     let model = this.modelMap.get(url);
 

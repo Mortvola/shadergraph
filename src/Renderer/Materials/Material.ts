@@ -133,7 +133,7 @@ class Material implements MaterialInterface {
 
           let flipY = false;
 
-          const response = await Http.get<{ flipY: boolean }>(`/textures/${textureId}`)
+          const response = await Http.get<{ flipY: boolean }>(`/api/textures/${textureId}`)
 
           if (response.ok) {
             flipY = (await response.body()).flipY;
@@ -218,7 +218,7 @@ class Material implements MaterialInterface {
     let texture = downloadedTextures.get(textureId)
 
     if (!texture) {
-      const url = `/textures/${textureId}/file`
+      const url = `/api/textures/${textureId}/file`
 
       const res = await Http.get(url);
 

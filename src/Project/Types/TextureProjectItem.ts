@@ -15,7 +15,7 @@ class TextureProjectItem extends ProjectItem<TextureInterface> {
       return this.item;
     }
 
-    const response = await Http.get<TextureRecord>(`/textures/${this.itemId}`);
+    const response = await Http.get<TextureRecord>(`/api/textures/${this.itemId}`);
   
     if (response.ok) {
       const record = await response.body();
