@@ -1,5 +1,5 @@
 import { makeObservable, observable } from "mobx";
-import { PSNumber } from "../../Properties/Types";
+import { PSNumber, removeUndefinedKeys } from "../../Properties/Types";
 import { Vec4, vec4 } from "wgpu-matrix";
 import { SphereDescriptor } from "../Types";
 
@@ -29,6 +29,12 @@ class Sphere {
     this._radius.copyValues(other._radius, noOverrides);
   }
 
+  hasOverrides() {
+    return (
+      this._radius.override
+    )
+  }
+
   static fromDescriptor(descriptor?: SphereDescriptor, onChange?: () => void) {
     const sphere = new Sphere(descriptor?.hemisphere ?? false, onChange);
 
@@ -39,11 +45,13 @@ class Sphere {
     return sphere;
   }
 
-  toDescriptor(): SphereDescriptor {
-    return ({
-      radius: this.radius,
-      hemisphere: this.hemisphere
-    })
+  toDescriptor(overridesOnly = false): SphereDescriptor | undefined {
+    const descriptor = {
+      radius: this._radius.toDescriptor(overridesOnly),
+      hemisphere: (!overridesOnly || this._radius.override) ? this.hemisphere : undefined,
+    }
+
+    return removeUndefinedKeys(descriptor)
   }
 
   getPositionAndDirection(): [Vec4, Vec4] {

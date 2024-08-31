@@ -4,7 +4,7 @@ import Cone from "./Cone";
 import { vec4, Vec4 } from "wgpu-matrix";
 import Sphere from "./Sphere";
 import PSModule from "../PSModule";
-import { PSShapeType } from "../../Properties/Types";
+import { PSShapeType, removeUndefinedKeys } from "../../Properties/Types";
 
 class Shape extends PSModule {
   _type: PSShapeType;
@@ -44,12 +44,21 @@ class Shape extends PSModule {
     this.hemisphere.copyValues(other.hemisphere, noOverrides);
   }
 
+  hasOverrides() {
+    return (
+      this._type.override
+      || this.cone.hasOverrides()
+      || this.sphere.hasOverrides()
+      || this.hemisphere.hasOverrides()
+    )
+  }
+
   static fromDescriptor(descriptor?: ShapeDescriptor, onChange?: () => void) {
     const shape = new Shape(onChange);
 
     if (descriptor) {
-      shape.enabled = descriptor.enabled;
-      shape.type = descriptor.type;
+      shape.enabled = descriptor.enabled ?? false;
+      shape.type = descriptor.type ?? ShapeType.Cone;
       shape.cone = Cone.fromDescriptor(descriptor.cone, onChange);
       shape.sphere = Sphere.fromDescriptor(descriptor.sphere, onChange);
       shape.hemisphere = Sphere.fromDescriptor({ ...descriptor.hemisphere, hemisphere: true }, onChange);
@@ -58,14 +67,16 @@ class Shape extends PSModule {
     return shape;
   }
 
-  toDescriptor(): ShapeDescriptor {
-    return ({
-      enabled: this.enabled,
-      type: this.type,
-      cone: this.cone.toDescriptor(),
-      sphere: this.sphere.toDescriptor(),
-      hemisphere: this.hemisphere.toDescriptor(),
-    })
+  toDescriptor(overridesOnly = false): ShapeDescriptor | undefined {
+    const descriptor = {
+      enabled: this._enabled.toDescriptor(overridesOnly),
+      type: this._type.toDescriptor(overridesOnly),
+      cone: this.cone.toDescriptor(overridesOnly),
+      sphere: this.sphere.toDescriptor(overridesOnly),
+      hemisphere: this.hemisphere.toDescriptor(overridesOnly),
+    }
+
+    return removeUndefinedKeys(descriptor)
   }
 
   getPositionAndDirection(): [Vec4, Vec4] {

@@ -218,7 +218,7 @@ export interface ComponentInterface {
 export type ComponentDescriptor = {
   id?: number,
   type: ComponentType,
-  props: LightPropsDescriptor | ParticleSystemPropsDescriptor | DecalItemDescriptor | ModelItemDescriptor,
+  props?: LightPropsDescriptor | ParticleSystemPropsDescriptor | DecalItemDescriptor | ModelItemDescriptor,
   item?: LightPropsDescriptor | ParticleSystemPropsDescriptor | DecalItemDescriptor | ModelItemDescriptor,
 }
 

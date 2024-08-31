@@ -23,6 +23,10 @@ class PSModule {
     this._enabled.copyValues(other._enabled, noOverrides)
   }
 
+  hasOverrides() {
+    return this._enabled.override
+  }
+
   protected setOnChange(onChange?: () => void) {
     if (this._enabled !== undefined) {
       this._enabled.onChange = onChange;

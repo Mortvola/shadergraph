@@ -53,6 +53,12 @@ export class PSScalarType<T> extends Property {
       }  
     })
   }
+
+  toDescriptor(overridesOnly = false): T | undefined {
+    if (!overridesOnly || this.override) {
+      return this.v
+    }
+  }
 }
 
 export class PSBoolean extends PSScalarType<boolean> {
@@ -95,3 +101,8 @@ export class PSVec3Type extends PSScalarType<Vec3> {
     })
   }
 }
+
+export const removeUndefinedKeys = <T extends Record<string, unknown>>(obj: T): T | undefined => {
+  Object.keys(obj).forEach((key) => obj[key] === undefined && delete obj[key]);
+  return Object.keys(obj).length > 0 ? obj : undefined;
+};

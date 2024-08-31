@@ -251,7 +251,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
     }
 
     object.autosave = true;
-    
+
     return object;
   }
 

@@ -85,12 +85,14 @@ class PSColor extends Property {
     return psColor;
   }
 
-  toDescriptor(): PSColorDescriptor {
-    return ({
-      type: this.type,
-      color: [this.color[0].slice(), this.color[1].slice()],
-      gradients: [this.gradients[0].toDescriptor(), this.gradients[1].toDescriptor()],
-    })
+  toDescriptor(overridesOnly = false): PSColorDescriptor | undefined {
+    if (!overridesOnly || this.override) {
+      return ({
+        type: this.type,
+        color: [this.color[0].slice(), this.color[1].slice()],
+        gradients: [this.gradients[0].toDescriptor(), this.gradients[1].toDescriptor()],
+      })  
+    }
   }
 
   getColor(t: number): number[] {

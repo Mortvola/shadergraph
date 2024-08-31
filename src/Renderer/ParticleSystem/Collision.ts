@@ -1,7 +1,7 @@
 import { makeObservable, observable } from "mobx";
 import PSModule from "./PSModule";
 import { CollisionDescriptor } from "./Types";
-import { PSNumber } from "../Properties/Types";
+import { PSNumber, removeUndefinedKeys } from "../Properties/Types";
 
 class Collision extends PSModule {
   _bounce: PSNumber;
@@ -42,24 +42,34 @@ class Collision extends PSModule {
     this._dampen.copyValues(other._dampen, noOverrides);
   }
 
+  hasOverrides(): boolean {
+    return (
+      super.hasOverrides()
+      || this._bounce.override
+      || this._dampen.override
+    )
+  }
+
   static fromDescriptor(descriptor: CollisionDescriptor | undefined, onChange?: () => void) {
     const collision = new Collision(onChange);
 
     if (descriptor) {
-      collision.enabled = descriptor.enabled;
-      collision.bounce = descriptor.bounce;
-      collision.dampen = descriptor.dampen;
+      collision.enabled = descriptor.enabled ?? false;
+      collision.bounce = descriptor.bounce ?? 1;
+      collision.dampen = descriptor.dampen ?? 0;
     }
 
     return collision;
   }
 
-  toDescriptor(): CollisionDescriptor {
-    return ({
-      enabled: this.enabled,
-      bounce: this.bounce,
-      dampen: this.dampen,
-    })
+  toDescriptor(overridesOnly = false): CollisionDescriptor | undefined {
+    const descriptor = {
+      enabled: this._enabled.toDescriptor(overridesOnly),
+      bounce: this._bounce.toDescriptor(overridesOnly),
+      dampen: this._dampen.toDescriptor(overridesOnly),
+    }
+
+    return removeUndefinedKeys(descriptor)
   }
 
   protected setOnChange(onChange: () => void) {

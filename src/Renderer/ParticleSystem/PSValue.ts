@@ -99,13 +99,15 @@ class PSValue extends Property {
     return psValue;
   }
 
-  toDescriptor(): PSValueDescriptor {
-    return ({
-      type: this.type,
-      value: this.value,
-      curve: this.curve,
-      curveRange: this.curveRange,
-    })
+  toDescriptor(overridesOnly = false): PSValueDescriptor | undefined {
+    if (!overridesOnly || this.override) {
+      return ({
+        type: this.type,
+        value: this.value,
+        curve: this.curve,
+        curveRange: this.curveRange,
+      })  
+    }
   }
 
   getValue(t: number) {

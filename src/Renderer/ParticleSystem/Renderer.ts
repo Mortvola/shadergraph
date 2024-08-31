@@ -8,7 +8,7 @@ import DrawableInterface from "../Drawables/DrawableInterface";
 import Billboard from "../Drawables/Billboard";
 import HorizontalBillboard from "../Drawables/HorizontalBillboard";
 import DrawableComponent from "../Drawables/DrawableComponent";
-import { PSMaterialItem, PSRenderMode } from "../Properties/Types";
+import { PSMaterialItem, PSRenderMode, removeUndefinedKeys } from "../Properties/Types";
 
 class Renderer extends PSModule {
   _mode: PSRenderMode;
@@ -51,6 +51,14 @@ class Renderer extends PSModule {
     this._material.copyValues(other._material, noOverrides);
   }
 
+  hasOverrides(): boolean {
+    return (
+      super.hasOverrides()
+      || this._mode.override
+      || this._material.override
+    )
+  }
+
   static async fromDescriptor(descriptor: RendererDescriptor | undefined, onChange?: () => void) {
     const renderer = new Renderer(onChange);
 
@@ -68,12 +76,14 @@ class Renderer extends PSModule {
     return renderer;
   }
 
-  toDescriptor(): RendererDescriptor {
-    return ({
-      enabled: this.enabled,
-      mode: this.mode,
-      materialId: this.material?.id,
-    })
+  toDescriptor(overridesOnly = false): RendererDescriptor | undefined {
+    const descriptor = {
+      enabled: this._enabled.toDescriptor(overridesOnly),
+      mode: this._mode.toDescriptor(overridesOnly),
+      materialId: (!overridesOnly || this._material.override) ? this.material?.id : undefined,
+    }
+
+    return removeUndefinedKeys(descriptor)
   }
 
   protected setOnChange(onChange: () => void) {

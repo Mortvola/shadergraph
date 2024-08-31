@@ -1,4 +1,3 @@
-import { autorun, makeObservable, observable, reaction, runInAction } from "mobx"
 import Collision from "./Collision"
 import LifetimeColor from "./LifetimeColor"
 import LifetimeSize from "./LIfetimeSize"
@@ -7,16 +6,18 @@ import PSColor from "./PSColor"
 import PSValue from "./PSValue"
 import Renderer from "./Renderer"
 import Shape from "./Shapes/Shape"
-import { MaterialItemInterface } from "../../State/types"
+
+export type PSModuleDescriptor = {
+  enabled?: boolean
+}
 
 export enum RenderMode {
   Billboard = 'Billboard',
   FlatBillboard = 'FlatBillboard',
 }
 
-export type RendererDescriptor = {
-  enabled: boolean,
-  mode: RenderMode,
+export type RendererDescriptor = PSModuleDescriptor & {
+  mode?: RenderMode,
   materialId?: number,
 }
 
@@ -88,25 +89,21 @@ export const isPSValue = (r: unknown): r is PSValueDescriptor => (
   && (r as PSValueDescriptor).curve !== undefined
 );
 
-export type LifetimeColorDescriptor = {
-  enabled: boolean,
-  color: PSColorDescriptor,
+export type LifetimeColorDescriptor = PSModuleDescriptor & {
+  color?: PSColorDescriptor,
 }
 
-export type LifetimeSizeDescriptor = {
-  enabled: boolean,
-  size: PSValueDescriptor,
+export type LifetimeSizeDescriptor = PSModuleDescriptor & {
+  size?: PSValueDescriptor,
 }
 
-export type LifetimeVelocityDescriptor = {
-  enabled: boolean,
-  speedModifier: PSValueDescriptor,
+export type LifetimeVelocityDescriptor = PSModuleDescriptor & {
+  speedModifier?: PSValueDescriptor,
 }
 
-export type CollisionDescriptor = {
-  enabled: boolean,
-  bounce: number,
-  dampen: number,
+export type CollisionDescriptor = PSModuleDescriptor & {
+  bounce?: number,
+  dampen?: number,
 }
 
 export enum ShapeType {
@@ -117,8 +114,8 @@ export enum ShapeType {
 }
 
 export type ConeDescriptor = {
-  angle: number;
-  originRadius: number;
+  angle?: number;
+  originRadius?: number;
 }
 
 export type SphereDescriptor = {
@@ -127,8 +124,8 @@ export type SphereDescriptor = {
 }
 
 export type ShapeDescriptor = {
-  enabled: boolean,
-  type: ShapeType,
+  enabled?: boolean,
+  type?: ShapeType,
   cone?: ConeDescriptor,
   sphere?: SphereDescriptor,
   hemisphere?: SphereDescriptor,
@@ -157,9 +154,9 @@ export type ParticleSystemPropsDescriptor = {
 
   gravityModifier?: PSValueDescriptor,
 
-  collision: CollisionDescriptor,
+  collision?: CollisionDescriptor,
 
-  renderer: RendererDescriptor,
+  renderer?: RendererDescriptor,
 }
 
 export type ParticleSystemPropsOverrides = Partial<ParticleSystemPropsDescriptor>;
@@ -195,5 +192,5 @@ export interface ParticleSystemPropsInterface {
 
   handleChange: () => void;
 
-  toDescriptor(): ParticleSystemPropsDescriptor;
+  toDescriptor(): ParticleSystemPropsDescriptor | undefined;
 }

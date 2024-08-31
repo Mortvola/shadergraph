@@ -2,6 +2,7 @@ import { makeObservable, observable } from "mobx";
 import { LifetimeVelocityDescriptor } from "./Types";
 import PSModule from "./PSModule";
 import PSValue from "./PSValue";
+import { removeUndefinedKeys } from "../Properties/Types";
 
 class LifetimeVelocity extends PSModule {
   speedModifier: PSValue;
@@ -21,22 +22,31 @@ class LifetimeVelocity extends PSModule {
     this.speedModifier.copyValues(other.speedModifier, noOverrides)
   }
 
+  hasOverrides(): boolean {
+    return (
+      super.hasOverrides()
+      || this.speedModifier.override
+    )
+  }
+
   static fromDescriptor(descriptor?: LifetimeVelocityDescriptor, onChange?: () => void) {
     const lifetimeVelocity = new LifetimeVelocity(onChange);
 
     if (descriptor) {
-      lifetimeVelocity.enabled = descriptor.enabled;
+      lifetimeVelocity.enabled = descriptor.enabled ?? false;
       lifetimeVelocity.speedModifier = PSValue.fromDescriptor(descriptor.speedModifier, onChange);  
     }
 
     return lifetimeVelocity;
   }
 
-  toDescriptor(): LifetimeVelocityDescriptor {
-    return ({
-      enabled: this.enabled,
-      speedModifier: this.speedModifier.toDescriptor(),
-    })
+  toDescriptor(overridesOnly = false): LifetimeVelocityDescriptor | undefined {
+    const descriptor = {
+      enabled: this._enabled.toDescriptor(overridesOnly),
+      speedModifier: this.speedModifier.toDescriptor(overridesOnly),
+    }
+
+    return removeUndefinedKeys(descriptor)
   }
 }
 

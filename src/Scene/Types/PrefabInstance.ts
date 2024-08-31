@@ -2,11 +2,12 @@ import Http from "../../Http/src";
 import Light from "../../Renderer/Drawables/Light";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
-import { ParticleSystemPropsDescriptor, ParticleSystemPropsInterface } from "../../Renderer/ParticleSystem/Types";
+import { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
 import { ComponentType, LightPropsInterface } from "../../Renderer/Types";
 import Entity from "../../State/Entity";
 import {
   PrefabDescriptor, PrefabInstanceDescriptor, PrefabInstanceInterface,
+  PrefabInstanceNodeDesriptor,
   PrefabInterface, PrefabNodeInterface,
   SceneObjectBaseInterface,
 } from "../../State/types";
@@ -30,6 +31,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
 
     prefabInstance.autosave = false;
 
+    prefabInstance.id = descriptor?.id ?? prefabInstance.id;
     prefabInstance.name = prefab.name;
 
     if (prefab.root) {
@@ -77,7 +79,8 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
             const prefabProps = c.props as ParticleSystemProps;
 
             props.copyValues(prefabProps);
-            
+            props.onChange = object.onChange;
+
             // Create a version of the props that has references to any overrides from this instance
             // and from the prefab and pass that ot the particleystem.
 
@@ -145,13 +148,55 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
   }
 
   toDescriptor(): PrefabInstanceDescriptor {
+    const nodes = this.getOverridingNodes();
+
     return ({
       id: this.id,
       name: this.name,
       object: {
         prefabId: this.prefab.id,
+        nodes: nodes.length > 0 ? nodes : undefined,
       }
     })
+  }
+
+  getOverridingNodes() {
+    const overridingNodes: PrefabInstanceNodeDesriptor[] = [];
+
+    if (this.root) {
+      let stack: SceneObjectBaseInterface[] = [this.root];
+
+      while (stack.length > 0) {
+        const instanceObject = stack[0];
+        stack = stack.slice(1);
+
+        const components = instanceObject.components.map((component) => {
+          const props = component.props.toDescriptor(true);
+
+          if (props !== undefined) {
+            return {
+              id: component.id,
+              type: component.type,
+              props,
+            }  
+          }
+        })
+          .filter((c) => c !== undefined)
+
+        if (components.length > 0) {
+          overridingNodes.push({
+            id: instanceObject.id,
+            components: [],
+            transformProps: instanceObject.transformProps.toDescriptor(),
+          })
+        }
+
+        // Add the nodes children to the stack
+        stack = stack.concat(instanceObject.objects.map((o) => o));
+      }
+    }
+
+    return overridingNodes;
   }
 
   async save(): Promise<void> {
@@ -169,7 +214,9 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
       }  
     }
     else {
-      const response = await Http.patch<PrefabInstanceDescriptor, void>(`/scene-objects/${this.id}`, this.toDescriptor());
+      const descriptor = this.toDescriptor();
+
+      const response = await Http.patch<PrefabInstanceDescriptor, void>(`/scene-objects/${this.id}`, descriptor);
 
       if (response.ok) {
   

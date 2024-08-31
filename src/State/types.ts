@@ -125,7 +125,7 @@ export type PrefabPropsDescriptor = ParticleSystemPropsDescriptor | LightPropsDe
 export type PrefabComponentDescriptor = {
   id: number,
   type: ComponentType,
-  props: PrefabPropsDescriptor,
+  props?: PrefabPropsDescriptor,
 }
 
 export type TransformPropsDescriptor = {

@@ -2,6 +2,7 @@ import { makeObservable, observable } from "mobx";
 import { LifetimeColorDescriptor } from "./Types";
 import PSColor from "./PSColor";
 import PSModule from "./PSModule";
+import { removeUndefinedKeys } from "../Properties/Types";
 
 class LifetimeColor extends PSModule {
   color: PSColor;
@@ -21,22 +22,31 @@ class LifetimeColor extends PSModule {
     this.color.copyValues(other.color, noOverrides);
   }
 
+  hasOverrides(): boolean {
+    return (
+      super.hasOverrides()
+      || this.color.override
+    )
+  }
+
   static fromDescriptor(descriptor?: LifetimeColorDescriptor, onChange?: () => void) {
     const lifetimeColor = new LifetimeColor(onChange);
 
     if (descriptor) {
-      lifetimeColor.enabled = descriptor.enabled;
+      lifetimeColor.enabled = descriptor.enabled ?? false;
       lifetimeColor.color = PSColor.fromDescriptor(descriptor.color, onChange);  
     }
 
     return lifetimeColor;
   }
 
-  toDescriptor(): LifetimeColorDescriptor {
-    return ({
-      enabled: this.enabled,
-      color: this.color.toDescriptor(),
-    })
+  toDescriptor(overridesOnly = false): LifetimeColorDescriptor | undefined {
+    const descriptor = {
+      enabled: this._enabled.toDescriptor(overridesOnly),
+      color: this.color.toDescriptor(overridesOnly),
+    };
+
+    return removeUndefinedKeys(descriptor)
   }
 }
 

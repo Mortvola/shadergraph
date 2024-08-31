@@ -1,4 +1,4 @@
-import { PSNumber } from "../Properties/Types";
+import { PSNumber, removeUndefinedKeys } from "../Properties/Types";
 import Collision from "./Collision";
 import LifetimeColor from "./LifetimeColor";
 import LifetimeSize from "./LIfetimeSize";
@@ -115,31 +115,53 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
     this.renderer.copyValues(other.renderer, noOverrides);
   }
 
+  hasOverrides(): boolean {
+    return (
+      this._duration.override
+      || this._maxPoints.override
+      || this._rate.override
+      || this.lifetime.override
+      || this.shape.hasOverrides()
+      || this.startVelocity.override
+      || this.startSize.override
+      || this.startColor.override
+      || this.lifetimeSize.hasOverrides()
+      || this.lifetimeVelocity.hasOverrides()
+      || this.lifetimeColor.hasOverrides()
+      || this.gravityModifier.override
+      || this.collision.hasOverrides()
+      || this.renderer.hasOverrides()
+    )
+  }
+  
   onChange?: () => void;
 
   handleChange = () => {
     if (this.onChange) {
       console.log('handle change')
-      //   this.onChange();
+        this.onChange();
     }
   }
 
-  toDescriptor(): ParticleSystemPropsDescriptor {
-    return ({
-      duration: this.duration,
-      maxPoints: this.maxPoints,
-      rate: this.rate,
-      shape: this.shape.toDescriptor(),
-      lifetime: this.lifetime.toDescriptor(),
-      startVelocity: this.startVelocity.toDescriptor(),
-      startSize: this.startSize.toDescriptor(),
-      lifetimeSize: this.lifetimeSize.toDescriptor(),
-      startColor: this.startColor.toDescriptor(),
-      lifetimeColor: this.lifetimeColor.toDescriptor(),
-      gravityModifier: this.gravityModifier.toDescriptor(),
-      collision: this.collision.toDescriptor(),
-      renderer: this.renderer.toDescriptor(),
-    })
+  toDescriptor(overridesOnly = false): ParticleSystemPropsDescriptor | undefined {
+    const descriptor = {
+      duration: this._duration.toDescriptor(overridesOnly),
+      maxPoints: this._maxPoints.toDescriptor(overridesOnly),
+      rate: this._duration.toDescriptor(overridesOnly),
+      shape: this.shape.toDescriptor(overridesOnly),
+      lifetime: this.lifetime.toDescriptor(overridesOnly),
+      startVelocity: this.startVelocity.toDescriptor(overridesOnly),
+      startSize: this.startSize.toDescriptor(overridesOnly),
+      startColor: this.startColor.toDescriptor(overridesOnly),
+      gravityModifier: this.gravityModifier.toDescriptor(overridesOnly),
+      lifetimeSize: this.lifetimeSize.toDescriptor(overridesOnly),
+      lifetimeVelocity: this.lifetimeVelocity.toDescriptor(overridesOnly),
+      lifetimeColor: this.lifetimeColor.toDescriptor(overridesOnly),
+      collision: this.collision.toDescriptor(overridesOnly),
+      renderer: this.renderer.toDescriptor(overridesOnly),
+    }
+
+    return removeUndefinedKeys(descriptor)
   }
 }
 
