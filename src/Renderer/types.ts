@@ -244,14 +244,6 @@ export interface LightInterface extends ComponentInterface {
   props: LightPropsInterface;
 }
 
-export type ComponentOverrides = {
-  id: number,
-  type: ComponentType,
-  overrides: ParticleSystemPropsOverrides | LightPropsOverrides,
-  props: ParticleSystemProps | LightProps,
-  object?: ParticleSystemInterface | LightInterface,
-}
-
 export type SceneObjectComponent = {
   id: number,
   type: ComponentType,

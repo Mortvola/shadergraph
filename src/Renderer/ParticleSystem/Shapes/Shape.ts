@@ -36,6 +36,14 @@ class Shape extends PSModule {
     })
   }
 
+  copyValues(other: Shape, noOverrides = true) {
+    super.copyValues(other, noOverrides);
+    this._type.copyValues(other._type, noOverrides);
+    this.cone.copyValues(other.cone, noOverrides);
+    this.sphere.copyValues(other.sphere, noOverrides);
+    this.hemisphere.copyValues(other.hemisphere, noOverrides);
+  }
+
   static fromDescriptor(descriptor?: ShapeDescriptor, onChange?: () => void) {
     const shape = new Shape(onChange);
 

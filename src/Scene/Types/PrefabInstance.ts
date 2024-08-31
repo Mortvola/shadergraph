@@ -1,7 +1,8 @@
 import Http from "../../Http/src";
 import Light from "../../Renderer/Drawables/Light";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
-import { ParticleSystemPropsInterface } from "../../Renderer/ParticleSystem/Types";
+import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
+import { ParticleSystemPropsDescriptor, ParticleSystemPropsInterface } from "../../Renderer/ParticleSystem/Types";
 import { ComponentType, LightPropsInterface } from "../../Renderer/Types";
 import Entity from "../../State/Entity";
 import {
@@ -17,49 +18,77 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
 
   root?: PrefabInstanceObject
 
+  autosave = true;
+
   constructor(prefab: PrefabInterface, id?: number) {
     super(id, `Prefab Instance ${Math.abs(id ?? 0)}`)
     this.prefab = prefab;
   }
 
-  static fromPrefab(prefab: PrefabInterface): PrefabInstance | undefined {
+  static async fromPrefab(prefab: PrefabInterface, descriptor?: PrefabInstanceDescriptor): Promise<PrefabInstance | undefined> {
     const prefabInstance = new PrefabInstance(prefab)
+
+    prefabInstance.autosave = false;
 
     prefabInstance.name = prefab.name;
 
     if (prefab.root) {
-      const object = PrefabInstance.fromPrefabNode(prefab, prefabInstance, prefab.root)
+      const object = await prefabInstance.fromPrefabNode(prefab, prefab.root, descriptor)
 
       prefabInstance.root = object;
 
+      prefabInstance.autosave = true;
+      
       return prefabInstance;
     }
   }
 
-  private static fromPrefabNode(
+  private async fromPrefabNode(
     prefab: PrefabInterface,  // refers to the prefab itself
-    prefabInstance: PrefabInstance, // refers to the instance of the prefab
     prefabNode: PrefabNodeInterface, // A node within the prefab itself
-  ): PrefabInstanceObject {
-    const object = new PrefabInstanceObject(prefabInstance);
+    descriptor?: PrefabInstanceDescriptor,
+  ): Promise<PrefabInstanceObject> {
+    const object = new PrefabInstanceObject(this);
 
-    object.prefabInstance = prefabInstance;
+    const nodeDescriptor = descriptor?.object.nodes?.find((n) => n.id === prefabNode.id);
+
+    object.prefabInstance = this;
   
     if (prefabNode) {
       object.name = prefabNode.name;
 
-      object.components = prefabNode.components.map((c) => {
+      object.components = (await Promise.all(prefabNode.components.map(async (c) => {
+        // Find a component descriptor that matches the id and type of the prefab component.
+        const componentDescriptor = nodeDescriptor?.components.find((component) => (
+          component.id === c.id && component.type === c.type
+        ));
+
         switch (c.type) {
           case ComponentType.ParticleSystem:
-            const ps = new ParticleSystem(c.props as ParticleSystemPropsInterface)
+            // Create props for this prefab instance based on the descriptor and the prefab's props.
+            let props: ParticleSystemProps;
+            if (componentDescriptor) {
+              props = await ParticleSystemProps.create(componentDescriptor.props as ParticleSystemPropsDescriptor)
+            }
+            else {
+              props = await ParticleSystemProps.create();
+            }
+
+            const prefabProps = c.props as ParticleSystemProps;
+
+            props.copyValues(prefabProps);
+            
+            // Create a version of the props that has references to any overrides from this instance
+            // and from the prefab and pass that ot the particleystem.
+
+            const ps = new ParticleSystem(prefabProps)
 
             object.sceneNode.addComponent(ps)
 
             return {
               id: c.id,
               type: c.type,
-              props: c.props,
-              overrides: {},
+              props: props,
               object: ps,
             }
 
@@ -72,17 +101,16 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
               id: c.id,
               type: c.type,
               props: c.props,
-              overrides: {},
               object: light,
             }
           }
         }
 
         return undefined
-      })
+      })))
       .filter((c) => c !== undefined)
       
-      object.objects = prefabNode.nodes.map((node) => PrefabInstance.fromPrefabNode(prefab, prefabInstance, node));
+      object.objects = await Promise.all(prefabNode.nodes.map((node) => this.fromPrefabNode(prefab, node, descriptor)));
 
       for (const child of object.objects) {
         child.parent = object;
@@ -112,9 +140,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
 
       const prefab = await Prefab.fromDescriptor(body);
 
-      const prefabInstance = PrefabInstance.fromPrefab(prefab);
-
-      return prefabInstance;
+      return PrefabInstance.fromPrefab(prefab, descriptor);
     }
   }
 

@@ -8,8 +8,10 @@ import {
   SceneObjectBaseInterface,
 } from "../../State/types";
 import Http from "../../Http/src";
-import { ComponentType, SceneObjectComponent, LightPropsDescriptor, NewSceneObjectComponent, ComponentOverrides, TransformPropsInterface } from "../../Renderer/Types";
-import { vec3 } from "wgpu-matrix";
+import {
+  ComponentType, SceneObjectComponent, LightPropsDescriptor, NewSceneObjectComponent,
+  TransformPropsInterface,
+} from "../../Renderer/Types";
 import SceneNode from "../../Renderer/Drawables/SceneNodes/SceneNode";
 import Light from "../../Renderer/Drawables/Light";
 import { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
@@ -31,6 +33,8 @@ export class SceneObjectBase extends Entity implements SceneObjectBaseInterface 
   parent: (SceneObjectBase | SceneObject | PrefabInstanceObject) | null = null;
 
   nextComponentId = 0;
+
+  autosave = true;
 
   constructor(id?: number, name?: string) {
     super(id, name ?? `Scene Object ${Math.abs(id ?? 0)}`)
@@ -159,6 +163,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
 
   static async fromDescriptor(descriptor?: SceneObjectDescriptor) {
     const object = new SceneObject();
+    object.autosave = false;
 
     if (descriptor) {
       object.id = descriptor.id;
@@ -245,6 +250,8 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
       object.sceneNode.transformProps = object.transformProps;
     }
 
+    object.autosave = true;
+    
     return object;
   }
 
@@ -295,7 +302,9 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
   }
 
   onChange = () => {
-    this.save();
+    if (this.autosave) {
+      this.save();
+    }
   }
 
   delete(): void {

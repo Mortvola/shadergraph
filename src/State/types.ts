@@ -230,11 +230,18 @@ export type SceneObjectDescriptor = {
   }
 }
 
+export type PrefabInstanceNodeDesriptor = {
+  id: number,
+  components: PrefabComponentDescriptor[],
+  transformProps?: TransformPropsDescriptor,
+}
+
 export type PrefabInstanceDescriptor = {
   id: number,
   name: string,
   object: {
     prefabId: number,
+    nodes?: PrefabInstanceNodeDesriptor[],
   }
 }
 

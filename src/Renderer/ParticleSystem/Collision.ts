@@ -36,6 +36,12 @@ class Collision extends PSModule {
     })
   }
 
+  copyValues(other: Collision, noOverrides = true) {
+    super.copyValues(other, noOverrides);
+    this._bounce.copyValues(other._bounce, noOverrides);
+    this._dampen.copyValues(other._dampen, noOverrides);
+  }
+
   static fromDescriptor(descriptor: CollisionDescriptor | undefined, onChange?: () => void) {
     const collision = new Collision(onChange);
 

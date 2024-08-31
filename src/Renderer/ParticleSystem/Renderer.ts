@@ -45,6 +45,12 @@ class Renderer extends PSModule {
     })
   }
 
+  copyValues(other: Renderer, noOverrides = true) {
+    super.copyValues(other, noOverrides);
+    this._mode.copyValues(other._mode, noOverrides);
+    this._material.copyValues(other._material, noOverrides);
+  }
+
   static async fromDescriptor(descriptor: RendererDescriptor | undefined, onChange?: () => void) {
     const renderer = new Renderer(onChange);
 

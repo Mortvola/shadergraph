@@ -16,6 +16,11 @@ class LifetimeColor extends PSModule {
     })
   }
 
+  copyValues(other: LifetimeColor, noOverrides = true) {
+    super.copyValues(other, noOverrides);
+    this.color.copyValues(other.color, noOverrides);
+  }
+
   static fromDescriptor(descriptor?: LifetimeColorDescriptor, onChange?: () => void) {
     const lifetimeColor = new LifetimeColor(onChange);
 

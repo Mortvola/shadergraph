@@ -49,6 +49,20 @@ class PSColor extends Property {
     this.reactOnChange(() => this.gradients);
   }
 
+  copyValues(other: PSColor, noOverrides = true) {
+    if (!this.override || !noOverrides) {
+      runInAction(() => {
+        this._type = other._type;
+        this._color = [
+          [...other._color[0]],
+          [...other._color[1]],
+        ];  
+      })
+      this.gradients[0].copy(other.gradients[0]);
+      this.gradients[1].copy(other.gradients[1]);
+    }
+  }
+
   static fromDescriptor(descriptor: PSColorDescriptor | undefined, onChange?: () => void) {
     const psColor = new PSColor(onChange);
 

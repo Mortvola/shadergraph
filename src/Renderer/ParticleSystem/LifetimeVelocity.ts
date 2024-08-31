@@ -16,6 +16,11 @@ class LifetimeVelocity extends PSModule {
     })
   }
 
+  copyValues(other: LifetimeVelocity, noOverrides = true) {
+    super.copyValues(other, noOverrides);
+    this.speedModifier.copyValues(other.speedModifier, noOverrides)
+  }
+
   static fromDescriptor(descriptor?: LifetimeVelocityDescriptor, onChange?: () => void) {
     const lifetimeVelocity = new LifetimeVelocity(onChange);
 

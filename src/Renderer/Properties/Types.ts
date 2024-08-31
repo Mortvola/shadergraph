@@ -45,6 +45,14 @@ export class PSScalarType<T> extends Property {
 
     this.reactOnChange(() => this.v)
   }
+
+  copyValues(other: PSScalarType<T>, noOverrides = true) {
+    runInAction(() => {
+      if (!this.override || !noOverrides) {
+        this.v = other.v;
+      }  
+    })
+  }
 }
 
 export class PSBoolean extends PSScalarType<boolean> {
@@ -77,5 +85,13 @@ export class PSMaterialItem extends PSScalarType<MaterialItemInterface | undefin
 export class PSVec3Type extends PSScalarType<Vec3> {
   constructor(value = vec3.create(), onChange?: () => void) {
     super(value, onChange)
+  }
+
+  copyValues(other: PSVec3Type, noOverrides = true) {
+    runInAction(() => {
+      if (!this.override || !noOverrides) {
+        vec3.copy(other.v, this.v);
+      }  
+    })
   }
 }

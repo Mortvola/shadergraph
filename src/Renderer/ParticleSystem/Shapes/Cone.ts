@@ -35,6 +35,11 @@ class Cone {
     })
   }
 
+  copyValues(other: Cone, noOverrides = true) {
+    this._angle.copyValues(other._angle, noOverrides);
+    this._originRadius.copyValues(other._originRadius, noOverrides);
+  }
+
   static fromDescriptor(descriptor?: ConeDescriptor, onChange?: () => void) {
     const cone = new Cone(onChange);
 

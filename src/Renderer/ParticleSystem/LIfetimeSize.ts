@@ -16,6 +16,11 @@ class LifetimeSize extends PSModule {
     })
   }
 
+  copyValues(other: LifetimeSize, noOverrides = true) {
+    super.copyValues(other, noOverrides);
+    this.size.copyValues(other.size, noOverrides);
+  }
+
   static fromDescriptor(descriptor?: LifetimeSizeDescriptor, onChange?: () => void) {
     const lifetimeSize = new LifetimeSize(onChange);
 

@@ -82,7 +82,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
             const prefab = await item.getItem();
   
             if (prefab) {
-              const prefabInstance = PrefabInstance.fromPrefab(prefab);
+              const prefabInstance = await PrefabInstance.fromPrefab(prefab);
     
               if (prefabInstance) {
                 await prefabInstance.save();

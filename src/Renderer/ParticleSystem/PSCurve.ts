@@ -17,6 +17,14 @@ class PSCurve {
     })
   }
 
+  copy(other: PSCurve) {
+    runInAction(() => {
+      this.points = other.points.map((p) => (
+        JSON.parse(JSON.stringify(p))
+      ))  
+    })
+  }
+
   static fromDescriptor(descriptor?: PSCurveDescriptor, onChange?: () => void) {
     const curve = new PSCurve(onChange);
 

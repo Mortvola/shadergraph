@@ -66,6 +66,18 @@ class PSValue extends Property {
     this.reactOnChange(() => this._curveRange)
   }
 
+  copyValues(other: PSValue, noOverrides = true) {
+    if (!this.override || !noOverrides) {
+      runInAction(() => {
+        this._type = other._type;
+        this._value = [...other._value];
+        this._curveRange = [...other._curveRange];  
+      })
+      this.curve[0].copy(other.curve[0]);
+      this.curve[1].copy(other.curve[1]);
+    }
+  }
+
   static fromDescriptor(descriptor?: PSValueDescriptor, onChange?: () => void) {
     const psValue = new PSValue(onChange)
 

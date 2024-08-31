@@ -39,6 +39,13 @@ class Gradient {
       colorKeys: observable,
     })
   }
+
+  copy(other: Gradient) {
+    runInAction(() => {
+      this.alphaKeys = JSON.parse(JSON.stringify(other.alphaKeys))
+      this.colorKeys = JSON.parse(JSON.stringify(other.colorKeys))  
+    })
+  }
   
   static fromDescriptor(descriptor: GradientDescriptor, onChange?: () => void) {
     const gradient = new Gradient(onChange);

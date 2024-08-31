@@ -73,9 +73,9 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
     this.shape = Shape.fromDescriptor(descriptor?.shape ?? { enabled: true, type: ShapeType.Cone, }, this.handleChange);
     this.startVelocity = PSValue.fromDescriptor(descriptor?.startVelocity, this.handleChange);
     this.startSize = PSValue.fromDescriptor(descriptor?.startSize, this.handleChange);
+    this.startColor = PSColor.fromDescriptor(descriptor?.startColor, this.handleChange);
     this.lifetimeSize = LifetimeSize.fromDescriptor(descriptor?.lifetimeSize, this.handleChange);
     this.lifetimeVelocity = LifetimeVelocity.fromDescriptor(descriptor?.lifetimeVelocity, this.handleChange);
-    this.startColor = PSColor.fromDescriptor(descriptor?.startColor, this.handleChange);
     this.lifetimeColor = LifetimeColor.fromDescriptor(descriptor?.lifetimeColor, this.handleChange);
     this.gravityModifier = PSValue.fromDescriptor(
       descriptor?.gravityModifier ?? {
@@ -94,6 +94,25 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
     );
 
     return new ParticleSystemProps(renderer, descriptor)
+  }
+
+  // Copies values from the other props except for
+  // properties that are makred as overrides
+  copyValues(other: ParticleSystemProps, noOverrides = true) {
+    this._duration.copyValues(other._duration, noOverrides);
+    this._maxPoints.copyValues(other._maxPoints, noOverrides);
+    this._rate.copyValues(other._rate, noOverrides);
+    this.lifetime.copyValues(other.lifetime, noOverrides)
+    this.shape.copyValues(other.shape, noOverrides);
+    this.startVelocity.copyValues(other.startVelocity, noOverrides);
+    this.startSize.copyValues(other.startSize, noOverrides);
+    this.startColor.copyValues(other.startColor, noOverrides);
+    this.lifetimeSize.copyValues(other.lifetimeSize, noOverrides);
+    this.lifetimeVelocity.copyValues(other.lifetimeVelocity, noOverrides);
+    this.lifetimeColor.copyValues(other.lifetimeColor, noOverrides);
+    this.gravityModifier.copyValues(other.gravityModifier, noOverrides);
+    this.collision.copyValues(other.collision, noOverrides);
+    this.renderer.copyValues(other.renderer, noOverrides);
   }
 
   onChange?: () => void;

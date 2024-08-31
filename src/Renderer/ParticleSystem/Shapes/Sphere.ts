@@ -25,6 +25,10 @@ class Sphere {
     })
   }
 
+  copyValues(other: Sphere, noOverrides = true) {
+    this._radius.copyValues(other._radius, noOverrides);
+  }
+
   static fromDescriptor(descriptor?: SphereDescriptor, onChange?: () => void) {
     const sphere = new Sphere(descriptor?.hemisphere ?? false, onChange);
 
