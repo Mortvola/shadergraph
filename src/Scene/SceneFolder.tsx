@@ -134,7 +134,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
         project={project}
         item={folder}
         onSelect={onSelect}
-        selected={folder.id === project.selectedObject?.id}
+        selected={folder === project.selectedObject}
         draggable
       />
       <div

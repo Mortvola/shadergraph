@@ -82,6 +82,7 @@ class PSColor extends Property {
   applyOverrides(descriptor?: PSColorDescriptor) {
     if (descriptor) {
       this.applyDescriptor(descriptor)
+      this.override = true;
     }
   }
 
