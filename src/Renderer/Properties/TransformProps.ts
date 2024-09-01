@@ -1,38 +1,41 @@
 import { Vec3, vec3 } from "wgpu-matrix";
 import { TransformPropsInterface } from "../Types";
-import { makeObservable, observable } from "mobx";
+import { observable } from "mobx";
 import { TransformPropsDescriptor } from "../../State/types";
-import { PSVec3Type } from "./Types";
+import { PropertyType, PSVec3Type, removeUndefinedKeys } from "./Types";
 
 class TransformProps implements TransformPropsInterface {
-  _translate: PSVec3Type
+  @observable
+  accessor _translate: PSVec3Type
 
   get translate(): Vec3 {
     return this._translate.value
   }
 
-  set translate(value: Vec3) {
-    this._translate.value = { value };
+  set translate(value: PropertyType<Vec3>) {
+    this._translate.value = value;
   }
   
-  _rotate: PSVec3Type;
+  @observable
+  accessor _rotate: PSVec3Type;
 
   get rotate(): Vec3 {
     return this._rotate.value
   }
 
-  set rotate(value: Vec3) {
-    this._rotate.value = { value };
+  set rotate(value: PropertyType<Vec3>) {
+    this._rotate.value = value;
   }
   
-  _scale: PSVec3Type;
+  @observable
+  accessor _scale: PSVec3Type;
 
   get scale(): Vec3 {
     return this._scale.value;
   }
 
-  set scale(value: Vec3) {
-    this._scale.value = { value };
+  set scale(value: PropertyType<Vec3>) {
+    this._scale.value = value;
   }
 
   constructor(descriptor?: Partial<TransformPropsDescriptor>, onChange?: () => void) {
@@ -41,24 +44,34 @@ class TransformProps implements TransformPropsInterface {
     this._scale = new PSVec3Type(vec3.create(1, 1, 1), onChange)
 
     if (descriptor) {
-      this.translate = vec3.create(...(descriptor.translate ?? [0, 0, 0]))
-      this.rotate = vec3.create(...(descriptor.rotate ?? [0, 0, 0]))
-      this.scale = vec3.create(...(descriptor.scale ?? [1, 1, 1]))
+      this.translate = { value: vec3.create(...(descriptor.translate ?? [0, 0, 0])) }
+      this.rotate = { value: vec3.create(...(descriptor.rotate ?? [0, 0, 0])) }
+      this.scale = { value: vec3.create(...(descriptor.scale ?? [1, 1, 1])) }
     }
-
-    makeObservable(this, {
-      _translate: observable,
-      _rotate: observable,
-      _scale: observable,
-    })
   }
 
-  toDescriptor(): TransformPropsDescriptor {
-    return ({
-      translate: [...this.translate],
-      rotate: [...this.rotate],
-      scale: [...this.scale],
-    })
+  copyValues(other: TransformProps, noOverrides = true) {
+    this._translate.copyValues(other._translate, noOverrides)
+    this._rotate.copyValues(other._rotate, noOverrides)
+    this._scale.copyValues(other._scale, noOverrides)
+  }
+
+  applyOverrides(overrides?: TransformPropsDescriptor) {
+    if (overrides) {
+      this._translate.applyOverride(overrides.translate)
+      this._rotate.applyOverride(overrides.rotate)
+      this._scale.applyOverride(overrides.scale)
+    }
+  }
+
+  toDescriptor(overridesOnly = false): TransformPropsDescriptor | undefined {
+    const descriptor = {
+      translate: this._translate.toDescriptor(overridesOnly),
+      rotate: this._rotate.toDescriptor(overridesOnly),
+      scale: this._scale.toDescriptor(overridesOnly),
+    }
+
+    return removeUndefinedKeys(descriptor)
   }
 }
 

@@ -10,6 +10,7 @@ import { MaterialItemInterface, TransformPropsDescriptor } from '../State/types'
 import Component from './Drawables/Component';
 import ParticleSystemProps from './ParticleSystem/ParticleSystemProps';
 import LightProps from './Drawables/LightProps';
+import { PropertyType } from './Properties/Types';
 
 export const maxInstances = 1000;
 
@@ -260,11 +261,16 @@ export type PrefabComponent = {
 }
 
 export interface TransformPropsInterface {
-  translate: Vec3;
-  rotate: Vec3;
-  scale: Vec3;
+  get translate(): Vec3;
+  set translate(value: PropertyType<Vec3>)
 
-  toDescriptor(): TransformPropsDescriptor;
+  get rotate(): Vec3;
+  set rotate(value: PropertyType<Vec3>)
+
+  get scale(): Vec3;
+  set scale(value: PropertyType<Vec3>)
+
+  toDescriptor(overridesOnly?: boolean): TransformPropsDescriptor | undefined;
 }
 
 export type GameObject = {

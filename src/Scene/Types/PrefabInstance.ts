@@ -3,6 +3,7 @@ import Light from "../../Renderer/Drawables/Light";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
+import TransformProps from "../../Renderer/Properties/TransformProps";
 import { ComponentType, LightPropsInterface } from "../../Renderer/Types";
 import Entity from "../../State/Entity";
 import {
@@ -105,7 +106,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
 
         return undefined
       })))
-      .filter((c) => c !== undefined)
+        .filter((c) => c !== undefined)
       
       object.objects = await Promise.all(prefabNode.nodes.map((node) => this.fromPrefabNode(prefab, node, descriptor)));
 
@@ -114,12 +115,12 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
         object.sceneNode.addNode(child.sceneNode)
       }
 
-      // The node id of the root node of a prefab is always zero.
-      // The root node always has its own copy of the transform props.
-      // All other nodes shall reference the corresponding node's prefab transforms.
-      if (prefabNode.id !== 0) {
-        object.transformProps = prefabNode.transformProps;
-      }
+      // Setup the transform
+      const prefabProps = prefabNode.transformProps;
+      const props = new TransformProps(undefined, object.onChange);
+      props.copyValues(prefabProps as TransformProps);
+      props.applyOverrides(nodeDescriptor?.transformProps)
+      object.transformProps = props;
 
       object.sceneNode.transformProps = object.transformProps;
 
@@ -179,11 +180,13 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
         })
           .filter((c) => c !== undefined)
 
-        if (components.length > 0) {
+        const transformProps = instanceObject.transformProps.toDescriptor(true);
+
+        if (components.length > 0 || transformProps) {
           overridingNodes.push({
             id: instanceObject.id,
+            transformProps,
             components,
-            // transformProps: instanceObject.transformProps.toDescriptor(),
           })
         }
 

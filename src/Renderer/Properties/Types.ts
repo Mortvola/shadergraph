@@ -115,6 +115,12 @@ export class PSVec3Type extends PSScalarType<Vec3> {
       }  
     })
   }
+
+  toDescriptor(overridesOnly = false): number[] | undefined {
+    if (!overridesOnly || this.override) {
+      return [...this.v]
+    }
+  }
 }
 
 export const removeUndefinedKeys = <T extends Record<string, unknown>>(obj: T): T | undefined => {

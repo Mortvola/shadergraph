@@ -129,9 +129,9 @@ export type PrefabComponentDescriptor = {
 }
 
 export type TransformPropsDescriptor = {
-  translate: number[],
-  rotate: number[],
-  scale: number[],
+  translate?: number[],
+  rotate?: number[],
+  scale?: number[],
 }
 
 export type TransformPropsOverrides = Partial<TransformPropsDescriptor>
