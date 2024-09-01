@@ -31,7 +31,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
   }
 
   collided(point: Particle, elapsedTime: number): boolean {
-    if (this.props.collision.enabled) {
+    if (this.props.collision.enabled.get()) {
       const planeNormal = vec4.create(0, 1, 0, 0);
       const planeOrigin = vec4.create(0, 0, 0, 1);
 
@@ -85,10 +85,10 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
             // Compute the reflection vector and account for how much bounce.
             const dot = vec4.dot(point.velocity, planeNormal);
 
-            point.velocity = vec4.subtract(point.velocity, vec4.scale(planeNormal, dot + dot * this.props.collision.bounce))
+            point.velocity = vec4.subtract(point.velocity, vec4.scale(planeNormal, dot + dot * this.props.collision.bounce.get()))
 
             // Allow the collision to dampen the velocity
-            point.velocity = vec4.scale(point.velocity, 1 - this.props.collision.dampen)  
+            point.velocity = vec4.scale(point.velocity, 1 - this.props.collision.dampen.get())  
 
             // Move the sphere to the intersection point
             // offset by the radius of the sphere along the plane normal.
@@ -125,7 +125,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       this.startTime = time;
     }
 
-    const elapsedTime2 = ((time - this.startTime) / 1000.0) % this.props.duration / this.props.duration;
+    const elapsedTime2 = ((time - this.startTime) / 1000.0) % this.props.duration.get() / this.props.duration.get();
 
     if (this.lastEmitTime === 0) {
       this.lastEmitTime = time;
@@ -161,7 +161,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
           this.props.gravityModifier.getValue(t) * gravity * elapsedTime,
         )
 
-        if (this.props.lifetimeVelocity.enabled) {
+        if (this.props.lifetimeVelocity.enabled.get()) {
           particle.velocity = vec4.scale(particle.velocity, this.props.lifetimeVelocity.speedModifier.getValue(t));
         }
 
@@ -181,7 +181,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
   }
 
   async renderParticle(particle: Particle, t: number) {
-    if (this.props.renderer.enabled && this.sceneNode) {
+    if (this.props.renderer.enabled.get() && this.sceneNode) {
       if (particle.sceneNode === null) {
         particle.sceneNode = new SceneNode();
         this.sceneNode.addNode(particle.sceneNode)  
@@ -196,7 +196,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
       let size = particle.startSize;
 
-      if (this.props.lifetimeSize.enabled) {
+      if (this.props.lifetimeSize.enabled.get()) {
         size *= this.props.lifetimeSize.size.getValue(t);
       }
 
@@ -204,7 +204,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
       let lifetimeColor = [1, 1, 1, 1];
 
-      if (this.props.lifetimeColor.enabled) {
+      if (this.props.lifetimeColor.enabled.get()) {
         lifetimeColor = this.props.lifetimeColor.color.getColor(t);
       }
 
@@ -220,10 +220,10 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
   }
 
   private async emit(time: number, t: number) {
-    if (this.particles.size < this.props.maxPoints) {
+    if (this.particles.size < this.props.maxPoints.get()) {
       const emitElapsedTime = time - this.lastEmitTime;
 
-      let numToEmit = Math.min(Math.trunc((this.props.rate / 1000) * emitElapsedTime), this.props.maxPoints - this.particles.size);
+      let numToEmit = Math.min(Math.trunc((this.props.rate.get() / 1000) * emitElapsedTime), this.props.maxPoints.get() - this.particles.size);
 
       if (numToEmit > 0) {
         this.lastEmitTime = time;

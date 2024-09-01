@@ -1,3 +1,4 @@
+import { PSNumber } from "../Properties/Property2"
 import Collision from "./Collision"
 import LifetimeColor from "./LifetimeColor"
 import LifetimeSize from "./LIfetimeSize"
@@ -162,11 +163,11 @@ export type ParticleSystemPropsDescriptor = {
 export type ParticleSystemPropsOverrides = Partial<ParticleSystemPropsDescriptor>;
 
 export interface ParticleSystemPropsInterface {
-  duration: number;
+  duration: PSNumber;
 
-  maxPoints: number;
+  maxPoints: PSNumber;
 
-  rate: number;
+  rate: PSNumber;
 
   shape: Shape;
 

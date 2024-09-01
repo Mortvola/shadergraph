@@ -123,8 +123,8 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
       props.applyOverrides(nodeDescriptor?.transformProps)
       object.transformProps = props;
 
-      vec3.copy(object.transformProps.translate, object.sceneNode.translate)
-      vec3.copy(object.transformProps.scale, object.sceneNode.scale)
+      vec3.copy(object.transformProps.translate.get(), object.sceneNode.translate)
+      vec3.copy(object.transformProps.scale.get(), object.sceneNode.scale)
 
       object.prefabNode = prefabNode;
     }

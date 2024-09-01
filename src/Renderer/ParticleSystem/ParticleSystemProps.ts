@@ -1,4 +1,5 @@
-import { PropertyType, PSNumber, removeUndefinedKeys } from "../Properties/Types";
+import { PSNumber } from "../Properties/Property2";
+import { PropertyType, removeUndefinedKeys } from "../Properties/Types";
 import Collision from "./Collision";
 import LifetimeColor from "./LifetimeColor";
 import LifetimeSize from "./LIfetimeSize";
@@ -13,35 +14,11 @@ import {
 } from "./Types";
 
 class ParticleSystemProps implements ParticleSystemPropsInterface {
-  _duration: PSNumber;
+  duration: PSNumber;
 
-  get duration(): number {
-    return this._duration.value;
-  }
-
-  set duration(value: PropertyType<number>) {
-    this._duration.value = value;
-  }
-
-  _maxPoints: PSNumber
-
-  get maxPoints(): number {
-    return this._maxPoints.value
-  }
-
-  set maxPoints(value: PropertyType<number>) {
-    this._maxPoints.value = value;
-  }
+  maxPoints: PSNumber
   
-  _rate: PSNumber
-
-  get rate(): number {
-    return this._rate.value;
-  }
-
-  set rate(value: PropertyType<number>) {
-    this._rate.value = value;
-  }
+  rate: PSNumber
 
   shape: Shape;
 
@@ -66,9 +43,9 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
   renderer: Renderer;
 
   private constructor(renderer: Renderer, descriptor?: ParticleSystemPropsDescriptor) {
-    this._duration = new PSNumber(descriptor?.duration ?? 5, this.handleChange);
-    this._rate = new PSNumber(descriptor?.rate ?? 2, this.handleChange);
-    this._maxPoints = new PSNumber(descriptor?.maxPoints ?? 50, this.handleChange);
+    this.duration = new PSNumber(descriptor?.duration ?? 5, this.handleChange);
+    this.rate = new PSNumber(descriptor?.rate ?? 2, this.handleChange);
+    this.maxPoints = new PSNumber(descriptor?.maxPoints ?? 50, this.handleChange);
     this.lifetime = PSValue.fromDescriptor(descriptor?.lifetime ?? { type: PSValueType.Constant, value: [5, 5] }, this.handleChange);
     this.shape = Shape.fromDescriptor(descriptor?.shape ?? { enabled: true, type: ShapeType.Cone, }, this.handleChange);
     this.startVelocity = PSValue.fromDescriptor(descriptor?.startVelocity, this.handleChange);
@@ -99,9 +76,9 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
   // Copies values from the other props except for
   // properties that are makred as overrides
   copyValues(other: ParticleSystemProps, noOverrides = true) {
-    this._duration.copyValues(other._duration, noOverrides);
-    this._maxPoints.copyValues(other._maxPoints, noOverrides);
-    this._rate.copyValues(other._rate, noOverrides);
+    this.duration.copyValues(other.duration, noOverrides);
+    this.maxPoints.copyValues(other.maxPoints, noOverrides);
+    this.rate.copyValues(other.rate, noOverrides);
     this.lifetime.copyValues(other.lifetime, noOverrides)
     this.shape.copyValues(other.shape, noOverrides);
     this.startVelocity.copyValues(other.startVelocity, noOverrides);
@@ -117,9 +94,9 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
 
   hasOverrides(): boolean {
     return (
-      this._duration.override
-      || this._maxPoints.override
-      || this._rate.override
+      this.duration.override
+      || this.maxPoints.override
+      || this.rate.override
       || this.lifetime.override
       || this.shape.hasOverrides()
       || this.startVelocity.override
@@ -136,9 +113,9 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
   
   async applyOverrides(overrides?: ParticleSystemPropsDescriptor) {
     if (overrides) {
-      this._duration.applyOverride(overrides?.duration);
-      this._maxPoints.applyOverride(overrides?.maxPoints);
-      this._rate.applyOverride(overrides?.rate);
+      this.duration.set(overrides?.duration, true);
+      this.maxPoints.set(overrides?.maxPoints, true);
+      this.rate.set(overrides?.rate, true);
       this.lifetime.applyOverrides(overrides?.lifetime);
       this.shape.applyOverrides(overrides?.shape);
       this.startVelocity.applyOverrides(overrides?.startVelocity);
@@ -164,9 +141,9 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
 
   toDescriptor(overridesOnly = false): ParticleSystemPropsDescriptor | undefined {
     const descriptor = {
-      duration: this._duration.toDescriptor(overridesOnly),
-      maxPoints: this._maxPoints.toDescriptor(overridesOnly),
-      rate: this._rate.toDescriptor(overridesOnly),
+      duration: this.duration.toDescriptor(overridesOnly),
+      maxPoints: this.maxPoints.toDescriptor(overridesOnly),
+      rate: this.rate.toDescriptor(overridesOnly),
       shape: this.shape.toDescriptor(overridesOnly),
       lifetime: this.lifetime.toDescriptor(overridesOnly),
       startVelocity: this.startVelocity.toDescriptor(overridesOnly),

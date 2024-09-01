@@ -15,18 +15,18 @@ const ShapeModule: React.FC<PropsType> = observer(({
   shape,
 }) => {
   const handleShapeTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    shape.type = event.target.value as ShapeType;
+    shape.type.set(event.target.value as ShapeType, true);
   }
 
   return (
     <div className={styles.shape}>
       <label>
         Shape:
-        <ShapeTypeSelector value={shape.type} onChange={handleShapeTypeChange} />
+        <ShapeTypeSelector value={shape.type.get()} onChange={handleShapeTypeChange} />
       </label>
       {
         (() => {
-          switch (shape.type) {
+          switch (shape.type.get()) {
             case ShapeType.Cone:
               return <Cone cone={shape.cone} />
 

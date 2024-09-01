@@ -19,6 +19,11 @@
   box-sizing: border-box;
 }
 
+.overriden {
+  color: #6060FF;
+  text-decoration: underline;
+}
+
 .item {
   display: flex;
   flex-direction: column;

@@ -33,7 +33,7 @@ class LifetimeVelocity extends PSModule {
     const lifetimeVelocity = new LifetimeVelocity(onChange);
 
     if (descriptor) {
-      lifetimeVelocity.enabled = descriptor.enabled ?? false;
+      lifetimeVelocity.enabled.set(descriptor.enabled ?? false);
       lifetimeVelocity.speedModifier = PSValue.fromDescriptor(descriptor.speedModifier, onChange);  
     }
 
@@ -41,13 +41,13 @@ class LifetimeVelocity extends PSModule {
   }
 
   applyOverrides(descriptor?: LifetimeVelocityDescriptor) {
-    this._enabled.applyOverride(descriptor?.enabled)
+    this.enabled.set(descriptor?.enabled, true)
     this.speedModifier.applyOverrides(descriptor?.speedModifier)
   }
 
   toDescriptor(overridesOnly = false): LifetimeVelocityDescriptor | undefined {
     const descriptor = {
-      enabled: this._enabled.toDescriptor(overridesOnly),
+      enabled: this.enabled.toDescriptor(overridesOnly),
       speedModifier: this.speedModifier.toDescriptor(overridesOnly),
     }
 

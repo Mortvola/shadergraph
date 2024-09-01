@@ -11,22 +11,22 @@ const Cone: React.FC<PropsType> = observer(({
   cone,
 }) => {
   const handleAngleChange = (value: number) => {
-    cone.angle = value
+    cone.angle.set(value, true);
   }
 
   const handleRadiusChange = (value: number) => {
-    cone.originRadius = value;
+    cone.originRadius.set(value, true);
   }
 
   return (
     <>
       <label>
         Angle:
-        <NumberInput value={cone.angle} onChange={handleAngleChange} />
+        <NumberInput value={cone.angle.get()} onChange={handleAngleChange} />
       </label>
       <label>
         Radius:
-        <NumberInput value={cone.originRadius} onChange={handleRadiusChange} />
+        <NumberInput value={cone.originRadius.get()} onChange={handleRadiusChange} />
       </label>
     </>
   )

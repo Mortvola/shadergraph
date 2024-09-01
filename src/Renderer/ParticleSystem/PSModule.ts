@@ -1,35 +1,31 @@
-import { PSBoolean } from "../Properties/Types";
+import { PSBoolean } from "../Properties/Property2"
 
 class PSModule {
-  _enabled: PSBoolean;
-
-  get enabled(): boolean {
-    return this._enabled.value
-  }
-
-  set enabled(value: boolean) {
-    this._enabled.value = { value };
-  }
+  enabled: PSBoolean;
 
   set onChange(value: (() => void) | undefined) {
     this.setOnChange(value)
   }
 
+  get onChange(): (() => void) | undefined {
+    return this.enabled.onChange
+  }
+
   constructor(onChange?: () => void) {
-    this._enabled = new PSBoolean(false, onChange)
+    this.enabled = new PSBoolean(false, onChange)
   }
 
   copyValues(other: PSModule, noOverrides = true) {
-    this._enabled.copyValues(other._enabled, noOverrides)
+    this.enabled.copyValues(other.enabled, noOverrides)
   }
 
   hasOverrides() {
-    return this._enabled.override
+    return this.enabled.override
   }
 
   protected setOnChange(onChange?: () => void) {
-    if (this._enabled !== undefined) {
-      this._enabled.onChange = onChange;
+    if (this.enabled !== undefined) {
+      this.enabled.onChange = onChange;
     }
   }
 }

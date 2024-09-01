@@ -8,47 +8,34 @@ import DrawableInterface from "../Drawables/DrawableInterface";
 import Billboard from "../Drawables/Billboard";
 import HorizontalBillboard from "../Drawables/HorizontalBillboard";
 import DrawableComponent from "../Drawables/DrawableComponent";
-import { PSMaterialItem, PSRenderMode, removeUndefinedKeys } from "../Properties/Types";
+import { removeUndefinedKeys } from "../Properties/Types";
+import { PSMaterialItem, PSRenderMode } from "../Properties/Property2";
 
 class Renderer extends PSModule {
-  _mode: PSRenderMode;
+  mode: PSRenderMode;
 
-  get mode(): RenderMode {
-    return this._mode.value
-  }
-
-  set mode(value: RenderMode) {
-    this._mode.value = { value };
-  }
-
-  _material: PSMaterialItem;
-
-  get material(): MaterialItemInterface | undefined {
-    return this._material.value
-  }
-
-  set material(value: MaterialItemInterface | undefined) {
-    this._material.value = { value };
-  }
+  material: PSMaterialItem;
 
   drawable: DrawableInterface | null = null;
 
   constructor(onChange?: () => void) {
     super(onChange);
 
-    this._mode = new PSRenderMode(RenderMode.Billboard, onChange);
-    this._material = new PSMaterialItem(undefined, onChange);
+    this.mode = new PSRenderMode(RenderMode.Billboard, this.onMaterialChange);
+    this.material = new PSMaterialItem(undefined, this.onMaterialChange);
+  }
 
-    makeObservable(this, {
-      _mode: observable,
-      _material: observable,
-    })
+  onMaterialChange = () => {
+    if (this.onChange) {
+      this.createDrawable();
+      this.onChange();
+    }
   }
 
   copyValues(other: Renderer, noOverrides = true) {
     super.copyValues(other, noOverrides);
-    this._mode.copyValues(other._mode, noOverrides);
-    this._material.copyValues(other._material, noOverrides);
+    this.mode.copyValues(other.mode, noOverrides);
+    this.material.copyValues(other.material, noOverrides);
 
     this.createDrawable();
   }
@@ -56,8 +43,8 @@ class Renderer extends PSModule {
   hasOverrides(): boolean {
     return (
       super.hasOverrides()
-      || this._mode.override
-      || this._material.override
+      || this.mode.override
+      || this.material.override
     )
   }
 
@@ -65,33 +52,34 @@ class Renderer extends PSModule {
     const renderer = new Renderer(onChange);
 
     if (descriptor) {
-      renderer.enabled = descriptor.enabled ?? false;
-      renderer.mode = descriptor.mode ?? RenderMode.Billboard;
+      renderer.enabled.set(descriptor.enabled ?? false);
+      renderer.mode.set(descriptor.mode ?? RenderMode.Billboard);
 
       if (descriptor?.materialId !== undefined) {
-        renderer.material = await materialManager.getItem(descriptor?.materialId)
-        renderer.createDrawable();
-      }  
+        renderer.material.set(await materialManager.getItem(descriptor?.materialId))
+      }
+
+      renderer.createDrawable();
     }
 
     return renderer;
   }
 
   async applyOverrides(descriptor?: RendererDescriptor) {
-    this._enabled.applyOverride(descriptor?.enabled)
-    this._mode.applyOverride(descriptor?.mode)
+    this.enabled.set(descriptor?.enabled, true)
+    this.mode.set(descriptor?.mode, true)
 
     if (descriptor?.materialId !== undefined) {
-      this.material = await materialManager.getItem(descriptor?.materialId)
+      this.material.set(await materialManager.getItem(descriptor?.materialId))
       this.createDrawable();
     }  
   }
 
   toDescriptor(overridesOnly = false): RendererDescriptor | undefined {
     const descriptor = {
-      enabled: this._enabled.toDescriptor(overridesOnly),
-      mode: this._mode.toDescriptor(overridesOnly),
-      materialId: (!overridesOnly || this._material.override) ? this.material?.id : undefined,
+      enabled: this.enabled.toDescriptor(overridesOnly),
+      mode: this.mode.toDescriptor(overridesOnly),
+      materialId: (!overridesOnly || this.material.override) ? this.material.get()?.id : undefined,
     }
 
     return removeUndefinedKeys(descriptor)
@@ -100,17 +88,17 @@ class Renderer extends PSModule {
   protected setOnChange(onChange: () => void) {
     super.setOnChange(onChange)
 
-    if (this._mode !== undefined) {
-      this._mode.onChange = onChange;
-    }
+    // if (this.mode !== undefined) {
+    //   this.mode.onChange = onChange;
+    // }
 
-    if (this._material !== undefined) {
-      this._material.onChange = onChange;
-    }
+    // if (this.material !== undefined) {
+    //   this.material.onChange = onChange;
+    // }
   }
 
   private createDrawable() {
-    switch (this.mode) {
+    switch (this.mode.get()) {
       case RenderMode.Billboard:
         if (!this.drawable || this.drawable.type !== 'Billboard') {
           this.drawable = new Billboard()
@@ -128,7 +116,7 @@ class Renderer extends PSModule {
   }
 
   getDrawableType(): DrawableType | undefined {
-    switch(this.mode) {
+    switch(this.mode.get()) {
       case RenderMode.Billboard:
         return 'Billboard'
 
@@ -138,7 +126,7 @@ class Renderer extends PSModule {
   }
 
   async createDrawableComponent() {
-    return await DrawableComponent.create(this.drawable!, this.material);
+    return await DrawableComponent.create(this.drawable!, this.material.get());
   }
 }
 

@@ -1,37 +1,26 @@
 import { makeObservable, observable } from "mobx";
-import { PSNumber, removeUndefinedKeys } from "../../Properties/Types";
+import { removeUndefinedKeys } from "../../Properties/Types";
 import { Vec4, vec4 } from "wgpu-matrix";
 import { SphereDescriptor } from "../Types";
+import { PSNumber } from "../../Properties/Property2";
 
 class Sphere {
-  _radius: PSNumber;
-
-  get radius(): number {
-    return this._radius.value
-  }
-
-  set radius(value: number) {
-    this._radius.value = { value };
-  }
+  radius: PSNumber;
 
   hemisphere = false;
 
   constructor(hemisphere = false, onChange?: () => void) {
-    this._radius = new PSNumber(1, onChange)
+    this.radius = new PSNumber(1, onChange)
     this.hemisphere = hemisphere;
-
-    makeObservable(this, {
-      _radius: observable,
-    })
   }
 
   copyValues(other: Sphere, noOverrides = true) {
-    this._radius.copyValues(other._radius, noOverrides);
+    this.radius.copyValues(other.radius, noOverrides);
   }
 
   hasOverrides() {
     return (
-      this._radius.override
+      this.radius.override
     )
   }
 
@@ -39,20 +28,20 @@ class Sphere {
     const sphere = new Sphere(descriptor?.hemisphere ?? false, onChange);
 
     if (descriptor) {
-      sphere.radius = descriptor.radius ?? sphere.radius;
+      sphere.radius.set(descriptor.radius ?? sphere.radius.get());
     }
 
     return sphere;
   }
 
   applyOverrides(descriptor?: SphereDescriptor) {
-    this._radius.applyOverride(descriptor?.radius)
+    this.radius.set(descriptor?.radius, true)
   }
 
   toDescriptor(overridesOnly = false): SphereDescriptor | undefined {
     const descriptor = {
-      radius: this._radius.toDescriptor(overridesOnly),
-      hemisphere: (!overridesOnly || this._radius.override) ? this.hemisphere : undefined,
+      radius: this.radius.toDescriptor(overridesOnly),
+      hemisphere: (!overridesOnly || this.radius.override) ? this.hemisphere : undefined,
     }
 
     return removeUndefinedKeys(descriptor)
@@ -85,7 +74,7 @@ class Sphere {
     }
   
     //const r = Math.cbrt(Math.random());
-    const r  = this.radius;
+    const r  = this.radius.get();
 
     return vec4.create(x * r, y * r, z * r, 1);
   }

@@ -134,8 +134,8 @@ export class SceneObjectBase extends Entity implements SceneObjectBaseInterface 
   }
 
   transformChanged = () => {
-    vec3.copy(this.transformProps.translate, this.sceneNode.translate)
-    vec3.copy(this.transformProps.scale, this.sceneNode.scale)
+    vec3.copy(this.transformProps.translate.get(), this.sceneNode.translate)
+    vec3.copy(this.transformProps.scale.get(), this.sceneNode.scale)
 
     this.onChange();
   }
@@ -248,14 +248,14 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
       }
 
       // Fix any scale values that are zero.
-      for (let i = 0; i < object.transformProps.scale.length; i += 1) {
-        if (object.transformProps.scale[i] === 0) {
-          object.transformProps.scale[i] = 1;
+      for (let i = 0; i < object.transformProps.scale.get().length; i += 1) {
+        if (object.transformProps.scale.get()[i] === 0) {
+          object.transformProps.scale.get()[i] = 1;
         }  
       }
 
-      vec3.copy(object.transformProps.translate, object.sceneNode.translate)
-      vec3.copy(object.transformProps.scale, object.sceneNode.scale)
+      vec3.copy(object.transformProps.translate.get(), object.sceneNode.translate)
+      vec3.copy(object.transformProps.scale.get(), object.sceneNode.scale)
     }
 
     object.autosave = true;
@@ -280,9 +280,9 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
         objects: this.objects.map((o) => {
           return (o.getObjectId())
         }),
-        translate: [...this.transformProps.translate],
-        rotate: [...this.transformProps.rotate],
-        scale: [...this.transformProps.scale],  
+        translate: [...this.transformProps.translate.get()],
+        rotate: [...this.transformProps.rotate.get()],
+        scale: [...this.transformProps.scale.get()],  
         nextComponentId: this.nextComponentId,
       }
     })

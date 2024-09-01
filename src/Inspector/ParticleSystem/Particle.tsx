@@ -22,30 +22,30 @@ const Particle: React.FC<PropsType> = observer(({
   }
 
   const handleDurationChange = (value: number) => {
-    particleSystemProps.duration = { value, override: true };
+    particleSystemProps.duration.set(value, true);
   }
 
   const handleMaxPointsChange = (value: number) => {
-    particleSystemProps.maxPoints = { value, override: true };
+    particleSystemProps.maxPoints.set(value, true);
   }
 
   const handleRateChange = (value: number) => {
-    particleSystemProps.rate = { value, override: true };
+    particleSystemProps.rate.set(value, true);
   }
 
   return (
     <div className={styles.particle}>
       <label>
         Duration:
-        <NumberInput value={particleSystemProps.duration} onChange={handleDurationChange} />
+        <NumberInput value={particleSystemProps.duration.get()} onChange={handleDurationChange} />
       </label>
       <label>
         Maximum Particles:
-        <NumberInput value={particleSystemProps.maxPoints} onChange={handleMaxPointsChange} />
+        <NumberInput value={particleSystemProps.maxPoints.get()} onChange={handleMaxPointsChange} />
       </label>
       <label>
         Emission Rate:
-        <NumberInput value={particleSystemProps.rate} onChange={handleRateChange} />
+        <NumberInput value={particleSystemProps.rate.get()} onChange={handleRateChange} />
       </label>
       <label>
         Lifetime:
@@ -71,13 +71,22 @@ const Particle: React.FC<PropsType> = observer(({
         <ShapeModule shape={particleSystemProps.shape} />
       </PSModule>
       <PSModule title="Size over lifetime" module={particleSystemProps.lifetimeSize}>
-        <PSValueInput value={particleSystemProps.lifetimeSize.size} />
+        <label>
+          Size:
+          <PSValueInput value={particleSystemProps.lifetimeSize.size} />
+        </label>
       </PSModule>
       <PSModule title="Color over lifetime" module={particleSystemProps.lifetimeColor}>
-        <PSColorInput value={particleSystemProps.lifetimeColor.color} />        
+        <label>
+          Color:
+          <PSColorInput value={particleSystemProps.lifetimeColor.color} />        
+        </label>
       </PSModule>
       <PSModule title="Velocity over lifetime" module={particleSystemProps.lifetimeVelocity}>
-        <PSValueInput value={particleSystemProps.lifetimeVelocity.speedModifier} />        
+        <label>
+          Speed Modifier:
+          <PSValueInput value={particleSystemProps.lifetimeVelocity.speedModifier} />        
+        </label>
       </PSModule>
       <PSModule title="Collsion" module={particleSystemProps.collision}>
         <Collision value={particleSystemProps.collision} />

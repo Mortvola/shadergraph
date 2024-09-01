@@ -57,9 +57,9 @@ class Prefab extends Entity implements PrefabInterface {
       // will reference the prefab's value.
       if (!prefab.root) {
         prefabNode.transformProps = new TransformProps({
-          translate: [...object.transformProps.translate],
-          rotate: [...object.transformProps.rotate],
-          scale: [...object.transformProps.scale],
+          translate: [...object.transformProps.translate.get()],
+          rotate: [...object.transformProps.rotate.get()],
+          scale: [...object.transformProps.scale.get()],
         }, prefabNode.onChange);
 
         prefab.root = prefabNode;

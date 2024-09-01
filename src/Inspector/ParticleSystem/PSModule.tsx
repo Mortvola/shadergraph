@@ -22,13 +22,13 @@ const PSModule: React.FC<PropsType> = observer(({
   }
 
   const handleEnableChange = (value: boolean) => {
-    module.enabled = value
+    module.enabled.set(value)
   }
 
   return (
     <div className={styles.layout}>
       <div onClick={handleOpenClick}>
-        <Checkbox label={title} value={module.enabled} onChange={handleEnableChange} />
+        <Checkbox label={title} value={module.enabled.get()} onChange={handleEnableChange} />
       </div>
         {
           open

@@ -11,6 +11,7 @@ import Component from './Drawables/Component';
 import ParticleSystemProps from './ParticleSystem/ParticleSystemProps';
 import LightProps from './Drawables/LightProps';
 import { PropertyType } from './Properties/Types';
+import { PSVec3Type } from './Properties/Property2';
 
 export const maxInstances = 1000;
 
@@ -263,14 +264,9 @@ export type PrefabComponent = {
 }
 
 export interface TransformPropsInterface {
-  get translate(): Vec3;
-  set translate(value: PropertyType<Vec3>)
-
-  get rotate(): Vec3;
-  set rotate(value: PropertyType<Vec3>)
-
-  get scale(): Vec3;
-  set scale(value: PropertyType<Vec3>)
+  translate: PSVec3Type;
+  rotate: PSVec3Type;
+  scale: PSVec3Type;
 
   toDescriptor(overridesOnly?: boolean): TransformPropsDescriptor | undefined;
 }

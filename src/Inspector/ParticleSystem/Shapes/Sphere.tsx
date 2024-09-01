@@ -11,14 +11,14 @@ const Sphere: React.FC<PropsType> = observer(({
   sphere,
 }) => {
   const handleRadiusChange = (value: number) => {
-    sphere.radius = value
+    sphere.radius.set(value, true)
   }
 
   return (
     <>
       <label>
         Radius:
-        <NumberInput value={sphere.radius} onChange={handleRadiusChange} />
+        <NumberInput value={sphere.radius.get()} onChange={handleRadiusChange} />
       </label>
     </>
   )

@@ -4,18 +4,11 @@ import Cone from "./Cone";
 import { vec4, Vec4 } from "wgpu-matrix";
 import Sphere from "./Sphere";
 import PSModule from "../PSModule";
-import { PSShapeType, removeUndefinedKeys } from "../../Properties/Types";
+import { removeUndefinedKeys } from "../../Properties/Types";
+import { PSShapeType } from "../../Properties/Property2";
 
 class Shape extends PSModule {
-  _type: PSShapeType;
-
-  get type(): ShapeType {
-    return this._type.value
-  }
-
-  set type(value: ShapeType) {
-    this._type.value = { value };
-  }
+  type: PSShapeType;
 
   cone: Cone;
 
@@ -26,19 +19,15 @@ class Shape extends PSModule {
   constructor(onChange?: () => void) {
     super(onChange);
   
-    this._type = new PSShapeType(ShapeType.Cone, onChange)
+    this.type = new PSShapeType(ShapeType.Cone, onChange)
     this.cone = new Cone(onChange);
     this.sphere = new Sphere(false, onChange);
     this.hemisphere = new Sphere(true, onChange);
-
-    makeObservable(this, {
-      _type: observable,
-    })
   }
 
   copyValues(other: Shape, noOverrides = true) {
     super.copyValues(other, noOverrides);
-    this._type.copyValues(other._type, noOverrides);
+    this.type.copyValues(other.type, noOverrides);
     this.cone.copyValues(other.cone, noOverrides);
     this.sphere.copyValues(other.sphere, noOverrides);
     this.hemisphere.copyValues(other.hemisphere, noOverrides);
@@ -46,7 +35,7 @@ class Shape extends PSModule {
 
   hasOverrides() {
     return (
-      this._type.override
+      this.type.override
       || this.cone.hasOverrides()
       || this.sphere.hasOverrides()
       || this.hemisphere.hasOverrides()
@@ -57,8 +46,8 @@ class Shape extends PSModule {
     const shape = new Shape(onChange);
 
     if (descriptor) {
-      shape.enabled = descriptor.enabled ?? false;
-      shape.type = descriptor.type ?? ShapeType.Cone;
+      shape.enabled.set(descriptor.enabled ?? false);
+      shape.type.set(descriptor.type ?? ShapeType.Cone);
       shape.cone = Cone.fromDescriptor(descriptor.cone, onChange);
       shape.sphere = Sphere.fromDescriptor(descriptor.sphere, onChange);
       shape.hemisphere = Sphere.fromDescriptor({ ...descriptor.hemisphere, hemisphere: true }, onChange);
@@ -68,8 +57,8 @@ class Shape extends PSModule {
   }
 
   applyOverrides(descriptor?: ShapeDescriptor) {
-    this._enabled.applyOverride(descriptor?.enabled)
-    this._type.applyOverride(descriptor?.type)
+    this.enabled.set(descriptor?.enabled, true)
+    this.type.set(descriptor?.type, true)
     this.cone.applyOverrides(descriptor?.cone)
     this.sphere.applyOverrides(descriptor?.sphere)
     this.hemisphere.applyOverrides(descriptor?.hemisphere)
@@ -77,8 +66,8 @@ class Shape extends PSModule {
 
   toDescriptor(overridesOnly = false): ShapeDescriptor | undefined {
     const descriptor = {
-      enabled: this._enabled.toDescriptor(overridesOnly),
-      type: this._type.toDescriptor(overridesOnly),
+      enabled: this.enabled.toDescriptor(overridesOnly),
+      type: this.type.toDescriptor(overridesOnly),
       cone: this.cone.toDescriptor(overridesOnly),
       sphere: this.sphere.toDescriptor(overridesOnly),
       hemisphere: this.hemisphere.toDescriptor(overridesOnly),
@@ -88,8 +77,8 @@ class Shape extends PSModule {
   }
 
   getPositionAndDirection(): [Vec4, Vec4] {
-    if (this.enabled) {
-      switch (this.type) {
+    if (this.enabled.get()) {
+      switch (this.type.get()) {
         case ShapeType.Sphere:
           return this.sphere.getPositionAndDirection();
 
