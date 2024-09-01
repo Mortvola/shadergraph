@@ -20,6 +20,7 @@ import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemPro
 import LightProps from "../../Renderer/Drawables/LightProps";
 import TransformProps from "../../Renderer/Properties/TransformProps";
 import PrefabInstance from "./PrefabInstance";
+import { vec3 } from "wgpu-matrix";
 
 export class SceneObjectBase extends Entity implements SceneObjectBaseInterface {
   components: SceneObjectComponent[] = []
@@ -131,8 +132,14 @@ export class SceneObjectBase extends Entity implements SceneObjectBaseInterface 
 
     return nextComponentId;    
   }
-}
 
+  transformChanged = () => {
+    vec3.copy(this.transformProps.translate, this.sceneNode.translate)
+    vec3.copy(this.transformProps.scale, this.sceneNode.scale)
+
+    this.onChange();
+  }
+}
 
 class SceneObject extends SceneObjectBase implements SceneObjectInterface {
   constructor(id?: number, name?: string) {
@@ -169,7 +176,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
       object.id = descriptor.id;
       object.name = descriptor?.name ?? object.name;
 
-      object.transformProps = new TransformProps(descriptor.object, object.onChange);
+      object.transformProps = new TransformProps(descriptor.object, object.transformChanged);
 
       let components = descriptor.object.components;
       if (!components) {
@@ -247,7 +254,8 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
         }  
       }
 
-      object.sceneNode.transformProps = object.transformProps;
+      vec3.copy(object.transformProps.translate, object.sceneNode.translate)
+      vec3.copy(object.transformProps.scale, object.sceneNode.scale)
     }
 
     object.autosave = true;
@@ -367,7 +375,9 @@ export class PrefabInstanceObject extends SceneObjectBase implements PrefabInsta
   onChange = () => {
     console.log('PrefabInstanceObject changed')
 
-    this.prefabInstance?.save();
+    if (this.prefabInstance?.autosave) {
+      this.prefabInstance?.save();
+    }
   }
 
   delete(): void {

@@ -23,7 +23,9 @@ export interface SceneNodeInterface {
 
   name: string;
 
-  transformProps: TransformPropsInterface
+  translate: Vec3;
+
+  scale: Vec3;
 
   qRotate: Quat;
 

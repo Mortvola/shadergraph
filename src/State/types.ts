@@ -203,6 +203,8 @@ export const isSceneObject = (r: unknown): r is SceneObjectInterface => (
 export interface PrefabInstanceInterface {
   id: number
 
+  autosave: boolean;
+  
   save(): Promise<void>
 
   delete(): Promise<void>

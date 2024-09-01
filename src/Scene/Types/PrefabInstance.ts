@@ -1,3 +1,4 @@
+import { vec3 } from "wgpu-matrix";
 import Http from "../../Http/src";
 import Light from "../../Renderer/Drawables/Light";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
@@ -117,12 +118,13 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
 
       // Setup the transform
       const prefabProps = prefabNode.transformProps;
-      const props = new TransformProps(undefined, object.onChange);
+      const props = new TransformProps(undefined, object.transformChanged);
       props.copyValues(prefabProps as TransformProps);
       props.applyOverrides(nodeDescriptor?.transformProps)
       object.transformProps = props;
 
-      object.sceneNode.transformProps = object.transformProps;
+      vec3.copy(object.transformProps.translate, object.sceneNode.translate)
+      vec3.copy(object.transformProps.scale, object.sceneNode.scale)
 
       object.prefabNode = prefabNode;
     }

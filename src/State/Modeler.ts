@@ -9,6 +9,7 @@ import { ModelerInterface, NodeMaterials, StoreInterface } from "./types";
 import { downloadFbx } from "../Fbx/LoadFbx";
 import { FbxNodeInterface, isFbxContainerNode, isFbxGeometryNode } from "../Fbx/types";
 import { materialManager } from "../Renderer/Materials/MaterialManager";
+import { vec3 } from "wgpu-matrix";
 
 class Modeler implements ModelerInterface {
   model: SceneNodeInterface | null = null;
@@ -147,8 +148,8 @@ const parseFbxModel = async (
   if (isFbxContainerNode(node)) {
     const container = new SceneNode();
 
-    container.transformProps.scale = { value: node.scale };
-    container.transformProps.translate = { value: node.translate };
+    vec3.copy(node.scale, container.scale);
+    vec3.copy(node.translate, container.translate);
     container.qRotate = node.qRotate;
     container.angles = node.angles.map((a) => a);
 
@@ -202,8 +203,8 @@ const parseFbxModel = async (
     drawableNode.addComponent(drawable);
     
     drawableNode.name = node.name;
-    drawableNode.transformProps.scale = { value: node.scale };
-    drawableNode.transformProps.translate = { value: node.translate };
+    vec3.copy(node.scale, drawableNode.scale);
+    vec3.copy(node.translate, drawableNode.translate);
     drawableNode.qRotate = node.qRotate;
     drawableNode.angles = node.angles.map((a) => a);
 

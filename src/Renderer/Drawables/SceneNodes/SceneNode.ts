@@ -1,4 +1,4 @@
-import { Mat4, Quat, Vec4, mat4, quat } from 'wgpu-matrix';
+import { Mat4, Quat, Vec3, Vec4, mat4, quat, vec3 } from 'wgpu-matrix';
 import DrawableInterface from "../DrawableInterface";
 import { SceneNodeInterface, RendererInterface, SceneGraphInterface, ComponentType, TransformPropsInterface } from '../../Types';
 import { isDrawableNode } from './utils';
@@ -28,7 +28,9 @@ class SceneNode implements SceneNodeInterface {
 
   postTransforms: Mat4[] = [];
 
-  transformProps: TransformPropsInterface = new TransformProps()
+  translate = vec3.create(0, 0, 0)
+
+  scale = vec3.create(1, 1, 1)
 
   qRotate = quat.fromEuler(0, 0, 0, rotationOrder);
 
@@ -67,9 +69,9 @@ class SceneNode implements SceneNodeInterface {
   }
 
   computeTransform(transform = mat4.identity(), prepend = true) {
-    mat4.translate(transform, this.transformProps.translate, this.transform);
+    mat4.translate(transform, this.translate, this.transform);
     mat4.multiply(this.transform, this.getRotation(), this.transform);
-    mat4.scale(this.transform, this.transformProps.scale, this.transform);
+    mat4.scale(this.transform, this.scale, this.transform);
 
     for (const t of this.postTransforms) {
       mat4.multiply(this.transform, t, this.transform)
