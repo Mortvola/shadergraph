@@ -11,8 +11,8 @@ class Cone {
     return this._angle.value
   }
 
-  set angle(newValue: number) {
-    this._angle.value = newValue;
+  set angle(value: number) {
+    this._angle.value = { value };
   }
 
   _originRadius: PSNumber;
@@ -21,8 +21,8 @@ class Cone {
     return this._originRadius.value
   }
 
-  set originRadius(newValue: number) {
-    this._originRadius.value = newValue;
+  set originRadius(value: number) {
+    this._originRadius.value = { value };
   }
 
   constructor(onChange?: () => void) {
@@ -56,7 +56,12 @@ class Cone {
     }
 
     return cone;
-  } 
+  }
+
+  applyOverrides(descriptor?: ConeDescriptor) {
+    this._angle.applyOverride(descriptor?.angle)
+    this._originRadius.applyOverride(descriptor?.originRadius)
+  }
 
   toDescriptor(overridesOnly  = false): ConeDescriptor | undefined {
     const descriptor = {

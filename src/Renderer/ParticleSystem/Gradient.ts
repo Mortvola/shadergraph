@@ -1,9 +1,10 @@
-import { makeObservable, observable, runInAction } from "mobx";
+import { makeObservable, observable, reaction, runInAction } from "mobx";
 import { lerp } from "../Math";
 import { AlphaGradientKey, ColorGradientKey, GradientDescriptor } from "./Types";
 
 class Gradient {
-  alphaKeys: AlphaGradientKey[] = [
+  @observable
+  accessor alphaKeys: AlphaGradientKey[] = [
     {
       id: 0,
       position: 0,
@@ -16,7 +17,8 @@ class Gradient {
     }
   ];
 
-  colorKeys: ColorGradientKey[] = [
+  @observable
+  accessor colorKeys: ColorGradientKey[] = [
     {
       id: 0,
       position: 0,
@@ -31,12 +33,22 @@ class Gradient {
 
   onChange?: () => void;
 
-  constructor(onChange?: () => void) {
-    this.onChange = onChange;
+  onOverride?: (override?: boolean) => void;
 
-    makeObservable(this, {
-      alphaKeys: observable,
-      colorKeys: observable,
+  constructor(onChange?: () => void, onOverride?: (override?: boolean) => void) {
+    this.onChange = onChange;
+    this.onOverride = onOverride;
+
+    reaction(() => this.alphaKeys, () => {
+      if (this.onChange) {
+        this.onChange()
+      }
+    })
+
+    reaction(() => this.colorKeys, () => {
+      if (this.onChange) {
+        this.onChange()
+      }
     })
   }
 
@@ -47,8 +59,8 @@ class Gradient {
     })
   }
   
-  static fromDescriptor(descriptor: GradientDescriptor, onChange?: () => void) {
-    const gradient = new Gradient(onChange);
+  static fromDescriptor(descriptor: GradientDescriptor, onChange?: () => void, onOverride?: (override?: boolean) => void) {
+    const gradient = new Gradient(onChange, onOverride);
 
     gradient.alphaKeys = descriptor.alphaKeys.map((k) => ({ ...k }));
     gradient.colorKeys = descriptor.colorKeys.map((k) => ({ ...k }));
@@ -80,10 +92,6 @@ class Gradient {
           newKey,
           ...this.alphaKeys.slice(index),
         ];
-
-        if (this.onChange) {
-          this.onChange();
-        }
       })
 
       return newKey;
@@ -107,10 +115,6 @@ class Gradient {
           newKey,
           ...this.colorKeys.slice(index),
         ];
-
-        if (this.onChange) {
-          this.onChange();
-        }
       })
 
       return newKey;
@@ -132,10 +136,6 @@ class Gradient {
           ...this.alphaKeys.slice(0, index),
           ...this.alphaKeys.slice(index + 1),
         ];
-
-        if (this.onChange) {
-          this.onChange();
-        }
       })
     }
   }
@@ -155,10 +155,6 @@ class Gradient {
           ...this.colorKeys.slice(0, index),
           ...this.colorKeys.slice(index + 1),
         ]
-
-        if (this.onChange) {
-          this.onChange();
-        }
       })
     }
   }
@@ -182,10 +178,6 @@ class Gradient {
           },
           ...this.alphaKeys.slice(index + 1),
         ]
-
-        if (this.onChange) {
-          this.onChange();
-        }
       })
 
       return true;
@@ -213,10 +205,6 @@ class Gradient {
           },
           ...this.colorKeys.slice(index + 1),
         ]
-
-        if (this.onChange) {
-          this.onChange();
-        }
       })
 
       return true;
@@ -238,10 +226,6 @@ class Gradient {
           },
           ...this.alphaKeys.slice(index + 1),
         ];
-
-        if (this.onChange) {
-          this.onChange();
-        }
       })
 
       return true;
@@ -250,10 +234,14 @@ class Gradient {
     return false;
   }
 
-  colorChange(id: number, color: number[]) {
+  colorChange(id: number, color: number[], override?: boolean) {
     const index = this.colorKeys.findIndex((k) => k.id === id);
 
     if (index !== -1) {
+      if (this.onOverride) {
+        this.onOverride(override)
+      }
+      
       runInAction(() => {
         this.colorKeys = [
           ...this.colorKeys.slice(0, index),
@@ -263,10 +251,6 @@ class Gradient {
           },
           ...this.colorKeys.slice(index + 1),
         ];
-
-        if (this.onChange) {
-          this.onChange();
-        }
       })
 
       return true;

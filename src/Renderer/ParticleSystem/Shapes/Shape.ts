@@ -13,8 +13,8 @@ class Shape extends PSModule {
     return this._type.value
   }
 
-  set type(newValue: ShapeType) {
-    this._type.value = newValue;
+  set type(value: ShapeType) {
+    this._type.value = { value };
   }
 
   cone: Cone;
@@ -65,6 +65,14 @@ class Shape extends PSModule {
     }
 
     return shape;
+  }
+
+  applyOverrides(descriptor?: ShapeDescriptor) {
+    this._enabled.applyOverride(descriptor?.enabled)
+    this._type.applyOverride(descriptor?.type)
+    this.cone.applyOverrides(descriptor?.cone)
+    this.sphere.applyOverrides(descriptor?.sphere)
+    this.hemisphere.applyOverrides(descriptor?.hemisphere)
   }
 
   toDescriptor(overridesOnly = false): ShapeDescriptor | undefined {

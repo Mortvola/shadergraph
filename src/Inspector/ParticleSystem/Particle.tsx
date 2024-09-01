@@ -22,15 +22,15 @@ const Particle: React.FC<PropsType> = observer(({
   }
 
   const handleDurationChange = (value: number) => {
-    particleSystemProps.duration = value;
+    particleSystemProps.duration = { value, override: true };
   }
 
   const handleMaxPointsChange = (value: number) => {
-    particleSystemProps.maxPoints = value;
+    particleSystemProps.maxPoints = { value, override: true };
   }
 
   const handleRateChange = (value: number) => {
-    particleSystemProps.rate = value;
+    particleSystemProps.rate = { value, override: true };
   }
 
   return (

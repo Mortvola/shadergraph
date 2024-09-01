@@ -57,6 +57,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     object.prefabInstance = this;
   
     if (prefabNode) {
+      object.id = prefabNode.id;
       object.name = prefabNode.name;
 
       object.components = (await Promise.all(prefabNode.components.map(async (c) => {
@@ -67,24 +68,17 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
 
         switch (c.type) {
           case ComponentType.ParticleSystem:
-            // Create props for this prefab instance based on the descriptor and the prefab's props.
-            let props: ParticleSystemProps;
-            if (componentDescriptor) {
-              props = await ParticleSystemProps.create(componentDescriptor.props as ParticleSystemPropsDescriptor)
-            }
-            else {
-              props = await ParticleSystemProps.create();
-            }
-
             const prefabProps = c.props as ParticleSystemProps;
 
+            const props = await ParticleSystemProps.create();
             props.copyValues(prefabProps);
+            await props.applyOverrides(componentDescriptor?.props as ParticleSystemPropsDescriptor)
             props.onChange = object.onChange;
 
             // Create a version of the props that has references to any overrides from this instance
             // and from the prefab and pass that ot the particleystem.
 
-            const ps = new ParticleSystem(prefabProps)
+            const ps = new ParticleSystem(props)
 
             object.sceneNode.addComponent(ps)
 
@@ -188,8 +182,8 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
         if (components.length > 0) {
           overridingNodes.push({
             id: instanceObject.id,
-            components: [],
-            transformProps: instanceObject.transformProps.toDescriptor(),
+            components,
+            // transformProps: instanceObject.transformProps.toDescriptor(),
           })
         }
 

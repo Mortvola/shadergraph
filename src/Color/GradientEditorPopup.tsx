@@ -93,7 +93,7 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
   const handleColorChange = (color: number[]) => {
     if (
       selectedColorId !== undefined
-      && value.colorChange(selectedColorId, color)
+      && value.colorChange(selectedColorId, color, true)
     ) {
       setColor(color)
     }

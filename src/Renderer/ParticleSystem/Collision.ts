@@ -10,8 +10,8 @@ class Collision extends PSModule {
     return this._bounce.value
   }
 
-  set bounce(newValue: number) {
-    this._bounce.value = newValue
+  set bounce(value: number) {
+    this._bounce.value = { value }
   }
 
   _dampen: PSNumber;
@@ -20,8 +20,8 @@ class Collision extends PSModule {
     return this._dampen.value
   }
 
-  set dampen(newValue: number) {
-    this._dampen.value = newValue
+  set dampen(value: number) {
+    this._dampen.value = { value }
   }
 
   constructor(onChange?: () => void) {
@@ -60,6 +60,12 @@ class Collision extends PSModule {
     }
 
     return collision;
+  }
+
+  applyOverrides(descriptor?: CollisionDescriptor) {
+    this._enabled.applyOverride(descriptor?.enabled)
+    this._bounce.applyOverride(descriptor?.bounce)
+    this._dampen.applyOverride(descriptor?.dampen)
   }
 
   toDescriptor(overridesOnly = false): CollisionDescriptor | undefined {

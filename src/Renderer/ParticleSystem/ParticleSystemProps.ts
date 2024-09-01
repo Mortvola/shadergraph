@@ -1,4 +1,4 @@
-import { PSNumber, removeUndefinedKeys } from "../Properties/Types";
+import { PropertyType, PSNumber, removeUndefinedKeys } from "../Properties/Types";
 import Collision from "./Collision";
 import LifetimeColor from "./LifetimeColor";
 import LifetimeSize from "./LIfetimeSize";
@@ -19,8 +19,8 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
     return this._duration.value;
   }
 
-  set duration(newValue: number) {
-    this._duration.value = newValue;
+  set duration(value: PropertyType<number>) {
+    this._duration.value = value;
   }
 
   _maxPoints: PSNumber
@@ -29,8 +29,8 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
     return this._maxPoints.value
   }
 
-  set maxPoints(newValue: number) {
-    this._maxPoints.value = newValue;
+  set maxPoints(value: PropertyType<number>) {
+    this._maxPoints.value = value;
   }
   
   _rate: PSNumber
@@ -39,8 +39,8 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
     return this._rate.value;
   }
 
-  set rate(newValue: number) {
-    this._rate.value = newValue;
+  set rate(value: PropertyType<number>) {
+    this._rate.value = value;
   }
 
   shape: Shape;
@@ -134,6 +134,25 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
     )
   }
   
+  async applyOverrides(overrides?: ParticleSystemPropsDescriptor) {
+    if (overrides) {
+      this._duration.applyOverride(overrides?.duration);
+      this._maxPoints.applyOverride(overrides?.maxPoints);
+      this._rate.applyOverride(overrides?.rate);
+      this.lifetime.applyOverrides(overrides?.lifetime);
+      this.shape.applyOverrides(overrides?.shape);
+      this.startVelocity.applyOverrides(overrides?.startVelocity);
+      this.startSize.applyOverrides(overrides?.startSize);
+      this.startColor.applyOverrides(overrides?.startColor);
+      this.lifetimeSize.applyOverrides(overrides?.lifetimeSize);
+      this.lifetimeVelocity.applyOverrides(overrides?.lifetimeVelocity);
+      this.lifetimeColor.applyOverrides(overrides?.lifetimeColor);
+      this.gravityModifier.applyOverrides(overrides?.gravityModifier);
+      this.collision.applyOverrides(overrides?.collision);
+      await this.renderer.applyOverrides(overrides?.renderer);  
+    }
+  }
+
   onChange?: () => void;
 
   handleChange = () => {
@@ -147,7 +166,7 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
     const descriptor = {
       duration: this._duration.toDescriptor(overridesOnly),
       maxPoints: this._maxPoints.toDescriptor(overridesOnly),
-      rate: this._duration.toDescriptor(overridesOnly),
+      rate: this._rate.toDescriptor(overridesOnly),
       shape: this.shape.toDescriptor(overridesOnly),
       lifetime: this.lifetime.toDescriptor(overridesOnly),
       startVelocity: this.startVelocity.toDescriptor(overridesOnly),

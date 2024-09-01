@@ -11,8 +11,8 @@ class TransformProps implements TransformPropsInterface {
     return this._translate.value
   }
 
-  set translate(newValue: Vec3) {
-    this._translate.value = newValue;
+  set translate(value: Vec3) {
+    this._translate.value = { value };
   }
   
   _rotate: PSVec3Type;
@@ -21,8 +21,8 @@ class TransformProps implements TransformPropsInterface {
     return this._rotate.value
   }
 
-  set rotate(newValue: Vec3) {
-    this._rotate.value = newValue;
+  set rotate(value: Vec3) {
+    this._rotate.value = { value };
   }
   
   _scale: PSVec3Type;
@@ -31,8 +31,8 @@ class TransformProps implements TransformPropsInterface {
     return this._scale.value;
   }
 
-  set scale(newValue: Vec3) {
-    this._scale.value = newValue;
+  set scale(value: Vec3) {
+    this._scale.value = { value };
   }
 
   constructor(descriptor?: Partial<TransformPropsDescriptor>, onChange?: () => void) {

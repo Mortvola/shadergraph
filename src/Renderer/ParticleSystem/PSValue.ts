@@ -79,21 +79,32 @@ class PSValue extends Property {
     const psValue = new PSValue(onChange)
 
     if (descriptor) {
-      psValue.type = descriptor.type ?? PSValueType.Constant;
-      psValue.value = descriptor.value !== undefined
-        ? [descriptor.value[0], descriptor.value[1]]
-        : [1, 1];
-      psValue.curve = [
-        PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 0) ? descriptor.curve![0] : undefined, onChange),
-        PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 1) ? descriptor.curve![1] : undefined, onChange),
-      ];
-      psValue.curveRange = [
-        descriptor.curveRange ? descriptor.curveRange[0] : 0,
-        descriptor.curveRange ? descriptor.curveRange[1] : 1,
-      ]
+      psValue.applyDescriptor(descriptor)
     }
 
     return psValue;
+  }
+
+  applyOverrides(descriptor?: PSValueDescriptor) {
+    if (descriptor) {
+      this.applyDescriptor(descriptor);
+      this.override = true;
+    }
+  }
+
+  applyDescriptor(descriptor: PSValueDescriptor) {
+    this.type = descriptor.type ?? PSValueType.Constant;
+    this.value = descriptor.value !== undefined
+      ? [descriptor.value[0], descriptor.value[1]]
+      : [1, 1];
+    this.curve = [
+      PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 0) ? descriptor.curve![0] : undefined, this.onChange),
+      PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 1) ? descriptor.curve![1] : undefined, this.onChange),
+    ];
+    this.curveRange = [
+      descriptor.curveRange ? descriptor.curveRange[0] : 0,
+      descriptor.curveRange ? descriptor.curveRange[1] : 1,
+    ]
   }
 
   toDescriptor(overridesOnly = false): PSValueDescriptor | undefined {

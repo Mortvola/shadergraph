@@ -10,8 +10,8 @@ class Sphere {
     return this._radius.value
   }
 
-  set radius(newValue: number) {
-    this._radius.value = newValue;
+  set radius(value: number) {
+    this._radius.value = { value };
   }
 
   hemisphere = false;
@@ -43,6 +43,10 @@ class Sphere {
     }
 
     return sphere;
+  }
+
+  applyOverrides(descriptor?: SphereDescriptor) {
+    this._radius.applyOverride(descriptor?.radius)
   }
 
   toDescriptor(overridesOnly = false): SphereDescriptor | undefined {

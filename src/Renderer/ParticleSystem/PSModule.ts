@@ -7,12 +7,12 @@ class PSModule {
     return this._enabled.value
   }
 
-  set enabled(newValue: boolean) {
-    this._enabled.value = newValue;
+  set enabled(value: boolean) {
+    this._enabled.value = { value };
   }
 
-  set onChange(newValue: (() => void) | undefined) {
-    this.setOnChange(newValue)
+  set onChange(value: (() => void) | undefined) {
+    this.setOnChange(value)
   }
 
   constructor(onChange?: () => void) {

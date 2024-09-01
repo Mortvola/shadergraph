@@ -17,8 +17,8 @@ class Renderer extends PSModule {
     return this._mode.value
   }
 
-  set mode(newValue: RenderMode) {
-    this._mode.value = newValue;
+  set mode(value: RenderMode) {
+    this._mode.value = { value };
   }
 
   _material: PSMaterialItem;
@@ -27,8 +27,8 @@ class Renderer extends PSModule {
     return this._material.value
   }
 
-  set material(newValue: MaterialItemInterface | undefined) {
-    this._material.value = newValue;
+  set material(value: MaterialItemInterface | undefined) {
+    this._material.value = { value };
   }
 
   drawable: DrawableInterface | null = null;
@@ -49,6 +49,8 @@ class Renderer extends PSModule {
     super.copyValues(other, noOverrides);
     this._mode.copyValues(other._mode, noOverrides);
     this._material.copyValues(other._material, noOverrides);
+
+    this.createDrawable();
   }
 
   hasOverrides(): boolean {
@@ -68,12 +70,21 @@ class Renderer extends PSModule {
 
       if (descriptor?.materialId !== undefined) {
         renderer.material = await materialManager.getItem(descriptor?.materialId)
+        renderer.createDrawable();
       }  
     }
 
-    renderer.createDrawable();
-
     return renderer;
+  }
+
+  async applyOverrides(descriptor?: RendererDescriptor) {
+    this._enabled.applyOverride(descriptor?.enabled)
+    this._mode.applyOverride(descriptor?.mode)
+
+    if (descriptor?.materialId !== undefined) {
+      this.material = await materialManager.getItem(descriptor?.materialId)
+      this.createDrawable();
+    }  
   }
 
   toDescriptor(overridesOnly = false): RendererDescriptor | undefined {

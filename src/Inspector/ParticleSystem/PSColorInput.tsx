@@ -14,17 +14,23 @@ const PSColorInput: React.FC<PropsType> = observer(({
   value,
 }) => {
   const handleMinChange = (color: number[]) => {
-    value.color = [
-      color,
-      value.color[1],
-    ]
+    value.color = {
+      value: [
+        color,
+        value.color[1],
+      ],
+      override: true,
+    }
   }
 
   const handleMaxChange = (color: number[]) => {
-    value.color = [
-      value.color[0],
-      color,
-    ]
+    value.color = {
+      value: [
+        value.color[0],
+        color,
+      ],
+      override: true,
+    }
   }
 
   const handleTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {

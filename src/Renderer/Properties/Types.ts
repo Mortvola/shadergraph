@@ -3,6 +3,18 @@ import { MaterialItemInterface } from "../../State/types";
 import { RenderMode, ShapeType } from "../ParticleSystem/Types";
 import { vec3, Vec3 } from "wgpu-matrix";
 
+export class Property2<T> {
+  @observable accessor override = false;
+
+  @observable accessor value: T;
+
+  constructor(value: T, onChange?: () => void) {
+    this.value = value;
+  }
+}
+
+export type PropertyType<T> = { value: T, override?: boolean }
+
 export class Property {
   @observable accessor override = false;
 
@@ -28,10 +40,17 @@ export class PSScalarType<T> extends Property {
     return this.v;
   }
 
-  set value(newValue: T) {
+  set value(newValue: { value: T, override?: boolean}) {
     runInAction(() => {
-      this.v = newValue;
+      this.v = newValue.value;
+      this.override = newValue.override ?? this.override;
     })
+  }
+
+  applyOverride(value?: T) {
+    if (value !== undefined) {
+      this.value = { value, override: true }
+    }
   }
 
   constructor(value: T, onChange?: () => void) {

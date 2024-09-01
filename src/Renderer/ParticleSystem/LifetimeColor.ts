@@ -40,6 +40,11 @@ class LifetimeColor extends PSModule {
     return lifetimeColor;
   }
 
+  applyOverrides(descriptor?: LifetimeColorDescriptor) {
+    this._enabled.applyOverride(descriptor?.enabled)
+    this.color.applyOverrides(descriptor?.color)
+  }
+
   toDescriptor(overridesOnly = false): LifetimeColorDescriptor | undefined {
     const descriptor = {
       enabled: this._enabled.toDescriptor(overridesOnly),
