@@ -1,4 +1,4 @@
-import { PSNumber } from "../Properties/Property2"
+import { PSNumber } from "../Properties/Property"
 import Collision from "./Collision"
 import LifetimeColor from "./LifetimeColor"
 import LifetimeSize from "./LIfetimeSize"

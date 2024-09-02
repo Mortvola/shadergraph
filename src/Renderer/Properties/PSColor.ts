@@ -3,7 +3,7 @@ import { lerp } from "../Math";
 import { PSColorDescriptor, PSColorType } from "../ParticleSystem/Types";
 import Gradient from '../ParticleSystem/Gradient';
 import { PropertyType } from "./Types";
-import { PropertyBase } from "./Property2";
+import { PropertyBase } from "./Property";
 
 type ColorPair = [number[], number[]];
 

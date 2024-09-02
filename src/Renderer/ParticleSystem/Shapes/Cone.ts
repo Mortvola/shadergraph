@@ -3,7 +3,7 @@ import { ConeDescriptor } from "../Types";
 import { mat4, Vec4, vec4 } from "wgpu-matrix";
 import { degToRad } from "../../Math";
 import { removeUndefinedKeys } from "../../Properties/Types";
-import { PSNumber } from "../../Properties/Property2";
+import { PSNumber } from "../../Properties/Property";
 
 class Cone {
   angle: PSNumber;

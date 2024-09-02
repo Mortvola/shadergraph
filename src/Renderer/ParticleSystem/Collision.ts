@@ -2,7 +2,7 @@ import { makeObservable, observable } from "mobx";
 import PSModule from "./PSModule";
 import { CollisionDescriptor } from "./Types";
 import { removeUndefinedKeys } from "../Properties/Types";
-import { PSNumber } from "../Properties/Property2";
+import { PSNumber } from "../Properties/Property";
 
 class Collision extends PSModule {
   bounce: PSNumber

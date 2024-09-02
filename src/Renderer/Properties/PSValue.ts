@@ -3,7 +3,7 @@ import { lerp } from "../Math";
 import { PSValueDescriptor, PSValueType } from "../ParticleSystem/Types";
 import PSCurve from "./PSCurve";
 import { PropertyType } from "./Types";
-import { PropertyBase } from "./Property2";
+import { PropertyBase } from "./Property";
 
 class PSValue extends PropertyBase {
   // Methods for type

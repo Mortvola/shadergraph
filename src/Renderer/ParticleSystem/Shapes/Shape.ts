@@ -5,7 +5,7 @@ import { vec4, Vec4 } from "wgpu-matrix";
 import Sphere from "./Sphere";
 import PSModule from "../PSModule";
 import { removeUndefinedKeys } from "../../Properties/Types";
-import { PSShapeType } from "../../Properties/Property2";
+import { PSShapeType } from "../../Properties/Property";
 
 class Shape extends PSModule {
   type: PSShapeType;

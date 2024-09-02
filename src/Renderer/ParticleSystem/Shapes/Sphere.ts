@@ -2,7 +2,7 @@ import { makeObservable, observable } from "mobx";
 import { removeUndefinedKeys } from "../../Properties/Types";
 import { Vec4, vec4 } from "wgpu-matrix";
 import { SphereDescriptor } from "../Types";
-import { PSNumber } from "../../Properties/Property2";
+import { PSNumber } from "../../Properties/Property";
 
 class Sphere {
   radius: PSNumber;

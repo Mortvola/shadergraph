@@ -1,4 +1,4 @@
-import { PSBoolean } from "../Properties/Property2"
+import { PSBoolean } from "../Properties/Property"
 
 class PSModule {
   enabled: PSBoolean;

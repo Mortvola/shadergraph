@@ -9,7 +9,7 @@ import Billboard from "../Drawables/Billboard";
 import HorizontalBillboard from "../Drawables/HorizontalBillboard";
 import DrawableComponent from "../Drawables/DrawableComponent";
 import { removeUndefinedKeys } from "../Properties/Types";
-import { PSMaterialItem, PSRenderMode } from "../Properties/Property2";
+import { PSMaterialItem, PSRenderMode } from "../Properties/Property";
 import MaterialItem from "../MaterialItem";
 
 class Renderer extends PSModule {

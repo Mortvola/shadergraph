@@ -10,7 +10,7 @@ import { MaterialItemInterface, TransformPropsDescriptor } from '../State/types'
 import Component from './Drawables/Component';
 import ParticleSystemProps from './ParticleSystem/ParticleSystemProps';
 import LightProps from './Drawables/LightProps';
-import { PSVec3Type } from './Properties/Property2';
+import { PSVec3Type } from './Properties/Property';
 
 export const maxInstances = 1000;
 
