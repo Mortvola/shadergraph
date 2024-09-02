@@ -1,5 +1,5 @@
 import { PSNumber } from "../Properties/Property2";
-import { PropertyType, removeUndefinedKeys } from "../Properties/Types";
+import { removeUndefinedKeys } from "../Properties/Types";
 import Collision from "./Collision";
 import LifetimeColor from "./LifetimeColor";
 import LifetimeSize from "./LIfetimeSize";

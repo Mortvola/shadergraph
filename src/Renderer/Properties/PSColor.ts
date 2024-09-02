@@ -3,7 +3,7 @@ import { lerp } from "../Math";
 import { PSColorDescriptor, PSColorType } from "../ParticleSystem/Types";
 import Gradient from '../ParticleSystem/Gradient';
 import { PropertyType } from "./Types";
-import { Property2Base } from "./Property2";
+import { PropertyBase } from "./Property2";
 
 type ColorPair = [number[], number[]];
 
@@ -13,7 +13,7 @@ type ValueType = {
   gradients: [Gradient, Gradient]
 }
 
-class PSColor extends Property2Base {
+class PSColor extends PropertyBase {
   @observable
   accessor _type = PSColorType.Constant;
 

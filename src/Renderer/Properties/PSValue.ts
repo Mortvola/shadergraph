@@ -3,9 +3,9 @@ import { lerp } from "../Math";
 import { PSValueDescriptor, PSValueType } from "../ParticleSystem/Types";
 import PSCurve from "./PSCurve";
 import { PropertyType } from "./Types";
-import { Property2Base } from "./Property2";
+import { PropertyBase } from "./Property2";
 
-class PSValue extends Property2Base {
+class PSValue extends PropertyBase {
   // Methods for type
   @observable
   accessor _type = PSValueType.Constant;

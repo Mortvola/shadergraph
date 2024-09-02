@@ -5,12 +5,11 @@ import { PropertyInterface, ValueType } from './ShaderBuilder/Types';
 import { ShaderDescriptor } from './shaders/ShaderDescriptor';
 import SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
 import ShaderGraph from './ShaderBuilder/ShaderGraph';
-import { ParticleSystemPropsDescriptor, ParticleSystemPropsInterface, ParticleSystemPropsOverrides } from './ParticleSystem/Types';
+import { ParticleSystemPropsDescriptor, ParticleSystemPropsInterface } from './ParticleSystem/Types';
 import { MaterialItemInterface, TransformPropsDescriptor } from '../State/types';
 import Component from './Drawables/Component';
 import ParticleSystemProps from './ParticleSystem/ParticleSystemProps';
 import LightProps from './Drawables/LightProps';
-import { PropertyType } from './Properties/Types';
 import { PSVec3Type } from './Properties/Property2';
 
 export const maxInstances = 1000;
