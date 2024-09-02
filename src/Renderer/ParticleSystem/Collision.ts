@@ -22,14 +22,6 @@ class Collision extends PSModule {
     this.dampen.copyProp(other.dampen, noOverrides);
   }
 
-  hasOverrides(): boolean {
-    return (
-      super.hasOverrides()
-      || this.bounce.override
-      || this.dampen.override
-    )
-  }
-
   toDescriptor(overridesOnly = false): CollisionDescriptor | undefined {
     const descriptor = {
       enabled: this.enabled.toDescriptor(overridesOnly),

@@ -18,12 +18,6 @@ class Sphere {
     this.radius.copyProp(other.radius, noOverrides);
   }
 
-  hasOverrides() {
-    return (
-      this.radius.override
-    )
-  }
-
   toDescriptor(overridesOnly = false): SphereDescriptor | undefined {
     const descriptor = {
       radius: this.radius.toDescriptor(overridesOnly),

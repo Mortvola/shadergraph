@@ -20,13 +20,6 @@ class Cone {
     this.originRadius.copyProp(other.originRadius, noOverrides);
   }
 
-  hasOverrides() {
-    return (
-      this.angle.override
-      || this.originRadius.override
-    )
-  }
-
   toDescriptor(overridesOnly  = false): ConeDescriptor | undefined {
     const descriptor = {
       angle: this.angle.toDescriptor(overridesOnly),

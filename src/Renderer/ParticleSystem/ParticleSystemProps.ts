@@ -99,25 +99,6 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
     this.renderer.copyProps(other.renderer, noOverrides);
   }
 
-  hasOverrides(): boolean {
-    return (
-      this.duration.override
-      || this.maxPoints.override
-      || this.rate.override
-      || this.lifetime.override
-      || this.shape.hasOverrides()
-      || this.startSpeed.override
-      || this.startSize.override
-      || this.startColor.override
-      || this.lifetimeSize.hasOverrides()
-      || this.lifetimeVelocity.hasOverrides()
-      || this.lifetimeColor.hasOverrides()
-      || this.gravityModifier.override
-      || this.collision.hasOverrides()
-      || this.renderer.hasOverrides()
-    )
-  }
-
   onChange?: () => void;
 
   handleChange = () => {

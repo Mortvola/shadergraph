@@ -49,14 +49,6 @@ class Renderer extends PSModule {
     this.createDrawable();
   }
 
-  hasOverrides(): boolean {
-    return (
-      super.hasOverrides()
-      || this.mode.override
-      || this.material.override
-    )
-  }
-
   static async create(
     descriptor?: RendererDescriptor,
     defaultDescriptor?: RendererDescriptor,

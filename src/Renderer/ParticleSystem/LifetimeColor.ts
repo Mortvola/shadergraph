@@ -22,13 +22,6 @@ class LifetimeColor extends PSModule {
     this.color.copyValues(other.color, noOverrides);
   }
 
-  hasOverrides(): boolean {
-    return (
-      super.hasOverrides()
-      || this.color.override
-    )
-  }
-
   toDescriptor(overridesOnly = false): LifetimeColorDescriptor | undefined {
     const descriptor = {
       enabled: this.enabled.toDescriptor(overridesOnly),

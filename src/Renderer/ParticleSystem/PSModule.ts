@@ -19,10 +19,6 @@ class PSModule {
     this.enabled.copyProp(other.enabled, noOverrides)
   }
 
-  hasOverrides() {
-    return this.enabled.override
-  }
-
   protected setOnChange(onChange?: () => void) {
     if (this.enabled !== undefined) {
       this.enabled.onChange = onChange;

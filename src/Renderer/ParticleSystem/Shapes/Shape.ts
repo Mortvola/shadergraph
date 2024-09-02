@@ -39,14 +39,6 @@ class Shape extends PSModule {
     this.hemisphere.copyValues(other.hemisphere, noOverrides);
   }
 
-  hasOverrides() {
-    return (
-      this.type.override
-      || this.cone.hasOverrides()
-      || this.sphere.hasOverrides()
-      || this.hemisphere.hasOverrides()
-    )
-  }
 
   toDescriptor(overridesOnly = false): ShapeDescriptor | undefined {
     const descriptor = {
