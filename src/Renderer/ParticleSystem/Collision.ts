@@ -30,12 +30,6 @@ class Collision extends PSModule {
     )
   }
 
-  applyOverrides(descriptor?: CollisionDescriptor) {
-    this.enabled.set(descriptor?.enabled, true)
-    this.bounce.set(descriptor?.bounce, true)
-    this.dampen.set(descriptor?.dampen, true)
-  }
-
   toDescriptor(overridesOnly = false): CollisionDescriptor | undefined {
     const descriptor = {
       enabled: this.enabled.toDescriptor(overridesOnly),

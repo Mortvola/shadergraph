@@ -72,16 +72,6 @@ class Renderer extends PSModule {
     return new Renderer(material, descriptor, defaultDescriptor, onChange, previousProps);
   }
 
-  async applyOverrides(descriptor?: RendererDescriptor) {
-    this.enabled.set(descriptor?.enabled, true)
-    this.mode.set(descriptor?.mode, true)
-
-    if (descriptor?.materialId !== undefined) {
-      this.material.set(await materialManager.getItem(descriptor?.materialId))
-      this.createDrawable();
-    }  
-  }
-
   toDescriptor(overridesOnly = false): RendererDescriptor | undefined {
     const descriptor = {
       enabled: this.enabled.toDescriptor(overridesOnly),

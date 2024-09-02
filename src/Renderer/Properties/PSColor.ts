@@ -106,13 +106,6 @@ class PSColor extends Property2Base {
     }
   }
 
-  applyOverrides(descriptor?: PSColorDescriptor) {
-    if (descriptor) {
-      this.applyDescriptor(descriptor)
-      this.override = true;
-    }
-  }
-
   applyDescriptor(descriptor: PSColorDescriptor) {
     this.type = descriptor.type ?? PSColorType.Constant;
     this.color = descriptor.color !== undefined

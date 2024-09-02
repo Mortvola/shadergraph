@@ -117,25 +117,6 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
       || this.renderer.hasOverrides()
     )
   }
-  
-  async applyOverrides(overrides?: ParticleSystemPropsDescriptor) {
-    if (overrides) {
-      this.duration.set(overrides?.duration, true);
-      this.maxPoints.set(overrides?.maxPoints, true);
-      this.rate.set(overrides?.rate, true);
-      this.lifetime.applyOverrides(overrides?.lifetime);
-      this.shape.applyOverrides(overrides?.shape);
-      this.startSpeed.applyOverrides(overrides?.startVelocity);
-      this.startSize.applyOverrides(overrides?.startSize);
-      this.startColor.applyOverrides(overrides?.startColor);
-      this.lifetimeSize.applyOverrides(overrides?.lifetimeSize);
-      this.lifetimeVelocity.applyOverrides(overrides?.lifetimeVelocity);
-      this.lifetimeColor.applyOverrides(overrides?.lifetimeColor);
-      this.gravityModifier.applyOverrides(overrides?.gravityModifier);
-      this.collision.applyOverrides(overrides?.collision);
-      await this.renderer.applyOverrides(overrides?.renderer);  
-    }
-  }
 
   onChange?: () => void;
 

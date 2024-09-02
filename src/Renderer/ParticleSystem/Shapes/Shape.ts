@@ -48,14 +48,6 @@ class Shape extends PSModule {
     )
   }
 
-  applyOverrides(descriptor?: ShapeDescriptor) {
-    this.enabled.set(descriptor?.enabled, true)
-    this.type.set(descriptor?.type, true)
-    this.cone.applyOverrides(descriptor?.cone)
-    this.sphere.applyOverrides(descriptor?.sphere)
-    this.hemisphere.applyOverrides(descriptor?.hemisphere)
-  }
-
   toDescriptor(overridesOnly = false): ShapeDescriptor | undefined {
     const descriptor = {
       enabled: this.enabled.toDescriptor(overridesOnly),

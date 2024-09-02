@@ -105,13 +105,6 @@ class PSValue extends Property2Base {
     }
   }
 
-  applyOverrides(descriptor?: PSValueDescriptor) {
-    if (descriptor) {
-      this.applyDescriptor(descriptor);
-      this.override = true;
-    }
-  }
-
   applyDescriptor(descriptor: PSValueDescriptor) {
     this.type = { value: descriptor.type ?? PSValueType.Constant };
     this.value = { value: (descriptor.value !== undefined

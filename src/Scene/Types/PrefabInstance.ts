@@ -77,8 +77,6 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
               prefabProps,
             );
 
-            // props.copyValues(prefabProps);
-            // await props.applyOverrides(componentDescriptor?.props as ParticleSystemPropsDescriptor)
             props.onChange = object.onChange;
 
             // Create a version of the props that has references to any overrides from this instance

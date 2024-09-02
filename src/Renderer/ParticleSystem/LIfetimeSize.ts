@@ -29,11 +29,6 @@ class LifetimeSize extends PSModule {
     )
   }
 
-  applyOverrides(descriptor?: LifetimeSizeDescriptor) {
-    this.enabled.set(descriptor?.enabled, true)
-    this.size.applyOverrides(descriptor?.size)
-  }
-
   toDescriptor(overridesOnly = false): LifetimeSizeDescriptor | undefined {
     const descriptor = {
       enabled: this.enabled.toDescriptor(overridesOnly),

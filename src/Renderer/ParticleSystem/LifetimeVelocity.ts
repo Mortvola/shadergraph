@@ -29,11 +29,6 @@ class LifetimeVelocity extends PSModule {
     )
   }
 
-  applyOverrides(descriptor?: LifetimeVelocityDescriptor) {
-    this.enabled.set(descriptor?.enabled, true)
-    this.speedModifier.applyOverrides(descriptor?.speedModifier)
-  }
-
   toDescriptor(overridesOnly = false): LifetimeVelocityDescriptor | undefined {
     const descriptor = {
       enabled: this.enabled.toDescriptor(overridesOnly),

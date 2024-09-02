@@ -27,11 +27,6 @@ class Cone {
     )
   }
 
-  applyOverrides(descriptor?: ConeDescriptor) {
-    this.angle.set(descriptor?.angle, true)
-    this.originRadius.set(descriptor?.originRadius, true)
-  }
-
   toDescriptor(overridesOnly  = false): ConeDescriptor | undefined {
     const descriptor = {
       angle: this.angle.toDescriptor(overridesOnly),

@@ -24,10 +24,6 @@ class Sphere {
     )
   }
 
-  applyOverrides(descriptor?: SphereDescriptor) {
-    this.radius.set(descriptor?.radius, true)
-  }
-
   toDescriptor(overridesOnly = false): SphereDescriptor | undefined {
     const descriptor = {
       radius: this.radius.toDescriptor(overridesOnly),
