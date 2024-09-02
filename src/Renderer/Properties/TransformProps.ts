@@ -11,30 +11,14 @@ class TransformProps implements TransformPropsInterface {
   
   scale: PSVec3Type;
 
-  constructor(descriptor?: Partial<TransformPropsDescriptor>, onChange?: () => void) {
-    this.translate = new PSVec3Type(undefined, vec3.create(0, 0, 0), onChange)
-    this.rotate = new PSVec3Type(undefined, vec3.create(0, 0, 0), onChange)
-    this.scale = new PSVec3Type(undefined, vec3.create(1, 1, 1), onChange)
-
-    if (descriptor) {
-      this.translate.set(vec3.create(...(descriptor.translate ?? [0, 0, 0])))
-      this.rotate.set(vec3.create(...(descriptor.rotate ?? [0, 0, 0])))
-      this.scale.set(vec3.create(...(descriptor.scale ?? [1, 1, 1])))
-    }
-  }
-
-  copyProp(other: TransformProps, noOverrides = true) {
-    this.translate.copyProp(other.translate, noOverrides)
-    this.rotate.copyProp(other.rotate, noOverrides)
-    this.scale.copyProp(other.scale, noOverrides)
-  }
-
-  applyOverrides(overrides?: TransformPropsDescriptor) {
-    if (overrides) {
-      this.translate.set(overrides.translate, true)
-      this.rotate.set(overrides.rotate, true)
-      this.scale.set(overrides.scale, true)
-    }
+  constructor(
+    descriptor?: Partial<TransformPropsDescriptor>,
+    onChange?: () => void,
+    previousProps?: TransformProps,
+  ) {
+    this.translate = new PSVec3Type(descriptor?.translate, vec3.create(0, 0, 0), onChange, previousProps?.translate)
+    this.rotate = new PSVec3Type(descriptor?.rotate, vec3.create(0, 0, 0), onChange, previousProps?.rotate)
+    this.scale = new PSVec3Type(descriptor?.scale, vec3.create(1, 1, 1), onChange, previousProps?.scale)
   }
 
   toDescriptor(overridesOnly = false): TransformPropsDescriptor | undefined {

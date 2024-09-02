@@ -69,20 +69,14 @@ export class Property<T> extends PropertyBase {
     this.reactOnChange(() => this.value)
   }
 
-  copyProp(other: Property<T>, noOverrides = true) {
-    runInAction(() => {
-      if (!this.override || !noOverrides) {
-        this.value = other.value;
-      }  
-    })
+  copyProp(other: Property<T>) {
+    this.value = other.value;
+    this.override = false;  
   }
 
   revertOverride() {
     if (this.ancestor) {
-      runInAction(() => {
-        this.value = (this.ancestor as Property<T>).value;
-        this.override = false;  
-      })
+      this.copyProp((this.ancestor as Property<T>))
     }
 
     super.revertOverride()
@@ -127,12 +121,9 @@ export class PSVec3Type extends Property<Vec3> {
     super(value, defaultValue, onChange, previousProp)
   }
 
-  copyProp(other: PSVec3Type, noOverrides = true) {
-    runInAction(() => {
-      if (!this.override || !noOverrides) {
-        vec3.copy(other.value, this.value);
-      }  
-    })
+  copyProp(other: PSVec3Type) {
+    this.value = vec3.create(...other.value);
+    this.override = false;
   }
 
   toDescriptor(overridesOnly = false): number[] | undefined {

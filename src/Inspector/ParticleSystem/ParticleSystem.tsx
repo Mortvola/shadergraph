@@ -42,7 +42,7 @@ const ParticleSystem: React.FC<PropsType> = observer(({
       <Property label="Maximum Particles" property={particleSystemProps.maxPoints}>
         <NumberInput value={particleSystemProps.maxPoints.get()} onChange={handleMaxPointsChange} />
       </Property>
-      <Property label="Emission rate" property={particleSystemProps.rate}>
+      <Property label="Emission Rate" property={particleSystemProps.rate}>
         <NumberInput value={particleSystemProps.rate.get()} onChange={handleRateChange} />
       </Property>
       <Property label="Lifetime" property={particleSystemProps.lifetime}>

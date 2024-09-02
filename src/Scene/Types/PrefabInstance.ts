@@ -79,9 +79,6 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
 
             props.onChange = object.onChange;
 
-            // Create a version of the props that has references to any overrides from this instance
-            // and from the prefab and pass that ot the particleystem.
-
             const ps = new ParticleSystem(props)
 
             object.sceneNode.addComponent(ps)
@@ -118,12 +115,8 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
         object.sceneNode.addNode(child.sceneNode)
       }
 
-      // Setup the transform
-      const prefabProps = prefabNode.transformProps;
-      const props = new TransformProps(undefined, object.transformChanged);
-      props.copyProp(prefabProps as TransformProps);
-      props.applyOverrides(nodeDescriptor?.transformProps)
-      object.transformProps = props;
+      // Setup the transform and copy it to the scene node.
+      object.transformProps = new TransformProps(nodeDescriptor?.transformProps, object.transformChanged, prefabNode.transformProps as TransformProps);;
 
       vec3.copy(object.transformProps.translate.get(), object.sceneNode.translate)
       vec3.copy(object.transformProps.scale.get(), object.sceneNode.scale)

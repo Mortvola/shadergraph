@@ -43,3 +43,9 @@
     padding-left: 1rem;
   }
 }
+
+.property {
+  display: flex;
+  flex-direction: row;
+  column-gap: 0.25rem;
+}

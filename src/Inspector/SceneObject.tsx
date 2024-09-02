@@ -8,13 +8,12 @@ import GameObject2D from './GameObject2d';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
 import ParticleSystem from './ParticleSystem/ParticleSystem';
-import NumberInput from './NumberInput';
 import ParticleSystemData from '../Renderer/ParticleSystem/ParticleSystem';
 import LightComponent from './Light';
 import Light from '../Renderer/Drawables/Light';
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
 import LightProps from '../Renderer/Drawables/LightProps';
-import TransformProps from '../Renderer/Properties/TransformProps';
+import Transform from './Transform';
 
 type PropsType = {
   sceneObject: SceneObjectBaseInterface
@@ -226,39 +225,10 @@ const SceneObject: React.FC<PropsType> = observer(({
     { name: 'Light', action: () => { addComponent(ComponentType.Light) } },
   ]), [addComponent]);
 
-  const handleTranslateXChange = (x: number) => {
-    sceneObject.transformProps.translate.set([
-      x,
-      sceneObject.transformProps.translate.get()[1],
-      sceneObject.transformProps.translate.get()[2],
-    ], true)
-  }
-
-  const handleTranslateYChange = (y: number) => {
-    sceneObject.transformProps.translate.set([
-      sceneObject.transformProps.translate.get()[0],
-      y,
-      sceneObject.transformProps.translate.get()[2],
-    ], true)
-  }
-
-  const handleTranslateZChange = (z: number) => {
-    sceneObject.transformProps.translate.set([
-      sceneObject.transformProps.translate.get()[0],
-      sceneObject.transformProps.translate.get()[1],
-      z,
-    ], true)
-  }
-
   return (
     <div className={styles.gameObject} onDragOver={handleDragOver} onDrop={handleDrop}>
       <div>{`Name: ${sceneObject.name}`}</div>
-      <div className={(sceneObject.transformProps as TransformProps).translate.override ? styles.overriden : undefined}>
-        Translate:
-        <NumberInput value={sceneObject.transformProps.translate.get()[0]} onChange={handleTranslateXChange} />
-        <NumberInput value={sceneObject.transformProps.translate.get()[1]} onChange={handleTranslateYChange} />
-        <NumberInput value={sceneObject.transformProps.translate.get()[2]} onChange={handleTranslateZChange} />
-      </div>
+      <Transform transformProps={sceneObject.transformProps} />
       {
         isGameObject2D(sceneObject)
           ? (

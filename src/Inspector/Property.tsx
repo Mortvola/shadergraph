@@ -48,6 +48,7 @@ const Property: React.FC<PropsType> = ({
 
   return (
     <label
+      className={styles.property}
       onDragOver={onDragOver}
       onDrop={onDrop}
     >
