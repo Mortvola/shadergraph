@@ -8,7 +8,7 @@ import { PropertyBase } from "./Property";
 class PSValue extends PropertyBase {
   // Methods for type
   @observable
-  accessor _type = PSValueType.Constant;
+  private accessor _type = PSValueType.Constant;
 
   get type(): PSValueType {
     return this._type
@@ -25,7 +25,7 @@ class PSValue extends PropertyBase {
 
   // Methods for value
   @observable
-  accessor _value: [number, number] = [1, 1];
+  private accessor _value: [number, number] = [1, 1];
 
   get value(): [number, number] {
     return this._value;
@@ -34,7 +34,7 @@ class PSValue extends PropertyBase {
   set value(value: PropertyType<[number,  number]>) {
     runInAction(() => {
       this._value = value.value;
-      if (value.override) {
+      if (value.override !== undefined) {
         this.override = value.override
       }
     })
@@ -46,15 +46,18 @@ class PSValue extends PropertyBase {
 
   // Methods for curve range
   @observable
-  accessor _curveRange: [number, number] = [0, 1];
+  private accessor _curveRange: [number, number] = [0, 1];
 
   get curveRange(): [number, number] {
     return this._curveRange;
   }
 
-  set curveRange(newValue: [number,  number]) {
+  set curveRange(value: PropertyType<[number,  number]>) {
     runInAction(() => {
-      this._curveRange = newValue;
+      this._curveRange = value.value;
+      if (value.override !== undefined) {
+        this.override = value.override
+      }
     })
   }
 
@@ -64,9 +67,9 @@ class PSValue extends PropertyBase {
     onChange?: () => void,
     previousProp?: PSValue,
   ) {
-    super()
+    super(previousProp)
     
-    this.curve = [new PSCurve(onChange), new PSCurve(onChange)]
+    this.curve = [new PSCurve(this), new PSCurve(this)]
 
     const d = descriptor ?? defaultDescriptor;
     if (d) {
@@ -88,21 +91,36 @@ class PSValue extends PropertyBase {
 
     this.onChange = onChange;
 
-    this.reactOnChange(() => this._type)
-    this.reactOnChange(() => this._value)
-    this.reactOnChange(() => this._curveRange)
+    this.reactOnChange(() => ({
+      override: this.override,
+      type: this._type,
+      value: this._value,
+      curveRange: this._curveRange,
+      curve: [
+        { points: this.curve[0].points },
+        { points: this.curve[1].points }
+      ]
+    }))
   }
 
-  copyProp(other: PSValue, noOverrides = true) {
-    if (!this.override || !noOverrides) {
-      runInAction(() => {
-        this._type = other._type;
-        this._value = [...other._value];
-        this._curveRange = [...other._curveRange];  
-      })
+  copyProp(other: PSValue) {
+    runInAction(() => {
+      this._type = other._type;
+      this._value = [...other._value];
+      this._curveRange = [...other._curveRange];  
       this.curve[0].copy(other.curve[0]);
       this.curve[1].copy(other.curve[1]);
+  
+      this.override = false;  
+    })
+  }
+
+  revertOverride() {
+    if (this.ancestor) {
+      this.copyProp((this.ancestor as PSValue))
     }
+
+    super.revertOverride()
   }
 
   applyDescriptor(descriptor: PSValueDescriptor) {
@@ -111,13 +129,13 @@ class PSValue extends PropertyBase {
       ? [descriptor.value[0], descriptor.value[1]]
       : [1, 1]) };
     this.curve = [
-      PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 0) ? descriptor.curve![0] : undefined, this.onChange),
-      PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 1) ? descriptor.curve![1] : undefined, this.onChange),
+      PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 0) ? descriptor.curve![0] : undefined, this),
+      PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 1) ? descriptor.curve![1] : undefined, this),
     ];
-    this.curveRange = [
+    this.curveRange = { value: [
       descriptor.curveRange ? descriptor.curveRange[0] : 0,
       descriptor.curveRange ? descriptor.curveRange[1] : 1,
-    ]
+    ]}
   }
 
   toDescriptor(overridesOnly = false): PSValueDescriptor | undefined {

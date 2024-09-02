@@ -66,12 +66,14 @@ export class Property<T> extends PropertyBase {
     }
 
     this.onChange = onChange
-    this.reactOnChange(() => this.value)
+    this.reactOnChange(() => ({ value: this.value, override: this.override }))
   }
 
   copyProp(other: Property<T>) {
-    this.value = other.value;
-    this.override = false;  
+    runInAction(() => {
+      this.value = other.value;
+      this.override = false;    
+    })
   }
 
   revertOverride() {
@@ -122,8 +124,10 @@ export class PSVec3Type extends Property<Vec3> {
   }
 
   copyProp(other: PSVec3Type) {
-    this.value = vec3.create(...other.value);
-    this.override = false;
+    runInAction(() => {
+      this.value = vec3.create(...other.value);
+      this.override = false;  
+    })
   }
 
   toDescriptor(overridesOnly = false): number[] | undefined {

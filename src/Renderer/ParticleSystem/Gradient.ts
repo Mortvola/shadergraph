@@ -31,25 +31,10 @@ class Gradient {
     }
   ]
 
-  onChange?: () => void;
+  parent?: { override: boolean }
 
-  onOverride?: (override?: boolean) => void;
-
-  constructor(onChange?: () => void, onOverride?: (override?: boolean) => void) {
-    this.onChange = onChange;
-    this.onOverride = onOverride;
-
-    reaction(() => this.alphaKeys, () => {
-      if (this.onChange) {
-        this.onChange()
-      }
-    })
-
-    reaction(() => this.colorKeys, () => {
-      if (this.onChange) {
-        this.onChange()
-      }
-    })
+  constructor(parent?: { override: boolean }) {
+    this.parent = parent;
   }
 
   copy(other: Gradient) {
@@ -59,8 +44,8 @@ class Gradient {
     })
   }
   
-  static fromDescriptor(descriptor: GradientDescriptor, onChange?: () => void, onOverride?: (override?: boolean) => void) {
-    const gradient = new Gradient(onChange, onOverride);
+  static fromDescriptor(descriptor: GradientDescriptor, parent?: { override: boolean }) {
+    const gradient = new Gradient(parent);
 
     gradient.alphaKeys = descriptor.alphaKeys.map((k) => ({ ...k }));
     gradient.colorKeys = descriptor.colorKeys.map((k) => ({ ...k }));
@@ -75,7 +60,7 @@ class Gradient {
     })
   }
 
-  addAlphaKey(position: number) {
+  addAlphaKey(position: number, override?: boolean) {
     // Find first key that is greater than this position
     const index = this.alphaKeys.findIndex((k) => k.position > position);
 
@@ -87,6 +72,10 @@ class Gradient {
       };
 
       runInAction(() => {
+        if (this.parent) {
+          this.parent.override = override ?? this.parent.override
+        }
+
         this.alphaKeys = [
           ...this.alphaKeys.slice(0, index),
           newKey,
@@ -98,7 +87,7 @@ class Gradient {
     }
   }
 
-  addColorKey(position: number) {
+  addColorKey(position: number, override?: boolean) {
     // Find first key that is greater than this position
     const index = this.colorKeys.findIndex((k) => k.position > position);
 
@@ -110,6 +99,10 @@ class Gradient {
       };
 
       runInAction(() => {
+        if (this.parent) {
+          this.parent.override = override ?? this.parent.override
+        }
+
         this.colorKeys = [
           ...this.colorKeys.slice(0, index),
           newKey,
@@ -121,7 +114,7 @@ class Gradient {
     }
   }
 
-  deleteAlphaKey(id: number) {
+  deleteAlphaKey(id: number, override?: boolean) {
     // Find index of selected alpha key
     const index = this.alphaKeys.findIndex((k) => k.id === id);
 
@@ -132,6 +125,10 @@ class Gradient {
       && index !== this.alphaKeys.length - 1
     ) {
       runInAction(() => {
+        if (this.parent) {
+          this.parent.override = override ?? this.parent.override
+        }
+
         this.alphaKeys = [
           ...this.alphaKeys.slice(0, index),
           ...this.alphaKeys.slice(index + 1),
@@ -140,7 +137,7 @@ class Gradient {
     }
   }
 
-  deleteColorKey(id: number) {
+  deleteColorKey(id: number, override?: boolean) {
     // Find index of selected alpha key
     const index = this.colorKeys.findIndex((k) => k.id === id);
 
@@ -151,6 +148,10 @@ class Gradient {
       && index !== this.colorKeys.length - 1
     ) {
       runInAction(() => {
+        if (this.parent) {
+          this.parent.override = override ?? this.parent.override
+        }
+
         this.colorKeys = [
           ...this.colorKeys.slice(0, index),
           ...this.colorKeys.slice(index + 1),
@@ -159,7 +160,7 @@ class Gradient {
     }
   }
 
-  moveAlphaKey(id: number, position: number) {
+  moveAlphaKey(id: number, position: number, override?: boolean) {
     // Find index of selected alpha key
     const index = this.alphaKeys.findIndex((k) => k.id === id);
 
@@ -170,6 +171,10 @@ class Gradient {
       && index !== this.alphaKeys.length - 1
     ) {
       runInAction(() => {
+        if (this.parent) {
+          this.parent.override = override ?? this.parent.override
+        }
+
         this.alphaKeys = [
           ...this.alphaKeys.slice(0, index),
           {
@@ -186,7 +191,7 @@ class Gradient {
     return false;
   }
 
-  moveColorKey(id: number, position: number) {
+  moveColorKey(id: number, position: number, override?: boolean) {
     // Find index of selected alpha key
     const index = this.colorKeys.findIndex((k) => k.id === id);
 
@@ -197,6 +202,10 @@ class Gradient {
       && index !== this.colorKeys.length - 1
     ) {
       runInAction(() => {
+        if (this.parent) {
+          this.parent.override = override ?? this.parent.override
+        }
+
         this.colorKeys = [
           ...this.colorKeys.slice(0, index),
           {
@@ -213,11 +222,15 @@ class Gradient {
     return false;
   }
 
-  alphaChange(id: number, a: number) {
+  alphaChange(id: number, a: number, override?: boolean) {
     const index = this.alphaKeys.findIndex((k) => k.id === id);
 
     if (index !== -1) {
       runInAction(() => {
+        if (this.parent) {
+          this.parent.override = override ?? this.parent.override
+        }
+  
         this.alphaKeys = [
           ...this.alphaKeys.slice(0, index),
           {
@@ -237,12 +250,12 @@ class Gradient {
   colorChange(id: number, color: number[], override?: boolean) {
     const index = this.colorKeys.findIndex((k) => k.id === id);
 
-    if (index !== -1) {
-      if (this.onOverride) {
-        this.onOverride(override)
-      }
-      
+    if (index !== -1) {      
       runInAction(() => {
+        if (this.parent) {
+          this.parent.override = override ?? this.parent.override
+        }
+
         this.colorKeys = [
           ...this.colorKeys.slice(0, index),
           {

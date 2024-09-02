@@ -34,7 +34,7 @@ const PSColorInput: React.FC<PropsType> = observer(({
   }
 
   const handleTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    value.type = event.target.value as PSColorType
+    value.type = { value: event.target.value as PSColorType, override: true }
   }
 
   return (

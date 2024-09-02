@@ -62,7 +62,7 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
   }
 
   const handleAddAlphaKey = (position: number) => {
-    const newKey = value.addAlphaKey(position);
+    const newKey = value.addAlphaKey(position, true);
 
     if (newKey !== undefined) {
       setAlpha(Math.round(newKey.value * 255))
@@ -72,7 +72,7 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
   }
 
   const handleAddColorKey = (position: number) => {
-    const newKey = value.addColorKey(position);
+    const newKey = value.addColorKey(position, true);
 
     if (newKey !== undefined) {
       setColor(newKey.value)
@@ -112,23 +112,23 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
   }
 
   const deleteAlphaKey = (id: number) => {
-    value.deleteAlphaKey(id);
+    value.deleteAlphaKey(id, true);
     setSelectedAlphaId(undefined);
   }
 
   const deleteColorKey = (id: number) => {
-    value.deleteColorKey(id);
+    value.deleteColorKey(id, true);
     setSelectedColorId(undefined);
   }
 
   const handleMoveAlphaKey = (id: number, position: number) => {
-    if (value.moveAlphaKey(id, position)) {
+    if (value.moveAlphaKey(id, position, true)) {
       setPosition(position);
     }
   }
 
   const handleMoveColorKey = (id: number, position: number) => {
-    if (value.moveColorKey(id, position)) {
+    if (value.moveColorKey(id, position, true)) {
       setPosition(position);
     }
   }

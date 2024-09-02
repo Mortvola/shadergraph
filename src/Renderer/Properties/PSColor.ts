@@ -7,12 +7,6 @@ import { PropertyBase } from "./Property";
 
 type ColorPair = [number[], number[]];
 
-type ValueType = {
-  type: PSColorType,
-  color: ColorPair,
-  gradients: [Gradient, Gradient]
-}
-
 class PSColor extends PropertyBase {
   @observable
   accessor _type = PSColorType.Constant;
@@ -21,9 +15,10 @@ class PSColor extends PropertyBase {
     return this._type
   }
 
-  set type(newValue: PSColorType) {
+  set type(value: PropertyType<PSColorType>) {
     runInAction(() => {
-      this._type = newValue;
+      this._type = value.value;
+      this.override = value.override ?? this.override;
     })
   }
 
@@ -43,19 +38,10 @@ class PSColor extends PropertyBase {
 
   gradients: [Gradient, Gradient];
 
-  value: ValueType;
-
-  set(value: Partial<ValueType>, override?: boolean) {
-    this.value = {
-      ...this.value,
-      ...value,
-    }
-  }
-
   constructor(descriptor?: PSColorDescriptor, onChange?: () => void, prevousProp?: PSColor) {
-    super();
+    super(prevousProp);
 
-    this.gradients = [new Gradient(onChange, this.onOverride), new Gradient(onChange, this.onOverride)]
+    this.gradients = [new Gradient(this), new Gradient(this)]
 
     if (descriptor) {
       this.applyDescriptor(descriptor)
@@ -70,55 +56,66 @@ class PSColor extends PropertyBase {
       }  
     }
 
-    this.value = {
-      type: this._type,
-      color: this.color,
-      gradients: this.gradients,
-    }
-
     this.onChange = onChange;
 
-    this.reactOnChange(() => this.value);
-    this.reactOnChange(() => this._type);
-    this.reactOnChange(() => this._color);
-    this.reactOnChange(() => this.gradients);
+    this.reactOnChange(() => ({
+      override: this.override,
+      type: this._type,
+      color: this._color,
+      gradients: [
+        {
+          alphaKeys: this.gradients[0].alphaKeys,
+          colorKeys: this.gradients[0].colorKeys,
+        },
+        {
+          alphaKeys: this.gradients[1].alphaKeys,
+          colorKeys: this.gradients[1].colorKeys,
+        },
+      ]
+    }));
   }
 
   onOverride = (override?: boolean) => {
     runInAction(() => {
-      if (override !== undefined) {
-        this.override = override;
-      }  
+      this.override = override ?? this.override;
     })
   }
 
-  copyProp(other: PSColor, noOverrides = true) {
-    if (!this.override || !noOverrides) {
-      runInAction(() => {
-        this._type = other._type;
-        this._color = [
-          [...other._color[0]],
-          [...other._color[1]],
-        ];  
-      })
+  copyProp(other: PSColor) {
+    runInAction(() => {
+      this._type = other._type;
+      this._color = [
+        [...other._color[0]],
+        [...other._color[1]],
+      ];  
       this.gradients[0].copy(other.gradients[0]);
       this.gradients[1].copy(other.gradients[1]);
+
+      this.override = false;
+    })
+  }
+
+  revertOverride() {
+    if (this.ancestor) {
+      this.copyProp((this.ancestor as PSColor))
     }
+
+    super.revertOverride()
   }
 
   applyDescriptor(descriptor: PSColorDescriptor) {
-    this.type = descriptor.type ?? PSColorType.Constant;
+    this.type = { value: descriptor.type ?? PSColorType.Constant };
     this.color = descriptor.color !== undefined
       ? { value: [[...descriptor.color[0]], [...descriptor.color[1]]] }
       : { value: [[1, 1, 1, 1], [1, 1, 1, 1]] };
     this.gradients = descriptor.gradients !== undefined
       ? [
-        Gradient.fromDescriptor(descriptor.gradients[0], this.onChange, this.onOverride),
-        Gradient.fromDescriptor(descriptor.gradients[1], this.onChange, this.onOverride),
+        Gradient.fromDescriptor(descriptor.gradients[0], this),
+        Gradient.fromDescriptor(descriptor.gradients[1], this),
       ]
       : [
-        new Gradient(this.onChange, this.onOverride),
-        new Gradient(this.onChange, this.onOverride),
+        new Gradient(this),
+        new Gradient(this),
       ];
   }
 

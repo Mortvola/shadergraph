@@ -2,19 +2,16 @@ import { makeObservable, observable, runInAction } from "mobx";
 import { PSCurveDescriptor, PSCurvePoint } from "../ParticleSystem/Types";
 
 class PSCurve {
-  points: PSCurvePoint[] = [
+  @observable
+  accessor points: PSCurvePoint[] = [
     { id: 0, x: 0, y: 1, leftCtrl: { x: -0.1, y: 0 }, rightCtrl: { x: 0.1, y: 0 } },
     { id: 1, x: 1, y: 1, leftCtrl: { x: -0.1, y: 0 }, rightCtrl: { x: 0.1, y: 0 }},
   ];
 
-  onChange?: () => void;
+  parent?: { override: boolean };
 
-  constructor(onChange?: () => void) {
-    this.onChange = onChange;
-
-    makeObservable(this, {
-      points: observable,
-    })
+  constructor(parent?: { override: boolean }) {
+    this.parent = parent;
   }
 
   copy(other: PSCurve) {
@@ -25,8 +22,8 @@ class PSCurve {
     })
   }
 
-  static fromDescriptor(descriptor?: PSCurveDescriptor, onChange?: () => void) {
-    const curve = new PSCurve(onChange);
+  static fromDescriptor(descriptor?: PSCurveDescriptor, parent?: { override: boolean }) {
+    const curve = new PSCurve(parent);
 
     if (descriptor) {
       curve.points = descriptor.points.map((p, index, points) => ({
@@ -119,14 +116,14 @@ class PSCurve {
     })
   }
 
-  setPoints(points: PSCurvePoint[]) {
+  setPoints(points: PSCurvePoint[], override?: boolean) {
     runInAction(() => {
+      if (this.parent){
+        this.parent.override = override ?? this.parent.override
+      }
+      
       this.points = points;
       this.sanitize();
-
-      if (this.onChange) {
-        this.onChange();
-      }
     })
   }
 

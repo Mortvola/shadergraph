@@ -1,6 +1,7 @@
 import React from 'react';
 import styles from './Inspector.module.scss';
 import Select from './Select';
+import { observer } from 'mobx-react-lite';
 
 type PropsType = {
   label: string,
@@ -10,7 +11,7 @@ type PropsType = {
   onDrop?: (event: React.DragEvent<HTMLLabelElement>) => void,
 }
 
-const Property: React.FC<PropsType> = ({
+const Property: React.FC<PropsType> = observer(({
   label,
   property,
   children,
@@ -67,6 +68,6 @@ const Property: React.FC<PropsType> = ({
       }
     </label>
   )
-}
+})
 
 export default Property;

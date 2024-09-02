@@ -97,7 +97,7 @@ const CurveGraph: React.FC<PropsType> = observer(({
           ...value.points.slice(index + 1),
         ]
 
-        value.setPoints(points)
+        value.setPoints(points, true)
       }
     }
   }
