@@ -10,6 +10,7 @@ import HorizontalBillboard from "../Drawables/HorizontalBillboard";
 import DrawableComponent from "../Drawables/DrawableComponent";
 import { removeUndefinedKeys } from "../Properties/Types";
 import { PSMaterialItem, PSRenderMode } from "../Properties/Property2";
+import MaterialItem from "../MaterialItem";
 
 class Renderer extends PSModule {
   mode: PSRenderMode;
@@ -18,11 +19,19 @@ class Renderer extends PSModule {
 
   drawable: DrawableInterface | null = null;
 
-  constructor(onChange?: () => void) {
-    super(onChange);
+  constructor(
+    materialItem: MaterialItem | undefined,
+    descriptor?: RendererDescriptor,
+    defaultDescriptor?: RendererDescriptor,
+    onChange?: () => void,
+    previousProps?: Renderer,
+  ) {
+    super(descriptor?.enabled, defaultDescriptor?.enabled, onChange, previousProps?.enabled);
 
-    this.mode = new PSRenderMode(RenderMode.Billboard, this.onMaterialChange);
-    this.material = new PSMaterialItem(undefined, this.onMaterialChange);
+    this.mode = new PSRenderMode(descriptor?.mode, defaultDescriptor?.mode, this.onMaterialChange, previousProps?.mode);
+    this.material = new PSMaterialItem(materialItem, undefined, this.onMaterialChange, previousProps?.material);
+
+    this.createDrawable();
   }
 
   onMaterialChange = () => {
@@ -32,10 +41,10 @@ class Renderer extends PSModule {
     }
   }
 
-  copyValues(other: Renderer, noOverrides = true) {
-    super.copyValues(other, noOverrides);
-    this.mode.copyValues(other.mode, noOverrides);
-    this.material.copyValues(other.material, noOverrides);
+  copyProps(other: Renderer, noOverrides = true) {
+    super.copyProps(other, noOverrides);
+    this.mode.copyProp(other.mode, noOverrides);
+    this.material.copyProp(other.material, noOverrides);
 
     this.createDrawable();
   }
@@ -48,21 +57,19 @@ class Renderer extends PSModule {
     )
   }
 
-  static async fromDescriptor(descriptor: RendererDescriptor | undefined, onChange?: () => void) {
-    const renderer = new Renderer(onChange);
+  static async create(
+    descriptor?: RendererDescriptor,
+    defaultDescriptor?: RendererDescriptor,
+    onChange?: () => void,
+    previousProps?: Renderer,
+  ) {
+    let material: MaterialItem | undefined = undefined;
 
-    if (descriptor) {
-      renderer.enabled.set(descriptor.enabled ?? false);
-      renderer.mode.set(descriptor.mode ?? RenderMode.Billboard);
-
-      if (descriptor?.materialId !== undefined) {
-        renderer.material.set(await materialManager.getItem(descriptor?.materialId))
-      }
-
-      renderer.createDrawable();
+    if (descriptor?.materialId !== undefined) {
+      material = await materialManager.getItem(descriptor.materialId)
     }
 
-    return renderer;
+    return new Renderer(material, descriptor, defaultDescriptor, onChange, previousProps);
   }
 
   async applyOverrides(descriptor?: RendererDescriptor) {

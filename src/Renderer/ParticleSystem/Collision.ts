@@ -9,17 +9,17 @@ class Collision extends PSModule {
 
   dampen: PSNumber;
 
-  constructor(onChange?: () => void) {
-    super(onChange);
+  constructor(descriptor?: CollisionDescriptor, onChange?: () => void, previousProps?: Collision) {
+    super(descriptor?.enabled, undefined, onChange, previousProps?.enabled);
 
-    this.bounce = new PSNumber(1, onChange);
-    this.dampen = new PSNumber(0, onChange);
+    this.bounce = new PSNumber(descriptor?.bounce, 1, onChange, previousProps?.bounce);
+    this.dampen = new PSNumber(descriptor?.dampen, 0, onChange, previousProps?.dampen);
   }
 
-  copyValues(other: Collision, noOverrides = true) {
-    super.copyValues(other, noOverrides);
-    this.bounce.copyValues(other.bounce, noOverrides);
-    this.dampen.copyValues(other.dampen, noOverrides);
+  copyProps(other: Collision, noOverrides = true) {
+    super.copyProps(other, noOverrides);
+    this.bounce.copyProp(other.bounce, noOverrides);
+    this.dampen.copyProp(other.dampen, noOverrides);
   }
 
   hasOverrides(): boolean {
@@ -28,18 +28,6 @@ class Collision extends PSModule {
       || this.bounce.override
       || this.dampen.override
     )
-  }
-
-  static fromDescriptor(descriptor: CollisionDescriptor | undefined, onChange?: () => void) {
-    const collision = new Collision(onChange);
-
-    if (descriptor) {
-      collision.enabled.set(descriptor.enabled ?? false);
-      collision.bounce.set(descriptor.bounce ?? 1);
-      collision.dampen.set(descriptor.dampen ?? 0);
-    }
-
-    return collision;
   }
 
   applyOverrides(descriptor?: CollisionDescriptor) {

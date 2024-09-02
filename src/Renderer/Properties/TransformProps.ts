@@ -12,9 +12,9 @@ class TransformProps implements TransformPropsInterface {
   scale: PSVec3Type;
 
   constructor(descriptor?: Partial<TransformPropsDescriptor>, onChange?: () => void) {
-    this.translate = new PSVec3Type(vec3.create(0, 0, 0), onChange)
-    this.rotate = new PSVec3Type(vec3.create(0, 0, 0), onChange)
-    this.scale = new PSVec3Type(vec3.create(1, 1, 1), onChange)
+    this.translate = new PSVec3Type(undefined, vec3.create(0, 0, 0), onChange)
+    this.rotate = new PSVec3Type(undefined, vec3.create(0, 0, 0), onChange)
+    this.scale = new PSVec3Type(undefined, vec3.create(1, 1, 1), onChange)
 
     if (descriptor) {
       this.translate.set(vec3.create(...(descriptor.translate ?? [0, 0, 0])))
@@ -24,9 +24,9 @@ class TransformProps implements TransformPropsInterface {
   }
 
   copyValues(other: TransformProps, noOverrides = true) {
-    this.translate.copyValues(other.translate, noOverrides)
-    this.rotate.copyValues(other.rotate, noOverrides)
-    this.scale.copyValues(other.scale, noOverrides)
+    this.translate.copyProp(other.translate, noOverrides)
+    this.rotate.copyProp(other.rotate, noOverrides)
+    this.scale.copyProp(other.scale, noOverrides)
   }
 
   applyOverrides(overrides?: TransformPropsDescriptor) {

@@ -9,29 +9,19 @@ class Sphere {
 
   hemisphere = false;
 
-  constructor(hemisphere = false, onChange?: () => void) {
-    this.radius = new PSNumber(1, onChange)
+  constructor(hemisphere = false, descriptor?: SphereDescriptor, onChange?: () => void, previousProps?: Sphere) {
+    this.radius = new PSNumber(descriptor?.radius, 1, onChange, previousProps?.radius)
     this.hemisphere = hemisphere;
   }
 
   copyValues(other: Sphere, noOverrides = true) {
-    this.radius.copyValues(other.radius, noOverrides);
+    this.radius.copyProp(other.radius, noOverrides);
   }
 
   hasOverrides() {
     return (
       this.radius.override
     )
-  }
-
-  static fromDescriptor(descriptor?: SphereDescriptor, onChange?: () => void) {
-    const sphere = new Sphere(descriptor?.hemisphere ?? false, onChange);
-
-    if (descriptor) {
-      sphere.radius.set(descriptor.radius ?? sphere.radius.get());
-    }
-
-    return sphere;
   }
 
   applyOverrides(descriptor?: SphereDescriptor) {

@@ -10,14 +10,14 @@ class Cone {
 
   originRadius: PSNumber;
 
-  constructor(onChange?: () => void) {
-    this.angle = new PSNumber(25, onChange);
-    this.originRadius = new PSNumber(1, onChange);
+  constructor(descriptor?: ConeDescriptor, onChange?: () => void, previousProp?: Cone) {
+    this.angle = new PSNumber(descriptor?.angle, 25, onChange, previousProp?.angle);
+    this.originRadius = new PSNumber(descriptor?.originRadius, 1, onChange, previousProp?.originRadius);
   }
 
   copyValues(other: Cone, noOverrides = true) {
-    this.angle.copyValues(other.angle, noOverrides);
-    this.originRadius.copyValues(other.originRadius, noOverrides);
+    this.angle.copyProp(other.angle, noOverrides);
+    this.originRadius.copyProp(other.originRadius, noOverrides);
   }
 
   hasOverrides() {
@@ -25,17 +25,6 @@ class Cone {
       this.angle.override
       || this.originRadius.override
     )
-  }
-
-  static fromDescriptor(descriptor?: ConeDescriptor, onChange?: () => void) {
-    const cone = new Cone(onChange);
-
-    if (descriptor) {
-      cone.angle.set(descriptor.angle ?? 25);
-      cone.originRadius.set(descriptor.originRadius ?? 1);
-    }
-
-    return cone;
   }
 
   applyOverrides(descriptor?: ConeDescriptor) {

@@ -58,19 +58,42 @@ class PSValue extends Property2Base {
     })
   }
 
-  constructor(onChange?: () => void) {
+  constructor(
+    descriptor?: PSValueDescriptor,
+    defaultDescriptor?: PSValueDescriptor,
+    onChange?: () => void,
+    previousProp?: PSValue,
+  ) {
     super()
     
-    this.onChange = onChange;
-
     this.curve = [new PSCurve(onChange), new PSCurve(onChange)]
+
+    const d = descriptor ?? defaultDescriptor;
+    if (d) {
+      this.applyDescriptor(d)
+    }  
+
+    // If there is a previous prop but the initial value
+    // for this property is undefined then copy the value 
+    // from the previous prop. Otherwise, mark this property
+    // as an override of the previous prop.
+    if (previousProp) {
+      if (descriptor === undefined) {
+        this.copyProp(previousProp)
+      }
+      else {
+        this.override = true;
+      }  
+    }
+
+    this.onChange = onChange;
 
     this.reactOnChange(() => this._type)
     this.reactOnChange(() => this._value)
     this.reactOnChange(() => this._curveRange)
   }
 
-  copyValues(other: PSValue, noOverrides = true) {
+  copyProp(other: PSValue, noOverrides = true) {
     if (!this.override || !noOverrides) {
       runInAction(() => {
         this._type = other._type;
@@ -80,16 +103,6 @@ class PSValue extends Property2Base {
       this.curve[0].copy(other.curve[0]);
       this.curve[1].copy(other.curve[1]);
     }
-  }
-
-  static fromDescriptor(descriptor?: PSValueDescriptor, onChange?: () => void) {
-    const psValue = new PSValue(onChange)
-
-    if (descriptor) {
-      psValue.applyDescriptor(descriptor)
-    }
-
-    return psValue;
   }
 
   applyOverrides(descriptor?: PSValueDescriptor) {

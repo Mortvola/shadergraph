@@ -7,19 +7,19 @@ import { removeUndefinedKeys } from "../Properties/Types";
 class LifetimeVelocity extends PSModule {
   speedModifier: PSValue;
 
-  constructor(onChange?: () => void) {
-    super(onChange);
+  constructor(descriptor?: LifetimeVelocityDescriptor, onChange?: () => void, previousProps?: LifetimeVelocity) {
+    super(descriptor?.enabled, undefined, onChange, previousProps?.enabled);
 
-    this.speedModifier = new PSValue(onChange);
+    this.speedModifier = new PSValue(descriptor?.speedModifier, undefined, onChange, previousProps?.speedModifier);
 
     makeObservable(this, {
       speedModifier: observable,
     })
   }
 
-  copyValues(other: LifetimeVelocity, noOverrides = true) {
-    super.copyValues(other, noOverrides);
-    this.speedModifier.copyValues(other.speedModifier, noOverrides)
+  copyProps(other: LifetimeVelocity, noOverrides = true) {
+    super.copyProps(other, noOverrides);
+    this.speedModifier.copyProp(other.speedModifier, noOverrides)
   }
 
   hasOverrides(): boolean {
@@ -27,17 +27,6 @@ class LifetimeVelocity extends PSModule {
       super.hasOverrides()
       || this.speedModifier.override
     )
-  }
-
-  static fromDescriptor(descriptor?: LifetimeVelocityDescriptor, onChange?: () => void) {
-    const lifetimeVelocity = new LifetimeVelocity(onChange);
-
-    if (descriptor) {
-      lifetimeVelocity.enabled.set(descriptor.enabled ?? false);
-      lifetimeVelocity.speedModifier = PSValue.fromDescriptor(descriptor.speedModifier, onChange);  
-    }
-
-    return lifetimeVelocity;
   }
 
   applyOverrides(descriptor?: LifetimeVelocityDescriptor) {

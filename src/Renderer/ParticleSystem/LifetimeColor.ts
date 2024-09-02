@@ -7,18 +7,18 @@ import { removeUndefinedKeys } from "../Properties/Types";
 class LifetimeColor extends PSModule {
   color: PSColor;
 
-  constructor(onChange?: () => void) {
-    super(onChange);
+  constructor(descriptor?: LifetimeColorDescriptor, onChange?: () => void, previousProps?: LifetimeColor) {
+    super(descriptor?.enabled, undefined, onChange, previousProps?.enabled);
 
-    this.color = new PSColor(onChange);
+    this.color = new PSColor(descriptor?.color, onChange, previousProps?.color);
 
     makeObservable(this, {
       color: observable,
     })
   }
 
-  copyValues(other: LifetimeColor, noOverrides = true) {
-    super.copyValues(other, noOverrides);
+  copyProps(other: LifetimeColor, noOverrides = true) {
+    super.copyProps(other, noOverrides);
     this.color.copyValues(other.color, noOverrides);
   }
 
@@ -27,17 +27,6 @@ class LifetimeColor extends PSModule {
       super.hasOverrides()
       || this.color.override
     )
-  }
-
-  static fromDescriptor(descriptor?: LifetimeColorDescriptor, onChange?: () => void) {
-    const lifetimeColor = new LifetimeColor(onChange);
-
-    if (descriptor) {
-      lifetimeColor.enabled.set(descriptor.enabled ?? false);
-      lifetimeColor.color = PSColor.fromDescriptor(descriptor.color, onChange);  
-    }
-
-    return lifetimeColor;
   }
 
   applyOverrides(descriptor?: LifetimeColorDescriptor) {

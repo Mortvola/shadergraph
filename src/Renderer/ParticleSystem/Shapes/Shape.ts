@@ -16,18 +16,24 @@ class Shape extends PSModule {
 
   hemisphere: Sphere;
 
-  constructor(onChange?: () => void) {
-    super(onChange);
+  constructor(
+    descriptor?: ShapeDescriptor,
+    defaultDescriptor: ShapeDescriptor = {},
+    onChange?: () => void,
+    previousProps?: Shape,
+  ) {
+    super(descriptor?.enabled, defaultDescriptor.enabled, onChange, previousProps?.enabled);
   
-    this.type = new PSShapeType(ShapeType.Cone, onChange)
-    this.cone = new Cone(onChange);
-    this.sphere = new Sphere(false, onChange);
-    this.hemisphere = new Sphere(true, onChange);
+    this.type = new PSShapeType(descriptor?.type, defaultDescriptor?.type, onChange, previousProps?.type)
+
+    this.cone = new Cone(descriptor?.cone, onChange, previousProps?.cone);
+    this.sphere = new Sphere(false, descriptor?.sphere, onChange, previousProps?.sphere);
+    this.hemisphere = new Sphere(true, descriptor?.hemisphere, onChange, previousProps?.hemisphere);
   }
 
-  copyValues(other: Shape, noOverrides = true) {
-    super.copyValues(other, noOverrides);
-    this.type.copyValues(other.type, noOverrides);
+  copyProps(other: Shape, noOverrides = true) {
+    super.copyProps(other, noOverrides);
+    this.type.copyProp(other.type, noOverrides);
     this.cone.copyValues(other.cone, noOverrides);
     this.sphere.copyValues(other.sphere, noOverrides);
     this.hemisphere.copyValues(other.hemisphere, noOverrides);
@@ -40,20 +46,6 @@ class Shape extends PSModule {
       || this.sphere.hasOverrides()
       || this.hemisphere.hasOverrides()
     )
-  }
-
-  static fromDescriptor(descriptor?: ShapeDescriptor, onChange?: () => void) {
-    const shape = new Shape(onChange);
-
-    if (descriptor) {
-      shape.enabled.set(descriptor.enabled ?? false);
-      shape.type.set(descriptor.type ?? ShapeType.Cone);
-      shape.cone = Cone.fromDescriptor(descriptor.cone, onChange);
-      shape.sphere = Sphere.fromDescriptor(descriptor.sphere, onChange);
-      shape.hemisphere = Sphere.fromDescriptor({ ...descriptor.hemisphere, hemisphere: true }, onChange);
-    }
-
-    return shape;
   }
 
   applyOverrides(descriptor?: ShapeDescriptor) {

@@ -52,17 +52,31 @@ class PSColor extends Property2Base {
     }
   }
 
-  constructor(onChange?: () => void) {
+  constructor(descriptor?: PSColorDescriptor, onChange?: () => void, prevousProp?: PSColor) {
     super();
 
     this.gradients = [new Gradient(onChange, this.onOverride), new Gradient(onChange, this.onOverride)]
-    this.onChange = onChange;
+
+    if (descriptor) {
+      this.applyDescriptor(descriptor)
+    }  
+
+    if (prevousProp) {
+      if (descriptor === undefined) {
+        this.copyValues(prevousProp)
+      }
+      else {
+        this.override = true
+      }  
+    }
 
     this.value = {
       type: this._type,
       color: this.color,
       gradients: this.gradients,
     }
+
+    this.onChange = onChange;
 
     this.reactOnChange(() => this.value);
     this.reactOnChange(() => this._type);
@@ -90,16 +104,6 @@ class PSColor extends Property2Base {
       this.gradients[0].copy(other.gradients[0]);
       this.gradients[1].copy(other.gradients[1]);
     }
-  }
-
-  static fromDescriptor(descriptor: PSColorDescriptor | undefined, onChange?: () => void) {
-    const psColor = new PSColor(onChange);
-
-    if (descriptor) {
-      psColor.applyDescriptor(descriptor)
-    }
-
-    return psColor;
   }
 
   applyOverrides(descriptor?: PSColorDescriptor) {

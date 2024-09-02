@@ -7,19 +7,19 @@ import { removeUndefinedKeys } from "../Properties/Types";
 class LifetimeSize extends PSModule {
   size: PSValue;
 
-  constructor(onChange?: () => void) {
-    super(onChange);
+  constructor(descriptor?: LifetimeSizeDescriptor, onChange?: () => void, previousProps?: LifetimeSize) {
+    super(descriptor?.enabled, undefined, onChange, previousProps?.enabled);
 
-    this.size = new PSValue(onChange);
+    this.size = new PSValue(descriptor?.size, undefined, onChange, previousProps?.size);
 
     makeObservable(this, {
       size: observable,
     })
   }
 
-  copyValues(other: LifetimeSize, noOverrides = true) {
-    super.copyValues(other, noOverrides);
-    this.size.copyValues(other.size, noOverrides);
+  copyProps(other: LifetimeSize, noOverrides = true) {
+    super.copyProps(other, noOverrides);
+    this.size.copyProp(other.size, noOverrides);
   }
 
   hasOverrides() {
@@ -27,17 +27,6 @@ class LifetimeSize extends PSModule {
       super.hasOverrides()
       || this.size.override
     )
-  }
-
-  static fromDescriptor(descriptor?: LifetimeSizeDescriptor, onChange?: () => void) {
-    const lifetimeSize = new LifetimeSize(onChange);
-
-    if (descriptor) {
-      lifetimeSize.enabled.set(descriptor.enabled ?? false);
-      lifetimeSize.size = PSValue.fromDescriptor(descriptor.size, onChange);  
-    }
-
-    return lifetimeSize;
   }
 
   applyOverrides(descriptor?: LifetimeSizeDescriptor) {

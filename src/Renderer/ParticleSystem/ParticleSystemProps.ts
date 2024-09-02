@@ -42,54 +42,61 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
 
   renderer: Renderer;
 
-  private constructor(renderer: Renderer, descriptor?: ParticleSystemPropsDescriptor) {
-    this.duration = new PSNumber(descriptor?.duration ?? 5, this.handleChange);
-    this.rate = new PSNumber(descriptor?.rate ?? 2, this.handleChange);
-    this.maxPoints = new PSNumber(descriptor?.maxPoints ?? 50, this.handleChange);
-    this.lifetime = PSValue.fromDescriptor(descriptor?.lifetime ?? { type: PSValueType.Constant, value: [5, 5] }, this.handleChange);
-    this.shape = Shape.fromDescriptor(descriptor?.shape ?? { enabled: true, type: ShapeType.Cone, }, this.handleChange);
-    this.startSpeed = PSValue.fromDescriptor(descriptor?.startVelocity, this.handleChange);
-    this.startSize = PSValue.fromDescriptor(descriptor?.startSize, this.handleChange);
-    this.startColor = PSColor.fromDescriptor(descriptor?.startColor, this.handleChange);
-    this.lifetimeSize = LifetimeSize.fromDescriptor(descriptor?.lifetimeSize, this.handleChange);
-    this.lifetimeVelocity = LifetimeVelocity.fromDescriptor(descriptor?.lifetimeVelocity, this.handleChange);
-    this.lifetimeColor = LifetimeColor.fromDescriptor(descriptor?.lifetimeColor, this.handleChange);
-    this.gravityModifier = PSValue.fromDescriptor(
-      descriptor?.gravityModifier ?? {
+  private constructor(
+    renderer: Renderer,
+    descriptor?: ParticleSystemPropsDescriptor,
+    previousProps?: ParticleSystemProps,
+  ) {
+    this.duration = new PSNumber(descriptor?.duration, 5, this.handleChange, previousProps?.duration);
+    this.rate = new PSNumber(descriptor?.rate, 2, this.handleChange, previousProps?.rate);
+    this.maxPoints = new PSNumber(descriptor?.maxPoints, 50, this.handleChange, previousProps?.maxPoints);
+    this.lifetime = new PSValue(descriptor?.lifetime, { type: PSValueType.Constant, value: [5, 5] }, this.handleChange, previousProps?.lifetime);
+    this.shape = new Shape(descriptor?.shape, { enabled: true, type: ShapeType.Cone, }, this.handleChange, previousProps?.shape);
+    this.startSpeed = new PSValue(descriptor?.startVelocity, {}, this.handleChange, previousProps?.startSpeed);
+    this.startSize = new PSValue(descriptor?.startSize, {}, this.handleChange, previousProps?.startSize);
+    this.startColor = new PSColor(descriptor?.startColor, this.handleChange, previousProps?.startColor);
+    this.lifetimeSize = new LifetimeSize(descriptor?.lifetimeSize, this.handleChange, previousProps?.lifetimeSize);
+    this.lifetimeVelocity = new LifetimeVelocity(descriptor?.lifetimeVelocity, this.handleChange, previousProps?.lifetimeVelocity);
+    this.lifetimeColor = new LifetimeColor(descriptor?.lifetimeColor, this.handleChange, previousProps?.lifetimeColor);
+    this.gravityModifier = new PSValue(
+      descriptor?.gravityModifier,
+      {
         type: PSValueType.Constant,
         value: [0, 0],
       },
-      this.handleChange);
-    this.collision = Collision.fromDescriptor(descriptor?.collision, this.handleChange);
+      this.handleChange,
+      previousProps?.gravityModifier,
+    );
+    this.collision = new Collision(descriptor?.collision, this.handleChange, previousProps?.collision);
     this.renderer = renderer;
     renderer.onChange = this.handleChange
   }
 
-  static async create(descriptor?: ParticleSystemPropsDescriptor) {
-    const renderer = await Renderer.fromDescriptor(
-      descriptor?.renderer ?? { enabled: true, mode: RenderMode.Billboard },
+  static async create(descriptor?: ParticleSystemPropsDescriptor, previousProps?: ParticleSystemProps) {
+    const renderer = await Renderer.create(
+      descriptor?.renderer, { enabled: true, mode: RenderMode.Billboard }, undefined, previousProps?.renderer
     );
 
-    return new ParticleSystemProps(renderer, descriptor)
+    return new ParticleSystemProps(renderer, descriptor, previousProps)
   }
 
   // Copies values from the other props except for
   // properties that are makred as overrides
   copyValues(other: ParticleSystemProps, noOverrides = true) {
-    this.duration.copyValues(other.duration, noOverrides);
-    this.maxPoints.copyValues(other.maxPoints, noOverrides);
-    this.rate.copyValues(other.rate, noOverrides);
-    this.lifetime.copyValues(other.lifetime, noOverrides)
-    this.shape.copyValues(other.shape, noOverrides);
-    this.startSpeed.copyValues(other.startSpeed, noOverrides);
-    this.startSize.copyValues(other.startSize, noOverrides);
+    this.duration.copyProp(other.duration, noOverrides);
+    this.maxPoints.copyProp(other.maxPoints, noOverrides);
+    this.rate.copyProp(other.rate, noOverrides);
+    this.lifetime.copyProp(other.lifetime, noOverrides)
+    this.shape.copyProps(other.shape, noOverrides);
+    this.startSpeed.copyProp(other.startSpeed, noOverrides);
+    this.startSize.copyProp(other.startSize, noOverrides);
     this.startColor.copyValues(other.startColor, noOverrides);
-    this.lifetimeSize.copyValues(other.lifetimeSize, noOverrides);
-    this.lifetimeVelocity.copyValues(other.lifetimeVelocity, noOverrides);
-    this.lifetimeColor.copyValues(other.lifetimeColor, noOverrides);
-    this.gravityModifier.copyValues(other.gravityModifier, noOverrides);
-    this.collision.copyValues(other.collision, noOverrides);
-    this.renderer.copyValues(other.renderer, noOverrides);
+    this.lifetimeSize.copyProps(other.lifetimeSize, noOverrides);
+    this.lifetimeVelocity.copyProps(other.lifetimeVelocity, noOverrides);
+    this.lifetimeColor.copyProps(other.lifetimeColor, noOverrides);
+    this.gravityModifier.copyProp(other.gravityModifier, noOverrides);
+    this.collision.copyProps(other.collision, noOverrides);
+    this.renderer.copyProps(other.renderer, noOverrides);
   }
 
   hasOverrides(): boolean {

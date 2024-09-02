@@ -11,12 +11,12 @@ class PSModule {
     return this.enabled.onChange
   }
 
-  constructor(onChange?: () => void) {
-    this.enabled = new PSBoolean(false, onChange)
+  constructor(enabled: boolean | undefined, defaultEnabled = false, onChange?: () => void, previousProp?: PSBoolean) {
+    this.enabled = new PSBoolean(enabled, defaultEnabled, onChange, previousProp)
   }
 
-  copyValues(other: PSModule, noOverrides = true) {
-    this.enabled.copyValues(other.enabled, noOverrides)
+  copyProps(other: PSModule, noOverrides = true) {
+    this.enabled.copyProp(other.enabled, noOverrides)
   }
 
   hasOverrides() {
