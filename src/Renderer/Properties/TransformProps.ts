@@ -23,7 +23,7 @@ class TransformProps implements TransformPropsInterface {
     }
   }
 
-  copyValues(other: TransformProps, noOverrides = true) {
+  copyProp(other: TransformProps, noOverrides = true) {
     this.translate.copyProp(other.translate, noOverrides)
     this.rotate.copyProp(other.rotate, noOverrides)
     this.scale.copyProp(other.scale, noOverrides)

@@ -17,11 +17,6 @@ class LifetimeSize extends PSModule {
     })
   }
 
-  copyProps(other: LifetimeSize, noOverrides = true) {
-    super.copyProps(other, noOverrides);
-    this.size.copyProp(other.size, noOverrides);
-  }
-
   toDescriptor(overridesOnly = false): LifetimeSizeDescriptor | undefined {
     const descriptor = {
       enabled: this.enabled.toDescriptor(overridesOnly),

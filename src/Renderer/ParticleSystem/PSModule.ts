@@ -15,10 +15,6 @@ class PSModule {
     this.enabled = new PSBoolean(enabled, defaultEnabled, onChange, previousProp)
   }
 
-  copyProps(other: PSModule, noOverrides = true) {
-    this.enabled.copyProp(other.enabled, noOverrides)
-  }
-
   protected setOnChange(onChange?: () => void) {
     if (this.enabled !== undefined) {
       this.enabled.onChange = onChange;

@@ -121,7 +121,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
       // Setup the transform
       const prefabProps = prefabNode.transformProps;
       const props = new TransformProps(undefined, object.transformChanged);
-      props.copyValues(prefabProps as TransformProps);
+      props.copyProp(prefabProps as TransformProps);
       props.applyOverrides(nodeDescriptor?.transformProps)
       object.transformProps = props;
 

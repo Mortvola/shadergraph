@@ -17,11 +17,6 @@ class LifetimeVelocity extends PSModule {
     })
   }
 
-  copyProps(other: LifetimeVelocity, noOverrides = true) {
-    super.copyProps(other, noOverrides);
-    this.speedModifier.copyProp(other.speedModifier, noOverrides)
-  }
-
   toDescriptor(overridesOnly = false): LifetimeVelocityDescriptor | undefined {
     const descriptor = {
       enabled: this.enabled.toDescriptor(overridesOnly),

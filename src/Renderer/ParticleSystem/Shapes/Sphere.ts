@@ -14,10 +14,6 @@ class Sphere {
     this.hemisphere = hemisphere;
   }
 
-  copyValues(other: Sphere, noOverrides = true) {
-    this.radius.copyProp(other.radius, noOverrides);
-  }
-
   toDescriptor(overridesOnly = false): SphereDescriptor | undefined {
     const descriptor = {
       radius: this.radius.toDescriptor(overridesOnly),

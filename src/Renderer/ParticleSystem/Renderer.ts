@@ -41,14 +41,6 @@ class Renderer extends PSModule {
     }
   }
 
-  copyProps(other: Renderer, noOverrides = true) {
-    super.copyProps(other, noOverrides);
-    this.mode.copyProp(other.mode, noOverrides);
-    this.material.copyProp(other.material, noOverrides);
-
-    this.createDrawable();
-  }
-
   static async create(
     descriptor?: RendererDescriptor,
     defaultDescriptor?: RendererDescriptor,

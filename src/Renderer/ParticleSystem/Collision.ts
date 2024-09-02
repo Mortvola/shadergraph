@@ -16,12 +16,6 @@ class Collision extends PSModule {
     this.dampen = new PSNumber(descriptor?.dampen, 0, onChange, previousProps?.dampen);
   }
 
-  copyProps(other: Collision, noOverrides = true) {
-    super.copyProps(other, noOverrides);
-    this.bounce.copyProp(other.bounce, noOverrides);
-    this.dampen.copyProp(other.dampen, noOverrides);
-  }
-
   toDescriptor(overridesOnly = false): CollisionDescriptor | undefined {
     const descriptor = {
       enabled: this.enabled.toDescriptor(overridesOnly),

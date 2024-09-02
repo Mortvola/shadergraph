@@ -63,7 +63,7 @@ class PSColor extends Property2Base {
 
     if (prevousProp) {
       if (descriptor === undefined) {
-        this.copyValues(prevousProp)
+        this.copyProp(prevousProp)
       }
       else {
         this.override = true
@@ -92,7 +92,7 @@ class PSColor extends Property2Base {
     })
   }
 
-  copyValues(other: PSColor, noOverrides = true) {
+  copyProp(other: PSColor, noOverrides = true) {
     if (!this.override || !noOverrides) {
       runInAction(() => {
         this._type = other._type;

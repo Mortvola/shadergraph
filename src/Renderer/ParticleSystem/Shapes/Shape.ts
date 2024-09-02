@@ -31,15 +31,6 @@ class Shape extends PSModule {
     this.hemisphere = new Sphere(true, descriptor?.hemisphere, onChange, previousProps?.hemisphere);
   }
 
-  copyProps(other: Shape, noOverrides = true) {
-    super.copyProps(other, noOverrides);
-    this.type.copyProp(other.type, noOverrides);
-    this.cone.copyValues(other.cone, noOverrides);
-    this.sphere.copyValues(other.sphere, noOverrides);
-    this.hemisphere.copyValues(other.hemisphere, noOverrides);
-  }
-
-
   toDescriptor(overridesOnly = false): ShapeDescriptor | undefined {
     const descriptor = {
       enabled: this.enabled.toDescriptor(overridesOnly),

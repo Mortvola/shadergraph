@@ -15,11 +15,6 @@ class Cone {
     this.originRadius = new PSNumber(descriptor?.originRadius, 1, onChange, previousProp?.originRadius);
   }
 
-  copyValues(other: Cone, noOverrides = true) {
-    this.angle.copyProp(other.angle, noOverrides);
-    this.originRadius.copyProp(other.originRadius, noOverrides);
-  }
-
   toDescriptor(overridesOnly  = false): ConeDescriptor | undefined {
     const descriptor = {
       angle: this.angle.toDescriptor(overridesOnly),

@@ -80,25 +80,6 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
     return new ParticleSystemProps(renderer, descriptor, previousProps)
   }
 
-  // Copies values from the other props except for
-  // properties that are makred as overrides
-  copyValues(other: ParticleSystemProps, noOverrides = true) {
-    this.duration.copyProp(other.duration, noOverrides);
-    this.maxPoints.copyProp(other.maxPoints, noOverrides);
-    this.rate.copyProp(other.rate, noOverrides);
-    this.lifetime.copyProp(other.lifetime, noOverrides)
-    this.shape.copyProps(other.shape, noOverrides);
-    this.startSpeed.copyProp(other.startSpeed, noOverrides);
-    this.startSize.copyProp(other.startSize, noOverrides);
-    this.startColor.copyValues(other.startColor, noOverrides);
-    this.lifetimeSize.copyProps(other.lifetimeSize, noOverrides);
-    this.lifetimeVelocity.copyProps(other.lifetimeVelocity, noOverrides);
-    this.lifetimeColor.copyProps(other.lifetimeColor, noOverrides);
-    this.gravityModifier.copyProp(other.gravityModifier, noOverrides);
-    this.collision.copyProps(other.collision, noOverrides);
-    this.renderer.copyProps(other.renderer, noOverrides);
-  }
-
   onChange?: () => void;
 
   handleChange = () => {
