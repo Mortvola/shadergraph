@@ -4,8 +4,8 @@ import Collision from "./Collision";
 import LifetimeColor from "./LifetimeColor";
 import LifetimeSize from "./LIfetimeSize";
 import LifetimeVelocity from "./LifetimeVelocity";
-import PSColor from "./PSColor";
-import PSValue from "./PSValue";
+import PSColor from "../Properties/PSColor";
+import PSValue from "../Properties/PSValue";
 import Renderer from "./Renderer";
 import Shape from "./Shapes/Shape";
 import {
@@ -24,7 +24,7 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
 
   lifetime: PSValue;
 
-  startVelocity: PSValue;
+  startSpeed: PSValue;
 
   startSize: PSValue;
 
@@ -48,7 +48,7 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
     this.maxPoints = new PSNumber(descriptor?.maxPoints ?? 50, this.handleChange);
     this.lifetime = PSValue.fromDescriptor(descriptor?.lifetime ?? { type: PSValueType.Constant, value: [5, 5] }, this.handleChange);
     this.shape = Shape.fromDescriptor(descriptor?.shape ?? { enabled: true, type: ShapeType.Cone, }, this.handleChange);
-    this.startVelocity = PSValue.fromDescriptor(descriptor?.startVelocity, this.handleChange);
+    this.startSpeed = PSValue.fromDescriptor(descriptor?.startVelocity, this.handleChange);
     this.startSize = PSValue.fromDescriptor(descriptor?.startSize, this.handleChange);
     this.startColor = PSColor.fromDescriptor(descriptor?.startColor, this.handleChange);
     this.lifetimeSize = LifetimeSize.fromDescriptor(descriptor?.lifetimeSize, this.handleChange);
@@ -81,7 +81,7 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
     this.rate.copyValues(other.rate, noOverrides);
     this.lifetime.copyValues(other.lifetime, noOverrides)
     this.shape.copyValues(other.shape, noOverrides);
-    this.startVelocity.copyValues(other.startVelocity, noOverrides);
+    this.startSpeed.copyValues(other.startSpeed, noOverrides);
     this.startSize.copyValues(other.startSize, noOverrides);
     this.startColor.copyValues(other.startColor, noOverrides);
     this.lifetimeSize.copyValues(other.lifetimeSize, noOverrides);
@@ -99,7 +99,7 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
       || this.rate.override
       || this.lifetime.override
       || this.shape.hasOverrides()
-      || this.startVelocity.override
+      || this.startSpeed.override
       || this.startSize.override
       || this.startColor.override
       || this.lifetimeSize.hasOverrides()
@@ -118,7 +118,7 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
       this.rate.set(overrides?.rate, true);
       this.lifetime.applyOverrides(overrides?.lifetime);
       this.shape.applyOverrides(overrides?.shape);
-      this.startVelocity.applyOverrides(overrides?.startVelocity);
+      this.startSpeed.applyOverrides(overrides?.startVelocity);
       this.startSize.applyOverrides(overrides?.startSize);
       this.startColor.applyOverrides(overrides?.startColor);
       this.lifetimeSize.applyOverrides(overrides?.lifetimeSize);
@@ -146,7 +146,7 @@ class ParticleSystemProps implements ParticleSystemPropsInterface {
       rate: this.rate.toDescriptor(overridesOnly),
       shape: this.shape.toDescriptor(overridesOnly),
       lifetime: this.lifetime.toDescriptor(overridesOnly),
-      startVelocity: this.startVelocity.toDescriptor(overridesOnly),
+      startVelocity: this.startSpeed.toDescriptor(overridesOnly),
       startSize: this.startSize.toDescriptor(overridesOnly),
       startColor: this.startColor.toDescriptor(overridesOnly),
       gravityModifier: this.gravityModifier.toDescriptor(overridesOnly),

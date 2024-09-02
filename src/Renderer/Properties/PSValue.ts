@@ -1,45 +1,52 @@
-import { makeObservable, observable, runInAction } from "mobx";
+import { observable, runInAction } from "mobx";
 import { lerp } from "../Math";
-import { PSValueDescriptor, PSValueType } from "./Types";
+import { PSValueDescriptor, PSValueType } from "../ParticleSystem/Types";
 import PSCurve from "./PSCurve";
-import { Property } from "../Properties/Types";
+import { PropertyType } from "./Types";
+import { Property2Base } from "./Property2";
 
-class PSValue extends Property {
+class PSValue extends Property2Base {
   // Methods for type
   @observable
-  _type = PSValueType.Constant;
+  accessor _type = PSValueType.Constant;
 
   get type(): PSValueType {
     return this._type
   }
 
-  set type(newValue: PSValueType) {
+  set type(value: PropertyType<PSValueType>) {
     runInAction(() => {
-      this._type = newValue;
+      this._type = value.value;
+      if (value.override) {
+        this.override = value.override
+      }
     })
   }
 
   // Methods for value
   @observable
-  _value: [number, number] = [1, 1];
+  accessor _value: [number, number] = [1, 1];
 
   get value(): [number, number] {
     return this._value;
   }
 
-  set value(newValue: [number,  number]) {
+  set value(value: PropertyType<[number,  number]>) {
     runInAction(() => {
-      this._value = newValue;
+      this._value = value.value;
+      if (value.override) {
+        this.override = value.override
+      }
     })
   }
 
   // Methods for curve
   @observable
-  curve: [PSCurve, PSCurve];
+  accessor curve: [PSCurve, PSCurve];
 
   // Methods for curve range
   @observable
-  _curveRange: [number, number] = [0, 1];
+  accessor _curveRange: [number, number] = [0, 1];
 
   get curveRange(): [number, number] {
     return this._curveRange;
@@ -93,10 +100,10 @@ class PSValue extends Property {
   }
 
   applyDescriptor(descriptor: PSValueDescriptor) {
-    this.type = descriptor.type ?? PSValueType.Constant;
-    this.value = descriptor.value !== undefined
+    this.type = { value: descriptor.type ?? PSValueType.Constant };
+    this.value = { value: (descriptor.value !== undefined
       ? [descriptor.value[0], descriptor.value[1]]
-      : [1, 1];
+      : [1, 1]) };
     this.curve = [
       PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 0) ? descriptor.curve![0] : undefined, this.onChange),
       PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 1) ? descriptor.curve![1] : undefined, this.onChange),

@@ -9,12 +9,13 @@ import PSModule from './PSModule';
 import Collision from './Collision';
 import PSRenderer from './PSRenderer';
 import ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemProps';
+import Property from '../Property';
 
 type PropsType = {
   particleSystemProps: ParticleSystemProps,
 }
 
-const Particle: React.FC<PropsType> = observer(({
+const ParticleSystem: React.FC<PropsType> = observer(({
   particleSystemProps,
 }) => {  
   if (particleSystemProps === null) {
@@ -35,58 +36,47 @@ const Particle: React.FC<PropsType> = observer(({
 
   return (
     <div className={styles.particle}>
-      <label>
-        Duration:
+      <Property label="Duration" property={particleSystemProps.duration}>
         <NumberInput value={particleSystemProps.duration.get()} onChange={handleDurationChange} />
-      </label>
-      <label>
-        Maximum Particles:
+      </Property>
+      <Property label="Maximum Particles" property={particleSystemProps.maxPoints}>
         <NumberInput value={particleSystemProps.maxPoints.get()} onChange={handleMaxPointsChange} />
-      </label>
-      <label>
-        Emission Rate:
+      </Property>
+      <Property label="Emission rate" property={particleSystemProps.rate}>
         <NumberInput value={particleSystemProps.rate.get()} onChange={handleRateChange} />
-      </label>
-      <label>
-        Lifetime:
+      </Property>
+      <Property label="Lifetime" property={particleSystemProps.lifetime}>
         <PSValueInput value={particleSystemProps.lifetime} />
-      </label>
-      <label>
-        Start Velocity:
-        <PSValueInput value={particleSystemProps.startVelocity} />
-      </label>
-      <label>
-        Start Size:
+      </Property>
+      <Property label="Start Speed" property={particleSystemProps.startSpeed}>
+        <PSValueInput value={particleSystemProps.startSpeed} />
+      </Property>
+      <Property label="Start Size" property={particleSystemProps.startSize}>
         <PSValueInput value={particleSystemProps.startSize} />
-      </label>
-      <label>
-        Start Color:
+      </Property>
+      <Property label="Start Color" property={particleSystemProps.startColor}>
         <PSColorInput value={particleSystemProps.startColor} />
-      </label>
-      <label>
-        Gravity Modifier:
+      </Property>
+      <Property label="Gravity Modifier" property={particleSystemProps.gravityModifier}>
         <PSValueInput value={particleSystemProps.gravityModifier} />
-      </label>
+      </Property>
       <PSModule title="Shape" module={particleSystemProps.shape}>
         <ShapeModule shape={particleSystemProps.shape} />
       </PSModule>
       <PSModule title="Size over lifetime" module={particleSystemProps.lifetimeSize}>
-        <label>
-          Size:
+        <Property label="Size" property={particleSystemProps.lifetimeSize.size}>
           <PSValueInput value={particleSystemProps.lifetimeSize.size} />
-        </label>
+        </Property>
       </PSModule>
       <PSModule title="Color over lifetime" module={particleSystemProps.lifetimeColor}>
-        <label>
-          Color:
-          <PSColorInput value={particleSystemProps.lifetimeColor.color} />        
-        </label>
+        <Property label="Color" property={particleSystemProps.lifetimeColor.color}>
+          <PSColorInput value={particleSystemProps.lifetimeColor.color} />
+        </Property>
       </PSModule>
       <PSModule title="Velocity over lifetime" module={particleSystemProps.lifetimeVelocity}>
-        <label>
-          Speed Modifier:
-          <PSValueInput value={particleSystemProps.lifetimeVelocity.speedModifier} />        
-        </label>
+        <Property label="Speed Modifier" property={particleSystemProps.lifetimeVelocity.speedModifier}>
+          <PSValueInput value={particleSystemProps.lifetimeVelocity.speedModifier} />
+        </Property>
       </PSModule>
       <PSModule title="Collsion" module={particleSystemProps.collision}>
         <Collision value={particleSystemProps.collision} />
@@ -98,4 +88,4 @@ const Particle: React.FC<PropsType> = observer(({
   )
 })
 
-export default Particle;
+export default ParticleSystem;

@@ -236,7 +236,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
   async emitSome(numToEmit: number, startTime: number, t: number) {
     for (; numToEmit > 0; numToEmit -= 1) {
       const lifetime = this.props.lifetime.getValue(t);
-      const startVelocity = this.props.startVelocity.getValue(t);
+      const startVelocity = this.props.startSpeed.getValue(t);
       const startSize = this.props.startSize.getValue(t);
       const startColor = this.props.startColor.getColor(t);
       const [position, direction] = this.props.shape.getPositionAndDirection();

@@ -1,12 +1,19 @@
-import { makeObservable, observable, runInAction } from "mobx";
+import { observable, runInAction } from "mobx";
 import { lerp } from "../Math";
-import { PSColorDescriptor, PSColorType } from "./Types";
-import Gradient from './Gradient';
-import { Property, PropertyType } from "../Properties/Types";
+import { PSColorDescriptor, PSColorType } from "../ParticleSystem/Types";
+import Gradient from '../ParticleSystem/Gradient';
+import { PropertyType } from "./Types";
+import { Property2Base } from "./Property2";
 
-type Color = [number[], number[]];
+type ColorPair = [number[], number[]];
 
-class PSColor extends Property {
+type ValueType = {
+  type: PSColorType,
+  color: ColorPair,
+  gradients: [Gradient, Gradient]
+}
+
+class PSColor extends Property2Base {
   @observable
   accessor _type = PSColorType.Constant;
 
@@ -21,13 +28,13 @@ class PSColor extends Property {
   }
 
   @observable
-  accessor _color: [number[], number[]] = [[1, 1, 1, 1], [1, 1, 1, 1]];
+  accessor _color: ColorPair = [[1, 1, 1, 1], [1, 1, 1, 1]];
 
-  get color(): Color {
+  get color(): ColorPair {
     return this._color;
   }
 
-  set color(value: PropertyType<Color>) {
+  set color(value: PropertyType<ColorPair>) {
     runInAction(() => {
       this._color = value.value;
       this.override = value.override ?? this.override;
@@ -36,12 +43,28 @@ class PSColor extends Property {
 
   gradients: [Gradient, Gradient];
 
+  value: ValueType;
+
+  set(value: Partial<ValueType>, override?: boolean) {
+    this.value = {
+      ...this.value,
+      ...value,
+    }
+  }
+
   constructor(onChange?: () => void) {
     super();
 
     this.gradients = [new Gradient(onChange, this.onOverride), new Gradient(onChange, this.onOverride)]
     this.onChange = onChange;
 
+    this.value = {
+      type: this._type,
+      color: this.color,
+      gradients: this.gradients,
+    }
+
+    this.reactOnChange(() => this.value);
     this.reactOnChange(() => this._type);
     this.reactOnChange(() => this._color);
     this.reactOnChange(() => this.gradients);

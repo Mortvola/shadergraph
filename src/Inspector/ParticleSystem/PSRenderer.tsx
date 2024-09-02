@@ -5,6 +5,7 @@ import PSRenderModeTypeSelector from './PSRenderModeTypeSelector';
 import { RenderMode } from '../../Renderer/ParticleSystem/Types';
 import { materialManager } from '../../Renderer/Materials/MaterialManager';
 import { useStores } from '../../State/store';
+import Property from '../Property';
 
 type PropsType = {
   value: Renderer,
@@ -57,12 +58,10 @@ const PSRenderer: React.FC<PropsType> = observer(({
 
   return (
     <>
-      <label>
-        Render Mode:
+      <Property label="Render Mode" property={value.mode}>
         <PSRenderModeTypeSelector value={value.mode.get()} onChange={handleModeChange} />
-      </label>
-      <label onDragOver={handleDragOver} onDrop={handleDrop}>
-        Material:
+      </Property>
+      <Property label="Material" property={value.material} onDragOver={handleDragOver} onDrop={handleDrop}>
         <div>
           {
             value.material
@@ -70,7 +69,7 @@ const PSRenderer: React.FC<PropsType> = observer(({
               : 'not assigned'
           }
         </div>
-      </label>
+      </Property>
     </>
   )
 })

@@ -3,11 +3,29 @@ import { RenderMode, ShapeType } from "../ParticleSystem/Types";
 import { MaterialItemInterface } from "../../State/types";
 import { vec3, Vec3 } from "wgpu-matrix";
 
-export class Property2<T> {
+export class Property2Base {
   @observable accessor override = false;
 
   onChange?: () => void;
 
+  onRevertOverride?: () => void;
+
+  revertOverride() {
+    if (this.onRevertOverride) {
+      this.onRevertOverride()
+    }
+  }
+
+  reactOnChange(f: () => unknown) {
+    reaction(f, () => {
+      if (this.onChange) {
+        this.onChange()
+      }
+    })
+  }
+}
+
+export class Property2<T> extends Property2Base {
   @observable protected accessor value: T;
 
   set(value?: T, override = false) {
@@ -23,19 +41,13 @@ export class Property2<T> {
     return this.value;
   }
 
-  constructor(value: T, onChange?: () => void) {    
+  constructor(value: T, onChange?: () => void) {
+    super()
+
     this.value = value;
 
     this.onChange = onChange
     this.reactOnChange(() => this.value)
-  }
-
-  reactOnChange(f: () => unknown) {
-    reaction(f, () => {
-      if (this.onChange) {
-        this.onChange()
-      }
-    })
   }
 
   copyValues(other: Property2<T>, noOverrides = true) {

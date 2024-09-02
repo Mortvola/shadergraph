@@ -1,7 +1,7 @@
 import { makeObservable, observable } from "mobx";
 import { LifetimeVelocityDescriptor } from "./Types";
 import PSModule from "./PSModule";
-import PSValue from "./PSValue";
+import PSValue from "../Properties/PSValue";
 import { removeUndefinedKeys } from "../Properties/Types";
 
 class LifetimeVelocity extends PSModule {

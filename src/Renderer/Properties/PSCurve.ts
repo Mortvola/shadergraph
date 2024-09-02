@@ -1,5 +1,5 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import { PSCurveDescriptor, PSCurvePoint } from "./Types";
+import { PSCurveDescriptor, PSCurvePoint } from "../ParticleSystem/Types";
 
 class PSCurve {
   points: PSCurvePoint[] = [

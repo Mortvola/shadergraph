@@ -51,9 +51,9 @@ const ColorPicker: React.FC<PropsType> = observer(({
         onClick={handleOpenClick}
       />
       {
-        open
-          ? <ColorPickerPopup value={value} onChange={onChange} onClose={handleClose} rect={open} useHdr={useHdr} useAlpha={useAlpha} />
-          : null
+          open
+            ? <ColorPickerPopup value={value} onChange={onChange} onClose={handleClose} rect={open} useHdr={useHdr} useAlpha={useAlpha} />
+            : null
       }
     </>
   )

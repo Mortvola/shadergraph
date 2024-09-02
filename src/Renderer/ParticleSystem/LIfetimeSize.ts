@@ -1,6 +1,6 @@
 import { makeObservable, observable } from "mobx";
 import PSModule from "./PSModule";
-import PSValue from "./PSValue";
+import PSValue from "../Properties/PSValue";
 import { LifetimeSizeDescriptor } from "./Types";
 import { removeUndefinedKeys } from "../Properties/Types";
 

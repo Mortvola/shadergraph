@@ -7,9 +7,9 @@ import { ComponentType, NewSceneObjectComponent, SceneObjectComponent } from '..
 import GameObject2D from './GameObject2d';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
-import Particle from './ParticleSystem/Particle';
+import ParticleSystem from './ParticleSystem/ParticleSystem';
 import NumberInput from './NumberInput';
-import ParticleSystem from '../Renderer/ParticleSystem/ParticleSystem';
+import ParticleSystemData from '../Renderer/ParticleSystem/ParticleSystem';
 import LightComponent from './Light';
 import Light from '../Renderer/Drawables/Light';
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
@@ -126,7 +126,7 @@ const SceneObject: React.FC<PropsType> = observer(({
       //   return <ModelTree modelItem={item.item as ModelItem} onChange={handleModelChange} />
 
       case ComponentType.ParticleSystem:
-        return <Particle particleSystemProps={(item.props as ParticleSystemProps)} />
+        return <ParticleSystem particleSystemProps={(item.props as ParticleSystemProps)} />
 
       // case ComponentType.Decal:
       //   return <Decal decalItem={item.item as DecalItem} onChange={handleDecalChange} />
@@ -201,7 +201,7 @@ const SceneObject: React.FC<PropsType> = observer(({
       case ComponentType.ParticleSystem: {
         (async () => {
           const props = await ParticleSystemProps.create();
-          const particleSystem = new ParticleSystem(props);
+          const particleSystem = new ParticleSystemData(props);
   
           // particleSystemManager.add(particleSystem);
   

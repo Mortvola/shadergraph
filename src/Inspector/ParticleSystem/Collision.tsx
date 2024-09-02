@@ -1,6 +1,7 @@
 import React from 'react';
 import NumberInput from '../NumberInput';
 import CollisionData from '../../Renderer/ParticleSystem/Collision';
+import Property from '../Property';
 
 type PropsType = {
   value: CollisionData
@@ -19,14 +20,12 @@ const Collision: React.FC<PropsType> = ({
 
   return (
     <>
-      <label>
-        Bounce:
+      <Property label="Bounce" property={value.bounce}>
         <NumberInput value={value.bounce.get()} onChange={handleBounceChange} />
-      </label>
-      <label>
-        Dampen:
+      </Property>
+      <Property label="Dampen" property={value.dampen}>
         <NumberInput value={value.dampen.get()} onChange={handleDampenChange} />
-      </label>
+      </Property>
     </>
   )
 }

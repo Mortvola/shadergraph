@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import styles from './CurveEditor.module.scss';
 import { observer } from 'mobx-react-lite';
 import CurveGraph from './CurveGraph';
-import PSCurve from '../Renderer/ParticleSystem/PSCurve';
+import PSCurve from '../Renderer/Properties/PSCurve';
 import NumberInput from '../Inspector/NumberInput';
 
 type PropsType = {
@@ -39,7 +39,6 @@ const CurveEditorPopup: React.FC<PropsType> = observer(({
   }
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
-    console.log(event.code)
     event.stopPropagation();
     // if (event.code === 'Backspace' || event.code === 'Delete') {
     //   if (selectedAlphaId !== undefined) {

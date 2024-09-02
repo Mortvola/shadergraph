@@ -2,7 +2,7 @@ import React from 'react';
 import NumberInput from '../NumberInput';
 import PSValueTypeSelector from './PSValueTypeSelector';
 import { PSValueType } from '../../Renderer/ParticleSystem/Types';
-import PSValue from '../../Renderer/ParticleSystem/PSValue';
+import PSValue from '../../Renderer/Properties/PSValue';
 import { observer } from 'mobx-react-lite';
 import CurveEditor from '../../Color/CurveEditor';
 
@@ -14,19 +14,19 @@ const PSValueInput: React.FC<PropsType> = observer(({
   value,
 }) => {
   const handleMinChange = (min: number) => {
-    value.value = [min, value.value[1]]
+    value.value = { value: [min, value.value[1]], override: true }
   }
 
   const handleMaxChange = (max: number) => {
-    value.value = [value.value[0], max]
+    value.value = { value: [value.value[0], max], override: true }
   }
 
   const handleTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    value.type = event.target.value as PSValueType
+    value.type = { value: event.target.value as PSValueType, override: true }
   }
 
   const handleRangeChange = (range: [number, number]) => {
-    value.value = range;
+    value.value = { value: range, override: true };
   }
 
   return (

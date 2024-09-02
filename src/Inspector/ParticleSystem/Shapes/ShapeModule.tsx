@@ -6,6 +6,7 @@ import { observer } from 'mobx-react-lite';
 import Cone from './Cone';
 import styles from '../PSModule.module.scss';
 import Sphere from './Sphere';
+import Property from '../../Property';
 
 type PropsType = {
   shape: Shape,
@@ -20,10 +21,9 @@ const ShapeModule: React.FC<PropsType> = observer(({
 
   return (
     <div className={styles.shape}>
-      <label>
-        Shape:
+      <Property label="Shape" property={shape.type}>
         <ShapeTypeSelector value={shape.type.get()} onChange={handleShapeTypeChange} />
-      </label>
+      </Property>
       {
         (() => {
           switch (shape.type.get()) {

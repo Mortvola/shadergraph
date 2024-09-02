@@ -3,8 +3,8 @@ import Collision from "./Collision"
 import LifetimeColor from "./LifetimeColor"
 import LifetimeSize from "./LIfetimeSize"
 import LifetimeVelocity from "./LifetimeVelocity"
-import PSColor from "./PSColor"
-import PSValue from "./PSValue"
+import PSColor from "../Properties/PSColor"
+import PSValue from "../Properties/PSValue"
 import Renderer from "./Renderer"
 import Shape from "./Shapes/Shape"
 
@@ -173,7 +173,7 @@ export interface ParticleSystemPropsInterface {
 
   lifetime: PSValue;
 
-  startVelocity: PSValue;
+  startSpeed: PSValue;
 
   startSize: PSValue;
 

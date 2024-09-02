@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './CurveEditor.module.scss'
 import { observer } from 'mobx-react-lite';
 import CurveEditorPopup from './CurveEditorPopup';
-import PSCurve from '../Renderer/ParticleSystem/PSCurve';
+import PSCurve from '../Renderer/Properties/PSCurve';
 
 type PropsType = {
   value: PSCurve,

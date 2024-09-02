@@ -1,6 +1,6 @@
 import { makeObservable, observable } from "mobx";
 import { LifetimeColorDescriptor } from "./Types";
-import PSColor from "./PSColor";
+import PSColor from "../Properties/PSColor";
 import PSModule from "./PSModule";
 import { removeUndefinedKeys } from "../Properties/Types";
 
