@@ -120,7 +120,7 @@ class StageGraph {
       }
       else {
         switch (nodeDescr.type) {
-          case 'property': 
+          case 'property': {
             const propertyNode = nodeDescr as PropertyDescriptor;
   
             // Find property in property table
@@ -130,6 +130,7 @@ class StageGraph {
               node = new PropertyNode(prop, nodeDescr.id)
             }
             break;
+          }
   
           case 'value': {
             const vnode = nodeDescr as ValueDescriptor;

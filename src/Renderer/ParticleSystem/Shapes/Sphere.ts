@@ -1,4 +1,3 @@
-import { makeObservable, observable } from "mobx";
 import type { PropsBase} from "../../Properties/Types";
 import { removeUndefinedKeys } from "../../Properties/Types";
 import type { Vec4} from "wgpu-matrix";

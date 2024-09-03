@@ -58,8 +58,7 @@ export interface RenderPassInterface {
   addDrawable(drawable: DrawableComponentInterface | SceneNode2d): void;
 }
 
-export interface RenderPass2DInterface {
-}
+export type RenderPass2DInterface = object;
 
 export interface SceneGraphInterface {
   addNode(node: SceneNodeInterface): void;
@@ -125,9 +124,7 @@ export interface PipelineInterface {
   fragmentStageBindings: StageBindings | null
 }
 
-export type PipelineAttributes = {
-
-}
+export type PipelineAttributes = object;
 
 export type StageBindings = {
   binding: number,
@@ -167,9 +164,7 @@ export type ShaderRecord = {
   descriptor: ShaderDescriptor,
 }
 
-export type ModelItemDescriptor = {
-
-}
+export type ModelItemDescriptor = object
 
 export type ModelItem = {
   id: number,
@@ -183,9 +178,7 @@ export type ParticleItem = {
   id: number,
 }
 
-export type DecalItemDescriptor = {
-
-}
+export type DecalItemDescriptor = object
 
 export type DecalItem = {
   materialId?: number,

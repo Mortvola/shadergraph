@@ -188,7 +188,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
       if (components) {
         object.components = (await Promise.all(components.map(async (c) => {
           switch (c.type) {
-            case ComponentType.ParticleSystem:
+            case ComponentType.ParticleSystem: {
               let propsDescriptor = c.props as ParticleSystemPropsDescriptor;
               if (!propsDescriptor) {
                 propsDescriptor = c.item as ParticleSystemPropsDescriptor;
@@ -208,6 +208,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
                 props,
                 object: ps,
               }
+            }
 
             case ComponentType.Light: {
               let propsDescriptor = c.props as LightPropsDescriptor;

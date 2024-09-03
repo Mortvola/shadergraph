@@ -1,4 +1,3 @@
-import { makeObservable, observable } from "mobx";
 import type { ConeDescriptor } from "../Types";
 import type { Vec4} from "wgpu-matrix";
 import { mat4, vec4 } from "wgpu-matrix";

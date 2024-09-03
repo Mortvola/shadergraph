@@ -22,10 +22,10 @@ const createVarName = (basename: string) => {
 }
 
 export const menuItems = (): MenuItemLike[] => ([
-  { name: 'Texture2D', action: (x: number, y: number) => store.graph!.addProperty(new Property(createVarName('texture'), 'texture2D', './textures/texture.png')) },
-  { name: 'Float', action: (x: number, y: number) => store.graph!.addProperty(new Property(createVarName('float'), 'float', 0))},
-  { name: 'Vector2', action: (x: number, y: number) => store.graph!.addProperty(new Property(createVarName('property'), 'vec2f', [0, 0]))},
-  { name: 'Vector3', action: (x: number, y: number) => store.graph!.addProperty(new Property(createVarName('property'), 'vec3f', [0, 0, 0]))},
-  { name: 'Vector4', action: (x: number, y: number) => store.graph!.addProperty(new Property(createVarName('property'), 'vec4f', [0, 0, 0, 0]))},
-  { name: 'Color', action: (x: number, y: number) => store.graph!.addProperty(new Property(createVarName('color'), 'color', [0, 0, 0, 0]))},
+  { name: 'Texture2D', action: () => store.graph!.addProperty(new Property(createVarName('texture'), 'texture2D', './textures/texture.png')) },
+  { name: 'Float', action: () => store.graph!.addProperty(new Property(createVarName('float'), 'float', 0))},
+  { name: 'Vector2', action: () => store.graph!.addProperty(new Property(createVarName('property'), 'vec2f', [0, 0]))},
+  { name: 'Vector3', action: () => store.graph!.addProperty(new Property(createVarName('property'), 'vec3f', [0, 0, 0]))},
+  { name: 'Vector4', action: () => store.graph!.addProperty(new Property(createVarName('property'), 'vec4f', [0, 0, 0, 0]))},
+  { name: 'Color', action: () => store.graph!.addProperty(new Property(createVarName('color'), 'color', [0, 0, 0, 0]))},
 ])

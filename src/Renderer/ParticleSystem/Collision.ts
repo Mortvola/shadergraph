@@ -1,4 +1,3 @@
-import { makeObservable, observable } from "mobx";
 import PSModule from "./PSModule";
 import type { CollisionDescriptor } from "./Types";
 import type { PropsBase} from "../Properties/Types";

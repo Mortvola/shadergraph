@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from './SceneItem.module.scss';
-import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import type { MenuItemLike } from '../ContextMenu/types';
@@ -21,7 +20,7 @@ const SceneItem: React.FC<PropsType> = observer(({
   selected,
   draggable = false,
 }) => {
-  const store = useStores();
+  // const store = useStores();
 
   const handleClick = () => {
     if (onSelect) {

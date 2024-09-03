@@ -72,7 +72,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
         ));
 
         switch (c.type) {
-          case ComponentType.ParticleSystem:
+          case ComponentType.ParticleSystem: {
             const prefabProps = c.props as ParticleSystemProps;
 
             const props = new ParticleSystemProps(
@@ -94,6 +94,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
               object: ps,
               node: object,
             }
+          }
 
           case ComponentType.Light: {
             const light = new Light(c.props as LightPropsInterface);

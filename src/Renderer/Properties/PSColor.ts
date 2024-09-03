@@ -144,13 +144,14 @@ class PSColor extends PropertyBase {
       case PSColorType.Gradient:
         return this.gradients[0].getColor(t);
   
-      case PSColorType.RandomeGradient:
+      case PSColorType.RandomeGradient: {
         const color1 = this.gradients[0].getColor(t);
         const color2 = this.gradients[1].getColor(t);
   
         const r = Math.random();
   
         return lerp(color1, color2, r)
+      }
     }
   }
 }

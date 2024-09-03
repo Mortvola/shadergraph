@@ -1,4 +1,3 @@
-import { makeObservable, observable } from "mobx";
 import type { ShapeDescriptor} from "../Types";
 import { ShapeType } from "../Types";
 import Cone from "./Cone";

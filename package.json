@@ -33,7 +33,8 @@
     "build": "tsc && vite build",
     "serve": "vite preview",
     "watch": "tsc --noEmit --watch",
-    "eslint": "eslint ."
+    "eslint": "eslint .",
+    "madge": "madge -c ./index.tsx"
   },
   "eslintConfig": {
     "extends": [

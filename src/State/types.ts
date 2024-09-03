@@ -11,8 +11,7 @@ export interface ModelerInterface {
   applyMaterial(material: MaterialInterface): void
 }
 
-export interface MaterialsInterface {
-}
+export type MaterialsInterface  = object;
 
 export type CullMode = 'back' | 'none' | 'front';
 
@@ -238,9 +237,7 @@ export const isGameObject2D = (r: unknown): r is GameObject2DInterface => (
   && (r as GameObject2DInterface).height !== undefined
 )
 
-export interface ShaderInterface extends EntityInterface {
-
-}
+export type ShaderInterface = EntityInterface
 
 export interface MaterialItemInterface extends EntityInterface {
   id: number,
@@ -254,9 +251,7 @@ export interface MaterialItemInterface extends EntityInterface {
   setShaderId(id: number): void;
 }
 
-export interface ModelInterface extends EntityInterface {
-
-}
+export type ModelInterface = EntityInterface
 
 export interface TextureInterface extends EntityInterface {
   flipY: boolean,
