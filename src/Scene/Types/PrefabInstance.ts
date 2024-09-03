@@ -17,6 +17,7 @@ import type { PrefabNodeInterface } from "./Types";
 import type { PrefabInterface } from "./Types";
 import Prefab from "./Prefab";
 import { PrefabInstanceObject } from "./SceneObject";
+import { prefabManager } from "./PrefabManager";
 
 class PrefabInstance extends Entity implements PrefabInstanceInterface {
   prefab: PrefabInterface
@@ -132,13 +133,9 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
   }
 
   static async fromDescriptor(descriptor: PrefabInstanceDescriptor): Promise<PrefabInstance | undefined> {
-    const response = await Http.get<PrefabDescriptor>(`/api/prefabs/${descriptor.object.prefabId}`)
+    const prefab = await prefabManager.get(descriptor.object.prefabId)
 
-    if (response.ok) {
-      const body = await response.body();
-
-      const prefab = await Prefab.fromDescriptor(body);
-
+    if (prefab) {
       return PrefabInstance.fromPrefab(prefab, descriptor);
     }
   }

@@ -14,7 +14,7 @@ class Prefab extends Entity implements PrefabInterface {
     this.root = root;
   }
 
-  static async fromDescriptor(descriptor: PrefabDescriptor) {
+  static fromDescriptor(descriptor: PrefabDescriptor) {
     const prefabObject = new Prefab();
 
     if (descriptor) {
@@ -22,7 +22,7 @@ class Prefab extends Entity implements PrefabInterface {
       prefabObject.name = descriptor.name;
 
       if (descriptor.prefab.root) {
-        prefabObject.root = await PrefabNode.fromDescriptor(prefabObject, descriptor.prefab.root)
+        prefabObject.root = PrefabNode.fromDescriptor(prefabObject, descriptor.prefab.root)
       }
     }
 

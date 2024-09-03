@@ -28,7 +28,7 @@ class PrefabNode extends NodeBase implements PrefabNodeInterface {
     this.prefab = prefab;
   }
 
-  static async fromDescriptor(prefab: PrefabInterface, descriptor?: PrefabNodeDescriptor): Promise<PrefabNode> {
+  static fromDescriptor(prefab: PrefabInterface, descriptor?: PrefabNodeDescriptor): PrefabNode {
     const prefabNode = new PrefabNode(prefab);
 
     if (descriptor) {
@@ -37,8 +37,8 @@ class PrefabNode extends NodeBase implements PrefabNodeInterface {
 
       prefabNode.transformProps = new TransformProps(descriptor.transformProps)
 
-      prefabNode.components = (await Promise.all(
-        descriptor.components.map(async (component) => {
+      prefabNode.components = 
+        descriptor.components.map((component) => {
           switch (component.type) {
             case ComponentType.ParticleSystem: {
               const props = new ParticleSystemProps(component.props as ParticleSystemPropsDescriptor)
@@ -57,12 +57,11 @@ class PrefabNode extends NodeBase implements PrefabNodeInterface {
             }
           }
         })
-      ))
-      .filter((c) => c !== undefined)
+          .filter((c) => c !== undefined)
 
-      prefabNode.nodes = await Promise.all(descriptor.nodes.map(async (nodeDescriptor) => {
+      prefabNode.nodes = descriptor.nodes.map((nodeDescriptor) => {
         return PrefabNode.fromDescriptor(prefab, nodeDescriptor)
-      }))
+      })
 
       for (const node of prefabNode.nodes) {
         node.parentNode = prefabNode;
