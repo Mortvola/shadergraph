@@ -3,6 +3,8 @@ import styles from './Inspector.module.scss';
 import Select from './Select';
 import { observer } from 'mobx-react-lite';
 import { PropertyBaseInterface } from '../Renderer/Properties/Types';
+import { PrefabNodeInterface } from '../Scene/Types/Types';
+import PropertyBase from '../Renderer/Properties/PropertyBase';
 
 type PropsType = {
   label: string,
@@ -21,10 +23,10 @@ const Property: React.FC<PropsType> = observer(({
 }) => {
   const [open, setOpen] = React.useState<DOMRect | null>(null);
   const ref = React.useRef<HTMLDivElement>(null);
-  const [lineage, setLineage] = React.useState<{ value: string, label: string }[]>([])
+  const [lineage, setLineage] = React.useState<{ value: PropertyBase | undefined, label: string }[]>([])
 
   const options = [
-    { value: 'revert', label: 'Revert Override' },
+    { value: undefined, label: 'Revert Override' },
   ]
 
   const handleOpenClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
@@ -36,7 +38,7 @@ const Property: React.FC<PropsType> = observer(({
       const rect = element.getBoundingClientRect();
 
       setLineage(property.getLineage().map((l) => ({
-        value: l.id.toString(),
+        value: l.property,
         label: `Apply to ${l.name} in ${l.container}`,
       })))
 
@@ -48,9 +50,12 @@ const Property: React.FC<PropsType> = observer(({
     setOpen(null);
   }
 
-  const onSelect = (value: string) => {
-    if (value === "revert") {
+  const onSelect = (value: PropertyBase | undefined) => {
+    if (value === undefined) {
       property.revertOverride()
+    }
+    else {
+      property.applyOverride(value)
     }
   }
 

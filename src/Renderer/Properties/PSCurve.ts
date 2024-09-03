@@ -46,6 +46,12 @@ class PSCurve {
     return curve;
   }
 
+  toDescriptor(): PSCurveDescriptor {
+    return ({
+      points: this.points.map((p) => JSON.parse(JSON.stringify(p)))
+    })
+  }
+
   sanitize() {
     // Make sure the curve points are in order
     this.points.sort((a, b) => a.x - b.x);

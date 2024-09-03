@@ -43,6 +43,7 @@ class PrefabNode extends NodeBase implements PrefabNodeInterface {
             case ComponentType.ParticleSystem: {
               const props = new ParticleSystemProps(component.props as ParticleSystemPropsDescriptor)
 
+              props.onChange = prefabNode.onChange
               props.node = prefabNode;
 
               return ({ id: component.id, type: component.type, props })
@@ -85,12 +86,10 @@ class PrefabNode extends NodeBase implements PrefabNodeInterface {
     })
   }
 
-  async save(): Promise<void> {
-    console.log('save prefab node')
-  }
-
   onChange = () => {
-    this.save();
+    if (this.prefab?.autosave) {
+      this.prefab?.save();
+    }
   }
 }
 

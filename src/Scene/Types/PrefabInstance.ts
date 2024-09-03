@@ -12,10 +12,8 @@ import type { PrefabInstanceInterface } from "./Types";
 import type { PrefabInstanceNodeDesriptor } from "./Types";
 import type { PrefabInstanceDescriptor } from "./Types";
 import type { SceneObjectBaseInterface } from "./Types";
-import type { PrefabDescriptor } from "./Types";
 import type { PrefabNodeInterface } from "./Types";
 import type { PrefabInterface } from "./Types";
-import Prefab from "./Prefab";
 import { PrefabInstanceObject } from "./SceneObject";
 import { prefabManager } from "./PrefabManager";
 

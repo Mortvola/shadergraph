@@ -51,14 +51,6 @@ export class Property<T> extends PropertyBase {
     })
   }
 
-  revertOverride() {
-    if (this.ancestor) {
-      this.copyProp((this.ancestor as Property<T>))
-    }
-
-    super.revertOverride()
-  }
-
   toDescriptor(overridesOnly = false): T | undefined {
     if (!overridesOnly || this.override) {
       return this.value

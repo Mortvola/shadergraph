@@ -117,14 +117,6 @@ class PSValue extends PropertyBase {
     })
   }
 
-  revertOverride() {
-    if (this.ancestor) {
-      this.copyProp((this.ancestor as PSValue))
-    }
-
-    super.revertOverride()
-  }
-
   applyDescriptor(descriptor: PSValueDescriptor) {
     this.type = { value: descriptor.type ?? PSValueType.Constant };
     this.value = { value: (descriptor.value !== undefined
@@ -145,7 +137,7 @@ class PSValue extends PropertyBase {
       return ({
         type: this.type,
         value: this.value,
-        curve: this.curve,
+        curve: [this.curve[0].toDescriptor(), this.curve[0].toDescriptor()],
         curveRange: this.curveRange,
       })  
     }

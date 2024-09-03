@@ -76,12 +76,6 @@ class PSColor extends PropertyBase {
     }));
   }
 
-  onOverride = (override?: boolean) => {
-    runInAction(() => {
-      this.override = override ?? this.override;
-    })
-  }
-
   copyProp(other: PSColor) {
     runInAction(() => {
       this._type = other._type;
@@ -94,14 +88,6 @@ class PSColor extends PropertyBase {
 
       this.override = false;
     })
-  }
-
-  revertOverride() {
-    if (this.ancestor) {
-      this.copyProp((this.ancestor as PSColor))
-    }
-
-    super.revertOverride()
   }
 
   applyDescriptor(descriptor: PSColorDescriptor) {

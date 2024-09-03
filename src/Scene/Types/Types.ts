@@ -5,7 +5,6 @@ import type {
 } from "../../Renderer/Types";
 import { EntityInterface, TransformPropsDescriptor } from "../../State/types";
 
-
 export interface PrefabInterface {
   id: number;
 
@@ -13,7 +12,11 @@ export interface PrefabInterface {
 
   root?: PrefabNodeInterface;
 
+  autosave: boolean;
+
   toDescriptor(): PrefabDescriptor;
+
+  save(): Promise<void>;
 }
 
 export interface PrefabNodeInterface {
@@ -32,7 +35,9 @@ export interface PrefabNodeInterface {
   ancestor?: PrefabNodeInterface;
 
   toDescriptor(): PrefabNodeDescriptor;
-}export type PrefabDescriptor = {
+}
+
+export type PrefabDescriptor = {
   id: number;
   name: string;
   prefab: {
@@ -44,6 +49,7 @@ export interface PrefabInstanceObjectInterface extends SceneObjectBaseInterface 
   ancestor: PrefabNodeInterface;
 
 }
+
 export type PrefabNodeDescriptor = {
   id: number;
   name: string;
@@ -51,6 +57,7 @@ export type PrefabNodeDescriptor = {
   transformProps?: TransformPropsDescriptor;
   nodes: PrefabNodeDescriptor[];
 };
+
 export interface SceneInterface {
   name: string;
 
@@ -66,6 +73,7 @@ export interface SceneInterface {
 
   renderScene(): Promise<void>;
 }
+
 export interface SceneObjectBaseInterface extends EntityInterface {
   components: SceneObjectComponent[];
 
@@ -93,10 +101,12 @@ export interface SceneObjectBaseInterface extends EntityInterface {
 
   delete(): void;
 }
+
 export const isSceneObject = (r: unknown): r is SceneObjectInterface => (
   r !== null && r !== undefined
   && (r as PrefabInstanceObjectInterface).ancestor === undefined
-);
+)
+
 export interface SceneObjectInterface extends SceneObjectBaseInterface {
   components: SceneObjectComponent[];
 
@@ -106,10 +116,12 @@ export interface SceneObjectInterface extends SceneObjectBaseInterface {
 
   getNextComponentId(): number;
 }
+
 export const isGameObject = (r: unknown): r is SceneObjectInterface => (
   r !== undefined && r !== null &&
   (r as SceneObjectInterface).components !== undefined
-);
+)
+
 export type SceneObjectDescriptor = {
   id: number;
   name: string;
@@ -122,7 +134,8 @@ export type SceneObjectDescriptor = {
     objects?: number[];
     nextComponentId?: number;
   };
-};
+}
+
 export type PrefabInstanceDescriptor = {
   id: number;
   name: string;
@@ -130,22 +143,27 @@ export type PrefabInstanceDescriptor = {
     prefabId: number;
     nodes?: PrefabInstanceNodeDesriptor[];
   };
-};
+}
+
 export type PrefabInstanceNodeDesriptor = {
   id: number;
   components: PrefabComponentDescriptor[];
   transformProps?: TransformPropsDescriptor;
-};
+}
+
 export const isPrefabInstanceDescriptor = (r: unknown): r is PrefabInstanceDescriptor => (
   r !== undefined && r !== undefined
   && (r as PrefabInstanceDescriptor).object?.prefabId !== undefined
-);
+)
+
 export type PrefabComponentDescriptor = {
   id: number;
   type: ComponentType;
   props?: PrefabPropsDescriptor;
-};
+}
+
 export type PrefabPropsDescriptor = ParticleSystemPropsDescriptor | LightPropsDescriptor;
+
 export interface PrefabInstanceInterface {
   id: number;
 
@@ -155,11 +173,11 @@ export interface PrefabInstanceInterface {
 
   delete(): Promise<void>;
 }
+
 export type SceneDescriptor = {
   id?: number;
   name: string;
   scene: {
     objects: number;
   };
-};
-
+}

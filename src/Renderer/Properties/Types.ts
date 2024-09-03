@@ -1,4 +1,6 @@
 import type NodeBase from "../../Scene/Types/NodeBase";
+import { PrefabNodeInterface } from "../../Scene/Types/Types";
+import PropertyBase from "./PropertyBase";
 
 export type PropertyType<T> = { value: T, override?: boolean }
 
@@ -6,12 +8,14 @@ export class PropsBase {
   node?: NodeBase
 }
 
-export type LineageEntry = { id: number, name: string, container: string };
+export type LineageEntry = { property: PropertyBase, name: string, container: string };
 
 export interface PropertyBaseInterface {
   override: boolean
 
   revertOverride(): void
+
+  applyOverride(property: PropertyBase): void
 
   getLineage(): LineageEntry[]
 }

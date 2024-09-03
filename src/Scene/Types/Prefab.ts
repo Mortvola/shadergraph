@@ -5,9 +5,12 @@ import type { SceneObjectBaseInterface } from "./Types";
 import type { PrefabDescriptor } from "./Types";
 import type { PrefabInterface } from "./Types";
 import PrefabNode from "./PrefabNode";
+import Http from "../../Http/src";
 
 class Prefab extends Entity implements PrefabInterface {
   root?: PrefabNode;
+
+  autosave = true;
 
   constructor(id?: number, name?: string, root?: PrefabNode) {
     super(id, name ?? `PrefabObject ${Math.abs(id ?? 0)}`)
@@ -17,6 +20,8 @@ class Prefab extends Entity implements PrefabInterface {
   static fromDescriptor(descriptor: PrefabDescriptor) {
     const prefabObject = new Prefab();
 
+    prefabObject.autosave = false;
+
     if (descriptor) {
       prefabObject.id = descriptor.id;
       prefabObject.name = descriptor.name;
@@ -25,6 +30,8 @@ class Prefab extends Entity implements PrefabInterface {
         prefabObject.root = PrefabNode.fromDescriptor(prefabObject, descriptor.prefab.root)
       }
     }
+
+    prefabObject.autosave = true;
 
     return prefabObject;
   }
@@ -102,6 +109,33 @@ class Prefab extends Entity implements PrefabInterface {
       }
     })
   }
+
+  async save(): Promise<void> {
+    console.log('prefab save')
+    if (this.id < 0) {
+      const { id, ...descriptor } = this.toDescriptor();
+
+      const response = await Http.post<Omit<PrefabDescriptor, 'id'>, PrefabDescriptor>(`/api/prefabs`, descriptor);
+
+      if (response.ok) {
+        const body = await response.body();
+
+        if (body.id !== undefined) {
+          this.id = body.id;
+        }
+      }  
+    }
+    else {
+      const descriptor = this.toDescriptor();
+
+      const response = await Http.patch<PrefabDescriptor, void>(`/api/prefabs/${this.id}`, descriptor);
+
+      if (response.ok) {
+  
+      }  
+    }      
+  }
+
 }
 
 export default Prefab;
