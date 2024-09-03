@@ -2,9 +2,9 @@ import React from "react";
 import type Graph from "./Graph";
 import Modeler from "./Modeler";
 import type {
-  ModelInterface, SceneInterface} from "./types";
-import { isGameObject,
-} from "./types";
+  ModelInterface} from "./types";
+import type { SceneInterface } from "../Scene/Types/Types";
+import { isGameObject } from "../Scene/Types/Types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
 import type { ProjectItemInterface, ProjectItemLike } from "../Project/Types/types";

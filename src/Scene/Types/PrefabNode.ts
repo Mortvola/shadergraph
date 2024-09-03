@@ -1,6 +1,8 @@
 import type { PrefabComponent, TransformPropsInterface } from "../../Renderer/Types";
 import { ComponentType } from "../../Renderer/Types";
-import type { PrefabNodeDescriptor, PrefabNodeInterface, PrefabInterface } from "../../State/types";
+import type { PrefabNodeDescriptor } from "./Types";
+import type { PrefabNodeInterface } from "./Types";
+import type { PrefabInterface } from "./Types";
 import TransformProps from "../../Renderer/Properties/TransformProps";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";

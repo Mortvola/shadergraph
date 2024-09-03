@@ -1,6 +1,7 @@
 import { observable, reaction } from "mobx";
 import type { LineageEntry, PropertyBaseInterface, PropsBase } from "./Types";
-import { PrefabInstanceObjectInterface, PrefabNodeInterface } from "../../State/types";
+import { PrefabInstanceObjectInterface } from "../../Scene/Types/Types";
+import { PrefabNodeInterface } from "../../Scene/Types/Types";
 
 export class PropertyBase implements PropertyBaseInterface {
   @observable accessor override = false;

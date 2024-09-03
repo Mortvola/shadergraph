@@ -1,7 +1,8 @@
 import React from 'react';
 import SceneToolbar from './SceneToolbar';
 import { observer } from 'mobx-react-lite';
-import type { SceneInterface, SceneObjectBaseInterface} from '../State/types';
+import type { SceneObjectBaseInterface } from "./Types/Types";
+import type { SceneInterface } from "./Types/Types";
 import SceneFolder from './SceneFolder';
 
 type PropsType = {

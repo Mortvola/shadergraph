@@ -8,7 +8,7 @@ import ParticleSystem from '../Renderer/ParticleSystem/ParticleSystem';
 import type { NewSceneObjectComponent } from '../Renderer/Types';
 import { ComponentType } from '../Renderer/Types';
 import Light from '../Renderer/Drawables/Light';
-import type { SceneInterface } from '../State/types';
+import type { SceneInterface } from "./Types/Types";
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
 import LightProps from '../Renderer/Properties/LightProps';
 

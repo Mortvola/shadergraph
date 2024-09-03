@@ -34,7 +34,7 @@
     "serve": "vite preview",
     "watch": "tsc --noEmit --watch",
     "eslint": "eslint .",
-    "madge": "madge -c ./index.tsx"
+    "madge": "madge -c ./src/index.tsx"
   },
   "eslintConfig": {
     "extends": [

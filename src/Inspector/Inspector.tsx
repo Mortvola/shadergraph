@@ -7,7 +7,8 @@ import { runInAction } from 'mobx';
 import Http from '../Http/src';
 import type Texture from '../State/Texture';
 import SceneObject from './SceneObject';
-import type { SceneObjectInterface, MaterialItemInterface } from '../State/types';
+import type { MaterialItemInterface } from '../State/types';
+import type { SceneObjectInterface } from "../Scene/Types/Types";
 
 const Inspector: React.FC = observer(() => {
   const { project, scene } = useStores();

@@ -1,6 +1,9 @@
 import TransformProps from "../../Renderer/Properties/TransformProps";
 import Entity from "../../State/Entity";
-import type { PrefabDescriptor, PrefabInterface, SceneObjectBaseInterface, SceneObjectInterface } from "../../State/types";
+import type { SceneObjectInterface } from "./Types";
+import type { SceneObjectBaseInterface } from "./Types";
+import type { PrefabDescriptor } from "./Types";
+import type { PrefabInterface } from "./Types";
 import PrefabNode from "./PrefabNode";
 
 class Prefab extends Entity implements PrefabInterface {

@@ -6,7 +6,7 @@ import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
 import Prefab from '../Scene/Types/Prefab';
-import { isSceneObject } from '../State/types';
+import { isSceneObject } from "../Scene/Types/Types";
 
 type PropsType = {
   folder: FolderInterface,

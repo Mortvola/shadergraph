@@ -1,5 +1,5 @@
 import React from 'react';
-import type { SceneObjectBaseInterface} from '../State/types';
+import type { SceneObjectBaseInterface } from "../Scene/Types/Types";
 import { isGameObject2D } from '../State/types';
 import { useStores } from '../State/store';
 import styles from './Inspector.module.scss'

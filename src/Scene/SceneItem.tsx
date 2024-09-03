@@ -3,7 +3,8 @@ import styles from './SceneItem.module.scss';
 import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import type { MenuItemLike } from '../ContextMenu/types';
-import type { SceneInterface, SceneObjectBaseInterface } from '../State/types';
+import type { SceneObjectBaseInterface } from "./Types/Types";
+import type { SceneInterface } from "./Types/Types";
 
 type PropsType = {
   project: SceneInterface,

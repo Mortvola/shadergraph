@@ -3,9 +3,9 @@ import type { PrefabInstanceObject } from "./SceneObject";
 import SceneObject from "./SceneObject";
 import { store } from "../../State/store";
 import Http from "../../Http/src";
-import type {
-  SceneDescriptor, SceneInterface, SceneObjectBaseInterface,
-} from "../../State/types";
+import type { SceneDescriptor } from "./Types";
+import type { SceneObjectBaseInterface } from "./Types";
+import type { SceneInterface } from "./Types";
 
 class Scene implements SceneInterface {
   id?: number;

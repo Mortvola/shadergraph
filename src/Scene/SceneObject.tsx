@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './Scene.module.scss';
-import type { SceneObjectInterface } from '../State/types';
+import type { SceneObjectInterface } from "./Types/Types";
 
 type PropsType = {
   object: SceneObjectInterface,

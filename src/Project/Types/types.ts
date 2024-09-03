@@ -1,9 +1,12 @@
 import type { SceneNodeInterface, ParticleSystemInterface, ShaderRecord } from "../../Renderer/Types";
 import type { GraphInterface } from "../../State/GraphInterface";
 import type {
-  GameObject2DInterface, SceneObjectInterface, MaterialItemInterface,
-  TextureInterface, SceneInterface, PrefabInterface,
+  GameObject2DInterface, MaterialItemInterface,
+  TextureInterface,
 } from "../../State/types";
+import type { SceneObjectInterface } from "../../Scene/Types/Types";
+import type { SceneInterface } from "../../Scene/Types/Types";
+import type { PrefabInterface } from "../../Scene/Types/Types";
 
 export type ProjectItemLike =
   ProjectItemInterface<SceneObjectInterface> |

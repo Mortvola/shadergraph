@@ -1,5 +1,6 @@
 import { runInAction } from "mobx";
-import type { SceneDescriptor, SceneInterface } from "../../State/types";
+import type { SceneDescriptor } from "../../Scene/Types/Types";
+import type { SceneInterface } from "../../Scene/Types/Types";
 import ProjectItem from "./ProjectItem";
 import Http from "../../Http/src";
 import Scene from "../../Scene/Types/Scene";
