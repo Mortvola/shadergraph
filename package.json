@@ -32,7 +32,8 @@
     "start": "vite",
     "build": "tsc && vite build",
     "serve": "vite preview",
-    "watch": "tsc --noEmit --watch"
+    "watch": "tsc --noEmit --watch",
+    "eslint": "eslint ."
   },
   "eslintConfig": {
     "extends": [

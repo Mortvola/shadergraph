@@ -8,7 +8,7 @@ export type NodeType =
   | 'PhongShading' | 'TextureSize' | 'Twirl' | 'VertexColor' | 'Voronoi'
   | 'Preview';
 
-export type SamplerDescriptor = {};
+export type SamplerDescriptor = object;
 
 export type ValueType =
   string
