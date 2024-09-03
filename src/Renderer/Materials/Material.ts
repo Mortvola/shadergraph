@@ -1,14 +1,14 @@
 import { gpu } from "../Gpu";
 import { pipelineManager } from "../Pipelines/PipelineManager";
-import { MaterialInterface, PipelineInterface, StageBindings } from "../Types";
-import { PropertyInterface } from "../ShaderBuilder/Types";
+import type { MaterialInterface, PipelineInterface, StageBindings } from "../Types";
+import type { PropertyInterface } from "../ShaderBuilder/Types";
 import Http from "../../Http/src";
-import { MaterialDescriptor } from "./MaterialDescriptor";
+import type { MaterialDescriptor } from "./MaterialDescriptor";
 import { shaderManager } from "../shaders/ShaderManager";
-import { ShaderDescriptor } from "../shaders/ShaderDescriptor";
+import type { ShaderDescriptor } from "../shaders/ShaderDescriptor";
 import ShaderGraph from "../ShaderBuilder/ShaderGraph";
-import { ValueType } from "../ShaderBuilder/GraphDescriptor";
-import { DrawableType } from "../Drawables/DrawableInterface";
+import type { ValueType } from "../ShaderBuilder/GraphDescriptor";
+import type { DrawableType } from "../Drawables/DrawableInterface";
 
 const downloadedTextures: Map<number, GPUTexture> = new Map();
 const texturePromises: Map<number, Promise<GPUTexture>> = new Map();

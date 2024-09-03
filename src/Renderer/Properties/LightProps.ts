@@ -1,5 +1,5 @@
 import { makeObservable, observable } from "mobx";
-import { LightPropsDescriptor, LightPropsInterface } from "../Types";
+import type { LightPropsDescriptor, LightPropsInterface } from "../Types";
 import { PropsBase } from "./Types";
 
 class LightProps extends PropsBase implements LightPropsInterface {

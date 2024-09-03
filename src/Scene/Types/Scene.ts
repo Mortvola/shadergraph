@@ -2,7 +2,9 @@ import { makeObservable, observable, runInAction } from "mobx";
 import SceneObject, { PrefabInstanceObject } from "./SceneObject";
 import { store } from "../../State/store";
 import Http from "../../Http/src";
-import { SceneDescriptor, SceneInterface, SceneObjectBaseInterface } from "../../State/types";
+import type {
+  SceneDescriptor, SceneInterface, SceneObjectBaseInterface,
+} from "../../State/types";
 
 class Scene implements SceneInterface {
   id?: number;

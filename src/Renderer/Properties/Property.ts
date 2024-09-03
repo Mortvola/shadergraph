@@ -1,42 +1,9 @@
-import { observable, reaction, runInAction } from "mobx";
+import { observable, runInAction } from "mobx";
 import { RenderMode, ShapeType } from "../ParticleSystem/Types";
-import { MaterialItemInterface } from "../../State/types";
+import type { MaterialItemInterface } from "../../State/types";
 import { vec3, Vec3 } from "wgpu-matrix";
-import { PropsBase } from "./Types";
-
-export class PropertyBase {
-  @observable accessor override = false;
-
-  ancestor?: PropertyBase
-
-  props: PropsBase
-
-  onChange?: () => void;
-
-  onRevertOverride?: () => void;
-
-  constructor(props: PropsBase, previousProp?: PropertyBase) {
-    this.props = props;
-    this.ancestor = previousProp;
-  }
-
-  getLineage() {
-  }
-
-  revertOverride() {
-    if (this.onRevertOverride) {
-      this.onRevertOverride()
-    }
-  }
-
-  reactOnChange(f: () => unknown) {
-    reaction(f, () => {
-      if (this.onChange) {
-        this.onChange()
-      }
-    })
-  }
-}
+import type { PropsBase } from "./Types";
+import PropertyBase from "./PropertyBase";
 
 export class Property<T> extends PropertyBase {
   @observable protected accessor value: T;

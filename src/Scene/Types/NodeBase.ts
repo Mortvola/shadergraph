@@ -1,5 +1,7 @@
 import Entity from "../../State/Entity";
 
-export class NodeBase extends Entity {
+class NodeBase extends Entity {
   ancestor?: NodeBase;
 }
+
+export default NodeBase;

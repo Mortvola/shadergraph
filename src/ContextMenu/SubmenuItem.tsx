@@ -1,8 +1,8 @@
 import React from 'react';
+import { observer } from 'mobx-react-lite';
 import styles from './ContextMenu.module.scss';
 import Menu from './Menu';
-import { observer } from 'mobx-react-lite';
-import { SubmenutItemRecord } from './types';
+import type { SubmenutItemRecord } from './types';
 
 type PropsType = {
   menuItem: SubmenutItemRecord,

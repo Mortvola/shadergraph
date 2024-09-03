@@ -1,4 +1,4 @@
-import { DataType, GraphNodeDescriptor, NodeType, ValueType } from "./GraphDescriptor";
+import type { DataType, GraphNodeDescriptor, NodeType, ValueType } from "./GraphDescriptor";
 
 export interface PortInterface {
   node: GraphNodeInterface;

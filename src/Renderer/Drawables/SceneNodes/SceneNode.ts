@@ -5,7 +5,6 @@ import { isDrawableNode } from './utils';
 import Component from '../Component';
 import DrawableComponent from '../DrawableComponent';
 import { getEulerAngles } from '../../Math';
-import TransformProps from '../../Properties/TransformProps';
 
 export type HitTestResult = {
   drawable: DrawableInterface,

@@ -1,11 +1,11 @@
-import {
+import type {
   PropertyInterface,
 } from "../Renderer/ShaderBuilder/Types";
-import {
+import type {
   ComponentDescriptor, ComponentType, SceneObjectComponent, MaterialInterface, SceneNodeInterface,
   TransformPropsInterface, LightPropsDescriptor, PrefabComponent, NewSceneObjectComponent,
 } from "../Renderer/Types";
-import { ParticleSystemPropsDescriptor } from "../Renderer/ParticleSystem/Types";
+import type { ParticleSystemPropsDescriptor } from "../Renderer/ParticleSystem/Types";
 
 export interface ModelerInterface {
   applyMaterial(material: MaterialInterface): void

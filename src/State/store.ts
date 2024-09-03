@@ -1,5 +1,5 @@
 import React from "react";
-import Graph from "./Graph";
+import type Graph from "./Graph";
 import Modeler from "./Modeler";
 import {
   ModelInterface, SceneInterface, isGameObject,
@@ -13,7 +13,7 @@ import {
 } from "../Renderer/Types";
 import { renderer2d } from "../Main";
 import Project from "../Project/Types/Project";
-import { StoreInterface } from "./StoreInterface";
+import type { StoreInterface } from "./StoreInterface";
 
 class Store implements StoreInterface {
   get graph(): Graph | null {

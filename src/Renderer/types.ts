@@ -1,17 +1,17 @@
-import { Vec3, Vec4, Mat4, Quat } from 'wgpu-matrix';
-import { StructuredView } from 'webgpu-utils';
+import type { Vec3, Vec4, Mat4, Quat } from 'wgpu-matrix';
+import type { StructuredView } from 'webgpu-utils';
 import DrawableInterface, { DrawableType } from './Drawables/DrawableInterface';
-import { PropertyInterface } from './ShaderBuilder/Types';
-import { ShaderDescriptor } from './shaders/ShaderDescriptor';
-import SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
-import ShaderGraph from './ShaderBuilder/ShaderGraph';
-import { ParticleSystemPropsDescriptor } from './ParticleSystem/Types';
-import { MaterialItemInterface, TransformPropsDescriptor } from '../State/types';
-import ParticleSystemProps from './ParticleSystem/ParticleSystemProps';
-import LightProps from './Properties/LightProps';
-import { PSVec3Type } from './Properties/Property';
-import { ValueType } from './ShaderBuilder/GraphDescriptor';
-import { ParticleSystemPropsInterface } from './ParticleSystem/ParticleSystemPropsInterface';
+import type { PropertyInterface } from './ShaderBuilder/Types';
+import type { ShaderDescriptor } from './shaders/ShaderDescriptor';
+import type SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
+import type ShaderGraph from './ShaderBuilder/ShaderGraph';
+import type { ParticleSystemPropsDescriptor } from './ParticleSystem/Types';
+import type { MaterialItemInterface, TransformPropsDescriptor } from '../State/types';
+import type ParticleSystemProps from './ParticleSystem/ParticleSystemProps';
+import type LightProps from './Properties/LightProps';
+import type { PSVec3Type } from './Properties/Property';
+import type { ValueType } from './ShaderBuilder/GraphDescriptor';
+import type { ParticleSystemPropsInterface } from './ParticleSystem/ParticleSystemPropsInterface';
 
 export interface SceneNodeInterface {
   nodes: SceneNodeInterface[];

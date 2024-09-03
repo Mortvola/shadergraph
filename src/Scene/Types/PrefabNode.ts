@@ -1,10 +1,10 @@
 import { ComponentType, PrefabComponent, TransformPropsInterface } from "../../Renderer/Types";
-import { PrefabNodeDescriptor, PrefabNodeInterface, PrefabInterface } from "../../State/types";
+import type { PrefabNodeDescriptor, PrefabNodeInterface, PrefabInterface } from "../../State/types";
 import TransformProps from "../../Renderer/Properties/TransformProps";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
-import { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
+import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
 import LightProps from "../../Renderer/Properties/LightProps";
-import { NodeBase } from "./NodeBase";
+import NodeBase from "./NodeBase";
 
 class PrefabNode extends NodeBase implements PrefabNodeInterface {
   components: PrefabComponent[] = []

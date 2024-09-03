@@ -1,4 +1,4 @@
-import { NodeBase } from "../../Scene/Types/NodeBase";
+import type NodeBase from "../../Scene/Types/NodeBase";
 
 export type PropertyType<T> = { value: T, override?: boolean }
 

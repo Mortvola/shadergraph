@@ -1,4 +1,4 @@
-import { SceneNodeInterface, ParticleSystemInterface, ShaderRecord } from "../../Renderer/Types";
+import type { SceneNodeInterface, ParticleSystemInterface, ShaderRecord } from "../../Renderer/Types";
 import { GraphInterface } from "../../State/GraphInterface";
 import {
   GameObject2DInterface, SceneObjectInterface, MaterialItemInterface,

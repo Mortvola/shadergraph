@@ -41,6 +41,13 @@
       "react-app/jest"
     ]
   },
+  "madge": {
+    "detectiveOptions": {
+      "ts": {
+        "skipTypeImports": true
+      }
+    }
+  },
   "browserslist": {
     "production": [
       ">0.2%",

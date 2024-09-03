@@ -1,5 +1,5 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import Entity from "../../State/Entity";
+import { vec3 } from "wgpu-matrix";
 import {
   PrefabNodeInterface, SceneObjectDescriptor, SceneObjectInterface,
   PrefabInstanceDescriptor, isPrefabInstanceDescriptor,
@@ -14,14 +14,13 @@ import {
 } from "../../Renderer/Types";
 import SceneNode from "../../Renderer/Drawables/SceneNodes/SceneNode";
 import Light from "../../Renderer/Drawables/Light";
-import { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
+import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import LightProps from "../../Renderer/Properties/LightProps";
 import TransformProps from "../../Renderer/Properties/TransformProps";
 import PrefabInstance from "./PrefabInstance";
-import { vec3 } from "wgpu-matrix";
-import { NodeBase } from "./NodeBase";
+import NodeBase from "./NodeBase";
 
 export class SceneObjectBase extends NodeBase implements SceneObjectBaseInterface {
   components: SceneObjectComponent[] = []
