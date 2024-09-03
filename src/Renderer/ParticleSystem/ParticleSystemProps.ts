@@ -9,9 +9,10 @@ import PSValue from "../Properties/PSValue";
 import Renderer from "./Renderer";
 import Shape from "./Shapes/Shape";
 import {
-  ParticleSystemPropsDescriptor, ParticleSystemPropsInterface,
+  ParticleSystemPropsDescriptor,
   PSValueType, RenderMode, ShapeType,
 } from "./Types";
+import { ParticleSystemPropsInterface } from "./ParticleSystemPropsInterface";
 
 class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterface {
   duration: PSNumber;

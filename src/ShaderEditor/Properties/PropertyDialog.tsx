@@ -4,9 +4,9 @@ import { runInAction } from 'mobx';
 import styles from './PropertyDialog.module.scss';
 import { PropertyInterface } from '../../Renderer/ShaderBuilder/Types';
 import Modal from '../../Modal';
-import { GraphInterface } from '../../State/types';
 import ValueInput from './ValueInput';
 import { useStores } from '../../State/store';
+import { GraphInterface } from '../../State/GraphInterface';
 
 type PropsType = {
   graph: GraphInterface,

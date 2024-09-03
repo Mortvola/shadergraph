@@ -1,15 +1,12 @@
-import { makeObservable, observable } from "mobx";
 import PSModule from "./PSModule";
 import { RendererDescriptor, RenderMode } from "./Types";
-import { MaterialItemInterface } from "../../State/types";
 import { materialManager } from "../Materials/MaterialManager";
-import { DrawableType } from "../Types";
 import DrawableInterface from "../Drawables/DrawableInterface";
 import Billboard from "../Drawables/Billboard";
 import HorizontalBillboard from "../Drawables/HorizontalBillboard";
 import DrawableComponent from "../Drawables/DrawableComponent";
 import { PropsBase, removeUndefinedKeys } from "../Properties/Types";
-import { PSMaterialItem, PSNumber, PSRenderMode } from "../Properties/Property";
+import { PSNumber, PSRenderMode } from "../Properties/Property";
 import MaterialItem from "../MaterialItem";
 
 class Renderer extends PSModule {

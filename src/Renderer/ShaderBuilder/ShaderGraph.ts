@@ -1,4 +1,5 @@
 import { CullMode } from "../../State/types";
+import { DrawableType } from "../Drawables/DrawableInterface";
 import { gpu } from "../Gpu";
 import { bloom } from "../RenderSetings";
 import { phongFunction } from "../shaders/blinnPhongFunction";
@@ -9,11 +10,10 @@ import { ShaderDescriptor, ShaderType } from "../shaders/ShaderDescriptor";
 import { twirlFunction } from "../shaders/twirlFunction";
 import { getVertexStage } from "../shaders/vertexStage";
 import { voronoiFunction } from "../shaders/voronoiFunction";
-import { DrawableType } from "../Types";
-import { GraphDescriptor } from "./GraphDescriptor";
+import { DataType, GraphDescriptor } from "./GraphDescriptor";
 import Property from "./Property";
 import StageGraph from "./StageGraph";
-import { DataType, GraphNodeInterface, PropertyInterface } from "./Types";
+import { GraphNodeInterface, PropertyInterface } from "./Types";
 
 class ShaderGraph {
   type?: ShaderType;

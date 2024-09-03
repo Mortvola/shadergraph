@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom';
 import SimpleVector from './SimpleValues/SimpleVector';
 import SimpleUV from './SimpleValues/SimpleUV';
 import SimpleFloat from './SimpleValues/SimpleFloat';
-import { GraphInterface } from '../State/types';
+import { GraphInterface } from '../State/GraphInterface';
 
 type PropsType = {
   graph: GraphInterface,

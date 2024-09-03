@@ -1,5 +1,5 @@
 import React from 'react';
-import { ValueType } from '../Renderer/ShaderBuilder/Types';
+import { ValueType } from '../Renderer/ShaderBuilder/GraphDescriptor';
 
 type PropsType = {
   node: { value: ValueType },

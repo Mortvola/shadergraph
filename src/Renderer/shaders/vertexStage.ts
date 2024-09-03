@@ -1,4 +1,4 @@
-import { DrawableType } from "../Types";
+import { DrawableType } from "../Drawables/DrawableInterface";
 import { getMeshVertex } from "./meshVertex";
 
 export const getVertexStage = (drawableType: DrawableType, lit: boolean): string => {

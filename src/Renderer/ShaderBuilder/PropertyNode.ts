@@ -1,8 +1,8 @@
 import { makeObservable, observable } from "mobx";
 import GraphNode from "./GraphNode";
 import OutputPort from "./Ports/OutputPort";
-import { DataType, PropertyInterface, PropertyNodeInterface } from "./Types";
-import { PropertyDescriptor } from "./GraphDescriptor";
+import { PropertyInterface, PropertyNodeInterface } from "./Types";
+import { DataType, PropertyDescriptor } from "./GraphDescriptor";
 
 class PropertyNode extends GraphNode implements PropertyNodeInterface {
   property: PropertyInterface;

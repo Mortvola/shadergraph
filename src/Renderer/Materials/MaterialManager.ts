@@ -1,8 +1,9 @@
 import Http from "../../Http/src";
+import { DrawableType } from "../Drawables/DrawableInterface";
 import MaterialItem from "../MaterialItem";
 import { PropertyInterface } from "../ShaderBuilder/Types";
 import { shaderManager } from "../shaders/ShaderManager";
-import { DrawableType, MaterialManagerInterface, MaterialRecordDescriptor } from "../Types";
+import { MaterialManagerInterface, MaterialRecordDescriptor } from "../Types";
 import Material from "./Material";
 import { MaterialDescriptor } from "./MaterialDescriptor";
 

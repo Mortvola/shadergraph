@@ -1,4 +1,5 @@
-import { DataType, GraphNodeInterface, PortInterface } from "../Types";
+import { DataType } from "../GraphDescriptor";
+import { GraphNodeInterface, PortInterface } from "../Types";
 
 class Port implements PortInterface {
   node: GraphNodeInterface;

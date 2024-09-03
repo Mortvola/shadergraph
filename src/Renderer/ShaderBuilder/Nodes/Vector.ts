@@ -1,5 +1,6 @@
+import { DataType } from "../GraphDescriptor";
 import InputPort from "../Ports/InputPort";
-import { DataType, ValueInterface } from "../Types";
+import { ValueInterface } from "../Types";
 import Value from "../Value";
 import ValueNode from "../ValueNode";
 

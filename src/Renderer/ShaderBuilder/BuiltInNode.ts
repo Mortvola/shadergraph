@@ -1,5 +1,5 @@
+import { DataType, NodeType } from "./GraphDescriptor";
 import GraphNode from "./GraphNode";
-import { DataType, NodeType } from "./Types";
 
 class BuiltIn extends GraphNode {
   name: string;

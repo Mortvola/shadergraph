@@ -1,6 +1,6 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import Http from "../../Http/src";
-import { GameObject2DInterface, ProjectItemRecord } from "../../State/types";
+import { GameObject2DInterface } from "../../State/types";
 import Folder from "./Folder";
 import ProjectItem from "./ProjectItem";
 import { FolderInterface, ProjectInterface, ProjectItemLike, ProjectItemType, isFolder } from "./types";
@@ -11,6 +11,7 @@ import ShaderProjectItem from "./ShaderProjectItem";
 import MaterialProjectItem from "./MaterialProjectItem";
 import TextureProjectItem from "./TextureProjectItem";
 import SceneObjectProjectItem from "./SceneObjectProjectItem";
+import { ProjectItemRecord } from "../../State/ProjectItemRecord";
 
 class Project implements ProjectInterface {
   projectItems: Folder

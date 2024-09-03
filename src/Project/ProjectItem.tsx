@@ -6,9 +6,10 @@ import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import { MenuItemLike } from '../ContextMenu/types';
 import Http from '../Http/src';
-import { MaterialItemInterface, ProjectItemRecord } from '../State/types';
+import { MaterialItemInterface } from '../State/types';
 import { runInAction } from 'mobx';
 import ProjectItemObject from "../Project/Types/ProjectItem";
+import { ProjectItemRecord } from '../State/ProjectItemRecord';
 
 type PropsType = {
   item: ProjectItemLike,

@@ -5,9 +5,9 @@ import {
 } from "../Types";
 import { gravity, intersectionPlane } from "../Math";
 import Particle from "./Particle";
-import { ParticleSystemPropsInterface } from "./Types";
 import SceneNode from "../Drawables/SceneNodes/SceneNode";
 import Component from "../Drawables/Component";
+import { ParticleSystemPropsInterface } from "./ParticleSystemPropsInterface";
 
 class ParticleSystem extends Component implements ParticleSystemInterface {
   props: ParticleSystemPropsInterface

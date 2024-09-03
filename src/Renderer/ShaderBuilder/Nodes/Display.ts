@@ -1,7 +1,6 @@
-import { GraphNodeDescriptor } from "../GraphDescriptor";
+import { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
-import { DataType } from "../Types";
 
 class Display extends OperationNode {
   constructor(nodeDescriptor?: GraphNodeDescriptor) {

@@ -2,10 +2,11 @@ import { Mat3, mat3, vec2 } from "wgpu-matrix";
 import Mesh2D from "./Drawables/Mesh2D";
 import SceneNode2d from "./Drawables/SceneNodes/SceneNode2d";
 import Material from "./Materials/Material";
-import { MaterialInterface, PipelineInterface, maxInstances } from "./Types";
+import { MaterialInterface, PipelineInterface } from "./Types";
 import { gpu } from "./Gpu";
 import TextBox, { isTextBox } from "./Drawables/SceneNodes/TextBox";
 import ElementNode, { isElementNode } from "./Drawables/SceneNodes/ElementNode";
+import { maxInstances } from "./Constants";
 
 const defaultMaterial = await Material.create('Mesh2D', [])
 

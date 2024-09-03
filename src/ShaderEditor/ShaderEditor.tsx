@@ -8,9 +8,9 @@ import Properties from './Properties/Properties';
 import { menuItems } from './MenuItems';
 import Http from '../Http/src';
 import Graph from './Graph';
-import { GraphInterface } from '../State/types';
 import Toolbar from './Toolbar';
 import { renderer2d } from '../Main';
+import { GraphInterface } from '../State/GraphInterface';
 
 type PropsType = {
   graph: GraphInterface,

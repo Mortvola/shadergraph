@@ -1,7 +1,7 @@
-import { ValueDescriptor } from "./GraphDescriptor";
+import { DataType, ValueDescriptor } from "./GraphDescriptor";
 import GraphNode from "./GraphNode";
 import OutputPort from "./Ports/OutputPort";
-import { DataType, ValueInterface, ValueNodeInterface } from "./Types";
+import { ValueInterface, ValueNodeInterface } from "./Types";
 
 class ValueNode extends GraphNode implements ValueNodeInterface {
   value: ValueInterface;

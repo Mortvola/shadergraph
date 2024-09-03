@@ -1,8 +1,8 @@
 import { mat4, Mat4, vec4, Vec4 } from 'wgpu-matrix';
-import DrawableInterface from "./DrawableInterface";
+import DrawableInterface, { DrawableType } from "./DrawableInterface";
 import { bindGroups } from '../BindGroups';
 import { gpu } from '../Gpu';
-import { DrawableType, maxInstances } from '../Types';
+import { maxInstances } from '../Constants';
 import { PropertyInterface } from '../ShaderBuilder/Types';
 import { meshInstances } from '../shaders/meshInstances';
 import { makeShaderDataDefinitions, makeStructuredView } from 'webgpu-utils';

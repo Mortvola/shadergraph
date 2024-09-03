@@ -1,4 +1,4 @@
-import { DataType } from "../Types";
+import { DataType } from "../GraphDescriptor";
 import OutputPort from "./OutputPort";
 
 class BluePort extends OutputPort {

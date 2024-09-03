@@ -2,7 +2,7 @@ import { makeShaderDataDefinitions, makeStructuredView } from "webgpu-utils";
 import { bindGroups } from "../BindGroups";
 import { gpu } from "../Gpu";
 import { GraphNodeInterface, PropertyInterface } from "../ShaderBuilder/Types";
-import { DrawableType, PipelineInterface, PipelineManagerInterface, StageBindings } from "../Types";
+import { PipelineInterface, PipelineManagerInterface, StageBindings } from "../Types";
 import LinePipeline from "./LinePipeline";
 import Pipeline from "./Pipeline";
 // import ReticlePipeline from "./ReticlePipeline";
@@ -10,6 +10,7 @@ import TrajectoryPipeline from "./TrajectoryPipeline";
 import { bloom, outputFormat } from "../RenderSetings";
 import DecalPipeline from "./DecalPipeline";
 import ShaderGraph from "../ShaderBuilder/ShaderGraph";
+import { DrawableType } from "../Drawables/DrawableInterface";
 
 export type PipelineType =
   'Line'| 'reticle' | 'Trajectory' | 'Decal';

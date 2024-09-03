@@ -1,7 +1,8 @@
 import { makeObservable, observable } from "mobx";
-import { DataType, GraphEdgeInterface, GraphNodeInterface, InputPortInterface } from "../Types";
+import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface } from "../Types";
 import Port from "./Port";
 import Value from "../Value";
+import { DataType } from "../GraphDescriptor";
 
 let constantNameId = 0;
 

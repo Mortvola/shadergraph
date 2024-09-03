@@ -1,8 +1,8 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import { ValueType } from '../../Renderer/ShaderBuilder/Types';
 import Float from '../Float';
 import styles from './Properties.module.scss'
+import { ValueType } from '../../Renderer/ShaderBuilder/GraphDescriptor';
 
 type PropsType = {
   value: ValueType,

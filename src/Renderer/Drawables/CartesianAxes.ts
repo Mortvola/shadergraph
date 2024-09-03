@@ -2,7 +2,7 @@ import { Vec4 } from 'wgpu-matrix';
 import DrawableInterface from "./DrawableInterface";
 import Drawable from './Drawable';
 import { gpu } from '../Gpu';
-import { maxInstances } from '../Types';
+import { maxInstances } from '../Constants';
 
 class CartesianAxes extends Drawable {
   vertexBuffer: GPUBuffer;

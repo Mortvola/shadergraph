@@ -3,9 +3,9 @@ import Http from "../../Http/src";
 import { ShaderRecord } from "../../Renderer/Types";
 import Graph from "../../State/Graph";
 import { store } from "../../State/store";
-import { GraphInterface } from "../../State/types";
 import ProjectItem from "./ProjectItem";
 import { FolderInterface, ProjectItemType } from "./types";
+import { GraphInterface } from "../../State/GraphInterface";
 
 class ShaderProjectItem extends ProjectItem<GraphInterface> {
   constructor(id: number, name: string, parent: FolderInterface | null, itemId: number | null) {

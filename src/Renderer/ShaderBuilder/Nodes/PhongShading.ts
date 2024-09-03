@@ -1,4 +1,4 @@
-import { GraphNodeDescriptor } from "../GraphDescriptor";
+import { DataType, GraphNodeDescriptor, SamplerDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import AlphaPort from "../Ports/AlphaPort";
 import BluePort from "../Ports/BluePort";
@@ -6,7 +6,6 @@ import GreenPort from "../Ports/GreenPort";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 import RedPort from "../Ports/RedPort";
-import { DataType, SamplerDescriptor } from "../Types";
 
 class PhongShading extends OperationNode {
   sampler: SamplerDescriptor = {};

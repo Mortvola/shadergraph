@@ -9,7 +9,7 @@ import Time from "../Renderer/ShaderBuilder/Nodes/Time";
 import UV from "../Renderer/ShaderBuilder/Nodes/UV";
 import Vector from "../Renderer/ShaderBuilder/Nodes/Vector";
 import PropertyNode from "../Renderer/ShaderBuilder/PropertyNode";
-import { DataType, GraphNodeInterface } from "../Renderer/ShaderBuilder/Types";
+import { GraphNodeInterface } from "../Renderer/ShaderBuilder/Types";
 import Value from "../Renderer/ShaderBuilder/Value";
 import PhongShading from "../Renderer/ShaderBuilder/Nodes/PhongShading";
 import Combine from "../Renderer/ShaderBuilder/Nodes/Combine";
@@ -33,6 +33,7 @@ import Inverse from "../Renderer/ShaderBuilder/Nodes/Inverse";
 import Distance from "../Renderer/ShaderBuilder/Nodes/Distance";
 import Preview from "../Renderer/ShaderBuilder/Nodes/Preview";
 import { renderer2d } from "../Main";
+import { DataType } from "../Renderer/ShaderBuilder/GraphDescriptor";
 
 function addNode(node: GraphNodeInterface, x: number, y: number) {
   node.position = { x, y };

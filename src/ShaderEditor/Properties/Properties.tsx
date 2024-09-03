@@ -5,9 +5,9 @@ import styles from './Properties.module.scss';
 import PropertyEntry from './PropertyEntry';
 import { PropertyInterface } from '../../Renderer/ShaderBuilder/Types';
 import PropertyDialog from './PropertyDialog';
-import { GraphInterface } from '../../State/types';
 import ContextMenu from '../../ContextMenu/ContextMenu';
 import { menuItems } from './MenuItems';
+import { GraphInterface } from '../../State/GraphInterface';
 
 type PropsType = {
   graph: GraphInterface,

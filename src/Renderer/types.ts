@@ -1,17 +1,17 @@
 import { Vec3, Vec4, Mat4, Quat } from 'wgpu-matrix';
 import { StructuredView } from 'webgpu-utils';
-import DrawableInterface from './Drawables/DrawableInterface';
-import { PropertyInterface, ValueType } from './ShaderBuilder/Types';
+import DrawableInterface, { DrawableType } from './Drawables/DrawableInterface';
+import { PropertyInterface } from './ShaderBuilder/Types';
 import { ShaderDescriptor } from './shaders/ShaderDescriptor';
 import SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
 import ShaderGraph from './ShaderBuilder/ShaderGraph';
-import { ParticleSystemPropsDescriptor, ParticleSystemPropsInterface } from './ParticleSystem/Types';
+import { ParticleSystemPropsDescriptor } from './ParticleSystem/Types';
 import { MaterialItemInterface, TransformPropsDescriptor } from '../State/types';
 import ParticleSystemProps from './ParticleSystem/ParticleSystemProps';
 import LightProps from './Properties/LightProps';
 import { PSVec3Type } from './Properties/Property';
-
-export const maxInstances = 1000;
+import { ValueType } from './ShaderBuilder/GraphDescriptor';
+import { ParticleSystemPropsInterface } from './ParticleSystem/ParticleSystemPropsInterface';
 
 export interface SceneNodeInterface {
   nodes: SceneNodeInterface[];
@@ -83,8 +83,6 @@ export interface RendererInterface {
 
   unlitRenderPass: RenderPassInterface | null;
 }
-
-export type DrawableType = 'Mesh' | 'Billboard' | 'HorizontalBillboard' | 'Circle' | 'Line' | '2D' | 'Mesh2D'| 'Decal'
 
 export interface MaterialInterface {
   pipeline: PipelineInterface | null;

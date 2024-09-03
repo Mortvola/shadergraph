@@ -1,6 +1,6 @@
 import React from 'react';
-import { ValueType } from '../../Renderer/ShaderBuilder/Types';
 import styles from './Properties.module.scss'
+import { ValueType } from '../../Renderer/ShaderBuilder/GraphDescriptor';
 
 type PropsType = {
   node: { value: ValueType },

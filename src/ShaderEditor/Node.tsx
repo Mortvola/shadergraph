@@ -5,11 +5,11 @@ import NodeInputPort from './NodeInputPort';
 import NodeOutputPort from './NodeOutputPort';
 import { GraphNodeInterface, isPropertyNode, isValueNode } from '../Renderer/ShaderBuilder/Types';
 import Draggable from './Draggable';
-import { GraphInterface } from '../State/types';
 import ValueInput from './Properties/ValueInput';
 import Modal from '../Modal';
 import SampleTextureSettings from './SampleTextureSettings';
 import SampleTexture from '../Renderer/ShaderBuilder/Nodes/SampleTexture';
+import { GraphInterface } from '../State/GraphInterface';
 
 type PropsType = {
   graph: GraphInterface,
