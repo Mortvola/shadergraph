@@ -1,14 +1,17 @@
 import React from "react";
 import type Graph from "./Graph";
 import Modeler from "./Modeler";
-import {
-  ModelInterface, SceneInterface, isGameObject,
+import type {
+  ModelInterface, SceneInterface} from "./types";
+import { isGameObject,
 } from "./types";
 import { makeObservable, observable, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
-import { isSceneItem, isShaderItem, ProjectItemInterface, ProjectItemLike } from "../Project/Types/types";
+import type { ProjectItemInterface, ProjectItemLike } from "../Project/Types/types";
+import { isSceneItem, isShaderItem } from "../Project/Types/types";
+import type {
+  SceneNodeInterface} from "../Renderer/Types";
 import {
-  SceneNodeInterface,
   ComponentType,
 } from "../Renderer/Types";
 import { renderer2d } from "../Main";

@@ -49,7 +49,7 @@ class DecalPass extends RenderPass {
     commandEncoder: GPUCommandEncoder,
     frameBindGroup: GPUBindGroup,
   ) {
-    let passEncoder = commandEncoder.beginRenderPass({
+    const passEncoder = commandEncoder.beginRenderPass({
       label: 'Decal Pass',
       colorAttachments: [
         {

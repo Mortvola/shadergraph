@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import styles from './CurveEditor.module.scss';
 import { observer } from 'mobx-react-lite';
 import CurveGraph from './CurveGraph';
-import PSCurve from '../Renderer/Properties/PSCurve';
+import type PSCurve from '../Renderer/Properties/PSCurve';
 import NumberInput from '../Inspector/NumberInput';
 
 type PropsType = {

@@ -1,11 +1,11 @@
 import Http from "../../Http/src";
-import { DrawableType } from "../Drawables/DrawableInterface";
+import type { DrawableType } from "../Drawables/DrawableInterface";
 import MaterialItem from "../MaterialItem";
-import { PropertyInterface } from "../ShaderBuilder/Types";
+import type { PropertyInterface } from "../ShaderBuilder/Types";
 import { shaderManager } from "../shaders/ShaderManager";
-import { MaterialManagerInterface, MaterialRecordDescriptor } from "../Types";
+import type { MaterialManagerInterface, MaterialRecordDescriptor } from "../Types";
 import Material from "./Material";
-import { MaterialDescriptor } from "./MaterialDescriptor";
+import type { MaterialDescriptor } from "./MaterialDescriptor";
 
 class MaterialManager implements MaterialManagerInterface {
   materialItems: Map<number, MaterialItem> = new Map()
@@ -39,7 +39,7 @@ class MaterialManager implements MaterialManagerInterface {
     const key = JSON.stringify(id)
     const subKey = JSON.stringify({ drawableType, vertexProperties })
 
-    let map = this.materials.get(key)
+    const map = this.materials.get(key)
 
     if (!map) {      
       let descriptor: MaterialDescriptor | undefined = undefined
@@ -88,7 +88,7 @@ class MaterialManager implements MaterialManagerInterface {
   ) {
     const key = JSON.stringify(id)
 
-    let map = this.materials.get(key)
+    const map = this.materials.get(key)
 
     if (map) {
       // For each drawable type/vertex properties that uses this material.

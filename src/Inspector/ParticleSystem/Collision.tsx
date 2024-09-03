@@ -1,6 +1,6 @@
 import React from 'react';
 import NumberInput from '../NumberInput';
-import CollisionData from '../../Renderer/ParticleSystem/Collision';
+import type CollisionData from '../../Renderer/ParticleSystem/Collision';
 import Property from '../Property';
 
 type PropsType = {

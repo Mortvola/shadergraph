@@ -1,5 +1,5 @@
 import React from 'react';
-import { MenuItemLike } from '../ContextMenu/types';
+import type { MenuItemLike } from '../ContextMenu/types';
 import { useStores } from '../State/store';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import styles from './Project.module.scss'

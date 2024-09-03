@@ -1,4 +1,4 @@
-import { Vec4, Mat4 } from 'wgpu-matrix';
+import type { Vec4, Mat4 } from 'wgpu-matrix';
 import Drawable from './Drawable';
 import { circleShader } from '../shaders/circle';
 import { makeShaderDataDefinitions, makeStructuredView } from 'webgpu-utils';

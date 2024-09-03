@@ -1,7 +1,7 @@
 import React from 'react';
 import { runInAction } from 'mobx';
 import { observer } from 'mobx-react-lite';
-import { ValueInterface } from '../../Renderer/ShaderBuilder/Types';
+import type { ValueInterface } from '../../Renderer/ShaderBuilder/Types';
 import PropertyVector from './PropertyVector';
 import PropertyTexture from '../PropertyTexture';
 import PropertyString from '../PropertyString';

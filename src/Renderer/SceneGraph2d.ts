@@ -1,10 +1,12 @@
-import { Mat3, mat3, vec2 } from "wgpu-matrix";
+import type { Mat3} from "wgpu-matrix";
+import { mat3, vec2 } from "wgpu-matrix";
 import Mesh2D from "./Drawables/Mesh2D";
-import SceneNode2d from "./Drawables/SceneNodes/SceneNode2d";
+import type SceneNode2d from "./Drawables/SceneNodes/SceneNode2d";
 import Material from "./Materials/Material";
-import { MaterialInterface, PipelineInterface } from "./Types";
+import type { MaterialInterface, PipelineInterface } from "./Types";
 import { gpu } from "./Gpu";
-import TextBox, { isTextBox } from "./Drawables/SceneNodes/TextBox";
+import type TextBox from "./Drawables/SceneNodes/TextBox";
+import { isTextBox } from "./Drawables/SceneNodes/TextBox";
 import ElementNode, { isElementNode } from "./Drawables/SceneNodes/ElementNode";
 import { maxInstances } from "./Constants";
 
@@ -473,7 +475,7 @@ class SceneGraph2D {
         entry = { firstIndex: 0, baseVertex: 0, instance: [] }
       }
 
-      let  transform = mat3.identity()
+      const  transform = mat3.identity()
       mat3.translate(transform, vec2.create(element.screenX, element.screenY), transform)
 
       mat3.multiply(this.clipTransform, transform, transform)
@@ -493,7 +495,7 @@ class SceneGraph2D {
         material = element.material
       }
   
-      let dimensions = {
+      const dimensions = {
         x: element.screenX,
         y: element.screenY,
         width: element.width,
@@ -505,7 +507,7 @@ class SceneGraph2D {
         this.clickable.push(element)
       }
 
-      let transform = mat3.identity()
+      const transform = mat3.identity()
       mat3.translate(transform, vec2.create(dimensions.x, dimensions.y), transform)
       mat3.scale(transform, vec2.create(dimensions.width, dimensions.height), transform)
 

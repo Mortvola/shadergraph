@@ -1,4 +1,5 @@
-import { mat4, vec4, Vec4 } from 'wgpu-matrix';
+import type { Vec4 } from 'wgpu-matrix';
+import { mat4, vec4 } from 'wgpu-matrix';
 import Component from './Component';
 import { ComponentType } from '../Types';
 

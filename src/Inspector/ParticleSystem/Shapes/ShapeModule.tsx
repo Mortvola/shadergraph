@@ -1,6 +1,6 @@
 import React from 'react';
 import ShapeTypeSelector from './ShapeTypeSelector';
-import Shape from '../../../Renderer/ParticleSystem/Shapes/Shape';
+import type Shape from '../../../Renderer/ParticleSystem/Shapes/Shape';
 import { ShapeType } from '../../../Renderer/ParticleSystem/Types';
 import { observer } from 'mobx-react-lite';
 import Cone from './Cone';

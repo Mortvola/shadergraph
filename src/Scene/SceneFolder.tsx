@@ -3,7 +3,7 @@ import SceneItem from './SceneItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
-import { SceneInterface, SceneObjectBaseInterface } from '../State/types';
+import type { SceneInterface, SceneObjectBaseInterface } from '../State/types';
 import { isPrefabItem } from '../Project/Types/types';
 import PrefabInstance from './Types/PrefabInstance';
 

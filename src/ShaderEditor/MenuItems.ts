@@ -9,7 +9,7 @@ import Time from "../Renderer/ShaderBuilder/Nodes/Time";
 import UV from "../Renderer/ShaderBuilder/Nodes/UV";
 import Vector from "../Renderer/ShaderBuilder/Nodes/Vector";
 import PropertyNode from "../Renderer/ShaderBuilder/PropertyNode";
-import { GraphNodeInterface } from "../Renderer/ShaderBuilder/Types";
+import type { GraphNodeInterface } from "../Renderer/ShaderBuilder/Types";
 import Value from "../Renderer/ShaderBuilder/Value";
 import PhongShading from "../Renderer/ShaderBuilder/Nodes/PhongShading";
 import Combine from "../Renderer/ShaderBuilder/Nodes/Combine";
@@ -17,7 +17,7 @@ import Split from "../Renderer/ShaderBuilder/Nodes/Split";
 import Twirl from "../Renderer/ShaderBuilder/Nodes/Twirl";
 import Voronoi from "../Renderer/ShaderBuilder/Nodes/Voronoi";
 import Power from "../Renderer/ShaderBuilder/Nodes/Power";
-import { MenuItemLike } from "../ContextMenu/types";
+import type { MenuItemLike } from "../ContextMenu/types";
 import Lerp from "../Renderer/ShaderBuilder/Nodes/Lerp";
 import Subtract from "../Renderer/ShaderBuilder/Nodes/Subtract";
 import VertexColor from "../Renderer/ShaderBuilder/Nodes/VertexColor";
@@ -33,7 +33,7 @@ import Inverse from "../Renderer/ShaderBuilder/Nodes/Inverse";
 import Distance from "../Renderer/ShaderBuilder/Nodes/Distance";
 import Preview from "../Renderer/ShaderBuilder/Nodes/Preview";
 import { renderer2d } from "../Main";
-import { DataType } from "../Renderer/ShaderBuilder/GraphDescriptor";
+import type { DataType } from "../Renderer/ShaderBuilder/GraphDescriptor";
 
 function addNode(node: GraphNodeInterface, x: number, y: number) {
   node.position = { x, y };

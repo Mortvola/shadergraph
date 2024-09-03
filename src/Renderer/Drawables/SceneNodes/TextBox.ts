@@ -1,7 +1,7 @@
 import { font } from '../../Font';
 import { materialManager } from '../../Materials/MaterialManager';
-import { MaterialInterface } from '../../Types';
-import Mesh2D from '../Mesh2D';
+import type { MaterialInterface } from '../../Types';
+import type Mesh2D from '../Mesh2D';
 import SceneNode2d from './SceneNode2d';
 
 class TextBox extends SceneNode2d {

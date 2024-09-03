@@ -1,5 +1,6 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import SceneObject, { PrefabInstanceObject } from "./SceneObject";
+import type { PrefabInstanceObject } from "./SceneObject";
+import SceneObject from "./SceneObject";
 import { store } from "../../State/store";
 import Http from "../../Http/src";
 import type {

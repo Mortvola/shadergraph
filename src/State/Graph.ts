@@ -1,14 +1,14 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
+import type { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
 import GraphEdge from "../Renderer/ShaderBuilder/GraphEdge";
 import Display from "../Renderer/ShaderBuilder/Nodes/Display";
-import { MaterialInterface } from "../Renderer/Types";
-import { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
+import type { MaterialInterface } from "../Renderer/Types";
+import type { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
 import Material from "../Renderer/Materials/Material";
-import { CullMode } from "./types";
+import type { CullMode } from "./types";
 import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
-import { StoreInterface } from "./StoreInterface";
-import { GraphInterface } from "./GraphInterface";
+import type { StoreInterface } from "./StoreInterface";
+import type { GraphInterface } from "./GraphInterface";
 
 let nextShaderName = 0;
 

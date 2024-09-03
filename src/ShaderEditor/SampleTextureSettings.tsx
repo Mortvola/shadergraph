@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './SampleTextureSettings.module.scss';
-import SampleTexture from '../Renderer/ShaderBuilder/Nodes/SampleTexture';
+import type SampleTexture from '../Renderer/ShaderBuilder/Nodes/SampleTexture';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 

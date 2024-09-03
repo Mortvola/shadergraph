@@ -1,4 +1,4 @@
-import { DataType, GraphDescriptor, ValueType } from "../ShaderBuilder/GraphDescriptor";
+import type { DataType, GraphDescriptor, ValueType } from "../ShaderBuilder/GraphDescriptor";
 
 export type ShaderType = 'Line' | 'Trajectory' | 'Decal';
 

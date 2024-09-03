@@ -3,14 +3,15 @@ import Mesh from "../Renderer/Drawables/Mesh";
 import SceneNode, { isSceneNode } from "../Renderer/Drawables/SceneNodes/SceneNode";
 import DrawableComponent from "../Renderer/Drawables/DrawableComponent";
 import { isDrawableNode } from "../Renderer/Drawables/SceneNodes/utils";
-import Renderer from "../Renderer/Renderer";
-import { SceneNodeInterface, DrawableComponentInterface, MaterialInterface } from "../Renderer/Types";
-import { ModelerInterface, NodeMaterials } from "./types";
+import type Renderer from "../Renderer/Renderer";
+import type { SceneNodeInterface, DrawableComponentInterface, MaterialInterface } from "../Renderer/Types";
+import type { ModelerInterface, NodeMaterials } from "./types";
 import { downloadFbx } from "../Fbx/LoadFbx";
-import { FbxNodeInterface, isFbxContainerNode, isFbxGeometryNode } from "../Fbx/types";
+import type { FbxNodeInterface} from "../Fbx/types";
+import { isFbxContainerNode, isFbxGeometryNode } from "../Fbx/types";
 import { materialManager } from "../Renderer/Materials/MaterialManager";
 import { vec3 } from "wgpu-matrix";
-import { StoreInterface } from "./StoreInterface";
+import type { StoreInterface } from "./StoreInterface";
 
 class Modeler implements ModelerInterface {
   model: SceneNodeInterface | null = null;

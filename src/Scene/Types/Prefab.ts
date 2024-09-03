@@ -1,6 +1,6 @@
 import TransformProps from "../../Renderer/Properties/TransformProps";
 import Entity from "../../State/Entity";
-import { PrefabDescriptor, PrefabInterface, SceneObjectBaseInterface, SceneObjectInterface } from "../../State/types";
+import type { PrefabDescriptor, PrefabInterface, SceneObjectBaseInterface, SceneObjectInterface } from "../../State/types";
 import PrefabNode from "./PrefabNode";
 
 class Prefab extends Entity implements PrefabInterface {
@@ -37,7 +37,7 @@ class Prefab extends Entity implements PrefabInterface {
     const prefab = new Prefab(-1, this.name);
 
     while (stack.length > 0) {
-      let { object, parent } = stack[0];
+      const { object, parent } = stack[0];
       stack = stack.slice(1);
 
       const prefabNode = new PrefabNode(prefab, id);

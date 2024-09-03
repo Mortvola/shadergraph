@@ -1,5 +1,5 @@
-import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
-import { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
+import type ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
+import type { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
 
 export interface GraphInterface {
   id: number | null;

@@ -1,9 +1,10 @@
 import React from 'react';
-import { ComponentType, DrawableComponentInterface } from '../../Renderer/Types';
+import type { DrawableComponentInterface } from '../../Renderer/Types';
+import { ComponentType } from '../../Renderer/Types';
 import { useStores } from '../../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './ModelTree.module.scss';
-import { SceneObjectInterface } from '../../State/types';
+import type { SceneObjectInterface } from '../../State/types';
 
 type PropsType = {
   node: DrawableComponentInterface,

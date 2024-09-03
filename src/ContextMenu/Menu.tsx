@@ -2,7 +2,8 @@ import React from 'react';
 import styles from './ContextMenu.module.scss';
 import SubmenuItem from './SubmenuItem';
 import MenuItem from './MenuItem';
-import { MenuItemLike, MenuItemRecord, isMenuActionRecord, isSubmenuItem } from './types';
+import type { MenuItemLike, MenuItemRecord} from './types';
+import { isMenuActionRecord, isSubmenuItem } from './types';
 
 type PropsType = {
   menuItems: () => MenuItemLike[],

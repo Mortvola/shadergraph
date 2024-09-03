@@ -1,11 +1,12 @@
 import { runInAction } from "mobx";
 import Http from "../../Http/src";
-import { ShaderRecord } from "../../Renderer/Types";
+import type { ShaderRecord } from "../../Renderer/Types";
 import Graph from "../../State/Graph";
 import { store } from "../../State/store";
 import ProjectItem from "./ProjectItem";
-import { FolderInterface, ProjectItemType } from "./types";
-import { GraphInterface } from "../../State/GraphInterface";
+import type { FolderInterface} from "./types";
+import { ProjectItemType } from "./types";
+import type { GraphInterface } from "../../State/GraphInterface";
 
 class ShaderProjectItem extends ProjectItem<GraphInterface> {
   constructor(id: number, name: string, parent: FolderInterface | null, itemId: number | null) {

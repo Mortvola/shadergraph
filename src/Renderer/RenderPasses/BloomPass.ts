@@ -128,7 +128,7 @@ class BloomPass {
     this.blurPass.render(this.bloomTextureView, this.bloomBindGroup, commandEncoder)
     this.blurPass.render(this.bloomTextureView, this.bloomBindGroup, commandEncoder)
 
-    let passEncoder = commandEncoder.beginRenderPass({
+    const passEncoder = commandEncoder.beginRenderPass({
       label: 'bloom render pass',
       colorAttachments: [
         {

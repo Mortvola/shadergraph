@@ -1,10 +1,10 @@
 import { bindGroups } from "../BindGroups";
-import Mesh from "../Drawables/Mesh";
+import type Mesh from "../Drawables/Mesh";
 import { gpu } from "../Gpu";
 import { outputFormat } from "../RenderSetings";
 import { outlineShader } from "../shaders/outline";
 import { outlineApplyShader } from "../shaders/outlineApply";
-import { DrawableComponentInterface } from "../Types";
+import type { DrawableComponentInterface } from "../Types";
 
 const label = 'outline pass';
 

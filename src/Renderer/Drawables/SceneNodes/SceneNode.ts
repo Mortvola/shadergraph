@@ -1,9 +1,11 @@
-import { Mat4, Quat, Vec3, Vec4, mat4, quat, vec3 } from 'wgpu-matrix';
-import DrawableInterface from "../DrawableInterface";
-import { SceneNodeInterface, RendererInterface, SceneGraphInterface, ComponentType, TransformPropsInterface } from '../../Types';
+import type { Mat4, Quat, Vec4} from 'wgpu-matrix';
+import { Vec3, mat4, quat, vec3 } from 'wgpu-matrix';
+import type DrawableInterface from "../DrawableInterface";
+import type { SceneNodeInterface, RendererInterface, SceneGraphInterface} from '../../Types';
+import { ComponentType, TransformPropsInterface } from '../../Types';
 import { isDrawableNode } from './utils';
-import Component from '../Component';
-import DrawableComponent from '../DrawableComponent';
+import type Component from '../Component';
+import type DrawableComponent from '../DrawableComponent';
 import { getEulerAngles } from '../../Math';
 
 export type HitTestResult = {

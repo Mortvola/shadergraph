@@ -3,7 +3,8 @@ import Http from "../../Http/src";
 import type { GameObject2DInterface } from "../../State/types";
 import Folder from "./Folder";
 import ProjectItem from "./ProjectItem";
-import { FolderInterface, ProjectInterface, ProjectItemLike, ProjectItemType, isFolder } from "./types";
+import type { FolderInterface, ProjectInterface, ProjectItemLike} from "./types";
+import { ProjectItemType, isFolder } from "./types";
 import type { ParticleSystemInterface, SceneNodeInterface } from "../../Renderer/Types";
 import SceneProjectItem from "./SceneProjectItem";
 import PrefabProjectItem from "./PrefabProjectItem";
@@ -78,7 +79,7 @@ class Project implements ProjectInterface {
   }
 
   async importItem(file: File, url: string) {
-    let parent = this.getNewItemParent()
+    const parent = this.getNewItemParent()
 
     let parentId: number | null = parent.id;
     if (parentId === -1) {
@@ -115,7 +116,7 @@ class Project implements ProjectInterface {
   }
 
   addNewItem(type: ProjectItemType) {
-    let parent = this.getNewItemParent()
+    const parent = this.getNewItemParent()
 
     runInAction(() => {
       parent.newItemType = type;

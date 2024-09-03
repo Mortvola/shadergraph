@@ -1,8 +1,10 @@
 import { makeObservable, observable } from "mobx";
-import { ConeDescriptor } from "../Types";
-import { mat4, Vec4, vec4 } from "wgpu-matrix";
+import type { ConeDescriptor } from "../Types";
+import type { Vec4} from "wgpu-matrix";
+import { mat4, vec4 } from "wgpu-matrix";
 import { degToRad } from "../../Math";
-import { PropsBase, removeUndefinedKeys } from "../../Properties/Types";
+import type { PropsBase} from "../../Properties/Types";
+import { removeUndefinedKeys } from "../../Properties/Types";
 import { PSNumber } from "../../Properties/Property";
 
 class Cone {
@@ -25,7 +27,7 @@ class Cone {
   }
 
   getPositionAndDirection(): [Vec4, Vec4] {
-    let origin = vec4.create(0, 0, 0, 1)
+    const origin = vec4.create(0, 0, 0, 1)
 
     // const offset = Math.random() * this.originRadius;
     const offset = this.originRadius.get();

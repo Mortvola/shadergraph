@@ -1,6 +1,7 @@
 import { vec3, vec4 } from "wgpu-matrix"
+import type {
+  ParticleSystemInterface} from "../Types";
 import {
-  ParticleSystemInterface,
   ComponentType,
 } from "../Types";
 import { gravity, intersectionPlane } from "../Math";
@@ -223,7 +224,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     if (this.particles.size < this.props.maxPoints.get()) {
       const emitElapsedTime = time - this.lastEmitTime;
 
-      let numToEmit = Math.min(Math.trunc((this.props.rate.get() / 1000) * emitElapsedTime), this.props.maxPoints.get() - this.particles.size);
+      const numToEmit = Math.min(Math.trunc((this.props.rate.get() / 1000) * emitElapsedTime), this.props.maxPoints.get() - this.particles.size);
 
       if (numToEmit > 0) {
         this.lastEmitTime = time;

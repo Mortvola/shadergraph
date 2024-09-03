@@ -1,13 +1,14 @@
 import React from 'react';
 import styles from './Node.module.scss';
-import { InputPortInterface, OutputPortInterface, convertType, getLength } from '../Renderer/ShaderBuilder/Types';
+import type { InputPortInterface, OutputPortInterface} from '../Renderer/ShaderBuilder/Types';
+import { convertType, getLength } from '../Renderer/ShaderBuilder/Types';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import { createPortal } from 'react-dom';
 import SimpleVector from './SimpleValues/SimpleVector';
 import SimpleUV from './SimpleValues/SimpleUV';
 import SimpleFloat from './SimpleValues/SimpleFloat';
-import { GraphInterface } from '../State/GraphInterface';
+import type { GraphInterface } from '../State/GraphInterface';
 
 type PropsType = {
   graph: GraphInterface,

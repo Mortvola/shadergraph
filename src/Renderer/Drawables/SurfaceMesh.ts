@@ -1,4 +1,5 @@
-import { vec3, vec4, Vec3, Vec4 } from 'wgpu-matrix';
+import type { Vec3, Vec4 } from 'wgpu-matrix';
+import { vec3, vec4 } from 'wgpu-matrix';
 import { intersectTriangle } from '../Math';
 
 const vertexStride = 4;
@@ -72,8 +73,8 @@ class SurfaceMesh {
         ];
       }
 
-      let uv1: number[] | undefined = undefined;
-      let uv2: number[] | undefined = undefined;
+      const uv1: number[] | undefined = undefined;
+      const uv2: number[] | undefined = undefined;
 
       // if (uv) {
       //   if (uv.length !== 4 * 2) {
@@ -227,7 +228,7 @@ class SurfaceMesh {
       const result = intersectTriangle(origin, ray, v0, v1, v2);
 
       if (result) {
-        let intersection = vec4.add(origin, vec4.mulScalar(ray, result[0]))
+        const intersection = vec4.add(origin, vec4.mulScalar(ray, result[0]))
 
         return { point: intersection, t: result[0] };
       }    

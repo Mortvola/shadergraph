@@ -5,9 +5,9 @@ import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import Http from '../Http/src';
-import Texture from '../State/Texture';
+import type Texture from '../State/Texture';
 import SceneObject from './SceneObject';
-import { SceneObjectInterface, MaterialItemInterface } from '../State/types';
+import type { SceneObjectInterface, MaterialItemInterface } from '../State/types';
 
 const Inspector: React.FC = observer(() => {
   const { project, scene } = useStores();

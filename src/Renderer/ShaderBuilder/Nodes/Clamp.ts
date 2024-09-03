@@ -1,4 +1,4 @@
-import { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
+import type { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";

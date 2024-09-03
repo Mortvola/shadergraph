@@ -1,7 +1,8 @@
 import { observable, runInAction } from "mobx";
 import { RenderMode, ShapeType } from "../ParticleSystem/Types";
 import type { MaterialItemInterface } from "../../State/types";
-import { vec3, Vec3 } from "wgpu-matrix";
+import type { Vec3 } from "wgpu-matrix";
+import { vec3 } from "wgpu-matrix";
 import type { PropsBase } from "./Types";
 import PropertyBase from "./PropertyBase";
 

@@ -1,4 +1,5 @@
-import { Quat, Vec2, Vec3, Vec4, mat4, vec2, vec3, vec4 } from "wgpu-matrix";
+import type { Quat, Vec2, Vec3, Vec4} from "wgpu-matrix";
+import { mat4, vec2, vec3, vec4 } from "wgpu-matrix";
 
 export const degToRad = (d: number) => d * Math.PI / 180;
 export const radToDeg = (r: number) => (r /  Math.PI) * 180;
@@ -143,14 +144,14 @@ export const lineCircleIntersection = (center: Vec2, radius: number, p1: Vec2, p
   const p2x = p2[0] - center[0];
   const p2y = p2[1] - center[1];
 
-  let dx = p2x - p1x;
-  let dy = p2y - p1y;
+  const dx = p2x - p1x;
+  const dy = p2y - p1y;
 
   if (dx === 0) {
     // Line is vertical
 
-    let A = 1;
-    let C = (p1x * p1x - radius * radius);
+    const A = 1;
+    const C = (p1x * p1x - radius * radius);
 
     const discriminate = -4 * A * C;
 
@@ -170,12 +171,12 @@ export const lineCircleIntersection = (center: Vec2, radius: number, p1: Vec2, p
     return [vec2.create(p1x + center[0], y1 + center[1]), vec2.create(p1x + center[0], y2 + center[1])];
   }
   
-  let m = dy / dx;
-  let b = p1y - m * p1x;
+  const m = dy / dx;
+  const b = p1y - m * p1x;
 
-  let A = (m * m + 1);
-  let B = 2 * (m * b);
-  let C = (b * b - radius * radius);
+  const A = (m * m + 1);
+  const B = 2 * (m * b);
+  const C = (b * b - radius * radius);
 
   const discriminate = B * B - 4 * A * C;
 
@@ -400,8 +401,8 @@ const midPointLine = (p1: Vec2, p2: Vec2) => {
   }
 
   // calculate dx & dy 
-  let dx = end[0] - start[0]; 
-  let dy = sign * (end[1] - start[1]); 
+  const dx = end[0] - start[0]; 
+  const dy = sign * (end[1] - start[1]); 
 
   // initial value of decision 
   // parameter d 
@@ -487,7 +488,7 @@ export const lineRectangleClip = (p1: Vec2, p2: Vec2, upperLeft: Vec2, lowerRigh
     let x = 0;
     let y = 0;
 
-    let outcodeOut = outcode1 > outcode0 ? outcode1 : outcode0;
+    const outcodeOut = outcode1 > outcode0 ? outcode1 : outcode0;
 
     if (outcodeOut & TOP) {
       x = x0 + (x1 - x0) * (upperLeft[1] - y0) / (y1 - y0);

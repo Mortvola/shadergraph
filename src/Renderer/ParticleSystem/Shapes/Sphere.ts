@@ -1,7 +1,9 @@
 import { makeObservable, observable } from "mobx";
-import { PropsBase, removeUndefinedKeys } from "../../Properties/Types";
-import { Vec4, vec4 } from "wgpu-matrix";
-import { SphereDescriptor } from "../Types";
+import type { PropsBase} from "../../Properties/Types";
+import { removeUndefinedKeys } from "../../Properties/Types";
+import type { Vec4} from "wgpu-matrix";
+import { vec4 } from "wgpu-matrix";
+import type { SphereDescriptor } from "../Types";
 import { PSNumber } from "../../Properties/Property";
 
 class Sphere {

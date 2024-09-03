@@ -3,7 +3,7 @@ import convert from 'color-convert';
 import ColorSlider from './ColorSlider';
 import styles from './ColorPicker.module.scss';
 import NumberInput from '../Inspector/NumberInput';
-import ColorMutator from './ColorMutator';
+import type ColorMutator from './ColorMutator';
 
 type PropsType = {
   colorMutator?: ColorMutator,

@@ -1,5 +1,5 @@
 import { PSBoolean } from "../Properties/Property"
-import { PropsBase } from "../Properties/Types";
+import type { PropsBase } from "../Properties/Types";
 
 class PSModule {
   enabled: PSBoolean;

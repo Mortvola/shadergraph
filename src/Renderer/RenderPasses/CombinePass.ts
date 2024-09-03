@@ -115,7 +115,7 @@ class CombinePass {
     commandEncoder: GPUCommandEncoder,
     frameBindGroup: GPUBindGroup,
   ) {
-    let passEncoder = commandEncoder.beginRenderPass({
+    const passEncoder = commandEncoder.beginRenderPass({
       label: 'deferred combine pass',
       colorAttachments: [
         {

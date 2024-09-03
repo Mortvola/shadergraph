@@ -8,7 +8,7 @@ import ShapeModule from './Shapes/ShapeModule';
 import PSModule from './PSModule';
 import Collision from './Collision';
 import PSRenderer from './PSRenderer';
-import ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemProps';
+import type ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemProps';
 import Property from '../Property';
 
 type PropsType = {

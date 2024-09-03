@@ -1,8 +1,8 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import { GraphNodeInterface } from "./Types";
-import InputPort from "./Ports/InputPort";
-import OutputPort from "./Ports/OutputPort";
-import { DataType, GraphNodeDescriptor, NodeType } from "./GraphDescriptor";
+import type { GraphNodeInterface } from "./Types";
+import type InputPort from "./Ports/InputPort";
+import type OutputPort from "./Ports/OutputPort";
+import type { DataType, GraphNodeDescriptor, NodeType } from "./GraphDescriptor";
 
 export let nextVarId = 0;
 

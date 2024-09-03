@@ -1,13 +1,15 @@
 import PSModule from "./PSModule";
-import { RendererDescriptor, RenderMode } from "./Types";
+import type { RendererDescriptor} from "./Types";
+import { RenderMode } from "./Types";
 import { materialManager } from "../Materials/MaterialManager";
-import DrawableInterface from "../Drawables/DrawableInterface";
+import type DrawableInterface from "../Drawables/DrawableInterface";
 import Billboard from "../Drawables/Billboard";
 import HorizontalBillboard from "../Drawables/HorizontalBillboard";
 import DrawableComponent from "../Drawables/DrawableComponent";
-import { PropsBase, removeUndefinedKeys } from "../Properties/Types";
+import type { PropsBase} from "../Properties/Types";
+import { removeUndefinedKeys } from "../Properties/Types";
 import { PSNumber, PSRenderMode } from "../Properties/Property";
-import MaterialItem from "../MaterialItem";
+import type MaterialItem from "../MaterialItem";
 
 class Renderer extends PSModule {
   mode: PSRenderMode;

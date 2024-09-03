@@ -1,5 +1,5 @@
-import SceneGraph2D from "../SceneGraph2d";
-import { RenderPass2DInterface } from "../Types";
+import type SceneGraph2D from "../SceneGraph2d";
+import type { RenderPass2DInterface } from "../Types";
 
 class TransparentRenderPass2D implements RenderPass2DInterface {
   getDescriptor(

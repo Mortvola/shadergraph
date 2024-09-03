@@ -1,9 +1,9 @@
 import React from 'react';
-import { PSCurvePoint } from '../Renderer/ParticleSystem/Types';
+import type { PSCurvePoint } from '../Renderer/ParticleSystem/Types';
 import { observer } from 'mobx-react-lite';
 import Canvas2d from '../ShaderEditor/Canvas2d';
 import CurveRenderer, { Subpoint } from './CurveRenderer';
-import PSCurve from '../Renderer/Properties/PSCurve';
+import type PSCurve from '../Renderer/Properties/PSCurve';
 import { vec2 } from 'wgpu-matrix';
 
 type PropsType = {

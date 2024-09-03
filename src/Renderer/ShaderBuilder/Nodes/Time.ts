@@ -1,5 +1,5 @@
 import BuiltIn from "../BuiltInNode";
-import { GraphNodeDescriptor } from "../GraphDescriptor";
+import type { GraphNodeDescriptor } from "../GraphDescriptor";
 import OutputPort from "../Ports/OutputPort";
 
 class Time extends BuiltIn {

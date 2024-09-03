@@ -1,5 +1,6 @@
 import React from 'react';
-import { PropertyInterface, convertType } from '../../Renderer/ShaderBuilder/Types';
+import type { PropertyInterface} from '../../Renderer/ShaderBuilder/Types';
+import { convertType } from '../../Renderer/ShaderBuilder/Types';
 import styles from './Properties.module.scss';
 
 type PropsType = {

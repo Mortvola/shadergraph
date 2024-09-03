@@ -34,7 +34,7 @@ class Font {
   lineHeight: number;
 
   private constructor(config: FontConfig) {
-    for (let character of config.chars) {
+    for (const character of config.chars) {
       this.chars.set(character.char, character)
     }
 

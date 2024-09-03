@@ -1,13 +1,14 @@
 import React from 'react';
-import { MenuItemLike } from '../ContextMenu/types';
+import type { MenuItemLike } from '../ContextMenu/types';
 import { useStores } from '../State/store';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import styles from '../Project/Project.module.scss'
 import SceneObject from './Types/SceneObject';
 import ParticleSystem from '../Renderer/ParticleSystem/ParticleSystem';
-import { ComponentType, NewSceneObjectComponent } from '../Renderer/Types';
+import type { NewSceneObjectComponent } from '../Renderer/Types';
+import { ComponentType } from '../Renderer/Types';
 import Light from '../Renderer/Drawables/Light';
-import { SceneInterface } from '../State/types';
+import type { SceneInterface } from '../State/types';
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
 import LightProps from '../Renderer/Properties/LightProps';
 

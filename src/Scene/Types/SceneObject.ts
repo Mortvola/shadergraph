@@ -1,16 +1,18 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import { vec3 } from "wgpu-matrix";
-import {
+import type {
   PrefabNodeInterface, SceneObjectDescriptor, SceneObjectInterface,
-  PrefabInstanceDescriptor, isPrefabInstanceDescriptor,
+  PrefabInstanceDescriptor,
   PrefabInstanceInterface,
   PrefabInstanceObjectInterface,
-  SceneObjectBaseInterface,
+  SceneObjectBaseInterface} from "../../State/types";
+import { isPrefabInstanceDescriptor
 } from "../../State/types";
 import Http from "../../Http/src";
+import type { SceneObjectComponent, LightPropsDescriptor, NewSceneObjectComponent,
+  TransformPropsInterface} from "../../Renderer/Types";
 import {
-  ComponentType, SceneObjectComponent, LightPropsDescriptor, NewSceneObjectComponent,
-  TransformPropsInterface,
+  ComponentType
 } from "../../Renderer/Types";
 import SceneNode from "../../Renderer/Drawables/SceneNodes/SceneNode";
 import Light from "../../Renderer/Drawables/Light";

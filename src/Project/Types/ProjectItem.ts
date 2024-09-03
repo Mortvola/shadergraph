@@ -1,6 +1,6 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import Http from "../../Http/src";
-import { FolderInterface, ProjectItemInterface, ProjectItemLike, ProjectItemType } from "./types";
+import type { FolderInterface, ProjectItemInterface, ProjectItemLike, ProjectItemType } from "./types";
 import { particleSystemManager } from "../../Renderer/ParticleSystem/ParticleSystemManager";
 
 class ProjectItem<T> implements ProjectItemInterface<T> {

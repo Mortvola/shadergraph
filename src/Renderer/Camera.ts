@@ -1,4 +1,5 @@
-import { vec4, mat4, quat, Vec4, Mat4, vec3 } from 'wgpu-matrix';
+import type { Vec4, Mat4} from 'wgpu-matrix';
+import { vec4, mat4, quat, vec3 } from 'wgpu-matrix';
 import { normalizeDegrees, degToRad, radToDeg } from './Math';
 
 export type ProjectionType = 'Perspective' | 'Orthographic';

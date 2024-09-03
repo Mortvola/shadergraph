@@ -1,8 +1,8 @@
 import React from 'react';
 import { observer } from 'mobx-react-lite';
-import Renderer from '../../Renderer/ParticleSystem/Renderer';
+import type Renderer from '../../Renderer/ParticleSystem/Renderer';
 import PSRenderModeTypeSelector from './PSRenderModeTypeSelector';
-import { RenderMode } from '../../Renderer/ParticleSystem/Types';
+import type { RenderMode } from '../../Renderer/ParticleSystem/Types';
 import { materialManager } from '../../Renderer/Materials/MaterialManager';
 import { useStores } from '../../State/store';
 import Property from '../Property';

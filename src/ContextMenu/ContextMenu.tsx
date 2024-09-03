@@ -2,7 +2,7 @@ import React from 'react';
 import styles from './ContextMenu.module.scss';
 import Menu from './Menu';
 import { createPortal } from 'react-dom';
-import { MenuItemLike } from './types';
+import type { MenuItemLike } from './types';
 
 type PropsType = {
   menuItems: () => MenuItemLike[],

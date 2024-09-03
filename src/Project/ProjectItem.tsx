@@ -1,15 +1,16 @@
 import React from 'react';
-import { FolderInterface, isShaderItem, ProjectItemLike } from './Types/types';
+import type { FolderInterface, ProjectItemLike } from './Types/types';
+import { isShaderItem } from './Types/types';
 import styles from './ProjectItem.module.scss';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
-import { MenuItemLike } from '../ContextMenu/types';
+import type { MenuItemLike } from '../ContextMenu/types';
 import Http from '../Http/src';
-import { MaterialItemInterface } from '../State/types';
+import type { MaterialItemInterface } from '../State/types';
 import { runInAction } from 'mobx';
 import ProjectItemObject from "../Project/Types/ProjectItem";
-import { ProjectItemRecord } from '../State/ProjectItemRecord';
+import type { ProjectItemRecord } from '../State/ProjectItemRecord';
 
 type PropsType = {
   item: ProjectItemLike,

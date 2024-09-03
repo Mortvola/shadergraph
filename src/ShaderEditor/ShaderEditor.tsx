@@ -10,7 +10,7 @@ import Http from '../Http/src';
 import Graph from './Graph';
 import Toolbar from './Toolbar';
 import { renderer2d } from '../Main';
-import { GraphInterface } from '../State/GraphInterface';
+import type { GraphInterface } from '../State/GraphInterface';
 
 type PropsType = {
   graph: GraphInterface,

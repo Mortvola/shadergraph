@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './ColorPicker.module.scss';
 import GradientKey from './GradientKey';
-import { AlphaGradientKey, ColorGradientKey } from '../Renderer/ParticleSystem/Types';
+import type { AlphaGradientKey, ColorGradientKey } from '../Renderer/ParticleSystem/Types';
 
 type PropsType = {
   keys: (AlphaGradientKey | ColorGradientKey)[],

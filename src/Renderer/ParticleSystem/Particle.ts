@@ -1,6 +1,6 @@
-import { Vec4 } from "wgpu-matrix"
-import DrawableComponent from "../Drawables/DrawableComponent";
-import SceneNode from "../Drawables/SceneNodes/SceneNode";
+import type { Vec4 } from "wgpu-matrix"
+import type DrawableComponent from "../Drawables/DrawableComponent";
+import type SceneNode from "../Drawables/SceneNodes/SceneNode";
 
 let id = 0;
 

@@ -1,6 +1,6 @@
 import { makeObservable, observable, reaction, runInAction } from "mobx";
 import { lerp } from "../Math";
-import { AlphaGradientKey, ColorGradientKey, GradientDescriptor } from "./Types";
+import type { AlphaGradientKey, ColorGradientKey, GradientDescriptor } from "./Types";
 
 class Gradient {
   @observable

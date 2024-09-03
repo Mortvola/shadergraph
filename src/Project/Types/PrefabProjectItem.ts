@@ -1,9 +1,10 @@
 import { runInAction } from "mobx";
 import Http from "../../Http/src";
 import Prefab from "../../Scene/Types/Prefab";
-import { PrefabDescriptor, PrefabInterface } from "../../State/types";
+import type { PrefabDescriptor, PrefabInterface } from "../../State/types";
 import ProjectItem from "./ProjectItem";
-import { FolderInterface, ProjectItemType } from "./types";
+import type { FolderInterface} from "./types";
+import { ProjectItemType } from "./types";
 
 class PrefabProjectItem extends ProjectItem<PrefabInterface> {
   constructor(id: number, name: string, parent: FolderInterface | null, itemId: number | null) {

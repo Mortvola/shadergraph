@@ -1,6 +1,6 @@
 import React from 'react';
 import { gpu } from './Renderer/Gpu';
-import Renderer from './Renderer/Renderer';
+import type Renderer from './Renderer/Renderer';
 
 type PropsType = {
   renderer: Renderer,

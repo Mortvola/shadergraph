@@ -1,7 +1,7 @@
 import { makeObservable, observable } from "mobx";
-import { PropertyInterface } from "./Types";
+import type { PropertyInterface } from "./Types";
 import Value from "./Value";
-import { DataType, ValueType } from "./GraphDescriptor";
+import type { DataType, ValueType } from "./GraphDescriptor";
 
 class Property implements PropertyInterface {
   name: string;

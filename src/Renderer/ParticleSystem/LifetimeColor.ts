@@ -1,8 +1,9 @@
 import { makeObservable, observable } from "mobx";
-import { LifetimeColorDescriptor } from "./Types";
+import type { LifetimeColorDescriptor } from "./Types";
 import PSColor from "../Properties/PSColor";
 import PSModule from "./PSModule";
-import { PropsBase, removeUndefinedKeys } from "../Properties/Types";
+import type { PropsBase} from "../Properties/Types";
+import { removeUndefinedKeys } from "../Properties/Types";
 
 class LifetimeColor extends PSModule {
   color: PSColor;

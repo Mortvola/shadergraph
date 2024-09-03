@@ -6,7 +6,7 @@ import ColorPicker from './ColorPicker';
 import NumberInput from '../Inspector/NumberInput';
 import { getGradientCss } from './Color';
 import { observer } from 'mobx-react-lite';
-import Gradient from '../Renderer/ParticleSystem/Gradient';
+import type Gradient from '../Renderer/ParticleSystem/Gradient';
 
 type PropsType = {
   value: Gradient,

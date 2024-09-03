@@ -1,4 +1,4 @@
-import { Vec2, Vec4 } from "wgpu-matrix";
+import type { Vec2, Vec4 } from "wgpu-matrix";
 import { bindGroups } from '../BindGroups';
 import Drawable from "./Drawable";
 import { makeShaderDataDefinitions, makeStructuredView } from "webgpu-utils";

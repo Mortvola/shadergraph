@@ -1,6 +1,6 @@
 import { makeObservable, observable } from "mobx";
 import Entity from "./Entity";
-import { TextureInterface } from "./types";
+import type { TextureInterface } from "./types";
 
 class Texture extends Entity implements TextureInterface {
   flipY: boolean;

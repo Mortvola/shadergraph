@@ -1,6 +1,6 @@
-import { Vec4, Mat4 } from 'wgpu-matrix';
-import { PropertyInterface } from '../ShaderBuilder/Types';
-import { StructuredView } from 'webgpu-utils';
+import type { Vec4, Mat4 } from 'wgpu-matrix';
+import type { PropertyInterface } from '../ShaderBuilder/Types';
+import type { StructuredView } from 'webgpu-utils';
 
 export type DrawableType = 'Mesh' | 'Billboard' | 'HorizontalBillboard' | 'Circle' | 'Line' | '2D' | 'Mesh2D'| 'Decal'
 

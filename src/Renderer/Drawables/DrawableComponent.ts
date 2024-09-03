@@ -1,7 +1,9 @@
-import { Vec4, mat4, vec4 } from "wgpu-matrix";
-import DrawableInterface from "./DrawableInterface";
-import { ComponentType, DrawableComponentInterface, MaterialInterface } from "../Types";
-import { MaterialDescriptor } from "../Materials/MaterialDescriptor";
+import type { Vec4} from "wgpu-matrix";
+import { mat4, vec4 } from "wgpu-matrix";
+import type DrawableInterface from "./DrawableInterface";
+import type { DrawableComponentInterface, MaterialInterface } from "../Types";
+import { ComponentType } from "../Types";
+import type { MaterialDescriptor } from "../Materials/MaterialDescriptor";
 import { materialManager } from "../Materials/MaterialManager";
 import Component from "./Component";
 

@@ -1,5 +1,5 @@
 import BuiltIn from "../BuiltInNode";
-import { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
+import type { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
 import OutputPort from "../Ports/OutputPort";
 
 class UV extends BuiltIn {

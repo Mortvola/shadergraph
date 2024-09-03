@@ -1,12 +1,14 @@
 import React from 'react';
-import { SceneObjectBaseInterface, isGameObject2D } from '../State/types';
+import type { SceneObjectBaseInterface} from '../State/types';
+import { isGameObject2D } from '../State/types';
 import { useStores } from '../State/store';
 import styles from './Inspector.module.scss'
 import { observer } from 'mobx-react-lite';
-import { ComponentType, NewSceneObjectComponent, SceneObjectComponent } from '../Renderer/Types';
+import type { NewSceneObjectComponent, SceneObjectComponent } from '../Renderer/Types';
+import { ComponentType } from '../Renderer/Types';
 import GameObject2D from './GameObject2d';
 import ContextMenu from '../ContextMenu/ContextMenu';
-import { MenuItemLike } from '../ContextMenu/types';
+import type { MenuItemLike } from '../ContextMenu/types';
 import ParticleSystem from './ParticleSystem/ParticleSystem';
 import ParticleSystemData from '../Renderer/ParticleSystem/ParticleSystem';
 import LightComponent from './Light';

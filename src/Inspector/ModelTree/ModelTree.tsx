@@ -1,7 +1,8 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { useStores } from '../../State/store';
-import { SceneNodeInterface, DrawableComponentInterface, ModelItem, ComponentType } from '../../Renderer/Types';
+import type { SceneNodeInterface, DrawableComponentInterface, ModelItem} from '../../Renderer/Types';
+import { ComponentType } from '../../Renderer/Types';
 import { isSceneNode } from '../../Renderer/Drawables/SceneNodes/SceneNode';
 import { isDrawableNode } from '../../Renderer/Drawables/SceneNodes/utils';
 import MeshNode from './MeshNode';
@@ -31,7 +32,7 @@ const ModelTree: React.FC<PropsType> = observer(({
   }, [modelItem.id, store.previewModeler])
 
   const handleMaterialAssignment = (node: DrawableComponentInterface, materialId: number) => {
-    let materials: Record<string, number> = { ...modelItem.materials }
+    const materials: Record<string, number> = { ...modelItem.materials }
 
     materials[node.name] = materialId;
 
@@ -76,7 +77,7 @@ const ModelTree: React.FC<PropsType> = observer(({
     return elements;
   }
 
-  let modelName = store.project.getItemByItemId(modelItem.id, 'model')?.name ?? ''
+  const modelName = store.project.getItemByItemId(modelItem.id, 'model')?.name ?? ''
 
   return (
     <div>

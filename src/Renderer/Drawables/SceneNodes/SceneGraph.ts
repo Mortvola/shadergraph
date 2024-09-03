@@ -1,8 +1,9 @@
-import ParticleSystem from "../../ParticleSystem/ParticleSystem";
-import { SceneNodeInterface, RendererInterface, SceneGraphInterface, ComponentType } from "../../Types";
-import Component from "../Component";
-import Light from "../Light";
-import RangeCircle from "../RangeCircle";
+import type ParticleSystem from "../../ParticleSystem/ParticleSystem";
+import type { SceneNodeInterface, RendererInterface, SceneGraphInterface} from "../../Types";
+import { ComponentType } from "../../Types";
+import type Component from "../Component";
+import type Light from "../Light";
+import type RangeCircle from "../RangeCircle";
 import SceneNode, { isSceneNode } from "./SceneNode";
 
 class SceneGraph implements SceneGraphInterface {

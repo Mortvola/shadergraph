@@ -1,5 +1,5 @@
 import Entity from "./Entity";
-import { ModelInterface } from "./types";
+import type { ModelInterface } from "./types";
 
 class Model extends Entity implements ModelInterface {
 

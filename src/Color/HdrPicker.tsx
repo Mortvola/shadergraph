@@ -1,6 +1,6 @@
 import React from 'react';
 import NumberInput from '../Inspector/NumberInput';
-import ColorMutator from './ColorMutator';
+import type ColorMutator from './ColorMutator';
 import ColorSlider from './ColorSlider';
 
 type PropsType = {

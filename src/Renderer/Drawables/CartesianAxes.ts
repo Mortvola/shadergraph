@@ -1,5 +1,5 @@
-import { Vec4 } from 'wgpu-matrix';
-import DrawableInterface from "./DrawableInterface";
+import type { Vec4 } from 'wgpu-matrix';
+import type DrawableInterface from "./DrawableInterface";
 import Drawable from './Drawable';
 import { gpu } from '../Gpu';
 import { maxInstances } from '../Constants';

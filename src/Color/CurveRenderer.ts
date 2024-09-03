@@ -1,5 +1,5 @@
 import { vec2 } from "wgpu-matrix";
-import { PSCurvePoint } from "../Renderer/ParticleSystem/Types";
+import type { PSCurvePoint } from "../Renderer/ParticleSystem/Types";
 import Renderer2d from "../Renderer2d";
 
 export enum Subpoint {

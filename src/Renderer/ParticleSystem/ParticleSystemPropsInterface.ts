@@ -1,13 +1,13 @@
-import { PSNumber } from "../Properties/Property";
-import PSColor from "../Properties/PSColor";
-import PSValue from "../Properties/PSValue";
-import Collision from "./Collision";
-import LifetimeColor from "./LifetimeColor";
-import LifetimeSize from "./LIfetimeSize";
-import LifetimeVelocity from "./LifetimeVelocity";
-import Renderer from "./Renderer";
-import Shape from "./Shapes/Shape";
-import { ParticleSystemPropsDescriptor } from "./Types";
+import type { PSNumber } from "../Properties/Property";
+import type PSColor from "../Properties/PSColor";
+import type PSValue from "../Properties/PSValue";
+import type Collision from "./Collision";
+import type LifetimeColor from "./LifetimeColor";
+import type LifetimeSize from "./LIfetimeSize";
+import type LifetimeVelocity from "./LifetimeVelocity";
+import type Renderer from "./Renderer";
+import type Shape from "./Shapes/Shape";
+import type { ParticleSystemPropsDescriptor } from "./Types";
 
 export interface ParticleSystemPropsInterface {
   duration: PSNumber;

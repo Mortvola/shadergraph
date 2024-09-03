@@ -3,7 +3,7 @@ import GradientEditorPopup from './GradientEditorPopup';
 import styles from './ColorPicker.module.scss'
 import { getGradientCss } from './Color';
 import { observer } from 'mobx-react-lite';
-import Gradient from '../Renderer/ParticleSystem/Gradient';
+import type Gradient from '../Renderer/ParticleSystem/Gradient';
 
 type PropsType = {
   value: Gradient,

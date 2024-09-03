@@ -2,7 +2,7 @@ import * as FBXParser from 'fbx-parser'
 import { vec3 } from 'wgpu-matrix';
 import SurfaceMesh from '../Renderer/Drawables/SurfaceMesh';
 import { degToRad } from '../Renderer/Math';
-import FbxNode from './FbxNode';
+import type FbxNode from './FbxNode';
 import FbxGeometryNode from './FbxGeometryNode';
 import FbxContainerNode from './FbxContainerNode';
 import Http from '../Http/src';
@@ -184,7 +184,7 @@ const traverseTree = async (
 
   const connections = connectionsNode?.nodes({ 2: objectId }) ?? [];
 
-  for (let connection of connections) {
+  for (const connection of connections) {
     const connectedObjectId = connection.prop(1, 'number');
     const type = connection.prop(3, 'string') ?? '';
     const c = connection.prop(0, 'string') ?? '';
@@ -341,7 +341,7 @@ export const downloadFbx = async (url: string): Promise<FbxNode | undefined> => 
       fbx = FBXParser.parseBinary(buffer)
     }
     catch (error) {
-      var dataView = new DataView(arrayBuffer);
+      const dataView = new DataView(arrayBuffer);
       const decoder = new TextDecoder();
       const text = decoder.decode(dataView);
       // console.log(text[0]);

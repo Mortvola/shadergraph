@@ -1,6 +1,6 @@
 import React from 'react';
 import NumberInput from './NumberInput';
-import TransformProps from '../Renderer/Properties/TransformProps';
+import type TransformProps from '../Renderer/Properties/TransformProps';
 import styles from './Inspector.module.scss'
 import Property from './Property';
 import { observer } from 'mobx-react-lite';

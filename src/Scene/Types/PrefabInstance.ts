@@ -3,11 +3,12 @@ import Http from "../../Http/src";
 import Light from "../../Renderer/Drawables/Light";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
-import { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
+import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
 import TransformProps from "../../Renderer/Properties/TransformProps";
-import { ComponentType, LightPropsInterface } from "../../Renderer/Types";
+import type { LightPropsInterface } from "../../Renderer/Types";
+import { ComponentType } from "../../Renderer/Types";
 import Entity from "../../State/Entity";
-import {
+import type {
   PrefabDescriptor, PrefabInstanceDescriptor, PrefabInstanceInterface,
   PrefabInstanceNodeDesriptor,
   PrefabInterface, PrefabNodeInterface,

@@ -1,4 +1,4 @@
-import { GraphNodeDescriptor, GraphStageDescriptor, PropertyDescriptor, ValueDescriptor } from "./GraphDescriptor";
+import type { GraphNodeDescriptor, GraphStageDescriptor, PropertyDescriptor, ValueDescriptor } from "./GraphDescriptor";
 import GraphEdge from "./GraphEdge";
 import { setNextVarid } from "./GraphNode";
 import Add from "./Nodes/Add";
@@ -32,7 +32,8 @@ import Voronoi from "./Nodes/Voronoi";
 import { resetConstantNames } from "./Ports/InputPort";
 import Property from "./Property";
 import PropertyNode from "./PropertyNode";
-import { getLength, GraphEdgeInterface, GraphNodeInterface, isPropertyNode, PropertyInterface } from "./Types";
+import type { GraphEdgeInterface, GraphNodeInterface, PropertyInterface } from "./Types";
+import { getLength, isPropertyNode } from "./Types";
 import Value from "./Value";
 import ValueNode from "./ValueNode";
 
@@ -77,8 +78,8 @@ class StageGraph {
   edges: GraphEdgeInterface[] = [];
 
   constructor(graphDescr: GraphStageDescriptor, properties: PropertyInterface[]) {
-    let nodes: GraphNodeInterface[] = [];
-    let edges: GraphEdgeInterface[] = [];
+    const nodes: GraphNodeInterface[] = [];
+    const edges: GraphEdgeInterface[] = [];
   
     console.log('build graph');
   

@@ -1,5 +1,5 @@
 import React from 'react'
-import { GameObject2DInterface } from '../State/types';
+import type { GameObject2DInterface } from '../State/types';
 import { useStores } from '../State/store';
 
 type PropsType = {

@@ -2,7 +2,7 @@ import React from 'react';
 import NumberInput from '../NumberInput';
 import PSValueTypeSelector from './PSValueTypeSelector';
 import { PSValueType } from '../../Renderer/ParticleSystem/Types';
-import PSValue from '../../Renderer/Properties/PSValue';
+import type PSValue from '../../Renderer/Properties/PSValue';
 import { observer } from 'mobx-react-lite';
 import CurveEditor from '../../Color/CurveEditor';
 

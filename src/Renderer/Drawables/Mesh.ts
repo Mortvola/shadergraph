@@ -1,7 +1,7 @@
-import { Vec4 } from 'wgpu-matrix';
-import SurfaceMesh from "./SurfaceMesh";
+import type { Vec4 } from 'wgpu-matrix';
+import type SurfaceMesh from "./SurfaceMesh";
 import Drawable from './Drawable';
-import DrawableInterface from './DrawableInterface';
+import type DrawableInterface from './DrawableInterface';
 import { gpu } from '../Gpu';
 
 class Mesh extends Drawable {

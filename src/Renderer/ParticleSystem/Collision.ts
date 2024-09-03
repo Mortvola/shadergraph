@@ -1,7 +1,8 @@
 import { makeObservable, observable } from "mobx";
 import PSModule from "./PSModule";
-import { CollisionDescriptor } from "./Types";
-import { PropsBase, removeUndefinedKeys } from "../Properties/Types";
+import type { CollisionDescriptor } from "./Types";
+import type { PropsBase} from "../Properties/Types";
+import { removeUndefinedKeys } from "../Properties/Types";
 import { PSNumber } from "../Properties/Property";
 
 class Collision extends PSModule {

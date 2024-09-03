@@ -3,7 +3,8 @@ import type { SceneDescriptor, SceneInterface } from "../../State/types";
 import ProjectItem from "./ProjectItem";
 import Http from "../../Http/src";
 import Scene from "../../Scene/Types/Scene";
-import { FolderInterface, ProjectItemType } from "./types";
+import type { FolderInterface} from "./types";
+import { ProjectItemType } from "./types";
 
 class SceneProjectItem extends ProjectItem<SceneInterface> {
   constructor(id: number, name: string, parent: FolderInterface | null, itemId: number | null) {

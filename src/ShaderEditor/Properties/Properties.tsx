@@ -3,11 +3,11 @@ import React from 'react';
 import Draggable from '../Draggable';
 import styles from './Properties.module.scss';
 import PropertyEntry from './PropertyEntry';
-import { PropertyInterface } from '../../Renderer/ShaderBuilder/Types';
+import type { PropertyInterface } from '../../Renderer/ShaderBuilder/Types';
 import PropertyDialog from './PropertyDialog';
 import ContextMenu from '../../ContextMenu/ContextMenu';
 import { menuItems } from './MenuItems';
-import { GraphInterface } from '../../State/GraphInterface';
+import type { GraphInterface } from '../../State/GraphInterface';
 
 type PropsType = {
   graph: GraphInterface,

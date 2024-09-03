@@ -1,16 +1,16 @@
 import { makeShaderDataDefinitions, makeStructuredView } from "webgpu-utils";
 import { bindGroups } from "../BindGroups";
 import { gpu } from "../Gpu";
-import { GraphNodeInterface, PropertyInterface } from "../ShaderBuilder/Types";
-import { PipelineInterface, PipelineManagerInterface, StageBindings } from "../Types";
+import type { GraphNodeInterface, PropertyInterface } from "../ShaderBuilder/Types";
+import type { PipelineInterface, PipelineManagerInterface, StageBindings } from "../Types";
 import LinePipeline from "./LinePipeline";
 import Pipeline from "./Pipeline";
 // import ReticlePipeline from "./ReticlePipeline";
 import TrajectoryPipeline from "./TrajectoryPipeline";
 import { bloom, outputFormat } from "../RenderSetings";
 import DecalPipeline from "./DecalPipeline";
-import ShaderGraph from "../ShaderBuilder/ShaderGraph";
-import { DrawableType } from "../Drawables/DrawableInterface";
+import type ShaderGraph from "../ShaderBuilder/ShaderGraph";
+import type { DrawableType } from "../Drawables/DrawableInterface";
 
 export type PipelineType =
   'Line'| 'reticle' | 'Trajectory' | 'Decal';
@@ -94,7 +94,7 @@ class PipelineManager implements PipelineManagerInterface {
       root: root?.id,
     });
 
-    let pipelineEntry: PipelineMapEntry | undefined = this.pipelineMap.get(key);
+    const pipelineEntry: PipelineMapEntry | undefined = this.pipelineMap.get(key);
 
     if (pipelineEntry) {
       return pipelineEntry.pipeline

@@ -1,5 +1,5 @@
 import React from 'react';
-import { MenuActionRecord } from './types';
+import type { MenuActionRecord } from './types';
 
 type PropsType = {
   originPosition: [number, number]

@@ -3,7 +3,7 @@ import Draggable from '../Draggable';
 import styles from './Controls.module.scss';
 import { useStores } from '../../State/store';
 import { observer } from 'mobx-react-lite';
-import { CullMode } from '../../State/types';
+import type { CullMode } from '../../State/types';
 import Checkbox from './Checkbox';
 
 const Controls: React.FC = observer(() => {

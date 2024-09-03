@@ -6,7 +6,7 @@ import GreenPort from "../Ports/GreenPort";
 import InputPort from "../Ports/InputPort";
 import OutputPort from "../Ports/OutputPort";
 import RedPort from "../Ports/RedPort";
-import { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
+import type { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
 import RGBPort from "../Ports/RGBPort";
 
 export type SampleTextureSettings = {

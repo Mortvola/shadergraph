@@ -1,6 +1,6 @@
 import React from 'react';
 import NumberInput from '../../NumberInput';
-import ConeData from '../../../Renderer/ParticleSystem/Shapes/Cone';
+import type ConeData from '../../../Renderer/ParticleSystem/Shapes/Cone';
 import { observer } from 'mobx-react-lite';
 
 type PropsType = {

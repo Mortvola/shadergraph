@@ -1,6 +1,6 @@
-import SurfaceMesh from "../Renderer/Drawables/SurfaceMesh";
+import type SurfaceMesh from "../Renderer/Drawables/SurfaceMesh";
 import FbxNode from "./FbxNode";
-import { FbxGeometryNodeInterface } from "./types";
+import type { FbxGeometryNodeInterface } from "./types";
 
 class FbxGeometryNode extends FbxNode implements FbxGeometryNodeInterface {
   mesh: SurfaceMesh;

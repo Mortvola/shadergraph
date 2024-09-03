@@ -1,9 +1,9 @@
 import React from 'react';
 import ColorPicker from '../Color/ColorPicker';
 import NumberInput from './NumberInput';
-import { MenuItemLike } from '../ContextMenu/types';
+import type { MenuItemLike } from '../ContextMenu/types';
 import ContextMenu from '../ContextMenu/ContextMenu';
-import { LightPropsInterface } from '../Renderer/Types';
+import type { LightPropsInterface } from '../Renderer/Types';
 import { runInAction } from 'mobx';
 
 type PropsType = {

@@ -1,6 +1,7 @@
 import type { Vec3, Vec4, Mat4, Quat } from 'wgpu-matrix';
 import type { StructuredView } from 'webgpu-utils';
-import DrawableInterface, { DrawableType } from './Drawables/DrawableInterface';
+import type { DrawableType } from './Drawables/DrawableInterface';
+import type DrawableInterface from './Drawables/DrawableInterface';
 import type { PropertyInterface } from './ShaderBuilder/Types';
 import type { ShaderDescriptor } from './shaders/ShaderDescriptor';
 import type SceneNode2d from './Drawables/SceneNodes/SceneNode2d';

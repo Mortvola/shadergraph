@@ -3,13 +3,14 @@ import { observer } from 'mobx-react-lite';
 import styles from './Node.module.scss';
 import NodeInputPort from './NodeInputPort';
 import NodeOutputPort from './NodeOutputPort';
-import { GraphNodeInterface, isPropertyNode, isValueNode } from '../Renderer/ShaderBuilder/Types';
+import type { GraphNodeInterface} from '../Renderer/ShaderBuilder/Types';
+import { isPropertyNode, isValueNode } from '../Renderer/ShaderBuilder/Types';
 import Draggable from './Draggable';
 import ValueInput from './Properties/ValueInput';
 import Modal from '../Modal';
 import SampleTextureSettings from './SampleTextureSettings';
-import SampleTexture from '../Renderer/ShaderBuilder/Nodes/SampleTexture';
-import { GraphInterface } from '../State/GraphInterface';
+import type SampleTexture from '../Renderer/ShaderBuilder/Nodes/SampleTexture';
+import type { GraphInterface } from '../State/GraphInterface';
 
 type PropsType = {
   graph: GraphInterface,

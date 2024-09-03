@@ -1,4 +1,4 @@
-import { DataType, GraphNodeDescriptor, SamplerDescriptor } from "../GraphDescriptor";
+import type { DataType, GraphNodeDescriptor, SamplerDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import AlphaPort from "../Ports/AlphaPort";
 import BluePort from "../Ports/BluePort";

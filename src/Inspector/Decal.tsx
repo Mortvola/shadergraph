@@ -1,5 +1,5 @@
 import React from 'react';
-import { DecalItem } from '../Renderer/Types';
+import type { DecalItem } from '../Renderer/Types';
 import styles from './Decal.module.scss';
 import NumberInput from './NumberInput';
 import { useStores } from '../State/store';

@@ -8,11 +8,12 @@ import PSColor from "../Properties/PSColor";
 import PSValue from "../Properties/PSValue";
 import Renderer from "./Renderer";
 import Shape from "./Shapes/Shape";
+import type {
+  ParticleSystemPropsDescriptor} from "./Types";
 import {
-  ParticleSystemPropsDescriptor,
   PSValueType, RenderMode, ShapeType,
 } from "./Types";
-import { ParticleSystemPropsInterface } from "./ParticleSystemPropsInterface";
+import type { ParticleSystemPropsInterface } from "./ParticleSystemPropsInterface";
 
 class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterface {
   duration: PSNumber;

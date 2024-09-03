@@ -1,5 +1,6 @@
-/* eslint-disable no-restricted-syntax */
-import { Vec4, mat4, quat, vec4 } from 'wgpu-matrix';
+ 
+import type { Vec4} from 'wgpu-matrix';
+import { mat4, quat, vec4 } from 'wgpu-matrix';
 import {
   makeShaderDataDefinitions,
   makeStructuredView,
@@ -8,10 +9,10 @@ import Camera from './Camera';
 import { degToRad } from './Math';
 import SceneNode, { isSceneNode } from './Drawables/SceneNodes/SceneNode';
 import DeferredRenderPass from './RenderPasses/DeferredRenderPass';
-import Light from './Drawables/Light';
+import type Light from './Drawables/Light';
 import CartesianAxes from './Drawables/CartesianAxes';
 import DrawableComponent from './Drawables/DrawableComponent';
-import { RendererInterface, SceneNodeInterface, DrawableComponentInterface } from './Types';
+import type { RendererInterface, SceneNodeInterface, DrawableComponentInterface } from './Types';
 import { lineMaterial } from './Materials/Line';
 import { lights } from "./shaders/lights";
 import { gpu } from './Gpu';
@@ -28,7 +29,7 @@ import { isDrawableNode } from './Drawables/SceneNodes/utils';
 import Mesh from './Drawables/Mesh';
 import { plane } from './Drawables/Shapes/plane';
 import { circles } from './shaders/circles';
-import RangeCircle from './Drawables/RangeCircle';
+import type RangeCircle from './Drawables/RangeCircle';
 import SceneGraph from './Drawables/SceneNodes/SceneGraph';
 import DecalPass from './RenderPasses/DecalPass';
 import CombinePass from './RenderPasses/CombinePass';

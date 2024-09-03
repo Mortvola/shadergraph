@@ -310,7 +310,7 @@ class Material implements MaterialInterface {
     }
 
     if (bindings?.uniformsBuffer && bindings?.stageBindings.structuredView) {
-      let values: Record<string, unknown> = {};
+      const values: Record<string, unknown> = {};
 
       values[name] = value
 
