@@ -79,6 +79,8 @@ export interface PrefabNodeInterface {
 
   prefab: PrefabInterface;
 
+  ancestor?: PrefabNodeInterface;
+
   toDescriptor(): PrefabNodeDescriptor;
 }
 
@@ -143,7 +145,7 @@ export interface SceneObjectBaseInterface extends EntityInterface {
 }
 
 export interface PrefabInstanceObjectInterface extends SceneObjectBaseInterface {
-  prefabNode: PrefabNodeInterface | null;
+  ancestor: PrefabNodeInterface;
 
 }
 
@@ -159,7 +161,7 @@ export interface SceneObjectInterface extends SceneObjectBaseInterface {
 
 export const isSceneObject = (r: unknown): r is SceneObjectInterface => (
   r !== null && r !== undefined
-  && (r as PrefabInstanceObjectInterface).prefabNode === undefined
+  && (r as PrefabInstanceObjectInterface).ancestor === undefined
 )
 
 export interface PrefabInstanceInterface {

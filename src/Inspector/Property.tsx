@@ -2,10 +2,11 @@ import React from 'react';
 import styles from './Inspector.module.scss';
 import Select from './Select';
 import { observer } from 'mobx-react-lite';
+import { PropertyBaseInterface } from '../Renderer/Properties/Types';
 
 type PropsType = {
   label: string,
-  property: { override: boolean, revertOverride: () => void },
+  property: PropertyBaseInterface,
   children?: React.ReactNode,
   onDragOver?: (event: React.DragEvent<HTMLLabelElement>) => void,
   onDrop?: (event: React.DragEvent<HTMLLabelElement>) => void,
@@ -20,6 +21,7 @@ const Property: React.FC<PropsType> = observer(({
 }) => {
   const [open, setOpen] = React.useState<DOMRect | null>(null);
   const ref = React.useRef<HTMLDivElement>(null);
+  const [lineage, setLineage] = React.useState<{ value: string, label: string }[]>([])
 
   const options = [
     { value: 'revert', label: 'Revert Override' },
@@ -32,6 +34,11 @@ const Property: React.FC<PropsType> = observer(({
 
     if (element) {
       const rect = element.getBoundingClientRect();
+
+      setLineage(property.getLineage().map((l) => ({
+        value: l.id.toString(),
+        label: `Apply to ${l.name} in ${l.container}`,
+      })))
 
       setOpen(rect);
     }
@@ -63,7 +70,7 @@ const Property: React.FC<PropsType> = observer(({
       {children}
       {
         open
-          ? <Select onSelect={onSelect} onClose={handleClose} rect={open} options={options} />
+          ? <Select onSelect={onSelect} onClose={handleClose} rect={open} options={[...lineage, ...options]} />
           : null
       }
     </label>

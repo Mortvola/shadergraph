@@ -365,12 +365,13 @@ export class PrefabInstanceObject extends SceneObjectBase implements PrefabInsta
 
   prefabInstance: PrefabInstanceInterface;
 
-  prefabNode: PrefabNodeInterface | null = null;
+  ancestor: PrefabNodeInterface;
 
-  constructor(prefabInstance: PrefabInstanceInterface) {
+  constructor(prefabInstance: PrefabInstanceInterface, ancestor: PrefabNodeInterface) {
     super()
 
     this.prefabInstance = prefabInstance;
+    this.ancestor = ancestor
   }
 
   getObjectId(): number {

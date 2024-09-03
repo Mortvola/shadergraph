@@ -53,83 +53,79 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     prefabNode: PrefabNodeInterface, // A node within the prefab itself
     descriptor?: PrefabInstanceDescriptor,
   ): Promise<PrefabInstanceObject> {
-    const object = new PrefabInstanceObject(this);
-
-    object.ancestor = prefabNode;
+    const object = new PrefabInstanceObject(this, prefabNode);
 
     const nodeDescriptor = descriptor?.object.nodes?.find((n) => n.id === prefabNode.id);
 
     object.prefabInstance = this;
   
-    if (prefabNode) {
-      object.id = prefabNode.id;
-      object.name = prefabNode.name;
+    object.id = prefabNode.id;
+    object.name = prefabNode.name;
 
-      object.components = (await Promise.all(prefabNode.components.map(async (c) => {
-        // Find a component descriptor that matches the id and type of the prefab component.
-        const componentDescriptor = nodeDescriptor?.components.find((component) => (
-          component.id === c.id && component.type === c.type
-        ));
+    object.components = (await Promise.all(prefabNode.components.map(async (c) => {
+      // Find a component descriptor that matches the id and type of the prefab component.
+      const componentDescriptor = nodeDescriptor?.components.find((component) => (
+        component.id === c.id && component.type === c.type
+      ));
 
-        switch (c.type) {
-          case ComponentType.ParticleSystem: {
-            const prefabProps = c.props as ParticleSystemProps;
+      switch (c.type) {
+        case ComponentType.ParticleSystem: {
+          const prefabProps = c.props as ParticleSystemProps;
 
-            const props = new ParticleSystemProps(
-              componentDescriptor?.props as ParticleSystemPropsDescriptor,
-              prefabProps,
-            );
+          const props = new ParticleSystemProps(
+            componentDescriptor?.props as ParticleSystemPropsDescriptor,
+            prefabProps,
+          );
 
-            props.onChange = object.onChange;
-            props.node = object;
+          props.onChange = object.onChange;
+          props.node = object;
 
-            const ps = new ParticleSystem(props)
+          const ps = new ParticleSystem(props)
 
-            object.sceneNode.addComponent(ps)
+          object.sceneNode.addComponent(ps)
 
-            return {
-              id: c.id,
-              type: c.type,
-              props: props,
-              object: ps,
-              node: object,
-            }
-          }
-
-          case ComponentType.Light: {
-            const light = new Light(c.props as LightPropsInterface);
-
-            object.sceneNode.addComponent(light)
-
-            return {
-              id: c.id,
-              type: c.type,
-              props: c.props,
-              object: light,
-              node: object,
-            }
+          return {
+            id: c.id,
+            type: c.type,
+            props: props,
+            object: ps,
+            node: object,
           }
         }
 
-        return undefined
-      })))
-        .filter((c) => c !== undefined)
-      
-      object.objects = await Promise.all(prefabNode.nodes.map((node) => this.fromPrefabNode(prefab, node, descriptor)));
+        case ComponentType.Light: {
+          const light = new Light(c.props as LightPropsInterface);
 
-      for (const child of object.objects) {
-        child.parent = object;
-        object.sceneNode.addNode(child.sceneNode)
+          object.sceneNode.addComponent(light)
+
+          return {
+            id: c.id,
+            type: c.type,
+            props: c.props,
+            object: light,
+            node: object,
+          }
+        }
       }
 
-      // Setup the transform and copy it to the scene node.
-      object.transformProps = new TransformProps(nodeDescriptor?.transformProps, object.transformChanged, prefabNode.transformProps as TransformProps);;
+      return undefined
+    })))
+      .filter((c) => c !== undefined)
+    
+    object.objects = await Promise.all(prefabNode.nodes.map((node) => this.fromPrefabNode(prefab, node, descriptor)));
 
-      vec3.copy(object.transformProps.translate.get(), object.sceneNode.translate)
-      vec3.copy(object.transformProps.scale.get(), object.sceneNode.scale)
-
-      object.prefabNode = prefabNode;
+    for (const child of object.objects) {
+      child.parent = object;
+      object.sceneNode.addNode(child.sceneNode)
     }
+
+    // Setup the transform and copy it to the scene node.
+    object.transformProps = new TransformProps(nodeDescriptor?.transformProps, object.transformChanged, prefabNode.transformProps as TransformProps);;
+
+    vec3.copy(object.transformProps.translate.get(), object.sceneNode.translate)
+    vec3.copy(object.transformProps.scale.get(), object.sceneNode.scale)
+
+    object.ancestor = prefabNode;
 
     return object;
   }

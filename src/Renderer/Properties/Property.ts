@@ -51,9 +51,6 @@ export class Property<T> extends PropertyBase {
     })
   }
 
-  getLineage(): void {
-  }
-
   revertOverride() {
     if (this.ancestor) {
       this.copyProp((this.ancestor as Property<T>))

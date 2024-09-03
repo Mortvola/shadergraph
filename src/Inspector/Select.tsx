@@ -59,7 +59,7 @@ const Select: React.FC<PropsType> = ({
               >
                 {
                   options.map((o) => (
-                    <div className={styles.item} onClick={() => handleSelect(o.value)}>{o.label}</div>
+                    <div key={o.value} className={styles.item} onClick={() => handleSelect(o.value)}>{o.label}</div>
                   ))
                 }
               </div>

@@ -16,6 +16,8 @@ class PrefabNode extends NodeBase implements PrefabNodeInterface {
 
   prefab: PrefabInterface;
 
+  ancestor?: PrefabNode;
+
   transformProps: TransformPropsInterface = new TransformProps();
 
   constructor(prefab: PrefabInterface, id = -1, name?: string) {
