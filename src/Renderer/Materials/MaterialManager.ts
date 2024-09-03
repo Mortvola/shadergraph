@@ -28,7 +28,9 @@ class MaterialManager implements MaterialManagerInterface {
 
     if (materialItem) {
       if (withShaderDescriptor) {
-        materialItem.shaderDescriptor = await shaderManager.getDescriptor(materialItem.shaderId);
+        const shaderRecord = await shaderManager.getShader(materialItem.shaderId);
+
+        materialItem.shaderDescriptor = shaderRecord?.descriptor;
       }
 
       return materialItem;

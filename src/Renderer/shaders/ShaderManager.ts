@@ -5,38 +5,38 @@ import type { ShaderDescriptor } from "./ShaderDescriptor";
 class ShaderManager {
   shaders: Map<number, ShaderRecord> = new Map()
 
-  async getDescriptor(id: number): Promise<ShaderDescriptor | undefined> {
-    let shaderRecord = this.shaders.get(id)
+  pendingShader: Map<number, Promise<ShaderRecord | undefined>> = new Map();
 
-    if (!shaderRecord) {
-      if (id === -1) {
-        shaderRecord = {
-          id: -1,
-          name: 'Decal',
-          descriptor: {
-            type: 'Decal',
-            properties: [
-              { name: 'albedo', dataType: 'texture2D', value: null }
-            ]
-          },  
-        }      
+  async getShader(id: number): Promise<ShaderRecord | undefined> {
+    let shaderRecord = this.shaders.get(id);
 
-        this.shaders.set(id, shaderRecord)
+    if (shaderRecord === undefined) {
+      let pendingRequest = this.pendingShader.get(id);
+
+      if (pendingRequest === undefined) {
+        pendingRequest = (async () => {
+          let shaderRecord: ShaderRecord | undefined = undefined;
+
+          const response = await Http.get<ShaderRecord>(`/api/shader-descriptors/${id}`)
+
+          if (response.ok) {
+            shaderRecord = await response.body();
+      
+            this.shaders.set(id, shaderRecord)
+          }  
+  
+          return shaderRecord;
+        })()
+
+        this.pendingShader.set(id, pendingRequest)
       }
-      else {
-        const response = await Http.get<ShaderRecord>(`/api/shader-descriptors/${id}`)
 
-        if (response.ok) {
-          shaderRecord = await response.body();
-    
-          this.shaders.set(id, shaderRecord)
-        }  
-      }
+      shaderRecord = await pendingRequest;
+
+      this.pendingShader.delete(id);
     }
 
-    if (shaderRecord) {
-      return shaderRecord.descriptor
-    }
+    return shaderRecord
   }
 }
 

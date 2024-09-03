@@ -33,16 +33,16 @@ const Material: React.FC<PropsType> = observer(({
   React.useEffect(() => {
     (async () => {
       if (materialItem?.shaderId) {
-        const descriptor = await shaderManager.getDescriptor(materialItem.shaderId)
+        const shaderRecord = await shaderManager.getShader(materialItem.shaderId)
 
-        setShaderDescr(descriptor ?? null)
-  
-        const values = (descriptor?.properties?.map((p) => ({
+        setShaderDescr(shaderRecord?.descriptor ?? null)
+
+        const values = (shaderRecord?.descriptor.properties?.map((p) => ({
           name: p.name,
           value: new Value(p.dataType, p.value),
         })) ?? [])
   
-        setPropValues(values);  
+        setPropValues(values);    
       }      
     })()
   }, [materialItem?.shaderId])

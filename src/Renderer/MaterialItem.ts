@@ -45,12 +45,12 @@ class MaterialItem implements MaterialItemInterface {
 
   async setShaderId(id: number) {
     if (id !== this.shaderId) {
-      const shaderDescr = await shaderManager.getDescriptor(id)
+      const shaderRecord = await shaderManager.getShader(id)
 
       runInAction(() => {
         this.shaderId = id;
 
-        this.properties = (shaderDescr?.properties ?? []).map((p) => ({
+        this.properties = (shaderRecord?.descriptor.properties ?? []).map((p) => ({
           name: p.name,
           value: new Value(p.dataType, p.value),
           builtin: false,

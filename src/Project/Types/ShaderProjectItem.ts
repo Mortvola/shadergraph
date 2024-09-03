@@ -7,6 +7,7 @@ import ProjectItem from "./ProjectItem";
 import type { FolderInterface} from "./types";
 import { ProjectItemType } from "./types";
 import type { GraphInterface } from "../../State/GraphInterface";
+import { shaderManager } from "../../Renderer/shaders/ShaderManager";
 
 class ShaderProjectItem extends ProjectItem<GraphInterface> {
   constructor(id: number, name: string, parent: FolderInterface | null, itemId: number | null) {
@@ -18,18 +19,18 @@ class ShaderProjectItem extends ProjectItem<GraphInterface> {
       return this.item;
     }
 
-    const response = await Http.get<ShaderRecord>(`/api/shader-descriptors/${this.itemId}`)
-  
-    if (response.ok) {
-      const descriptor = await response.body();
+    if (this.itemId !== null) {
+      const shaderRecord = await shaderManager.getShader(this.itemId);
 
-      const shader = new Graph(store, descriptor.id, descriptor.name, descriptor.descriptor);
+      if (shaderRecord) {
+        const shader = new Graph(store, shaderRecord.id, shaderRecord.name, shaderRecord.descriptor);
 
-      runInAction(() => {
-        this.item = shader
-      })
+        runInAction(() => {
+          this.item = shader
+        })
 
-      return shader;
+        return shader;
+      }
     }
 
     return null;

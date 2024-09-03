@@ -98,7 +98,9 @@ class Material implements MaterialInterface {
       materialDescriptor?.shaderDescriptor === undefined
       && typeof materialDescriptor?.shaderId === 'number'
     ) {
-      shaderDescriptor = await shaderManager.getDescriptor(materialDescriptor.shaderId)
+      const shaderRecord = await shaderManager.getShader(materialDescriptor.shaderId)
+
+      shaderDescriptor = shaderRecord?.descriptor
     }
     else {
       shaderDescriptor = materialDescriptor?.shaderDescriptor
