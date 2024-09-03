@@ -2,7 +2,7 @@ import { makeObservable, observable } from "mobx";
 import { ConeDescriptor } from "../Types";
 import { mat4, Vec4, vec4 } from "wgpu-matrix";
 import { degToRad } from "../../Math";
-import { removeUndefinedKeys } from "../../Properties/Types";
+import { PropsBase, removeUndefinedKeys } from "../../Properties/Types";
 import { PSNumber } from "../../Properties/Property";
 
 class Cone {
@@ -10,9 +10,9 @@ class Cone {
 
   originRadius: PSNumber;
 
-  constructor(descriptor?: ConeDescriptor, onChange?: () => void, previousProp?: Cone) {
-    this.angle = new PSNumber(descriptor?.angle, 25, onChange, previousProp?.angle);
-    this.originRadius = new PSNumber(descriptor?.originRadius, 1, onChange, previousProp?.originRadius);
+  constructor(props: PropsBase, descriptor?: ConeDescriptor, onChange?: () => void, previousProp?: Cone) {
+    this.angle = new PSNumber(props, descriptor?.angle, 25, onChange, previousProp?.angle);
+    this.originRadius = new PSNumber(props, descriptor?.originRadius, 1, onChange, previousProp?.originRadius);
   }
 
   toDescriptor(overridesOnly  = false): ConeDescriptor | undefined {

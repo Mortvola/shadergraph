@@ -2,7 +2,7 @@ import { observable, runInAction } from "mobx";
 import { lerp } from "../Math";
 import { PSValueDescriptor, PSValueType } from "../ParticleSystem/Types";
 import PSCurve from "./PSCurve";
-import { PropertyType } from "./Types";
+import { PropertyType, PropsBase } from "./Types";
 import { PropertyBase } from "./Property";
 
 class PSValue extends PropertyBase {
@@ -62,12 +62,13 @@ class PSValue extends PropertyBase {
   }
 
   constructor(
+    props: PropsBase,
     descriptor?: PSValueDescriptor,
     defaultDescriptor?: PSValueDescriptor,
     onChange?: () => void,
     previousProp?: PSValue,
   ) {
-    super(previousProp)
+    super(props, previousProp)
     
     this.curve = [new PSCurve(this), new PSCurve(this)]
 

@@ -8,30 +8,36 @@ import DrawableInterface from "../Drawables/DrawableInterface";
 import Billboard from "../Drawables/Billboard";
 import HorizontalBillboard from "../Drawables/HorizontalBillboard";
 import DrawableComponent from "../Drawables/DrawableComponent";
-import { removeUndefinedKeys } from "../Properties/Types";
-import { PSMaterialItem, PSRenderMode } from "../Properties/Property";
+import { PropsBase, removeUndefinedKeys } from "../Properties/Types";
+import { PSMaterialItem, PSNumber, PSRenderMode } from "../Properties/Property";
 import MaterialItem from "../MaterialItem";
 
 class Renderer extends PSModule {
   mode: PSRenderMode;
 
-  material: PSMaterialItem;
+  materialId?: PSNumber;
 
-  drawable: DrawableInterface | null = null;
+  // material: PSMaterialItem;
+
+  material?: MaterialItem;
+
+  drawable?: DrawableInterface;
 
   constructor(
-    materialItem: MaterialItem | undefined,
+    props: PropsBase,
     descriptor?: RendererDescriptor,
     defaultDescriptor?: RendererDescriptor,
     onChange?: () => void,
     previousProps?: Renderer,
   ) {
-    super(descriptor?.enabled, defaultDescriptor?.enabled, onChange, previousProps?.enabled);
+    super(props, descriptor?.enabled, defaultDescriptor?.enabled, onChange, previousProps?.enabled);
 
-    this.mode = new PSRenderMode(descriptor?.mode, defaultDescriptor?.mode, this.onMaterialChange, previousProps?.mode);
-    this.material = new PSMaterialItem(materialItem, undefined, this.onMaterialChange, previousProps?.material);
+    this.materialId = new PSNumber(props, descriptor?.materialId, defaultDescriptor?.materialId, this.onMaterialChange, previousProps?.materialId)
 
-    this.createDrawable();
+    this.mode = new PSRenderMode(props, descriptor?.mode, defaultDescriptor?.mode, this.onMaterialChange, previousProps?.mode);
+    // this.material = new PSMaterialItem(materialItem, undefined, this.onMaterialChange, previousProps?.material);
+
+    // this.createDrawable();
   }
 
   onMaterialChange = () => {
@@ -41,26 +47,26 @@ class Renderer extends PSModule {
     }
   }
 
-  static async create(
-    descriptor?: RendererDescriptor,
-    defaultDescriptor?: RendererDescriptor,
-    onChange?: () => void,
-    previousProps?: Renderer,
-  ) {
-    let material: MaterialItem | undefined = undefined;
+  // static async create(
+  //   descriptor?: RendererDescriptor,
+  //   defaultDescriptor?: RendererDescriptor,
+  //   onChange?: () => void,
+  //   previousProps?: Renderer,
+  // ) {
+  //   let material: MaterialItem | undefined = undefined;
 
-    if (descriptor?.materialId !== undefined) {
-      material = await materialManager.getItem(descriptor.materialId)
-    }
+  //   if (descriptor?.materialId !== undefined) {
+  //     material = await materialManager.getItem(descriptor.materialId)
+  //   }
 
-    return new Renderer(material, descriptor, defaultDescriptor, onChange, previousProps);
-  }
+  //   return new Renderer(material, descriptor, defaultDescriptor, onChange, previousProps);
+  // }
 
   toDescriptor(overridesOnly = false): RendererDescriptor | undefined {
     const descriptor = {
       enabled: this.enabled.toDescriptor(overridesOnly),
       mode: this.mode.toDescriptor(overridesOnly),
-      materialId: (!overridesOnly || this.material.override) ? this.material.get()?.id : undefined,
+      materialId: this.materialId?.toDescriptor(overridesOnly),
     }
 
     return removeUndefinedKeys(descriptor)
@@ -96,18 +102,26 @@ class Renderer extends PSModule {
     }
   }
 
-  getDrawableType(): DrawableType | undefined {
-    switch(this.mode.get()) {
-      case RenderMode.Billboard:
-        return 'Billboard'
+  // getDrawableType(): DrawableType | undefined {
+  //   switch(this.mode.get()) {
+  //     case RenderMode.Billboard:
+  //       return 'Billboard'
 
-      case RenderMode.FlatBillboard:
-        return 'HorizontalBillboard';
-    }
-  }
+  //     case RenderMode.FlatBillboard:
+  //       return 'HorizontalBillboard';
+  //   }
+  // }
 
   async createDrawableComponent() {
-    return await DrawableComponent.create(this.drawable!, this.material.get());
+    if (this.drawable === undefined) {
+      this.createDrawable()
+    }
+
+    if (this.materialId?.get() !== undefined && this.material === undefined) {
+      this.material = await materialManager.getItem(this.materialId.get())
+    }  
+
+    return await DrawableComponent.create(this.drawable!, this.material);
   }
 }
 

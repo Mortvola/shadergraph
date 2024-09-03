@@ -2,15 +2,15 @@ import { makeObservable, observable } from "mobx";
 import { LifetimeColorDescriptor } from "./Types";
 import PSColor from "../Properties/PSColor";
 import PSModule from "./PSModule";
-import { removeUndefinedKeys } from "../Properties/Types";
+import { PropsBase, removeUndefinedKeys } from "../Properties/Types";
 
 class LifetimeColor extends PSModule {
   color: PSColor;
 
-  constructor(descriptor?: LifetimeColorDescriptor, onChange?: () => void, previousProps?: LifetimeColor) {
-    super(descriptor?.enabled, undefined, onChange, previousProps?.enabled);
+  constructor(props: PropsBase, descriptor?: LifetimeColorDescriptor, onChange?: () => void, previousProps?: LifetimeColor) {
+    super(props, descriptor?.enabled, undefined, onChange, previousProps?.enabled);
 
-    this.color = new PSColor(descriptor?.color, onChange, previousProps?.color);
+    this.color = new PSColor(props, descriptor?.color, onChange, previousProps?.color);
 
     makeObservable(this, {
       color: observable,

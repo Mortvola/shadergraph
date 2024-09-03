@@ -37,7 +37,7 @@ class ParticleSystemManager {
     if (response.ok) {
       const rec = await response.body();
 
-      const props = await ParticleSystemProps.create(rec.descriptor);
+      const props = new ParticleSystemProps(rec.descriptor);
       const particleSystem = new ParticleSystem(props);
 
       return particleSystem;

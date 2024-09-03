@@ -1,4 +1,3 @@
-import { vec3 } from "wgpu-matrix";
 import TransformProps from "../../Renderer/Properties/TransformProps";
 import Entity from "../../State/Entity";
 import { PrefabDescriptor, PrefabInterface, SceneObjectBaseInterface, SceneObjectInterface } from "../../State/types";
@@ -76,6 +75,7 @@ class Prefab extends Entity implements PrefabInterface {
         id: item.id,
         type: item.type,
         props: item.props,
+        node: prefabNode,
       }))
 
       // Link the prefabObject with its parent.

@@ -17,12 +17,13 @@ import Light from "../../Renderer/Drawables/Light";
 import { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
-import LightProps from "../../Renderer/Drawables/LightProps";
+import LightProps from "../../Renderer/Properties/LightProps";
 import TransformProps from "../../Renderer/Properties/TransformProps";
 import PrefabInstance from "./PrefabInstance";
 import { vec3 } from "wgpu-matrix";
+import { NodeBase } from "./NodeBase";
 
-export class SceneObjectBase extends Entity implements SceneObjectBaseInterface {
+export class SceneObjectBase extends NodeBase implements SceneObjectBaseInterface {
   components: SceneObjectComponent[] = []
 
   objects: SceneObjectBase[] = [];
@@ -192,8 +193,9 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
                 propsDescriptor = c.item as ParticleSystemPropsDescriptor;
               }
 
-              const props = await ParticleSystemProps.create(propsDescriptor);
+              const props = new ParticleSystemProps(propsDescriptor);
               props.onChange = object.onChange;
+              props.node = object;
 
               const ps = new ParticleSystem(props)
 
@@ -214,6 +216,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
 
               const props = new LightProps(propsDescriptor);
               props.onChange = object.onChange;
+              props.node = object;
 
               const light = new Light(props);
 
@@ -330,8 +333,8 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
 
     component.props.onChange = this.onChange;
 
-    if (component.object) {
-      this.sceneNode.addComponent(component.object)
+    if (component.component) {
+      this.sceneNode.addComponent(component.component)
     }
 
     this.onChange()
@@ -346,8 +349,8 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
         ...this.components.slice(index + 1),
       ]
 
-      if (component.object) {
-        this.sceneNode.removeComponent(component.object)
+      if (component.component) {
+        this.sceneNode.removeComponent(component.component)
       }
 
       this.onChange()

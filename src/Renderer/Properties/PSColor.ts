@@ -2,7 +2,7 @@ import { observable, runInAction } from "mobx";
 import { lerp } from "../Math";
 import { PSColorDescriptor, PSColorType } from "../ParticleSystem/Types";
 import Gradient from '../ParticleSystem/Gradient';
-import { PropertyType } from "./Types";
+import { PropertyType, PropsBase } from "./Types";
 import { PropertyBase } from "./Property";
 
 type ColorPair = [number[], number[]];
@@ -38,8 +38,8 @@ class PSColor extends PropertyBase {
 
   gradients: [Gradient, Gradient];
 
-  constructor(descriptor?: PSColorDescriptor, onChange?: () => void, prevousProp?: PSColor) {
-    super(prevousProp);
+  constructor(props: PropsBase, descriptor?: PSColorDescriptor, onChange?: () => void, prevousProp?: PSColor) {
+    super(props, prevousProp);
 
     this.gradients = [new Gradient(this), new Gradient(this)]
 

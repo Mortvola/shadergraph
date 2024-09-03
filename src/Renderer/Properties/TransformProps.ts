@@ -1,10 +1,10 @@
 import { vec3 } from "wgpu-matrix";
 import { TransformPropsInterface } from "../Types";
 import { TransformPropsDescriptor } from "../../State/types";
-import { removeUndefinedKeys } from "./Types";
+import { PropsBase, removeUndefinedKeys } from "./Types";
 import { PSVec3Type } from "./Property";
 
-class TransformProps implements TransformPropsInterface {
+class TransformProps extends PropsBase implements TransformPropsInterface {
   translate: PSVec3Type
   
   rotate: PSVec3Type;
@@ -16,9 +16,11 @@ class TransformProps implements TransformPropsInterface {
     onChange?: () => void,
     previousProps?: TransformProps,
   ) {
-    this.translate = new PSVec3Type(descriptor?.translate, vec3.create(0, 0, 0), onChange, previousProps?.translate)
-    this.rotate = new PSVec3Type(descriptor?.rotate, vec3.create(0, 0, 0), onChange, previousProps?.rotate)
-    this.scale = new PSVec3Type(descriptor?.scale, vec3.create(1, 1, 1), onChange, previousProps?.scale)
+    super()
+
+    this.translate = new PSVec3Type(this, descriptor?.translate, vec3.create(0, 0, 0), onChange, previousProps?.translate)
+    this.rotate = new PSVec3Type(this, descriptor?.rotate, vec3.create(0, 0, 0), onChange, previousProps?.rotate)
+    this.scale = new PSVec3Type(this, descriptor?.scale, vec3.create(1, 1, 1), onChange, previousProps?.scale)
   }
 
   toDescriptor(overridesOnly = false): TransformPropsDescriptor | undefined {

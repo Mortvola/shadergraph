@@ -7,9 +7,8 @@ import SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
 import ShaderGraph from './ShaderBuilder/ShaderGraph';
 import { ParticleSystemPropsDescriptor, ParticleSystemPropsInterface } from './ParticleSystem/Types';
 import { MaterialItemInterface, TransformPropsDescriptor } from '../State/types';
-import Component from './Drawables/Component';
 import ParticleSystemProps from './ParticleSystem/ParticleSystemProps';
-import LightProps from './Drawables/LightProps';
+import LightProps from './Properties/LightProps';
 import { PSVec3Type } from './Properties/Property';
 
 export const maxInstances = 1000;
@@ -19,7 +18,7 @@ export interface SceneNodeInterface {
 
   parentNode: SceneNodeInterface | null;
 
-  components: Set<Component>;
+  components: Set<ComponentInterface>;
 
   name: string;
 
@@ -49,9 +48,9 @@ export interface SceneNodeInterface {
 
   detachSelf(): void;
 
-  addComponent(component: Component): void;
+  addComponent(component: ComponentInterface): void;
 
-  removeComponent(component: Component): void;
+  removeComponent(component: ComponentInterface): void;
 }
 
 export interface RenderPassInterface {
@@ -70,7 +69,7 @@ export interface SceneGraphInterface {
 
   nodeRemoved(node: SceneNodeInterface): void;
 
-  componentAdded(component: Component): void;
+  componentAdded(component: ComponentInterface): void;
 }
 
 export interface RendererInterface {
@@ -251,7 +250,7 @@ export type SceneObjectComponent = {
   id: number,
   type: ComponentType,
   props: ParticleSystemProps | LightProps,
-  object?: ParticleSystemInterface | LightInterface,
+  component?: ParticleSystemInterface | LightInterface,
 }
 
 export type NewSceneObjectComponent = Omit<SceneObjectComponent, 'id'>

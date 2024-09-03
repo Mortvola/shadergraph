@@ -9,7 +9,7 @@ import { ComponentType, NewSceneObjectComponent } from '../Renderer/Types';
 import Light from '../Renderer/Drawables/Light';
 import { SceneInterface } from '../State/types';
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
-import LightProps from '../Renderer/Drawables/LightProps';
+import LightProps from '../Renderer/Properties/LightProps';
 
 type PropsType = {
   scene?: SceneInterface,
@@ -58,13 +58,13 @@ const SceneToolbar: React.FC<PropsType> = ({
       if (scene) {
         const object = new SceneObject()
 
-        const props = await ParticleSystemProps.create();
+        const props = new ParticleSystemProps();
         const particleSystem = new ParticleSystem(props);
 
         const item: NewSceneObjectComponent = {
           type: ComponentType.ParticleSystem,
           props: props,
-          object: particleSystem,
+          component: particleSystem,
         }
 
         object.addComponent(item);
@@ -84,7 +84,7 @@ const SceneToolbar: React.FC<PropsType> = ({
         const item: NewSceneObjectComponent = {
           type: ComponentType.Light,
           props: props,
-          object: light,
+          component: light,
         }
 
         object.addComponent(item);

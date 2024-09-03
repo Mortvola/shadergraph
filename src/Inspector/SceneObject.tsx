@@ -12,7 +12,7 @@ import ParticleSystemData from '../Renderer/ParticleSystem/ParticleSystem';
 import LightComponent from './Light';
 import Light from '../Renderer/Drawables/Light';
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
-import LightProps from '../Renderer/Drawables/LightProps';
+import LightProps from '../Renderer/Properties/LightProps';
 import Transform from './Transform';
 
 type PropsType = {
@@ -185,7 +185,7 @@ const SceneObject: React.FC<PropsType> = observer(({
         const component: NewSceneObjectComponent = {
           type: ComponentType.Light,
           props: props,
-          object: light,
+          component: light,
         };
 
         sceneObject.addComponent(component);
@@ -199,7 +199,7 @@ const SceneObject: React.FC<PropsType> = observer(({
 
       case ComponentType.ParticleSystem: {
         (async () => {
-          const props = await ParticleSystemProps.create();
+          const props = new ParticleSystemProps();
           const particleSystem = new ParticleSystemData(props);
   
           // particleSystemManager.add(particleSystem);
@@ -207,7 +207,7 @@ const SceneObject: React.FC<PropsType> = observer(({
           const item: NewSceneObjectComponent = {
             type: ComponentType.ParticleSystem,
             props: props,
-            object: particleSystem,
+            component: particleSystem,
           }
   
           sceneObject.addComponent(item);  

@@ -1,5 +1,5 @@
 import { makeObservable, observable } from "mobx";
-import { removeUndefinedKeys } from "../../Properties/Types";
+import { PropsBase, removeUndefinedKeys } from "../../Properties/Types";
 import { Vec4, vec4 } from "wgpu-matrix";
 import { SphereDescriptor } from "../Types";
 import { PSNumber } from "../../Properties/Property";
@@ -9,8 +9,8 @@ class Sphere {
 
   hemisphere = false;
 
-  constructor(hemisphere = false, descriptor?: SphereDescriptor, onChange?: () => void, previousProps?: Sphere) {
-    this.radius = new PSNumber(descriptor?.radius, 1, onChange, previousProps?.radius)
+  constructor(props: PropsBase, hemisphere = false, descriptor?: SphereDescriptor, onChange?: () => void, previousProps?: Sphere) {
+    this.radius = new PSNumber(props, descriptor?.radius, 1, onChange, previousProps?.radius)
     this.hemisphere = hemisphere;
   }
 

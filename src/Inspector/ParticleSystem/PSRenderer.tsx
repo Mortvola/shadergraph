@@ -51,7 +51,7 @@ const PSRenderer: React.FC<PropsType> = observer(({
       const materialItem = await materialManager.getItem(draggingItem.itemId, false)
 
       if (materialItem) {
-        value.material.set(materialItem, true)
+        // value.material.set(materialItem, true)
       }
     }
   }
@@ -61,7 +61,7 @@ const PSRenderer: React.FC<PropsType> = observer(({
       <Property label="Render Mode" property={value.mode}>
         <PSRenderModeTypeSelector value={value.mode.get()} onChange={handleModeChange} />
       </Property>
-      <Property label="Material" property={value.material} onDragOver={handleDragOver} onDrop={handleDrop}>
+      {/* <Property label="Material" property={value.material} onDragOver={handleDragOver} onDrop={handleDrop}>
         <div>
           {
             value.material
@@ -69,7 +69,7 @@ const PSRenderer: React.FC<PropsType> = observer(({
               : 'not assigned'
           }
         </div>
-      </Property>
+      </Property> */}
     </>
   )
 })

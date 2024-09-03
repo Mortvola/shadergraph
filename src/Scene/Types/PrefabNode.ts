@@ -1,12 +1,12 @@
 import { ComponentType, PrefabComponent, TransformPropsInterface } from "../../Renderer/Types";
-import Entity from "../../State/Entity";
 import { PrefabNodeDescriptor, PrefabNodeInterface, PrefabInterface } from "../../State/types";
 import TransformProps from "../../Renderer/Properties/TransformProps";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
-import LightProps from "../../Renderer/Drawables/LightProps";
+import LightProps from "../../Renderer/Properties/LightProps";
+import { NodeBase } from "./NodeBase";
 
-class PrefabNode extends Entity implements PrefabNodeInterface {
+class PrefabNode extends NodeBase implements PrefabNodeInterface {
   components: PrefabComponent[] = []
 
   nodes: PrefabNode[] = [];
@@ -36,13 +36,17 @@ class PrefabNode extends Entity implements PrefabNodeInterface {
         descriptor.components.map(async (component) => {
           switch (component.type) {
             case ComponentType.ParticleSystem: {
-              const props = await ParticleSystemProps.create(component.props as ParticleSystemPropsDescriptor)
+              const props = new ParticleSystemProps(component.props as ParticleSystemPropsDescriptor)
+
+              props.node = prefabNode;
 
               return ({ id: component.id, type: component.type, props })
             }
 
             case ComponentType.Light: {
               const props = new LightProps(component.props as LightProps)
+
+              props.node = prefabNode;
 
               return ({ id: component.id, type: component.type, props })
             }

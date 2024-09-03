@@ -54,6 +54,8 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
   ): Promise<PrefabInstanceObject> {
     const object = new PrefabInstanceObject(this);
 
+    object.ancestor = prefabNode;
+
     const nodeDescriptor = descriptor?.object.nodes?.find((n) => n.id === prefabNode.id);
 
     object.prefabInstance = this;
@@ -72,12 +74,13 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
           case ComponentType.ParticleSystem:
             const prefabProps = c.props as ParticleSystemProps;
 
-            const props = await ParticleSystemProps.create(
+            const props = new ParticleSystemProps(
               componentDescriptor?.props as ParticleSystemPropsDescriptor,
               prefabProps,
             );
 
             props.onChange = object.onChange;
+            props.node = object;
 
             const ps = new ParticleSystem(props)
 
@@ -88,6 +91,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
               type: c.type,
               props: props,
               object: ps,
+              node: object,
             }
 
           case ComponentType.Light: {
@@ -100,6 +104,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
               type: c.type,
               props: c.props,
               object: light,
+              node: object,
             }
           }
         }

@@ -2,15 +2,15 @@ import { makeObservable, observable } from "mobx";
 import { LifetimeVelocityDescriptor } from "./Types";
 import PSModule from "./PSModule";
 import PSValue from "../Properties/PSValue";
-import { removeUndefinedKeys } from "../Properties/Types";
+import { PropsBase, removeUndefinedKeys } from "../Properties/Types";
 
 class LifetimeVelocity extends PSModule {
   speedModifier: PSValue;
 
-  constructor(descriptor?: LifetimeVelocityDescriptor, onChange?: () => void, previousProps?: LifetimeVelocity) {
-    super(descriptor?.enabled, undefined, onChange, previousProps?.enabled);
+  constructor(props: PropsBase, descriptor?: LifetimeVelocityDescriptor, onChange?: () => void, previousProps?: LifetimeVelocity) {
+    super(props, descriptor?.enabled, undefined, onChange, previousProps?.enabled);
 
-    this.speedModifier = new PSValue(descriptor?.speedModifier, undefined, onChange, previousProps?.speedModifier);
+    this.speedModifier = new PSValue(props, descriptor?.speedModifier, undefined, onChange, previousProps?.speedModifier);
 
     makeObservable(this, {
       speedModifier: observable,

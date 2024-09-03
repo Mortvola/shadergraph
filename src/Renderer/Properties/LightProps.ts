@@ -1,7 +1,8 @@
 import { makeObservable, observable } from "mobx";
 import { LightPropsDescriptor, LightPropsInterface } from "../Types";
+import { PropsBase } from "./Types";
 
-class LightProps implements LightPropsInterface {
+class LightProps extends PropsBase implements LightPropsInterface {
   color: number[] = [1, 1, 1, 1];
 
   constant = 1.0;
@@ -11,6 +12,8 @@ class LightProps implements LightPropsInterface {
   quadratic = 0.032;
 
   constructor(descriptor?: LightPropsDescriptor) {
+    super()
+    
     this.color = descriptor?.color ?? this.color;
     this.constant = descriptor?.constant ?? this.constant;
     this.linear = descriptor?.linear ?? this.linear;

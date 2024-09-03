@@ -1,7 +1,7 @@
 import { makeObservable, observable } from "mobx";
 import PSModule from "./PSModule";
 import { CollisionDescriptor } from "./Types";
-import { removeUndefinedKeys } from "../Properties/Types";
+import { PropsBase, removeUndefinedKeys } from "../Properties/Types";
 import { PSNumber } from "../Properties/Property";
 
 class Collision extends PSModule {
@@ -9,11 +9,11 @@ class Collision extends PSModule {
 
   dampen: PSNumber;
 
-  constructor(descriptor?: CollisionDescriptor, onChange?: () => void, previousProps?: Collision) {
-    super(descriptor?.enabled, undefined, onChange, previousProps?.enabled);
+  constructor(props: PropsBase, descriptor?: CollisionDescriptor, onChange?: () => void, previousProps?: Collision) {
+    super(props, descriptor?.enabled, undefined, onChange, previousProps?.enabled);
 
-    this.bounce = new PSNumber(descriptor?.bounce, 1, onChange, previousProps?.bounce);
-    this.dampen = new PSNumber(descriptor?.dampen, 0, onChange, previousProps?.dampen);
+    this.bounce = new PSNumber(props, descriptor?.bounce, 1, onChange, previousProps?.bounce);
+    this.dampen = new PSNumber(props, descriptor?.dampen, 0, onChange, previousProps?.dampen);
   }
 
   toDescriptor(overridesOnly = false): CollisionDescriptor | undefined {
