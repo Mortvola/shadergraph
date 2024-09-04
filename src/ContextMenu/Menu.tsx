@@ -71,15 +71,10 @@ const Menu: React.FC<PropsType> = ({
         // above the wrapper then set the top at the top of the wrapper.
         if (y - adjustment < 0) {
           newOffset = { ...newOffset, y: -y, scroll: false }
-          // setOffset({ y: -y, scroll: false, visible: true });
         }
         else {
           newOffset = { ...newOffset, y: -adjustment, scroll: false }
-          // setOffset({ y: -adjustment, scroll: false, visible: true });
         }
-      }
-      else {
-        // setOffset((prev) => ({ ...prev, y: 0, visible: true }))
       }
 
       const menuWidth = menuRect.right - menuRect.left;
