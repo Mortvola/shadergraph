@@ -1,24 +1,37 @@
-// import { PrefabInstanceInterface } from "../../State/types";
-// import SceneObject from "./SceneObject";
+import { SceneObjectBase } from "./SceneObjectBase";
+import type { PrefabInstanceInterface, PrefabInstanceObjectInterface, PrefabNodeInterface } from "./Types";
 
-// class PrefabInstanceObject extends SceneObject {
-//   prefabInstance: PrefabInstanceInterface;
+export class PrefabInstanceObject extends SceneObjectBase implements PrefabInstanceObjectInterface {
+  // components: ComponentOverrides[] = [];
 
-//   constructor(prefabInstance: PrefabInstanceInterface) {
-//     super()
+  prefabInstance: PrefabInstanceInterface;
 
-//     this.prefabInstance = prefabInstance;
-//   }
+  ancestor: PrefabNodeInterface;
 
-//   getObjectId(): number {
-//     return this.prefabInstance.id
-//   }
+  constructor(prefabInstance: PrefabInstanceInterface, ancestor: PrefabNodeInterface) {
+    super()
 
-//   onChange = () => {
-//     console.log('PrefabInstanceObject changed')
+    this.prefabInstance = prefabInstance;
+    this.ancestor = ancestor
+  }
 
-//     this.prefabInstance?.save();
-//   }
-// }
+  getObjectId(): number {
+    return this.prefabInstance.id
+  }
 
-// export default PrefabInstanceObject;
+  onChange = () => {
+    console.log('PrefabInstanceObject changed')
+
+    if (this.prefabInstance?.autosave) {
+      this.prefabInstance?.save();
+    }
+  }
+
+  delete(): void {
+    // Since one cannot delete an individual node in a pref instance,
+    // for all node delete request, send them to the prefab instance
+    this.prefabInstance.delete()
+  }
+}
+
+export default PrefabInstanceObject

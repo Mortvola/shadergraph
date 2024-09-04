@@ -1,20 +1,16 @@
-import { makeObservable, observable, runInAction } from "mobx";
+import { makeObservable, observable } from "mobx";
 import { vec3 } from "wgpu-matrix";
-import type { PrefabInstanceInterface } from "./Types";
 import type { PrefabInstanceDescriptor } from "./Types";
 import type { SceneObjectDescriptor } from "./Types";
 import type { SceneObjectInterface } from "./Types";
-import type { SceneObjectBaseInterface } from "./Types";
-import type { PrefabInstanceObjectInterface } from "./Types";
-import type { PrefabNodeInterface } from "./Types";
 import { isPrefabInstanceDescriptor } from "./Types";
 import Http from "../../Http/src";
-import type { SceneObjectComponent, LightPropsDescriptor, NewSceneObjectComponent,
-  TransformPropsInterface} from "../../Renderer/Types";
+import type {
+  SceneObjectComponent, LightPropsDescriptor, NewSceneObjectComponent,
+} from "../../Renderer/Types";
 import {
   ComponentType
 } from "../../Renderer/Types";
-import SceneNode from "../../Renderer/Drawables/SceneNodes/SceneNode";
 import Light from "../../Renderer/Drawables/Light";
 import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
@@ -22,126 +18,8 @@ import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemPro
 import LightProps from "../../Renderer/Properties/LightProps";
 import TransformProps from "../../Renderer/Properties/TransformProps";
 import PrefabInstance from "./PrefabInstance";
-import NodeBase from "./NodeBase";
-
-export class SceneObjectBase extends NodeBase implements SceneObjectBaseInterface {
-  components: SceneObjectComponent[] = []
-
-  objects: SceneObjectBase[] = [];
-
-  transformProps: TransformPropsInterface = new TransformProps();
-
-  sceneNode = new SceneNode();
-
-  parent: (SceneObjectBase | SceneObject | PrefabInstanceObject) | null = null;
-
-  nextComponentId = 0;
-
-  autosave = true;
-
-  constructor(id?: number, name?: string) {
-    super(id, name ?? `Scene Object ${Math.abs(id ?? 0)}`)
-  }
-
-  getObjectId(): number {
-    throw new Error('not implemented')
-  }
-
-  onChange = (): void => {
-    throw new Error('not implemented')
-  }
-
-  delete(): void {
-    throw new Error('not implemented')
-  }
-
-  async save(): Promise<void> {
-    throw new Error('not implemented')
-  }
-
-  addComponent(component: NewSceneObjectComponent) {
-    throw new Error('not implemented')
-  }
-
-  removeComponent(component: SceneObjectComponent) {
-    throw new Error('not implemented')
-  }
-
-  async addObject(object: SceneObjectBase): Promise<void> {
-    return runInAction(async () => {
-      this.objects = [
-        ...this.objects,
-        object,
-      ];
-
-      object.parent = this;
-      this.sceneNode.addNode(object.sceneNode)
-
-      this.onChange();
-    })
-  }
-
-  removeObject(object: SceneObjectBase) {
-    const index = this.objects.findIndex((o) => o === object)
-
-    if (index !== -1) {
-      runInAction(() => {
-        this.objects = [
-          ...this.objects.slice(0, index),
-          ...this.objects.slice(index + 1),
-        ]
-
-        this.sceneNode.removeNode(object.sceneNode)
-
-        this.onChange();
-      })
-    }
-  }
-
-  detachSelf() {
-    if (this.parent) {
-      this.parent.removeObject(this);
-    }
-  }
-
-  changeName(name: string) {
-    runInAction(() => {
-      this.name = name;
-      this.onChange();
-    })
-  }
-
-  isAncestor(item: SceneObjectBase): boolean {
-    let child: SceneObjectBase | null = this;
-    for (;;) {
-      if (child === null || child.parent === item) {
-        break;
-      }
-
-      child = child.parent;
-    }
-
-    if (child) {
-      return true;
-    }
-
-    return false;
-  }
-
-  getNextComponentId(): number {
-    const nextComponentId = this.nextComponentId;
-    this.nextComponentId += 1;
-
-    return nextComponentId;    
-  }
-
-  transformChanged = () => {
-    vec3.copy(this.transformProps.translate.get(), this.sceneNode.translate)
-    vec3.copy(this.transformProps.scale.get(), this.sceneNode.scale)
-
-    this.onChange();
-  }
-}
+import { SceneObjectBase } from "./SceneObjectBase";
+import type { PrefabInstanceObject } from "./PrefabInstanceObject";
 
 class SceneObject extends SceneObjectBase implements SceneObjectInterface {
   constructor(id?: number, name?: string) {
@@ -295,6 +173,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
 
   async save(): Promise<void> {
     if (this.id < 0) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, ...descriptor } = this.toDescriptor();
 
       const response = await Http.post<Omit<SceneObjectDescriptor, 'id'>, SceneObjectDescriptor>(`/api/scene-objects`, descriptor);
@@ -357,39 +236,6 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
 
       this.onChange()
     }
-  }
-}
-
-export class PrefabInstanceObject extends SceneObjectBase implements PrefabInstanceObjectInterface {
-  // components: ComponentOverrides[] = [];
-
-  prefabInstance: PrefabInstanceInterface;
-
-  ancestor: PrefabNodeInterface;
-
-  constructor(prefabInstance: PrefabInstanceInterface, ancestor: PrefabNodeInterface) {
-    super()
-
-    this.prefabInstance = prefabInstance;
-    this.ancestor = ancestor
-  }
-
-  getObjectId(): number {
-    return this.prefabInstance.id
-  }
-
-  onChange = () => {
-    console.log('PrefabInstanceObject changed')
-
-    if (this.prefabInstance?.autosave) {
-      this.prefabInstance?.save();
-    }
-  }
-
-  delete(): void {
-    // Since one cannot delete an individual node in a pref instance,
-    // for all node delete request, send them to the prefab instance
-    this.prefabInstance.delete()
   }
 }
 

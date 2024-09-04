@@ -14,8 +14,8 @@ import type { PrefabInstanceDescriptor } from "./Types";
 import type { SceneObjectBaseInterface } from "./Types";
 import type { PrefabNodeInterface } from "./Types";
 import type { PrefabInterface } from "./Types";
-import { PrefabInstanceObject } from "./SceneObject";
 import { prefabManager } from "./PrefabManager";
+import PrefabInstanceObject from "./PrefabInstanceObject";
 
 class PrefabInstance extends Entity implements PrefabInstanceInterface {
   prefab: PrefabInterface
@@ -196,6 +196,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
 
   async save(): Promise<void> {
     if (this.id < 0) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, ...descriptor } = this.toDescriptor();
 
       const response = await Http.post<Omit<PrefabInstanceDescriptor, 'id'>, PrefabInstanceDescriptor>(`/api/scene-objects`, descriptor);
