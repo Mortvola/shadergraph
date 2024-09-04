@@ -84,6 +84,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
             const prefab = Prefab.fromSceneObject(sceneObject);
 
             if (prefab) {
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               const { id, ...descriptor } = prefab.toDescriptor();
 
               const item = await store.project.createNewItem(prefab.name, ProjectItemType.Prefab, folder, {

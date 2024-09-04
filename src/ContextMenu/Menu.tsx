@@ -47,8 +47,8 @@ const Menu: React.FC<PropsType> = ({
 
   const ref = React.useRef<HTMLDivElement>(null);
 
-  const [yOffset, setYOffset] = React.useState<{ offset: number, scroll: boolean, visible: boolean }>(
-    { offset: 0, scroll: false, visible: false },
+  const [offset, setOffset] = React.useState<{ x: number, y: number, scroll: boolean, visible: boolean }>(
+    { x: 0, y: 0, scroll: false, visible: false },
   );
 
   React.useEffect(() => {
@@ -60,22 +60,43 @@ const Menu: React.FC<PropsType> = ({
       const menuRect = menuElement.getBoundingClientRect();
 
       const menuHeight = menuRect.bottom - menuRect.top;
+ 
+      let newOffset: { x: number, y: number, scroll?: boolean } = { x: 0, y: 0 }
 
+      // If the menu will be outside the bottom of the wrapper then make adjustments.
       if (y + menuHeight > wrapperRect.bottom) {
         const adjustment = y + menuHeight - wrapperRect.bottom;
         
         // If the adjustment would place the top of the menu
         // above the wrapper then set the top at the top of the wrapper.
         if (y - adjustment < 0) {
-          setYOffset({ offset: -y, scroll: false, visible: true });
+          newOffset = { ...newOffset, y: -y, scroll: false }
+          // setOffset({ y: -y, scroll: false, visible: true });
         }
         else {
-          setYOffset({ offset: -adjustment, scroll: false, visible: true });
+          newOffset = { ...newOffset, y: -adjustment, scroll: false }
+          // setOffset({ y: -adjustment, scroll: false, visible: true });
         }
       }
       else {
-        setYOffset((prev) => ({ ...prev, offset: 0, visible: true }))
+        // setOffset((prev) => ({ ...prev, y: 0, visible: true }))
       }
+
+      const menuWidth = menuRect.right - menuRect.left;
+
+      // If the menu will be outside the bottom of the wrapper then make adjustments.
+      if (x + menuWidth > wrapperRect.right) {
+        const adjustment = x + menuWidth - wrapperRect.right;
+
+        if (x - adjustment < 0) {
+          newOffset = {...newOffset, x: -x }
+        }
+        else {
+          newOffset = {...newOffset, x: -adjustment}
+        }
+      }
+
+      setOffset((prev) => ({ ...prev, ...newOffset, visible: true }))
     }
   }, [wrapperRef, y])
 
@@ -83,7 +104,7 @@ const Menu: React.FC<PropsType> = ({
     <div
       ref={ref}
       className={styles.contextmenu}
-      style={{ left: x, top: y + yOffset.offset, visibility: yOffset.visible ? 'visible' : 'hidden' }}
+      style={{ left: x + offset.x, top: y + offset.y, visibility: offset.visible ? 'visible' : 'hidden' }}
     >
       <div>
         {
