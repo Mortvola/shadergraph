@@ -1,4 +1,4 @@
-import { makeObservable, observable, runInAction } from "mobx";
+import { observable, runInAction } from "mobx";
 import Http from "../../Http/src";
 import type { GameObject2DInterface } from "../../State/types";
 import Folder from "./Folder";
@@ -15,21 +15,31 @@ import SceneObjectProjectItem from "./SceneObjectProjectItem";
 import type { ProjectItemRecord } from "../../State/ProjectItemRecord";
 
 class Project implements ProjectInterface {
-  projectItems: Folder
+  @observable
+  accessor projectItems: Folder | null = null
 
-  selectedItem: ProjectItemLike | null = null;
+  @observable
+  accessor selectedItem: ProjectItemLike | null = null;
 
   constructor() {
-    this.projectItems = new Folder(-1, '', null, this)
+    this.open(1)
+  }
 
-    makeObservable(this, {
-      selectedItem: observable,
-    })
+  async open(projectId: number) {
+    const response = await Http.get<{ id: number, name: string, rootFolder: number }>(`/api/projects/${projectId}`);
+
+    if (response.ok) {
+      const body = await response.body();
+
+      runInAction(() => {
+        this.projectItems = new Folder(body.rootFolder, body.name, null, this);
+      })
+    }
   }
 
   getFolder(folder: FolderInterface) {
     (async () => {
-      const response = await Http.get<ProjectItemRecord[]>(`/api/folders${ folder.id === -1 ? '' : `/${folder.id}`}`);
+      const response = await Http.get<ProjectItemRecord[]>(`/api/folders/${folder.id}`);
 
       if (response.ok) {
         const list = await response.body();
@@ -52,7 +62,7 @@ class Project implements ProjectInterface {
       }
     }
 
-    return this.projectItems;
+    throw new Error('invalid parent')
   }
 
   async createFolder() {
@@ -72,7 +82,7 @@ class Project implements ProjectInterface {
 
       const folder = new Folder(rec.id, rec.name, parent, this)
 
-      await this.projectItems.addItem(folder);
+      await this.projectItems?.addItem(folder);
       // this.projectItems = this.projectItems.concat([folder]);
       // this.projectItems.sort((a, b) => a.name.localeCompare(b.name))
     }
@@ -316,37 +326,42 @@ class Project implements ProjectInterface {
   }
 
   getItemByItemId(itemId: number, type: string): ProjectItemLike | undefined {
-    let stack: ProjectItemLike[] = [this.projectItems]
+    if (this.projectItems) {
+      let stack: ProjectItemLike[] = [this.projectItems]
 
-    while (stack.length > 0) {
-      const item = stack[0];
-      stack = stack.slice(1);
-
-      if (item.itemId === itemId && item.type === type) {
-        return item;
-      }
-
-      if (isFolder(item)) {
-        stack = stack.concat(item.items)
-      }
+      while (stack.length > 0) {
+        const item = stack[0];
+        stack = stack.slice(1);
+  
+        if (item.itemId === itemId && item.type === type) {
+          return item;
+        }
+  
+        if (isFolder(item)) {
+          stack = stack.concat(item.items)
+        }
+      }  
     }
   }
 
   getAllItemsOfType(type: string): ProjectItemLike[] {
-    let stack: ProjectItemLike[] = [this.projectItems]
     const items: ProjectItemLike[] = [];
 
-    while (stack.length > 0) {
-      const item = stack[0];
-      stack = stack.slice(1);
-
-      if (item.type === type) {
-        items.push(item);
-      }
-
-      if (isFolder(item)) {
-        stack = stack.concat(item.items)
-      }
+    if (this.projectItems) {
+      let stack: ProjectItemLike[] = [this.projectItems]
+  
+      while (stack.length > 0) {
+        const item = stack[0];
+        stack = stack.slice(1);
+  
+        if (item.type === type) {
+          items.push(item);
+        }
+  
+        if (isFolder(item)) {
+          stack = stack.concat(item.items)
+        }
+      }  
     }
 
     return items;

@@ -1,5 +1,4 @@
 import Http from "../../Http/src";
-import HttpResponse from "../../Http/src/HttpResponse";
 import Prefab from "./Prefab";
 import type { PrefabDescriptor } from "./Types";
 

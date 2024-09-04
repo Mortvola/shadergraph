@@ -15,14 +15,20 @@ const Project: React.FC = observer(() => {
 
   return (
     <div className={styles.layout}>
-      <ProjectToolbar />
       <div className={styles.project}>
-        <ProjectFolder
-          folder={store.project.projectItems}
-          onSelect={handleSelect}
-          selected={store.project.projectItems.id === store.project.selectedItem?.id}
-          level={0}
-        />
+        {
+          store.project.projectItems
+            ? (
+              <ProjectFolder
+                folder={store.project.projectItems}
+                onSelect={handleSelect}
+                level={0}
+              >
+                <ProjectToolbar />
+              </ProjectFolder>    
+            )
+            : null
+        }
       </div>
     </div>
   )

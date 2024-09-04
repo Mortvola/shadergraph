@@ -11,7 +11,6 @@ import { isSceneObject } from "../Scene/Types/Types";
 type PropsType = {
   folder: FolderInterface,
   onSelect: (item: ProjectItemLike) => void,
-  selected: boolean,
   level: number,
   children?: React.ReactNode,
 }
@@ -19,7 +18,6 @@ type PropsType = {
 const ProjectFolder: React.FC<PropsType> = observer(({
   folder,
   onSelect,
-  selected,
   level,
   children,
 }) => {
@@ -141,23 +139,8 @@ const ProjectFolder: React.FC<PropsType> = observer(({
               key={`children:${i.id}`}
               folder={i as FolderInterface}
               onSelect={onSelect}
-              selected={i.id === store.project.selectedItem?.id}
               level={level + 1}
-            >
-              <div className={styles.item}>
-                <div
-                  className={`${styles.collapser} ${(i as FolderInterface).open ? styles.open : ''}`}
-                  onClick={() => { (i as FolderInterface).toggleOpen()}}
-                />
-                <ProjectItem
-                  key={`${i.type}:${i.id}`}
-                  item={i}
-                  onSelect={onSelect}
-                  selected={i.id === store.project.selectedItem?.id}
-                  draggable
-                />
-              </div>
-            </ProjectFolder>
+            />
         )
         : (
           <ProjectItem
@@ -173,14 +156,32 @@ const ProjectFolder: React.FC<PropsType> = observer(({
 
   return (
     <div
-      className={droppable ? styles.droppable : undefined}
+      className={`${styles.folder} ${droppable ? styles.droppable : undefined}`}
       onDrop={handleDrop}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
     >
-      { children }
+      <div className={styles.item} style={{ top: level * 21, zIndex: 100 - level }}>
+        <div
+          className={`${styles.collapser} ${(folder as FolderInterface).open ? styles.open : ''}`}
+          onClick={() => { (folder as FolderInterface).toggleOpen()}}
+        />
+        <div className={styles.itemWrapper}>
+          <ProjectItem
+            key={`${folder.type}:${folder.id}`}
+            item={folder}
+            onSelect={onSelect}
+            selected={folder.id === store.project.selectedItem?.id}
+            draggable
+          />
+          {
+            children
+          }
+        </div>
+      </div>
+
       <div
-        style={{ paddingLeft: level > 0 ? 12 : 0 }}
+        style={{ paddingLeft: 12 }}
       >
         {
           folder.newItemType

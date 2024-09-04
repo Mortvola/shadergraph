@@ -1,20 +1,19 @@
-.droppable {
-  background-color: lightblue;
+.folder {
+  background-color: white;
+
+  &.droppable * {
+    background-color: lightblue;
+  }
 }
 
 .layout {
   display: grid;
   grid-template-rows: max-content minmax(0,1fr);
-}
-
-.toolbar {
-  padding: 0.5rem;
-  border-bottom: black thin solid;
+  overflow-y: auto;
 }
 
 .project {
   padding-left: 0.5rem;
-  overflow-y: auto;
 }
 
 .collapser {
@@ -30,7 +29,18 @@
 }
 
 .item {
-  display: flex;
+  display: grid;
   column-gap: 0.35rem;
+  align-items: center;
+  grid-template-columns: max-content minmax(0,1fr);
+  position: sticky;
+  top: 0;
+  height: 21px;
+  background-color: white;
+}
+
+.itemWrapper {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
 }

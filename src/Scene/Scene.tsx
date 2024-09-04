@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite';
 import type { SceneObjectBaseInterface } from "./Types/Types";
 import type { SceneInterface } from "./Types/Types";
 import SceneFolder from './SceneFolder';
+import styles from './Scene.module.scss'
 
 type PropsType = {
   scene?: SceneInterface,
@@ -23,9 +24,11 @@ const Scene: React.FC<PropsType> = observer(({
   }
 
   return (
-    <div>
-      Scene
-      <SceneToolbar scene={scene} />
+    <div className={styles.scene}>
+      <div className={styles.sceneTitle}>
+        Scene
+        <SceneToolbar scene={scene} />
+      </div>
       <SceneFolder
         key={'scene'}
         project={scene}
