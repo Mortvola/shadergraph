@@ -1,6 +1,5 @@
 import { observable, runInAction } from "mobx";
 import { RenderMode, ShapeType } from "../ParticleSystem/Types";
-import type { MaterialItemInterface } from "../../State/types";
 import type { Vec3 } from "wgpu-matrix";
 import { vec3 } from "wgpu-matrix";
 import type { PropsBase } from "./Types";
@@ -59,34 +58,37 @@ export class Property<T> extends PropertyBase {
 }
 
 export class PSBoolean extends Property<boolean> {
-  constructor(props: PropsBase, value?: boolean, defaultValue = false, onChange?: () => void, previousProp?: Property<boolean>) {
+  constructor(props: PropsBase, value?: boolean, defaultValue = false, onChange?: () => void, previousProp?: PSBoolean) {
     super(props, value, defaultValue, onChange, previousProp)
   }
 }
 
 export class PSNumber extends Property<number> {
-  constructor(props: PropsBase, value?: number, defaultValue = 0, onChange?: () => void, previousProp?: Property<number>) {
+  constructor(props: PropsBase, value?: number, defaultValue = 0, onChange?: () => void, previousProp?: PSNumber) {
     super(props, value, defaultValue, onChange, previousProp)
   }
 }
 
 export class PSRenderMode extends Property<RenderMode> {
-  constructor(props: PropsBase, value?: RenderMode, defaultValue = RenderMode.Billboard, onChange?: () => void, previousProp?: Property<RenderMode>) {
+  constructor(props: PropsBase, value?: RenderMode, defaultValue = RenderMode.Billboard, onChange?: () => void, previousProp?: PSRenderMode) {
     super(props, value, defaultValue, onChange, previousProp)
   }
 }
 
 export class PSShapeType extends Property<ShapeType> {
-  constructor(props: PropsBase, value?: ShapeType, defaultValue = ShapeType.Cone, onChange?: () => void, previousProp?: Property<ShapeType>) {
+  constructor(props: PropsBase, value?: ShapeType, defaultValue = ShapeType.Cone, onChange?: () => void, previousProp?: PSShapeType) {
     super(props, value, defaultValue, onChange, previousProp)
   }
 }
 
-export class PSMaterialItem extends Property<MaterialItemInterface | undefined> {
+export class PSMaterialItem extends Property<number | undefined> {
+  constructor(props: PropsBase, value: number | undefined, onChange?: () => void, previousProp?: PSMaterialItem) {
+    super(props, value, undefined, onChange, previousProp)
+  }
 }
 
 export class PSVec3Type extends Property<Vec3> {
-  constructor(props: PropsBase, value?: Vec3, defaultValue = vec3.create(), onChange?: () => void, previousProp?: Property<Vec3>) {
+  constructor(props: PropsBase, value?: Vec3, defaultValue = vec3.create(), onChange?: () => void, previousProp?: PSVec3Type) {
     super(props, value, defaultValue, onChange, previousProp)
   }
 

@@ -3,7 +3,6 @@ import { observer } from 'mobx-react-lite';
 import type Renderer from '../../Renderer/ParticleSystem/Renderer';
 import PSRenderModeTypeSelector from './PSRenderModeTypeSelector';
 import type { RenderMode } from '../../Renderer/ParticleSystem/Types';
-import { materialManager } from '../../Renderer/Materials/MaterialManager';
 import { useStores } from '../../State/store';
 import Property from '../Property';
 
@@ -48,11 +47,7 @@ const PSRenderer: React.FC<PropsType> = observer(({
       && draggingItem.type === 'material'
       && draggingItem.itemId !== null
     ) {
-      const materialItem = await materialManager.getItem(draggingItem.itemId, false)
-
-      if (materialItem) {
-        // value.material.set(materialItem, true)
-      }
+      value.setMaterial(draggingItem.itemId)
     }
   }
 
@@ -61,15 +56,15 @@ const PSRenderer: React.FC<PropsType> = observer(({
       <Property label="Render Mode" property={value.mode}>
         <PSRenderModeTypeSelector value={value.mode.get()} onChange={handleModeChange} />
       </Property>
-      {/* <Property label="Material" property={value.material} onDragOver={handleDragOver} onDrop={handleDrop}>
+      <Property label="Material" property={value.materialId} onDragOver={handleDragOver} onDrop={handleDrop}>
         <div>
           {
             value.material
-              ? value.material.get()?.name
+              ? value.material.name
               : 'not assigned'
           }
         </div>
-      </Property> */}
+      </Property>
     </>
   )
 })
