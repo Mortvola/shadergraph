@@ -7,7 +7,7 @@ import type { GraphNodeInterface} from '../Renderer/ShaderBuilder/Types';
 import { isPropertyNode, isValueNode } from '../Renderer/ShaderBuilder/Types';
 import Draggable from './Draggable';
 import ValueInput from './Properties/ValueInput';
-import Modal from '../Modal';
+import Modal from '../Widgets/Modal';
 import SampleTextureSettings from './SampleTextureSettings';
 import type SampleTexture from '../Renderer/ShaderBuilder/Nodes/SampleTexture';
 import type { GraphInterface } from '../State/GraphInterface';

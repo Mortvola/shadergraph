@@ -162,6 +162,10 @@ const ProjectFolder: React.FC<PropsType> = observer(({
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
     >
+      {/*
+          The value multiplied by level is the height of the item. This value and
+          the corresponding value in css must be kept in sync
+      */}
       <div className={styles.item} style={{ top: level * 21, zIndex: 100 - level }}>
         <div
           className={`${styles.collapser} ${(folder as FolderInterface).open ? styles.open : ''}`}

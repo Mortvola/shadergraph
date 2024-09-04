@@ -9,7 +9,7 @@ import { menuItems } from './MenuItems';
 import Http from '../Http/src';
 import Graph from './Graph';
 import Toolbar from './Toolbar';
-import { renderer2d } from '../Main';
+import { shaderGraphRenderer } from '../Main';
 import type { GraphInterface } from '../State/GraphInterface';
 
 type PropsType = {
@@ -104,7 +104,7 @@ const ShaderEditor: React.FC<PropsType> = observer(({
       <Toolbar>
         <button type="button" onClick={handleSave}>Save</button>
       </Toolbar>
-      <Canvas2d renderer2d={renderer2d}/>
+      <Canvas2d renderer2d={shaderGraphRenderer}/>
       <Graph parent={ref} />
       <Preview />
       <Controls />

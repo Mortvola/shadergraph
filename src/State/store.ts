@@ -14,7 +14,7 @@ import type {
 import {
   ComponentType,
 } from "../Renderer/Types";
-import { renderer2d } from "../Main";
+import { shaderGraphRenderer } from "../Main";
 import Project from "../Project/Types/Project";
 import type { StoreInterface } from "./StoreInterface";
 
@@ -127,7 +127,7 @@ class Store implements StoreInterface {
 
           if (shader) {
             runInAction(() => {
-              renderer2d.setTranslation(0, 0)
+              shaderGraphRenderer.setTranslation(0, 0)
               this.graph?.applyMaterial()  
             })  
           }  

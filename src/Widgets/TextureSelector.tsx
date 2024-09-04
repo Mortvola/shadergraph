@@ -1,5 +1,5 @@
 import React from 'react';
-import Http from './Http/src';
+import Http from '../Http/src';
 
 type PropsType = {
   id?: number,

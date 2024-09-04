@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import styles from './PropertyDialog.module.scss';
 import type { PropertyInterface } from '../../Renderer/ShaderBuilder/Types';
-import Modal from '../../Modal';
+import Modal from '../../Widgets/Modal';
 import ValueInput from './ValueInput';
 import { useStores } from '../../State/store';
 import type { GraphInterface } from '../../State/GraphInterface';

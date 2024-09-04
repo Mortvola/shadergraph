@@ -32,7 +32,7 @@ import TextureSize from "../Renderer/ShaderBuilder/Nodes/TextureSize";
 import Inverse from "../Renderer/ShaderBuilder/Nodes/Inverse";
 import Distance from "../Renderer/ShaderBuilder/Nodes/Distance";
 import Preview from "../Renderer/ShaderBuilder/Nodes/Preview";
-import { renderer2d } from "../Main";
+import { shaderGraphRenderer } from "../Main";
 import type { DataType } from "../Renderer/ShaderBuilder/GraphDescriptor";
 
 function addNode(node: GraphNodeInterface, x: number, y: number) {
@@ -42,7 +42,7 @@ function addNode(node: GraphNodeInterface, x: number, y: number) {
 
 function createObject<T extends GraphNodeInterface>(o: new () => T, x: number, y: number) {
   const node = new o();
-  const newPoint = renderer2d.screenToViewPoint(x, y);
+  const newPoint = shaderGraphRenderer.screenToViewPoint(x, y);
   addNode(node, newPoint[0], newPoint[1]);
 }
 
