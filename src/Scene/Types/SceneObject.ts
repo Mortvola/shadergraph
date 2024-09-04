@@ -67,8 +67,8 @@ export class SceneObjectBase extends NodeBase implements SceneObjectBaseInterfac
     throw new Error('not implemented')
   }
 
-  addObject(object: SceneObjectBase) {
-    runInAction(async () => {
+  async addObject(object: SceneObjectBase): Promise<void> {
+    return runInAction(async () => {
       this.objects = [
         ...this.objects,
         object,
