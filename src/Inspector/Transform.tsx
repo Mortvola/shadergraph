@@ -37,7 +37,7 @@ const Transform: React.FC<PropsType> = observer(({
   }
 
   return (
-    <Property label="Translate" property={transformProps.translate}>
+    <Property className={styles.transform} label="Translate" property={transformProps.translate}>
       <NumberInput value={transformProps.translate.get()[0]} onChange={handleTranslateXChange} />
       <NumberInput value={transformProps.translate.get()[1]} onChange={handleTranslateYChange} />
       <NumberInput value={transformProps.translate.get()[2]} onChange={handleTranslateZChange} />

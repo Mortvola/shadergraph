@@ -98,7 +98,7 @@ const SceneItem: React.FC<PropsType> = observer(({
 
   return (
     <div
-      className={`${styles.item} ${selected ? styles.selected : undefined} ${isPrefabInstanceObject(item) ? styles.prefab : undefined}`}
+      className={`${styles.item} ${selected ? styles.selected : ''} ${isPrefabInstanceObject(item) ? styles.prefab : ''}`}
       onClick={handleClick}
       draggable={draggable}
       onDragStart={handleDragStart}

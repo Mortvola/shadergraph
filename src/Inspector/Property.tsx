@@ -12,6 +12,7 @@ type PropsType = {
   children?: React.ReactNode,
   onDragOver?: (event: React.DragEvent<HTMLLabelElement>) => void,
   onDrop?: (event: React.DragEvent<HTMLLabelElement>) => void,
+  className?: string,
 }
 
 const Property: React.FC<PropsType> = observer(({
@@ -20,6 +21,7 @@ const Property: React.FC<PropsType> = observer(({
   children,
   onDragOver,
   onDrop,
+  className,
 }) => {
   const [open, setOpen] = React.useState<DOMRect | null>(null);
   const ref = React.useRef<HTMLDivElement>(null);
@@ -61,7 +63,7 @@ const Property: React.FC<PropsType> = observer(({
 
   return (
     <label
-      className={styles.property}
+      className={`${styles.property} ${className ?? ''}`}
       onDragOver={onDragOver}
       onDrop={onDrop}
     >

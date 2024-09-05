@@ -122,6 +122,7 @@ class PipelineManager implements PipelineManagerInterface {
       let shaderModule: GPUShaderModule;
       let code: string;
     
+      // eslint-disable-next-line prefer-const
       [shaderModule, vertProperties, fragProperties, code] = graph.generateShaderModule(drawableType, vertexProperties, root);
 
       if (drawableType === 'Mesh') {

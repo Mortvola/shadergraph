@@ -52,9 +52,8 @@ const SceneObject: React.FC<PropsType> = observer(({
       && ['model', 'particle'].includes(store.draggingItem.type)
       && store.draggingItem.itemId !== null
     ) {
-      switch (store.draggingItem.type) {
+      // switch (store.draggingItem.type) {
         // case 'model':
-
         //   sceneObject.items = [
         //     ...sceneObject.items,
         //     {
@@ -67,21 +66,16 @@ const SceneObject: React.FC<PropsType> = observer(({
         //       type: ComponentType.Mesh,
         //     },
         //   ]
-  
         //   sceneObject.save()
-
         //   break;
-
         // case 'particle':
-
         //   sceneObject.items = [
         //     ...sceneObject.items,
         //     { item: { id: store.draggingItem.itemId }, type: ComponentType.ParticleSystem },
         //   ]
-
         //   sceneObject.save()
         //   break;
-      }
+      // }
     }
   }
 
@@ -229,25 +223,27 @@ const SceneObject: React.FC<PropsType> = observer(({
 
   return (
     <div className={styles.gameObject} onDragOver={handleDragOver} onDrop={handleDrop}>
-      <div>{`Name: ${sceneObject.name}`}</div>
-      <Transform transformProps={sceneObject.transformProps} />
-      {
-        isGameObject2D(sceneObject)
-          ? (
-            <GameObject2D gameObject={sceneObject} />
-          )
-          : sceneObject.components.map((component) => (
-              <div className={styles.item} key={component.id ?? 0} >
-                <div>
-                  <button type="button" onClick={() => handleDelete(component)}>X</button>
-                  { componentTypeName(component) }
+      <div className={styles.title}>{`Name: ${sceneObject.name}`}</div>
+      <div>
+        <Transform transformProps={sceneObject.transformProps} />
+        {
+          isGameObject2D(sceneObject)
+            ? (
+              <GameObject2D gameObject={sceneObject} />
+            )
+            : sceneObject.components.map((component) => (
+                <div className={styles.item} key={component.id ?? 0} >
+                  <div className={styles.componentTitle}>
+                    { componentTypeName(component) }
+                    <button type="button" onClick={() => handleDelete(component)}>X</button>
+                  </div>
+                  {
+                    renderItem(component)
+                  }
                 </div>
-                {
-                  renderItem(component)
-                }
-              </div>
-        ))
-      }
+          ))
+        }
+      </div>
       <button ref={buttonRef} onClick={handleAddClick}>Add Component</button>
       {
         showMenu

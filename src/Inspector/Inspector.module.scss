@@ -14,14 +14,29 @@
 }
 
 .gameObject {
+  display: grid;
+  grid-template-rows: max-content minmax(0,1fr) max-content;
   height: 100%;
   width: 100%;
   box-sizing: border-box;
+
+  &> div:nth-child(2) {
+    overflow-y: auto;
+  }
+}
+
+.transform {
+  padding: 0.25rem 0;
 }
 
 .overriden {
   color: #6060FF;
   text-decoration: underline;
+}
+
+.title {
+  padding: 0.25rem 0;
+  border-bottom: black thin solid;
 }
 
 .item {
@@ -42,6 +57,13 @@
   > div:nth-child(2) {
     padding-left: 1rem;
   }
+}
+
+.componentTitle {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 4px;
+  padding: 0.15rem 0.25rem;
 }
 
 .property {
