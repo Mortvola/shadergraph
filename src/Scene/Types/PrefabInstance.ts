@@ -8,14 +8,15 @@ import TransformProps from "../../Renderer/Properties/TransformProps";
 import type { LightPropsInterface } from "../../Renderer/Types";
 import { ComponentType } from "../../Renderer/Types";
 import Entity from "../../State/Entity";
-import type { PrefabInstanceInterface } from "./Types";
+import type { ConnectedObject, PrefabInstanceInterface } from "./Types";
 import type { PrefabInstanceNodeDesriptor } from "./Types";
 import type { PrefabInstanceDescriptor } from "./Types";
 import type { SceneObjectBaseInterface } from "./Types";
 import type { PrefabNodeInterface } from "./Types";
 import type { PrefabInterface } from "./Types";
 import { prefabManager } from "./PrefabManager";
-import PrefabInstanceObject from "./PrefabInstanceObject";
+import PrefabInstanceObject, { isPrefabInstanceObject } from "./PrefabInstanceObject";
+import { objectManager } from "./ObjectManager";
 
 class PrefabInstance extends Entity implements PrefabInstanceInterface {
   prefab: PrefabInterface
@@ -114,6 +115,20 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     
     object.objects = await Promise.all(prefabNode.nodes.map((node) => this.fromPrefabNode(prefab, node, descriptor)));
 
+    const connectedObjects = descriptor?.object.connectedObjects
+    if (connectedObjects) {
+      for (const connectedObject of connectedObjects) {
+        if (connectedObject.prefabNodeId === prefabNode.id) {
+          const newObject = await objectManager.get(connectedObject.objectId)
+
+          if (newObject) {
+            object.objects.push(newObject)
+            newObject.parent = object;
+          }
+        }
+      }  
+    }
+
     for (const child of object.objects) {
       child.parent = object;
       object.sceneNode.addNode(child.sceneNode)
@@ -146,13 +161,18 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
       name: this.name,
       object: {
         prefabId: this.prefab.id,
-        nodes: nodes.length > 0 ? nodes : undefined,
+        nodes: nodes.nodeOverrides.length > 0 ? nodes.nodeOverrides : undefined,
+        connectedObjects: nodes.connectedObjects,
       }
     })
   }
 
-  getOverridingNodes() {
-    const overridingNodes: PrefabInstanceNodeDesriptor[] = [];
+  getOverridingNodes(): {
+    nodeOverrides: PrefabInstanceNodeDesriptor[],
+    connectedObjects: ConnectedObject[],
+  } {
+    const nodeOverrides: PrefabInstanceNodeDesriptor[] = [];
+    const connectedObjects: ConnectedObject[] = [];
 
     if (this.root) {
       let stack: SceneObjectBaseInterface[] = [this.root];
@@ -179,7 +199,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
         const transformProps = instanceObject.transformProps.toDescriptor(true);
 
         if (components.length > 0 || transformProps) {
-          overridingNodes.push({
+          nodeOverrides.push({
             id: instanceObject.id,
             transformProps,
             components,
@@ -187,11 +207,20 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
         }
 
         // Add the nodes children to the stack
-        stack = stack.concat(instanceObject.objects.map((o) => o));
+        for (const object of instanceObject.objects) {
+          // If this is an instance object and the prefab instance is the one we are processing then
+          // add the object to the stack. Otherwise, add the object to the connected object array.
+          if (isPrefabInstanceObject(object) && object.prefabInstance === this) {
+            stack.push(object)
+          }
+          else {
+            connectedObjects.push({ prefabNodeId: instanceObject.id, objectId: object.id });
+          }
+        }
       }
     }
 
-    return overridingNodes;
+    return { nodeOverrides, connectedObjects };
   }
 
   async save(): Promise<void> {
@@ -214,9 +243,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
 
       const response = await Http.patch<PrefabInstanceDescriptor, void>(`/api/scene-objects/${this.id}`, descriptor);
 
-      if (response.ok) {
-  
-      }  
+      if (response.ok) { /* empty */ }  
     }      
   }
 

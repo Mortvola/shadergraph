@@ -5,6 +5,7 @@ import ProjectItem from "./ProjectItem";
 import { ComponentType } from "../../Renderer/Types";
 import type { FolderInterface} from "./types";
 import { ProjectItemType } from "./types";
+import { objectManager } from "../../Scene/Types/ObjectManager";
 
 class SceneObjectProjectItem extends ProjectItem<SceneObjectInterface> {
   constructor(id: number, name: string, parent: FolderInterface | null, itemId: number | null) {
@@ -17,7 +18,7 @@ class SceneObjectProjectItem extends ProjectItem<SceneObjectInterface> {
     }
 
     if (this.itemId !== null) {
-      const object = (await SceneObject.fromServer(this.itemId) ?? null) as SceneObject;;
+      const object = (await objectManager.get(this.itemId) ?? null) as SceneObject;;
 
       runInAction(() => {
         this.item = object;

@@ -2,8 +2,6 @@ import { SceneObjectBase } from "./SceneObjectBase";
 import type { PrefabInstanceInterface, PrefabInstanceObjectInterface, PrefabNodeInterface } from "./Types";
 
 export class PrefabInstanceObject extends SceneObjectBase implements PrefabInstanceObjectInterface {
-  // components: ComponentOverrides[] = [];
-
   prefabInstance: PrefabInstanceInterface;
 
   ancestor: PrefabNodeInterface;
@@ -28,10 +26,16 @@ export class PrefabInstanceObject extends SceneObjectBase implements PrefabInsta
   }
 
   delete(): void {
-    // Since one cannot delete an individual node in a pref instance,
-    // for all node delete request, send them to the prefab instance
+    // Since one cannot delete an individual node in a prefab instance,
+    // for all node delete requests, send them to the prefab instance
+    // to delete the whole prefab
     this.prefabInstance.delete()
   }
 }
+
+export const isPrefabInstanceObject = (r: unknown): r is PrefabInstanceObject => (
+  r !== undefined && r !== null
+  && (r as PrefabInstanceObject).prefabInstance !== undefined
+)
 
 export default PrefabInstanceObject

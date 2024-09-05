@@ -126,5 +126,9 @@ export class SceneObjectBase extends NodeBase implements SceneObjectBaseInterfac
 
     this.onChange();
   }
+
+  toDescriptor(): object {
+    throw new Error('not implemented')
+  }
 }
 

@@ -3,7 +3,7 @@ import type {
   ComponentDescriptor, ComponentType, LightPropsDescriptor, NewSceneObjectComponent,
   PrefabComponent, SceneNodeInterface, SceneObjectComponent, TransformPropsInterface,
 } from "../../Renderer/Types";
-import { EntityInterface, TransformPropsDescriptor } from "../../State/types";
+import type { EntityInterface, TransformPropsDescriptor } from "../../State/types";
 
 export interface PrefabInterface {
   id: number;
@@ -136,12 +136,15 @@ export type SceneObjectDescriptor = {
   };
 }
 
+export type ConnectedObject = { prefabNodeId: number, objectId: number }
+
 export type PrefabInstanceDescriptor = {
   id: number;
   name: string;
   object: {
     prefabId: number;
     nodes?: PrefabInstanceNodeDesriptor[];
+    connectedObjects?: ConnectedObject[]
   };
 }
 

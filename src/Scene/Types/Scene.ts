@@ -1,11 +1,12 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import type { PrefabInstanceObject } from "./SceneObject";
 import SceneObject from "./SceneObject";
 import { store } from "../../State/store";
 import Http from "../../Http/src";
 import type { SceneDescriptor } from "./Types";
 import type { SceneObjectBaseInterface } from "./Types";
 import type { SceneInterface } from "./Types";
+import type PrefabInstanceObject from "./PrefabInstanceObject";
+import { objectManager } from "./ObjectManager";
 
 class Scene implements SceneInterface {
   id?: number;
@@ -37,7 +38,7 @@ class Scene implements SceneInterface {
         await scene.saveChanges();
       }
       else {
-        scene.rootObject = await SceneObject.fromServer(descriptor.scene.objects) ?? scene.rootObject;
+        scene.rootObject = await objectManager.get(descriptor.scene.objects) ?? scene.rootObject;
       }
     }
 

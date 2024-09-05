@@ -5,6 +5,7 @@ import ContextMenu from '../ContextMenu/ContextMenu';
 import type { MenuItemLike } from '../ContextMenu/types';
 import type { SceneObjectBaseInterface } from "./Types/Types";
 import type { SceneInterface } from "./Types/Types";
+import { isPrefabInstanceObject } from './Types/PrefabInstanceObject';
 
 type PropsType = {
   project: SceneInterface,
@@ -76,41 +77,6 @@ const SceneItem: React.FC<PropsType> = observer(({
     const items: MenuItemLike[] = [
       { name: 'Delete', action: () => { item.delete() } },
     ];
-
-    // if (item.type === 'shader') {
-    //   items.push({
-    //     name: 'Create Material',
-    //     action: async () => {
-    //       if (!item.item && item.itemId) {
-    //         const descriptor = await shaderManager.getDescriptor(item.itemId)
-
-    //         runInAction(() => {
-    //           item.item = new Graph(store, item.itemId!, item.name, descriptor);    
-    //         })
-    //       }
-
-    //       if (item.item) {
-    //         const response = await Http.post<unknown, ProjectItemRecord>('/api/materials', {
-    //           name: `${item.name} Material`,
-    //           shaderId: item.itemId,
-    //           properties: (item.item as Graph).graph.properties,    
-    //         })
-
-    //         if (response) {
-    //           const rec = await response.json()
-
-    //           const newItem = new ProjectItemObject(rec.id, rec.name, rec.type as ProjectItemType, item.parent, rec.itemId);
-
-    //           (item.parent as FolderInterface).addItem(newItem)
-        
-    //           runInAction(() => {
-    //             store.selectItem(newItem);
-    //           })
-    //         }
-    //       }
-    //     },
-    //   })      
-    // }
     
     return items;
   }, [item]);
@@ -132,7 +98,7 @@ const SceneItem: React.FC<PropsType> = observer(({
 
   return (
     <div
-      className={`${styles.item} ${selected ? styles.selected : ''}`}
+      className={`${styles.item} ${selected ? styles.selected : undefined} ${isPrefabInstanceObject(item) ? styles.prefab : undefined}`}
       onClick={handleClick}
       draggable={draggable}
       onDragStart={handleDragStart}
