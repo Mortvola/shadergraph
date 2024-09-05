@@ -81,7 +81,7 @@ export interface SceneObjectBaseInterface extends EntityInterface {
 
   transformProps: TransformPropsInterface;
 
-  parent: (SceneObjectBaseInterface | SceneObjectInterface | PrefabInstanceObjectInterface) | null;
+  parent: SceneObjectBaseInterface | null;
 
   sceneNode: SceneNodeInterface;
 
@@ -99,7 +99,7 @@ export interface SceneObjectBaseInterface extends EntityInterface {
 
   detachSelf(): void;
 
-  delete(): void;
+  delete(): Promise<void>;
 }
 
 export const isSceneObject = (r: unknown): r is SceneObjectInterface => (
@@ -111,8 +111,6 @@ export interface SceneObjectInterface extends SceneObjectBaseInterface {
   components: SceneObjectComponent[];
 
   save(): Promise<void>;
-
-  delete(): void;
 
   getNextComponentId(): number;
 }
@@ -172,9 +170,9 @@ export interface PrefabInstanceInterface {
 
   autosave: boolean;
 
-  save(): Promise<void>;
+  root?: PrefabInstanceObjectInterface
 
-  delete(): Promise<void>;
+  save(): Promise<void>;
 }
 
 export type SceneDescriptor = {

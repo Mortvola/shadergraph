@@ -13,7 +13,6 @@ type PropsType = {
   folder: SceneObjectBaseInterface,
   onSelect?: (item: SceneObjectBaseInterface) => void,
   level: number,
-  children?: React.ReactNode,
 }
 
 const SceneFolder: React.FC<PropsType> = observer(({
@@ -21,7 +20,6 @@ const SceneFolder: React.FC<PropsType> = observer(({
   folder,
   onSelect,
   level,
-  children,
 }) => {
   const store = useStores();
 

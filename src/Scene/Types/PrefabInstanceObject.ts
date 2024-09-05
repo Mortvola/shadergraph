@@ -1,3 +1,4 @@
+import { objectManager } from "./ObjectManager";
 import { SceneObjectBase } from "./SceneObjectBase";
 import type { PrefabInstanceInterface, PrefabInstanceObjectInterface, PrefabNodeInterface } from "./Types";
 
@@ -25,11 +26,8 @@ export class PrefabInstanceObject extends SceneObjectBase implements PrefabInsta
     }
   }
 
-  delete(): void {
-    // Since one cannot delete an individual node in a prefab instance,
-    // for all node delete requests, send them to the prefab instance
-    // to delete the whole prefab
-    this.prefabInstance.delete()
+  async delete(): Promise<void> {
+    return objectManager.delete(this);
   }
 }
 

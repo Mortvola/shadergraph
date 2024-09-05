@@ -1,4 +1,3 @@
-import { makeObservable, observable } from "mobx";
 import { vec3 } from "wgpu-matrix";
 import type { SceneObjectDescriptor } from "./Types";
 import type { SceneObjectInterface } from "./Types";
@@ -20,11 +19,6 @@ import { objectManager } from "./ObjectManager";
 class SceneObject extends SceneObjectBase implements SceneObjectInterface {
   constructor(id?: number, name?: string) {
     super(id, name)
-    
-    makeObservable(this, {
-      components: observable,
-      objects: observable,
-    })
   }
 
   static async fromDescriptor(descriptor?: SceneObjectDescriptor) {
@@ -167,8 +161,8 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
     }
   }
 
-  delete(): void {
-    console.log('delete scene object')    
+  async delete(): Promise<void> {
+    return objectManager.delete(this)
   }
 
   addComponent(component: NewSceneObjectComponent) {

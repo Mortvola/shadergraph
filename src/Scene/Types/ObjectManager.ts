@@ -1,10 +1,13 @@
+import { runInAction } from "mobx";
 import Http from "../../Http/src";
 import PrefabInstance from "./PrefabInstance";
 import SceneObject from "./SceneObject";
 import type { SceneObjectBase } from "./SceneObjectBase";
+import type { SceneObjectBaseInterface} from "./Types";
 import {
   isPrefabInstanceDescriptor, type PrefabInstanceDescriptor, type SceneObjectDescriptor,
 } from "./Types";
+import { isPrefabInstanceObject } from "./PrefabInstanceObject";
 
 class ObjectManager {
   async get(id: number) {
@@ -41,6 +44,51 @@ class ObjectManager {
 
     if (response.ok) { /* empty */ }  
 
+  }
+
+  async delete(object: SceneObjectBase) {
+    if (isPrefabInstanceObject(object)) {
+      const prefabInstance = object.prefabInstance;
+
+      const response = await Http.delete(`/api/scene-objects/${prefabInstance.id}`);
+
+      if (response.ok) {
+        prefabInstance.autosave = false;
+        
+        const instanceRoot = object.prefabInstance.root;
+        if (instanceRoot) {
+          let stack: SceneObjectBaseInterface[] = [instanceRoot];
+    
+          while (stack.length > 0) {
+            const instanceObject = stack[0];
+            stack = stack.slice(1);
+    
+            // For the root node, detach it from its connection. This should
+            // cause the parent object to save without the connection and
+            // remove the scene node from the scene graph.
+            // For all other nodes, just manually detach the scene node from the scene
+            // graph.
+            if (instanceObject === instanceRoot) {
+              instanceObject.detachSelf();
+            }
+            else {
+              instanceObject.sceneNode.detachSelf()
+            }
+    
+            stack = stack.concat(instanceObject.objects.map((o) => o));
+          }
+        }
+      }
+    }
+    else {
+      const response = await Http.delete(`/api/scene-objects/${object.id}`);
+
+      if (response.ok) {
+        runInAction(() => {
+          object.detachSelf()
+        })
+      }
+    }
   }
 }
 

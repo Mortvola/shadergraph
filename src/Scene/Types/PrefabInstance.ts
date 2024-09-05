@@ -250,35 +250,6 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
   onChange = () => {
     this.save()    
   }
-
-  async delete(): Promise<void> {
-    const response = await Http.delete(`/api/scene-objects/${this.id}`);
-
-    if (response.ok) {
-      if (this.root) {
-        let stack: SceneObjectBaseInterface[] = [this.root];
-  
-        while (stack.length > 0) {
-          const instanceObject = stack[0];
-          stack = stack.slice(1);
-  
-          // For the root node, detach it from its connection. This should
-          // cause the parent object to save without the connection and
-          // remove the scene node from the scene graph.
-          // For all other nodes, just manually detach the scene node from the scene
-          // graph.
-          if (instanceObject === this.root) {
-            instanceObject.detachSelf();
-          }
-          else {
-            instanceObject.sceneNode.detachSelf()
-          }
-  
-          stack = stack.concat(instanceObject.objects.map((o) => o));
-        }
-      }  
-    }
-  }
 }
 
 export default PrefabInstance;

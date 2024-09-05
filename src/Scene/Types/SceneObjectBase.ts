@@ -1,5 +1,5 @@
 import { vec3 } from "wgpu-matrix";
-import { runInAction } from "mobx";
+import { observable, runInAction } from "mobx";
 import type { NewSceneObjectComponent, SceneObjectComponent, TransformPropsInterface } from "../../Renderer/Types";
 import NodeBase from "./NodeBase";
 import type { SceneObjectBaseInterface } from "./Types";
@@ -7,9 +7,11 @@ import TransformProps from "../../Renderer/Properties/TransformProps";
 import SceneNode from "../../Renderer/Drawables/SceneNodes/SceneNode";
 
 export class SceneObjectBase extends NodeBase implements SceneObjectBaseInterface {
-  components: SceneObjectComponent[] = []
+  @observable
+  accessor components: SceneObjectComponent[] = []
 
-  objects: SceneObjectBase[] = [];
+  @observable
+  accessor objects: SceneObjectBase[] = [];
 
   transformProps: TransformPropsInterface = new TransformProps();
 
@@ -33,7 +35,7 @@ export class SceneObjectBase extends NodeBase implements SceneObjectBaseInterfac
     throw new Error('not implemented')
   }
 
-  delete(): void {
+  async delete(): Promise<void> {
     throw new Error('not implemented')
   }
 
@@ -85,6 +87,7 @@ export class SceneObjectBase extends NodeBase implements SceneObjectBaseInterfac
   detachSelf() {
     if (this.parent) {
       this.parent.removeObject(this);
+      this.parent = null;
     }
   }
 

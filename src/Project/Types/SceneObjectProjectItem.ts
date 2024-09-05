@@ -1,5 +1,5 @@
 import { runInAction } from "mobx";
-import SceneObject from "../../Scene/Types/SceneObject";
+import type SceneObject from "../../Scene/Types/SceneObject";
 import type { SceneObjectInterface } from "../../Scene/Types/Types";
 import ProjectItem from "./ProjectItem";
 import { ComponentType } from "../../Renderer/Types";
