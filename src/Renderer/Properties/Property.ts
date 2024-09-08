@@ -2,10 +2,10 @@ import { observable, runInAction } from "mobx";
 import { RenderMode, ShapeType } from "../ParticleSystem/Types";
 import type { Vec3 } from "wgpu-matrix";
 import { vec3 } from "wgpu-matrix";
-import type { PropsBase } from "./Types";
+import { PropertyType2, type PropsBase } from "./Types";
 import PropertyBase from "./PropertyBase";
 
-export class Property<T> extends PropertyBase {
+export class Property<T extends { toString(): string } | undefined> extends PropertyBase {
   @observable protected accessor value: T;
 
   set(value?: T, override = false) {
@@ -17,12 +17,28 @@ export class Property<T> extends PropertyBase {
     })
   }
 
-  get() {
+  get(): T {
     return this.value;
   }
 
-  constructor(props: PropsBase, value: T | undefined, defaultValue: T, onChange?: () => void, previousProp?: Property<T>) {
-    super(props, previousProp)
+  toString(): string {
+    if (this.value !== undefined) {
+      return this.value.toString()
+    }
+
+    return 'undefined'
+  }
+
+  constructor(
+    name: string,
+    props: PropsBase,
+    value: T | undefined,
+    defaultValue: T,
+    onChange?: () => void,
+    previousProp?: Property<T>,
+    type?: PropertyType2,
+  ) {
+    super(name, props, previousProp, type)
 
     this.value = value ?? defaultValue
 
@@ -58,38 +74,38 @@ export class Property<T> extends PropertyBase {
 }
 
 export class PSBoolean extends Property<boolean> {
-  constructor(props: PropsBase, value?: boolean, defaultValue = false, onChange?: () => void, previousProp?: PSBoolean) {
-    super(props, value, defaultValue, onChange, previousProp)
+  constructor(name: string, props: PropsBase, value?: boolean, defaultValue = false, onChange?: () => void, previousProp?: PSBoolean) {
+    super(name, props, value, defaultValue, onChange, previousProp)
   }
 }
 
 export class PSNumber extends Property<number> {
-  constructor(props: PropsBase, value?: number, defaultValue = 0, onChange?: () => void, previousProp?: PSNumber) {
-    super(props, value, defaultValue, onChange, previousProp)
+  constructor(name: string, props: PropsBase, value?: number, defaultValue = 0, onChange?: () => void, previousProp?: PSNumber) {
+    super(name, props, value, defaultValue, onChange, previousProp)
   }
 }
 
 export class PSRenderMode extends Property<RenderMode> {
-  constructor(props: PropsBase, value?: RenderMode, defaultValue = RenderMode.Billboard, onChange?: () => void, previousProp?: PSRenderMode) {
-    super(props, value, defaultValue, onChange, previousProp)
+  constructor(name: string, props: PropsBase, value?: RenderMode, defaultValue = RenderMode.Billboard, onChange?: () => void, previousProp?: PSRenderMode) {
+    super(name, props, value, defaultValue, onChange, previousProp)
   }
 }
 
 export class PSShapeType extends Property<ShapeType> {
-  constructor(props: PropsBase, value?: ShapeType, defaultValue = ShapeType.Cone, onChange?: () => void, previousProp?: PSShapeType) {
-    super(props, value, defaultValue, onChange, previousProp)
+  constructor(name: string, props: PropsBase, value?: ShapeType, defaultValue = ShapeType.Cone, onChange?: () => void, previousProp?: PSShapeType) {
+    super(name, props, value, defaultValue, onChange, previousProp, PropertyType2.Shape)
   }
 }
 
 export class PSMaterialItem extends Property<number | undefined> {
-  constructor(props: PropsBase, value: number | undefined, onChange?: () => void, previousProp?: PSMaterialItem) {
-    super(props, value, undefined, onChange, previousProp)
+  constructor(name: string, props: PropsBase, value: number | undefined, onChange?: () => void, previousProp?: PSMaterialItem) {
+    super(name, props, value, undefined, onChange, previousProp)
   }
 }
 
 export class PSVec3Type extends Property<Vec3> {
-  constructor(props: PropsBase, value?: Vec3, defaultValue = vec3.create(), onChange?: () => void, previousProp?: PSVec3Type) {
-    super(props, value, defaultValue, onChange, previousProp)
+  constructor(name: string, props: PropsBase, value?: Vec3, defaultValue = vec3.create(), onChange?: () => void, previousProp?: PSVec3Type) {
+    super(name, props, value, defaultValue, onChange, previousProp)
   }
 
   copyProp(other: PSVec3Type) {

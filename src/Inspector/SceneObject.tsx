@@ -16,6 +16,9 @@ import Light from '../Renderer/Drawables/Light';
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
 import LightProps from '../Renderer/Properties/LightProps';
 import Transform from './Transform';
+import PopupButton from './PopupButton';
+import Overrides from './Overrides';
+import { Position } from './PopupWrapper';
 
 type PropsType = {
   sceneObject: SceneObjectBaseInterface
@@ -223,7 +226,21 @@ const SceneObject: React.FC<PropsType> = observer(({
 
   return (
     <div className={styles.gameObject} onDragOver={handleDragOver} onDrop={handleDrop}>
-      <div className={styles.title}>{`Name: ${sceneObject.name}`}</div>
+      <div className={styles.title}>
+        {`Name: ${sceneObject.name}`}
+        <div>
+          <button ref={buttonRef} onClick={handleAddClick}>Add Component</button>
+          {
+            sceneObject.isPrefabInstanceRoot()
+              ? (
+                <PopupButton label="Overrides" position={Position.top}>
+                  <Overrides sceneObject={sceneObject} />
+                </PopupButton>
+              )
+              : null
+          }
+        </div>
+      </div>
       <div>
         <Transform transformProps={sceneObject.transformProps} />
         {
@@ -244,7 +261,6 @@ const SceneObject: React.FC<PropsType> = observer(({
           ))
         }
       </div>
-      <button ref={buttonRef} onClick={handleAddClick}>Add Component</button>
       {
         showMenu
           ? <ContextMenu menuItems={menuItems} x={showMenu.x} y={showMenu.y} onClose={handleMenuClose} />

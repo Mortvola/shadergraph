@@ -8,7 +8,7 @@
     overflow-y: auto;
 
     &> div, > label {
-      padding: 0.5rem;
+      padding: 0 0.5rem 0 0.5rem;
     }
   }
 }
@@ -35,8 +35,16 @@
 }
 
 .title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 0.25rem 0;
   border-bottom: black thin solid;
+
+  &> div:first-child {
+    display: flex;
+    column-gap: 0.15rem;
+  }
 }
 
 .item {
@@ -64,6 +72,8 @@
   justify-content: space-between;
   border-radius: 4px;
   padding: 0.15rem 0.25rem;
+  position: sticky;
+  top: 0;
 }
 
 .property {

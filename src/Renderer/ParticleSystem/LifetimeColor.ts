@@ -11,11 +11,17 @@ class LifetimeColor extends PSModule {
   constructor(props: PropsBase, descriptor?: LifetimeColorDescriptor, onChange?: () => void, previousProps?: LifetimeColor) {
     super(props, descriptor?.enabled, undefined, onChange, previousProps?.enabled);
 
-    this.color = new PSColor(props, descriptor?.color, onChange, previousProps?.color);
+    this.color = new PSColor('Color', props, descriptor?.color, onChange, previousProps?.color);
 
     makeObservable(this, {
       color: observable,
     })
+  }
+
+  getOverrides() {
+    return [
+      this.color.getOverrides(),
+    ]
   }
 
   toDescriptor(overridesOnly = false): LifetimeColorDescriptor | undefined {

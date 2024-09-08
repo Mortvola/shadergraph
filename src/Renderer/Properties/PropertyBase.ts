@@ -1,10 +1,13 @@
-import { IReactionDisposer, observable, reaction, runInAction } from "mobx";
-import type { LineageEntry, PropertyBaseInterface, PropsBase } from "./Types";
-import { PrefabInstanceObjectInterface } from "../../Scene/Types/Types";
-import { PrefabNodeInterface } from "../../Scene/Types/Types";
+import { type IReactionDisposer, observable, reaction, runInAction } from "mobx";
+import type { LineageEntry, PropertyBaseInterface, PropertyType2, PropsBase } from "./Types";
+import type { PrefabNodeInterface } from "../../Scene/Types/Types";
 
 export class PropertyBase implements PropertyBaseInterface {
   @observable accessor override = false;
+
+  readonly name: string;
+
+  readonly type?: PropertyType2;
 
   original?: PropertyBase
 
@@ -16,13 +19,19 @@ export class PropertyBase implements PropertyBaseInterface {
 
   onRevertOverride?: () => void;
 
-  constructor(props: PropsBase, originalProp?: PropertyBase) {
+  constructor(name: string, props: PropsBase, originalProp?: PropertyBase, type?: PropertyType2) {
+    this.name = name;
+    this.type = type;
     this.props = props;
     this.original = originalProp;
     
     if (originalProp) {
       originalProp.variations.add(this);
     }
+  }
+
+  toString(): string {
+    throw new Error('not implemented')
   }
 
   getLineage(): LineageEntry[] {
@@ -66,7 +75,8 @@ export class PropertyBase implements PropertyBaseInterface {
     })
   }
 
-  copyProp(other: PropertyBase) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  copyProp(_other: PropertyBase) {
     throw new Error('not implemented')
   }
 
@@ -111,6 +121,12 @@ export class PropertyBase implements PropertyBaseInterface {
     this.dataFunction = dataFunction;
 
     this.enableReaction();
+  }
+
+  getOverrides(): PropertyBase | undefined {
+    if (this.override) {
+      return this;
+    }
   }
 }
 

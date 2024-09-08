@@ -46,6 +46,7 @@ const Canvas3d: React.FC<PropsType> = ({
       try {
         resizeObserver.observe(element, { box: 'device-pixel-content-box' });
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       catch (error) {
         resizeObserver.observe(element, { box: 'content-box' });
       }

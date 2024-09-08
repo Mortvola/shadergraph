@@ -11,7 +11,7 @@ class Sphere {
   hemisphere = false;
 
   constructor(props: PropsBase, hemisphere = false, descriptor?: SphereDescriptor, onChange?: () => void, previousProps?: Sphere) {
-    this.radius = new PSNumber(props, descriptor?.radius, 1, onChange, previousProps?.radius)
+    this.radius = new PSNumber('Radius', props, descriptor?.radius, 1, onChange, previousProps?.radius)
     this.hemisphere = hemisphere;
   }
 

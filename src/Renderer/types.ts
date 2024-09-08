@@ -247,12 +247,6 @@ export type SceneObjectComponent = {
 
 export type NewSceneObjectComponent = Omit<SceneObjectComponent, 'id'>
 
-export type PrefabComponent = {
-  id: number,
-  type: ComponentType,
-  props: ParticleSystemProps | LightProps,
-}
-
 export interface TransformPropsInterface {
   translate: PSVec3Type;
   rotate: PSVec3Type;

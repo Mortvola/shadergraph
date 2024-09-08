@@ -1,7 +1,8 @@
 import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
+import type { PropertyBaseInterface } from "../../Renderer/Properties/Types";
 import type {
   ComponentDescriptor, ComponentType, LightPropsDescriptor, NewSceneObjectComponent,
-  PrefabComponent, SceneNodeInterface, SceneObjectComponent, TransformPropsInterface,
+  SceneNodeInterface, SceneObjectComponent, TransformPropsInterface,
 } from "../../Renderer/Types";
 import type { EntityInterface, TransformPropsDescriptor } from "../../State/types";
 
@@ -14,6 +15,8 @@ export interface PrefabInterface {
 
   autosave: boolean;
 
+  addSceneObjects(startingObject: SceneObjectInterface, id: number, parentNode: PrefabNodeInterface | null): PrefabNodeInterface;
+
   toDescriptor(): PrefabDescriptor;
 
   save(): Promise<void>;
@@ -24,7 +27,7 @@ export interface PrefabNodeInterface {
 
   name: string;
 
-  components: PrefabComponent[];
+  components: SceneObjectComponent[];
 
   nodes: PrefabNodeInterface[];
 
@@ -100,6 +103,8 @@ export interface SceneObjectBaseInterface extends EntityInterface {
   detachSelf(): void;
 
   delete(): Promise<void>;
+
+  isPrefabInstanceRoot(): boolean;
 }
 
 export const isSceneObject = (r: unknown): r is SceneObjectInterface => (
@@ -128,9 +133,8 @@ export type SceneObjectDescriptor = {
     rotate?: number[];
     scale?: number[];
     components?: ComponentDescriptor[];
-    items?: ComponentDescriptor[];
+    items?: ComponentDescriptor[]; // deprecated
     objects?: number[];
-    nextComponentId?: number;
   };
 }
 
@@ -165,6 +169,18 @@ export type PrefabComponentDescriptor = {
 
 export type PrefabPropsDescriptor = ParticleSystemPropsDescriptor | LightPropsDescriptor;
 
+export type CconnectedObjectOverride = { connectedObject: SceneObjectBaseInterface };
+export type PropertyOverride = { property: PropertyBaseInterface };
+
+export const isPropertyOverride = (r: unknown): r is PropertyOverride => (
+  (r as PropertyOverride).property !== undefined
+)
+
+export type ObjectOverrides = {
+  object: SceneObjectBaseInterface,
+  overrides: (CconnectedObjectOverride | PropertyOverride)[],
+}
+
 export interface PrefabInstanceInterface {
   id: number;
 
@@ -173,6 +189,12 @@ export interface PrefabInstanceInterface {
   root?: PrefabInstanceObjectInterface
 
   save(): Promise<void>;
+
+  getOverrides(): ObjectOverrides[];
+
+  attachSceneObject(
+    sceneObject: SceneObjectBaseInterface,
+  ): Promise<void>
 }
 
 export type SceneDescriptor = {

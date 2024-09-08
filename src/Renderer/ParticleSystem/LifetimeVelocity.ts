@@ -11,11 +11,17 @@ class LifetimeVelocity extends PSModule {
   constructor(props: PropsBase, descriptor?: LifetimeVelocityDescriptor, onChange?: () => void, previousProps?: LifetimeVelocity) {
     super(props, descriptor?.enabled, undefined, onChange, previousProps?.enabled);
 
-    this.speedModifier = new PSValue(props, descriptor?.speedModifier, undefined, onChange, previousProps?.speedModifier);
+    this.speedModifier = new PSValue('Speed Modifier', props, descriptor?.speedModifier, undefined, onChange, previousProps?.speedModifier);
 
     makeObservable(this, {
       speedModifier: observable,
     })
+  }
+
+  getOverrides() {
+    return [
+      this.speedModifier.getOverrides(),
+    ]
   }
 
   toDescriptor(overridesOnly = false): LifetimeVelocityDescriptor | undefined {

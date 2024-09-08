@@ -1,4 +1,4 @@
-import type { PrefabComponent, TransformPropsInterface } from "../../Renderer/Types";
+import type { SceneObjectComponent, TransformPropsInterface } from "../../Renderer/Types";
 import { ComponentType } from "../../Renderer/Types";
 import type { PrefabNodeDescriptor } from "./Types";
 import type { PrefabNodeInterface } from "./Types";
@@ -10,7 +10,7 @@ import LightProps from "../../Renderer/Properties/LightProps";
 import NodeBase from "./NodeBase";
 
 class PrefabNode extends NodeBase implements PrefabNodeInterface {
-  components: PrefabComponent[] = []
+  components: SceneObjectComponent[] = []
 
   nodes: PrefabNode[] = [];
 

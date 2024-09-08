@@ -12,11 +12,11 @@ class PSColor extends PropertyBase {
   @observable
   accessor _type = PSColorType.Constant;
 
-  get type(): PSColorType {
+  get style(): PSColorType {
     return this._type
   }
 
-  set type(value: PropertyType<PSColorType>) {
+  set style(value: PropertyType<PSColorType>) {
     runInAction(() => {
       this._type = value.value;
       this.override = value.override ?? this.override;
@@ -39,8 +39,8 @@ class PSColor extends PropertyBase {
 
   gradients: [Gradient, Gradient];
 
-  constructor(props: PropsBase, descriptor?: PSColorDescriptor, onChange?: () => void, prevousProp?: PSColor) {
-    super(props, prevousProp);
+  constructor(name: string, props: PropsBase, descriptor?: PSColorDescriptor, onChange?: () => void, prevousProp?: PSColor) {
+    super(name, props, prevousProp);
 
     this.gradients = [new Gradient(this), new Gradient(this)]
 
@@ -91,7 +91,7 @@ class PSColor extends PropertyBase {
   }
 
   applyDescriptor(descriptor: PSColorDescriptor) {
-    this.type = { value: descriptor.type ?? PSColorType.Constant };
+    this.style = { value: descriptor.type ?? PSColorType.Constant };
     this.color = descriptor.color !== undefined
       ? { value: [[...descriptor.color[0]], [...descriptor.color[1]]] }
       : { value: [[1, 1, 1, 1], [1, 1, 1, 1]] };
@@ -109,7 +109,7 @@ class PSColor extends PropertyBase {
   toDescriptor(overridesOnly = false): PSColorDescriptor | undefined {
     if (!overridesOnly || this.override) {
       return ({
-        type: this.type,
+        type: this.style,
         color: [this.color[0].slice(), this.color[1].slice()],
         gradients: [this.gradients[0].toDescriptor(), this.gradients[1].toDescriptor()],
       })  
@@ -117,7 +117,7 @@ class PSColor extends PropertyBase {
   }
 
   getColor(t: number): number[] {
-    switch (this.type) {
+    switch (this.style) {
       case PSColorType.Constant:
         return this.color[0];
       

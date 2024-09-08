@@ -31,9 +31,9 @@ class Renderer extends PSModule {
   ) {
     super(props, descriptor?.enabled, defaultDescriptor?.enabled, onChange, previousProps?.enabled);
 
-    this.materialId = new PSMaterialItem(props, descriptor?.materialId, this.onMaterialChange, previousProps?.materialId)
+    this.materialId = new PSMaterialItem('Material', props, descriptor?.materialId, this.onMaterialChange, previousProps?.materialId)
 
-    this.mode = new PSRenderMode(props, descriptor?.mode, defaultDescriptor?.mode, this.onMaterialChange, previousProps?.mode);
+    this.mode = new PSRenderMode('Mode', props, descriptor?.mode, defaultDescriptor?.mode, this.onMaterialChange, previousProps?.mode);
   }
 
   onMaterialChange = () => {
@@ -41,6 +41,13 @@ class Renderer extends PSModule {
       this.createDrawable();
       this.onChange();
     }
+  }
+
+  getOverrides() {
+    return [
+      this.mode.getOverrides(),
+      this.materialId.getOverrides(),
+    ]
   }
 
   toDescriptor(overridesOnly = false): RendererDescriptor | undefined {

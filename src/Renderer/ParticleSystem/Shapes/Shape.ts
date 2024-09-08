@@ -27,11 +27,17 @@ class Shape extends PSModule {
   ) {
     super(props, descriptor?.enabled, defaultDescriptor.enabled, onChange, previousProps?.enabled);
   
-    this.type = new PSShapeType(props, descriptor?.type, defaultDescriptor?.type, onChange, previousProps?.type)
+    this.type = new PSShapeType('Shape', props, descriptor?.type, defaultDescriptor?.type, onChange, previousProps?.type)
 
     this.cone = new Cone(props, descriptor?.cone, onChange, previousProps?.cone);
     this.sphere = new Sphere(props, false, descriptor?.sphere, onChange, previousProps?.sphere);
     this.hemisphere = new Sphere(props, true, descriptor?.hemisphere, onChange, previousProps?.hemisphere);
+  }
+
+  getOverrides() {
+    return [
+      this.type.getOverrides(),
+    ]
   }
 
   toDescriptor(overridesOnly = false): ShapeDescriptor | undefined {

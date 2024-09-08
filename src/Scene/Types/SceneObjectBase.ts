@@ -133,5 +133,9 @@ export class SceneObjectBase extends NodeBase implements SceneObjectBaseInterfac
   toDescriptor(): object {
     throw new Error('not implemented')
   }
+
+  isPrefabInstanceRoot(): boolean {
+    return false;
+  }
 }
 

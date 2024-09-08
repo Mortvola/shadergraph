@@ -1,0 +1,67 @@
+.layout {
+  background-color: white;
+  border: solid black thin;
+  border-radius: 4px;
+
+  user-select: none;
+
+  &> div:first-child {
+    border-bottom: thin black solid;
+    padding: 0.5rem 0.5rem 0.25rem 0.5rem;
+    font-weight: bold;
+  }
+
+  &> div:nth-child(2) {
+    padding: 0.35rem;
+  }
+
+  &> div:last-child {
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+    border-top: thin black solid;
+  }
+}
+
+.overrides {
+  padding-left: 1rem;
+}
+
+.comparison {
+  display: flex;
+  column-gap: 0.5rem;
+  background-color: white;
+  border: thin black solid;
+  border-radius: 4px;
+  padding: 0.5rem;
+  align-items: center;
+
+  &> label {
+    display: flex;
+    column-gap: inherit;
+    white-space: nowrap;
+    align-items: inherit;
+  }
+
+  &> .buttons {
+    display: flex;
+    column-gap: inherit;
+    align-items: inherit;
+  }
+}
+
+.overridesButton {
+  border: none;
+  background-color: inherit;
+  display: block;
+  padding: unset;
+}
+
+.body {
+  font-size: smaller;
+}
+
+.footer {
+  display: flex;
+  column-gap: 0.25rem;
+}

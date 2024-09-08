@@ -29,6 +29,10 @@ export class PrefabInstanceObject extends SceneObjectBase implements PrefabInsta
   async delete(): Promise<void> {
     return objectManager.delete(this);
   }
+
+  isPrefabInstanceRoot(): boolean {
+    return this.id === 0; 
+  }
 }
 
 export const isPrefabInstanceObject = (r: unknown): r is PrefabInstanceObject => (

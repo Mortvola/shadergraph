@@ -14,6 +14,7 @@ import {
   PSValueType, RenderMode, ShapeType,
 } from "./Types";
 import type { ParticleSystemPropsInterface } from "./ParticleSystemPropsInterface";
+import type PropertyBase from "../Properties/PropertyBase";
 
 class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterface {
   duration: PSNumber;
@@ -50,18 +51,19 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
   ) {
     super();
 
-    this.duration = new PSNumber(this, descriptor?.duration, 5, this.handleChange, previousProps?.duration);
-    this.rate = new PSNumber(this, descriptor?.rate, 2, this.handleChange, previousProps?.rate);
-    this.maxPoints = new PSNumber(this, descriptor?.maxPoints, 50, this.handleChange, previousProps?.maxPoints);
-    this.lifetime = new PSValue(this, descriptor?.lifetime, { type: PSValueType.Constant, value: [5, 5] }, this.handleChange, previousProps?.lifetime);
+    this.duration = new PSNumber('Duration', this, descriptor?.duration, 5, this.handleChange, previousProps?.duration);
+    this.rate = new PSNumber('Rate', this, descriptor?.rate, 2, this.handleChange, previousProps?.rate);
+    this.maxPoints = new PSNumber('Maximum Points', this, descriptor?.maxPoints, 50, this.handleChange, previousProps?.maxPoints);
+    this.lifetime = new PSValue('Lifetime', this, descriptor?.lifetime, { type: PSValueType.Constant, value: [5, 5] }, this.handleChange, previousProps?.lifetime);
     this.shape = new Shape(this, descriptor?.shape, { enabled: true, type: ShapeType.Cone, }, this.handleChange, previousProps?.shape);
-    this.startSpeed = new PSValue(this, descriptor?.startVelocity, {}, this.handleChange, previousProps?.startSpeed);
-    this.startSize = new PSValue(this, descriptor?.startSize, {}, this.handleChange, previousProps?.startSize);
-    this.startColor = new PSColor(this, descriptor?.startColor, this.handleChange, previousProps?.startColor);
+    this.startSpeed = new PSValue('Start Speed', this, descriptor?.startVelocity, {}, this.handleChange, previousProps?.startSpeed);
+    this.startSize = new PSValue('Start Size', this, descriptor?.startSize, {}, this.handleChange, previousProps?.startSize);
+    this.startColor = new PSColor('Start Color', this, descriptor?.startColor, this.handleChange, previousProps?.startColor);
     this.lifetimeSize = new LifetimeSize(this, descriptor?.lifetimeSize, this.handleChange, previousProps?.lifetimeSize);
     this.lifetimeVelocity = new LifetimeVelocity(this, descriptor?.lifetimeVelocity, this.handleChange, previousProps?.lifetimeVelocity);
     this.lifetimeColor = new LifetimeColor(this, descriptor?.lifetimeColor, this.handleChange, previousProps?.lifetimeColor);
     this.gravityModifier = new PSValue(
+      'Gravity Modifier',
       this, 
       descriptor?.gravityModifier,
       {
@@ -93,6 +95,26 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
       console.log('handle change')
         this.onChange();
     }
+  }
+
+  getOverrides(): PropertyBase[] {
+    return [
+      this.duration.getOverrides(),
+      this.maxPoints.getOverrides(),
+      this.rate.getOverrides(),
+      ...this.shape.getOverrides(),
+      this.lifetime.getOverrides(),
+      this.startSpeed.getOverrides(),
+      this.startSize.getOverrides(),
+      this.startColor.getOverrides(),
+      this.gravityModifier.getOverrides(),
+      ...this.lifetimeSize.getOverrides(),
+      ...this.lifetimeVelocity.getOverrides(),
+      ...this.lifetimeColor.getOverrides(),
+      ...this.collision.getOverrides(),
+      ...this.renderer.getOverrides(),
+    ]
+      .filter((p) => p !== undefined)
   }
 
   toDescriptor(overridesOnly = false): ParticleSystemPropsDescriptor | undefined {

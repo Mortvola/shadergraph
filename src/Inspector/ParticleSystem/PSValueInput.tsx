@@ -22,7 +22,7 @@ const PSValueInput: React.FC<PropsType> = observer(({
   }
 
   const handleTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    value.type = { value: event.target.value as PSValueType, override: true }
+    value.style = { value: event.target.value as PSValueType, override: true }
   }
 
   const handleRangeChange = (range: [number, number]) => {
@@ -34,7 +34,7 @@ const PSValueInput: React.FC<PropsType> = observer(({
       {
         (
           () => {
-            switch (value.type) {
+            switch (value.style) {
               case PSValueType.Constant:
               case PSValueType.Random:
                 return (
@@ -57,7 +57,7 @@ const PSValueInput: React.FC<PropsType> = observer(({
       {
         (
           () => {
-            switch (value.type) {
+            switch (value.style) {
               case PSValueType.Random:
                 return (
                   <NumberInput
@@ -71,7 +71,7 @@ const PSValueInput: React.FC<PropsType> = observer(({
           }
         )()
       }
-      <PSValueTypeSelector value={value.type} onChange={handleTypeChange} />
+      <PSValueTypeSelector value={value.style} onChange={handleTypeChange} />
     </>
   )
 })

@@ -37,20 +37,25 @@ class Prefab extends Entity implements PrefabInterface {
   }
 
   static fromSceneObject(startingObject: SceneObjectInterface): Prefab | undefined {
-    // Traverse the object tree and clone each of the nodes. We will need to
-    // 1. Move the scene node from the original nodes to the new ones
-    // 2. Reference the properties for each of the components found in the original nodes
-    // 3. Mark the link from the parent to this need as a prefab connection.
-    let stack: { object: SceneObjectBaseInterface, parent: PrefabNode | null }[] = [{ object: startingObject, parent: null }];
-    let id = 0;
+    const id = 0;
 
     const prefab = new Prefab(-1, this.name);
+
+    prefab.addSceneObjects(startingObject, id, null);
+
+    return prefab;
+  }
+
+  addSceneObjects(startingObject: SceneObjectInterface, id: number, parentNode: PrefabNode | null): PrefabNode {
+    let stack: { object: SceneObjectBaseInterface, parent: PrefabNode | null }[] = [{ object: startingObject, parent: parentNode }];
+
+    let root: PrefabNode | undefined = undefined;
 
     while (stack.length > 0) {
       const { object, parent } = stack[0];
       stack = stack.slice(1);
 
-      const prefabNode = new PrefabNode(prefab, id);
+      const prefabNode = new PrefabNode(this, id);
       id += 1;
 
       // Add the current objects children to the stack
@@ -64,14 +69,14 @@ class Prefab extends Entity implements PrefabInterface {
       // Set the transform values (translate, rotate and scale)
       // The root node will get its own copy while all the other nodes
       // will reference the prefab's value.
-      if (!prefab.root) {
+      if (!this.root) {
         prefabNode.transformProps = new TransformProps({
           translate: [...object.transformProps.translate.get()],
           rotate: [...object.transformProps.rotate.get()],
           scale: [...object.transformProps.scale.get()],
         }, prefabNode.onChange);
 
-        prefab.root = prefabNode;
+        this.root = prefabNode;
       }
       else {
         // Have the prefab object referencd the object's transform props.
@@ -93,11 +98,19 @@ class Prefab extends Entity implements PrefabInterface {
         prefabNode.parentNode = parent;
         parent.nodes.push(prefabNode)
       }
-
-      // object.prefabNode = prefabNode;
+      
+      if (!root) {
+        root = prefabNode;
+      }
     }
 
-    return prefab;
+    if (root === undefined) {
+      throw new Error('root not defined')
+    }
+
+    this.save()
+    
+    return root;
   }
 
   toDescriptor(): PrefabDescriptor {
@@ -113,6 +126,7 @@ class Prefab extends Entity implements PrefabInterface {
   async save(): Promise<void> {
     console.log('prefab save')
     if (this.id < 0) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, ...descriptor } = this.toDescriptor();
 
       const response = await Http.post<Omit<PrefabDescriptor, 'id'>, PrefabDescriptor>(`/api/prefabs`, descriptor);
@@ -130,9 +144,7 @@ class Prefab extends Entity implements PrefabInterface {
 
       const response = await Http.patch<PrefabDescriptor, void>(`/api/prefabs/${this.id}`, descriptor);
 
-      if (response.ok) {
-  
-      }  
+      if (response.ok) { /* empty */ }  
     }      
   }
 

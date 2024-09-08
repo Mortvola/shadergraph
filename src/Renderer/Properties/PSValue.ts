@@ -11,11 +11,11 @@ class PSValue extends PropertyBase {
   @observable
   private accessor _type = PSValueType.Constant;
 
-  get type(): PSValueType {
+  get style(): PSValueType {
     return this._type
   }
 
-  set type(value: PropertyType<PSValueType>) {
+  set style(value: PropertyType<PSValueType>) {
     runInAction(() => {
       this._type = value.value;
       if (value.override) {
@@ -63,13 +63,14 @@ class PSValue extends PropertyBase {
   }
 
   constructor(
+    name: string,
     props: PropsBase,
     descriptor?: PSValueDescriptor,
     defaultDescriptor?: PSValueDescriptor,
     onChange?: () => void,
     previousProp?: PSValue,
   ) {
-    super(props, previousProp)
+    super(name, props, previousProp)
     
     this.curve = [new PSCurve(this), new PSCurve(this)]
 
@@ -105,6 +106,22 @@ class PSValue extends PropertyBase {
     }))
   }
 
+  toString(): string {
+    switch (this.style) {
+      case PSValueType.Constant:
+        return this.value[0].toString()
+
+      case PSValueType.Random:
+        return `${this.value[0].toString()} - ${this.value[1].toString()}`
+
+      case PSValueType.Curve:
+        return 'Curve'
+
+      case PSValueType.RandomeCurve:
+        return 'Randome Curve'
+    }
+  }
+
   copyProp(other: PSValue) {
     runInAction(() => {
       this._type = other._type;
@@ -118,7 +135,7 @@ class PSValue extends PropertyBase {
   }
 
   applyDescriptor(descriptor: PSValueDescriptor) {
-    this.type = { value: descriptor.type ?? PSValueType.Constant };
+    this.style = { value: descriptor.type ?? PSValueType.Constant };
     this.value = { value: (descriptor.value !== undefined
       ? [descriptor.value[0], descriptor.value[1]]
       : [1, 1]) };
@@ -135,7 +152,7 @@ class PSValue extends PropertyBase {
   toDescriptor(overridesOnly = false): PSValueDescriptor | undefined {
     if (!overridesOnly || this.override) {
       return ({
-        type: this.type,
+        type: this.style,
         value: this.value,
         curve: [this.curve[0].toDescriptor(), this.curve[0].toDescriptor()],
         curveRange: this.curveRange,
@@ -144,7 +161,7 @@ class PSValue extends PropertyBase {
   }
 
   getValue(t: number) {
-    switch (this.type) {
+    switch (this.style) {
       case PSValueType.Constant:
         return this.value[0];
   

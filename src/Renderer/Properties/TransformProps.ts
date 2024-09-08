@@ -18,9 +18,9 @@ class TransformProps extends PropsBase implements TransformPropsInterface {
   ) {
     super()
 
-    this.translate = new PSVec3Type(this, descriptor?.translate, vec3.create(0, 0, 0), onChange, previousProps?.translate)
-    this.rotate = new PSVec3Type(this, descriptor?.rotate, vec3.create(0, 0, 0), onChange, previousProps?.rotate)
-    this.scale = new PSVec3Type(this, descriptor?.scale, vec3.create(1, 1, 1), onChange, previousProps?.scale)
+    this.translate = new PSVec3Type('Translate', this, descriptor?.translate, vec3.create(0, 0, 0), onChange, previousProps?.translate)
+    this.rotate = new PSVec3Type('Rotate', this, descriptor?.rotate, vec3.create(0, 0, 0), onChange, previousProps?.rotate)
+    this.scale = new PSVec3Type('Scale', this, descriptor?.scale, vec3.create(1, 1, 1), onChange, previousProps?.scale)
   }
 
   toDescriptor(overridesOnly = false): TransformPropsDescriptor | undefined {

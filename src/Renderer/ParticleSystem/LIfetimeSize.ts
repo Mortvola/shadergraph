@@ -11,11 +11,17 @@ class LifetimeSize extends PSModule {
   constructor(props: PropsBase, descriptor?: LifetimeSizeDescriptor, onChange?: () => void, previousProps?: LifetimeSize) {
     super(props, descriptor?.enabled, undefined, onChange, previousProps?.enabled);
 
-    this.size = new PSValue(props, descriptor?.size, undefined, onChange, previousProps?.size);
+    this.size = new PSValue('Size', props, descriptor?.size, undefined, onChange, previousProps?.size);
 
     makeObservable(this, {
       size: observable,
     })
+  }
+
+  getOverrides() {
+    return [
+      this.size.getOverrides(),
+    ]
   }
 
   toDescriptor(overridesOnly = false): LifetimeSizeDescriptor | undefined {

@@ -2,9 +2,8 @@ import React from 'react';
 import styles from './Inspector.module.scss';
 import Select from './Select';
 import { observer } from 'mobx-react-lite';
-import { PropertyBaseInterface } from '../Renderer/Properties/Types';
-import { PrefabNodeInterface } from '../Scene/Types/Types';
-import PropertyBase from '../Renderer/Properties/PropertyBase';
+import type { PropertyBaseInterface } from '../Renderer/Properties/Types';
+import type PropertyBase from '../Renderer/Properties/PropertyBase';
 
 type PropsType = {
   label: string,
