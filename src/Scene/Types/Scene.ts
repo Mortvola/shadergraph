@@ -1,30 +1,24 @@
-import { makeObservable, observable, runInAction } from "mobx";
-import SceneNode from "./SceneNode";
+import { observable, runInAction } from "mobx";
 import { store } from "../../State/store";
 import Http from "../../Http/src";
-import type { SceneDescriptor } from "./Types";
-import type { SceneNodeBaseInterface } from "./Types";
+import { type SceneDescriptor } from "./Types";
 import type { SceneInterface } from "./Types";
-import type PrefabNodeInstance from "./PrefabNodeInstance";
+import Tree from "./Tree";
 import { objectManager } from "./ObjectManager";
+import type TreeNode from "./TreeNode";
 
 class Scene implements SceneInterface {
-  id?: number;
+  id: number = -1;
 
-  name = '';
+  name: string = '';
 
-  rootObject: SceneNode | PrefabNodeInstance = new SceneNode();
+  @observable
+  accessor tree: Tree = new Tree()
 
-  selectedObject: SceneNodeBaseInterface | null = null;
+  @observable
+  accessor selectedNode: TreeNode | null = null;
 
-  draggingItem: SceneNodeBaseInterface | null = null;
-
-  constructor() {
-    makeObservable(this, {
-      rootObject: observable,
-      selectedObject: observable,
-    })
-  }
+  draggingNode: TreeNode | null = null;
 
   static async fromDescriptor(descriptor?: SceneDescriptor) {
     const scene = new Scene();
@@ -33,13 +27,7 @@ class Scene implements SceneInterface {
       scene.id = descriptor.id;
       scene.name = descriptor.name;
 
-      if (descriptor.scene.objects === null) {
-        await scene.rootObject.save();
-        await scene.saveChanges();
-      }
-      else {
-        scene.rootObject = await objectManager.get(descriptor.scene.objects) ?? scene.rootObject;
-      }
+      scene.tree = await objectManager.getTree(descriptor.scene.tree);
     }
 
     return scene;
@@ -47,34 +35,34 @@ class Scene implements SceneInterface {
 
   toDescriptor(): SceneDescriptor {
     return ({
-      id: this.id,
-      name: this.name,
+      id: this.tree.id,
+      name: this.tree.name,
       scene: {
-        objects: this.rootObject.id,
+        tree: this.tree.id,
       }
     })
   }
 
-  setSelectedObject(object: SceneNodeBaseInterface) {
+  setSelectedObject(node: TreeNode) {
     runInAction(() => {
-      this.selectedObject = object;
+      this.selectedNode = node;
     })
   }
 
   async renderScene() {
-    store.mainView.addSceneNode(this.rootObject.renderNode);
+    store.mainView.addSceneNode(this.tree.root.renderNode);
   }
 
-  addObject(object: SceneNode) {
-    this.rootObject.addObject(object)
+  addNode(node: TreeNode) {
+    this.tree.root.addNode(node)
   }
 
   saveChanges = async () => {
-    if (this.id === undefined) {
+    if (this.tree.id === undefined) {
       await Http.post('/api/scenes', this.toDescriptor())  
     }
     else {
-      await Http.patch(`/api/scenes/${this.id}`, this.toDescriptor())  
+      await Http.patch(`/api/scenes/${this.tree.id}`, this.toDescriptor())  
     }
   }
 }

@@ -2,7 +2,7 @@ import { objectManager } from "./ObjectManager";
 import { SceneNodeBase } from "./SceneNodeBase";
 import type { PrefabInstanceInterface, PrefabNodeInstanceInterface, PrefabNodeInterface } from "./Types";
 
-export class PrefabNodeInstance extends SceneNodeBase implements PrefabNodeInstanceInterface {
+class PrefabNodeInstance extends SceneNodeBase implements PrefabNodeInstanceInterface {
   prefabInstance: PrefabInstanceInterface;
 
   baseNode: PrefabNodeInterface;
@@ -32,6 +32,10 @@ export class PrefabNodeInstance extends SceneNodeBase implements PrefabNodeInsta
 
   isPrefabInstanceRoot(): boolean {
     return this.id === 0; 
+  }
+
+  toDescriptor(): object {
+    return {}    
   }
 }
 

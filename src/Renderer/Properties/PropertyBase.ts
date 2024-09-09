@@ -39,7 +39,7 @@ export class PropertyBase implements PropertyBaseInterface {
     let property: PropertyBase | undefined = this.original;
 
     while (property) {
-      const node = property.props.node as PrefabNodeInterface;
+      const node = (property.props.node as unknown) as PrefabNodeInterface;
       lineage.push({ property, name: node?.name ?? 'unknown node', container: node?.prefab.name ?? 'unknown prefab'})
 
       property = property.original

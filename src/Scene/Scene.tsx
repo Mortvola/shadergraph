@@ -1,10 +1,10 @@
 import React from 'react';
 import SceneToolbar from './SceneToolbar';
 import { observer } from 'mobx-react-lite';
-import type { SceneNodeBaseInterface } from "./Types/Types";
 import type { SceneInterface } from "./Types/Types";
 import SceneFolder from './SceneFolder';
 import styles from './Scene.module.scss'
+import type TreeNode from './Types/TreeNode';
 
 type PropsType = {
   scene?: SceneInterface,
@@ -13,8 +13,8 @@ type PropsType = {
 const Scene: React.FC<PropsType> = observer(({
   scene,
 }) => {
-  const handleObjectClick = (object: SceneNodeBaseInterface) => {    
-    scene?.setSelectedObject(object)
+  const handleObjectClick = (node: TreeNode) => {    
+    scene?.setSelectedObject(node)
   }
 
   if (scene === undefined) {
@@ -32,7 +32,7 @@ const Scene: React.FC<PropsType> = observer(({
       <SceneFolder
         key={'scene'}
         project={scene}
-        folder={scene.rootObject}
+        folder={scene.tree.root}
         onSelect={handleObjectClick}
         level={1}
       />

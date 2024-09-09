@@ -11,6 +11,8 @@ import Light from '../Renderer/Drawables/Light';
 import type { SceneInterface } from "./Types/Types";
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
 import LightProps from '../Renderer/Properties/LightProps';
+import TreeNode from './Types/TreeNode';
+import { objectManager } from './Types/ObjectManager';
 
 type PropsType = {
   scene?: SceneInterface,
@@ -50,9 +52,15 @@ const SceneToolbar: React.FC<PropsType> = ({
 
         await object.save();
 
-        scene.addObject(object);  
+        const node = new TreeNode()
 
-        scene.setSelectedObject(object);
+        node.nodeObject = object;
+
+        await objectManager.add(node);
+
+        scene.addNode(node);  
+
+        scene.setSelectedObject(node);
       }
     } },
     { name: 'Create particle system', action: async () => {
@@ -70,9 +78,13 @@ const SceneToolbar: React.FC<PropsType> = ({
 
         object.addComponent(item);
   
-        scene.addObject(object);
+        const node = new TreeNode()
 
-        scene.setSelectedObject(object);
+        node.nodeObject = object;
+
+        scene.addNode(node);
+
+        scene.setSelectedObject(node);
       }
     } },
     { name: 'Create light', action: async () => {
@@ -90,9 +102,13 @@ const SceneToolbar: React.FC<PropsType> = ({
 
         object.addComponent(item);
 
-        scene.addObject(object);
+        const node = new TreeNode();
 
-        scene.setSelectedObject(object);
+        node.nodeObject = object;
+
+        scene.addNode(node);
+
+        scene.setSelectedObject(node);
       }
     } }
 

@@ -7,9 +7,9 @@ import TransformProps from "../../Renderer/Properties/TransformProps";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
 import LightProps from "../../Renderer/Properties/LightProps";
-import NodeBase from "./NodeBase";
+import ObjectBase from "./ObjectBase";
 
-class PrefabNode extends NodeBase implements PrefabNodeInterface {
+class PrefabNode extends ObjectBase implements PrefabNodeInterface {
   components: SceneNodeComponent[] = []
 
   nodes: PrefabNode[] = [];
@@ -88,6 +88,10 @@ class PrefabNode extends NodeBase implements PrefabNodeInterface {
     if (this.prefab?.autosave) {
       this.prefab?.save();
     }
+  }
+
+  detachSelf() {
+    
   }
 }
 

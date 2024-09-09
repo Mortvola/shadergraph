@@ -3,15 +3,13 @@ import SceneItem from './SceneItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
-import type { SceneNodeBaseInterface } from "./Types/Types";
 import type { SceneInterface } from "./Types/Types";
-import { isPrefabItem } from '../Project/Types/types';
-import PrefabInstance from './Types/PrefabInstance';
+import type TreeNode from './Types/TreeNode';
 
 type PropsType = {
   project: SceneInterface,
-  folder: SceneNodeBaseInterface,
-  onSelect?: (item: SceneNodeBaseInterface) => void,
+  folder: TreeNode,
+  onSelect?: (item: TreeNode) => void,
   level: number,
 }
 
@@ -35,10 +33,10 @@ const SceneFolder: React.FC<PropsType> = observer(({
 
     if ((
       event.dataTransfer.types[0] === 'application/scene-item'
-      && project.draggingItem
-      && project.draggingItem.parent !== folder
-      && project.draggingItem !== folder
-      && !folder.isAncestor(project.draggingItem)
+      && project.draggingNode
+      && project.draggingNode.parent !== folder
+      && project.draggingNode !== folder
+      && !folder.isAncestor(project.draggingNode)
     )) {
       event.dataTransfer.dropEffect = 'move';
       setDroppable(true);      
@@ -63,44 +61,46 @@ const SceneFolder: React.FC<PropsType> = observer(({
     event.preventDefault();
 
     if (droppable) {
-      if (project.draggingItem && event.dataTransfer.types[0] === 'application/scene-item') {
-        const item = project.draggingItem;
+      if (project.draggingNode && event.dataTransfer.types[0] === 'application/scene-item') {
+        const item = project.draggingNode;
 
         item.detachSelf();
 
-        folder.addObject(item);    
+        folder.addNode(item);    
       }
       else if (
         event.dataTransfer.types[0] === 'application/project-item'
         && store.draggingItem?.type === 'prefab'
       ) {
-        (async () => {
-          const item = store.draggingItem;
+        // (async () => {
+        //   const item = store.draggingItem;
 
-          if (isPrefabItem(item)) {
-            const prefab = await item.getItem();
+        //   if (isPrefabItem(item)) {
+        //     const prefab = await item.getItem();
   
-            if (prefab) {
-              const prefabInstance = await PrefabInstance.fromPrefab(prefab);
+        //     if (prefab) {
+        //       const prefabInstance = await PrefabInstance.fromPrefab(prefab);
     
-              if (prefabInstance) {
-                await prefabInstance.save();
+        //       if (prefabInstance) {
+        //         await prefabInstance.save();
                 
-                if (prefabInstance.root) {
-                  folder.addObject(prefabInstance.root);
-                }
-              }
-            }
-          }
-        })()
+        //         if (prefabInstance.root) {
+        //           folder.addNode(prefabInstance.root);
+        //         }
+        //       }
+        //     }
+        //   }
+        // })()
       }
 
       setDroppable(false);
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [name, setName] = React.useState<string>('')
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
     // if (event.code === 'Escape') {
     //   project.cancelNewItem(folder)
@@ -112,11 +112,13 @@ const SceneFolder: React.FC<PropsType> = observer(({
     // }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleBlur = () => {
     // project.cancelNewItem(folder);
     // setName('');
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     setName(event.target.value)
   }
@@ -133,7 +135,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
         project={project}
         item={folder}
         onSelect={onSelect}
-        selected={folder === project.selectedObject}
+        selected={folder === project.selectedNode}
         draggable
       />
       <div

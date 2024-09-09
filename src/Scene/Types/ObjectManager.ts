@@ -1,33 +1,72 @@
 import { runInAction } from "mobx";
 import Http from "../../Http/src";
-import PrefabInstance from "./PrefabInstance";
 import SceneNode from "./SceneNode";
-import type { SceneNodeBase } from "./SceneNodeBase";
 import type { SceneNodeBaseInterface} from "./Types";
 import {
-  isPrefabInstanceDescriptor, type PrefabInstanceDescriptor, type SceneNodeDescriptor,
+  isSceneNodeDescriptor, isTreeDescriptor, isTreeNodeDescriptor, type PrefabInstanceDescriptor, type SceneNodeDescriptor,
 } from "./Types";
 import { isPrefabInstanceObject } from "./PrefabNodeInstance";
+import Tree from "./Tree";
+import TreeNode from "./TreeNode";
+import type ObjectBase from "./ObjectBase";
 
 class ObjectManager {
   async get(id: number) {
     const response = await Http.get<SceneNodeDescriptor | PrefabInstanceDescriptor>(`/api/scene-objects/${id}`)
 
     if (response.ok) {
-      const descriptor = await response.body();
+      return await response.body();
 
-      if (isPrefabInstanceDescriptor(descriptor)) {
-        const prefabInstace = await PrefabInstance.fromDescriptor(descriptor);
+      // if (isPrefabInstanceDescriptor(descriptor)) {
+      //   if (type !== ObjectType.TreeInstance) {
+      //     throw new Error('incorrect type:')
+      //   }
 
-        return prefabInstace?.root;
-        // return undefined
-      }
+      //   const prefabInstace = await PrefabInstance.fromDescriptor(descriptor);
 
-      return SceneNode.fromDescriptor(descriptor)
+      //   return prefabInstace?.root;
+      //   // return undefined
+      // }
+
+      // if (type !== ObjectType.NodeObject) {
+      //   throw new Error('incorrect type')
+      // }
+
+      // return SceneNode.fromDescriptor(descriptor)
     }  
   }
 
-  async add(object: SceneNodeBase) {
+  async getTree(id: number) {
+    const descriptor = await this.get(id);
+
+    if (isTreeDescriptor(descriptor)) {
+      return Tree.fromDescriptor(descriptor)
+    }
+
+    throw new Error('object type mismatch')
+  }
+
+  async getTreeNode(id: number) {
+    const descriptor = await this.get(id);
+
+    if (isTreeNodeDescriptor(descriptor)) {
+      return TreeNode.fromDescriptor(descriptor)
+    }
+
+    throw new Error('object type mismatch')
+  }
+
+  async getSceneNode(id: number) {
+    const descriptor = await this.get(id);
+
+    if (isSceneNodeDescriptor(descriptor)) {
+      return SceneNode.fromDescriptor(descriptor)
+    }
+
+    throw new Error('object type mismatch')
+  }
+
+  async add(object: ObjectBase) {
     const descriptor = object.toDescriptor();
 
     const response = await Http.post<Omit<unknown, 'id'>, { id: number }>(`/api/scene-objects`, descriptor);
@@ -39,14 +78,14 @@ class ObjectManager {
     }  
   }
 
-  async update(object: SceneNodeBase) {
+  async update(object: ObjectBase) {
     const response = await Http.patch<unknown, void>(`/api/scene-objects/${object.id}`, object.toDescriptor());
 
     if (response.ok) { /* empty */ }  
 
   }
 
-  async delete(object: SceneNodeBase) {
+  async delete(object: ObjectBase) {
     if (isPrefabInstanceObject(object)) {
       const prefabInstance = object.prefabInstance;
 

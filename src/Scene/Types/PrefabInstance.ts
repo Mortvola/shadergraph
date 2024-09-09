@@ -119,7 +119,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     if (connectedObjects) {
       for (const connectedObject of connectedObjects) {
         if (connectedObject.prefabNodeId === prefabNode.id) {
-          const newObject = await objectManager.get(connectedObject.objectId)
+          const newObject = await objectManager.getSceneNode(connectedObject.objectId)
 
           if (newObject) {
             object.nodes.push(newObject)

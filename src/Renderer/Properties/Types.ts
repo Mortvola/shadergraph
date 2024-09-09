@@ -1,10 +1,10 @@
-import type NodeBase from "../../Scene/Types/NodeBase";
+import type ObjectBase from "../../Scene/Types/ObjectBase";
 import type PropertyBase from "./PropertyBase";
 
 export type PropertyType<T> = { value: T, override?: boolean }
 
 export class PropsBase {
-  node?: NodeBase
+  node?: ObjectBase
 }
 
 export type LineageEntry = { property: PropertyBase, name: string, container: string };

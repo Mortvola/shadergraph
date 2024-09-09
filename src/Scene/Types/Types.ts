@@ -5,6 +5,8 @@ import type {
   RenderNodeInterface, SceneNodeComponent, TransformPropsInterface,
 } from "../../Renderer/Types";
 import type { EntityInterface } from "../../State/types";
+import type Tree from "./Tree";
+import type TreeNode from "./TreeNode";
 
 export interface PrefabInterface {
   id: number;
@@ -60,17 +62,15 @@ export type PrefabNodeDescriptor = {
 };
 
 export interface SceneInterface {
-  name: string;
+  selectedNode: TreeNode | null;
 
-  selectedObject: SceneNodeBaseInterface | null;
+  tree: Tree;
 
-  rootObject: SceneNodeInterface | PrefabNodeInstanceInterface;
+  draggingNode: TreeNode | null;
 
-  draggingItem: SceneNodeBaseInterface | null;
+  addNode(node: TreeNode): void;
 
-  addObject(object: SceneNodeInterface): void;
-
-  setSelectedObject(object: SceneNodeBaseInterface): void;
+  setSelectedObject(node: TreeNode): void;
 
   renderScene(): Promise<void>;
 }
@@ -127,6 +127,7 @@ export type SceneNodeDescriptor = {
   id: number;
   name: string;
   object: {
+    type: ObjectType;
     components: ComponentDescriptor[];
     transformProps: TransformPropsDescriptor;
     nodes: number[];
@@ -187,10 +188,10 @@ export interface PrefabInstanceInterface {
 }
 
 export type SceneDescriptor = {
-  id?: number;
+  id: number;
   name: string;
   scene: {
-    objects: number;
+    tree: number;
   };
 }
 
@@ -200,4 +201,67 @@ export type TransformPropsDescriptor = {
   scale?: number[];
 };
 
-export type TransformPropsOverrides = Partial<TransformPropsDescriptor>;
+export enum ObjectType {
+  NodeObject = 'Object',
+  TreeNode = 'TreeNode',
+  Tree = 'Tree',
+  TreeInstance = 'TreeInstance',
+  NodeObjectOverride = 'ObjectOverride',
+}
+
+export type NodeObjectDescriptor = {
+  id: number,
+  type: ObjectType,
+  components: ComponentDescriptor[];
+  transformProps?: TransformPropsDescriptor;
+}
+
+export class NodeObject {
+
+}
+
+export type TreeNodeDescriptor = {
+  id: number,
+  name: string,
+  object: {
+    type: ObjectType,
+    nodes: number[] // Can be a TreeNode or a TreeInstance.
+    objectId: number,
+  }
+}
+
+export type TreeDescriptor = {
+  id: number,
+  name: string,
+  object: {
+    type: ObjectType,
+    root: number // References a TreeNode  
+  }
+}
+
+export type NodeObjectOverride = {
+  id: number,
+  type: ObjectType,
+  baseNodeId: number, // Can be a NodeObjectOverride or a NodeObject
+  components: ComponentDescriptor[];
+  transformProps?: TransformPropsDescriptor;
+  connections: number[], // Can be a TreeNode or a TreeInstance
+}
+
+export type TreeInstance = {
+  tree: number,
+  type: ObjectType,
+  nodes: number[], // Array of NodeObjectOverride ids.
+}
+
+export const isTreeDescriptor = (r: unknown): r is TreeDescriptor => (
+  (r as TreeDescriptor)?.object?.type === ObjectType.Tree
+)
+
+export const isTreeNodeDescriptor = (r: unknown): r is TreeNodeDescriptor => (
+  (r as TreeNodeDescriptor)?.object?.type === ObjectType.TreeNode
+)
+
+export const isSceneNodeDescriptor = (r: unknown): r is SceneNodeDescriptor => (
+  (r as SceneNodeDescriptor)?.object?.type === ObjectType.NodeObject
+)

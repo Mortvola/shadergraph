@@ -44,8 +44,8 @@ const Inspector: React.FC = observer(() => {
   }
 
   const renderView = () => {
-    if (scene?.selectedObject) {
-      return <SceneNode sceneNode={scene.selectedObject} />
+    if (scene?.selectedNode) {
+      return <SceneNode sceneNode={scene.selectedNode.nodeObject} />
     }
 
     if (project.selectedItem) {

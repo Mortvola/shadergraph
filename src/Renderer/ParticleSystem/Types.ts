@@ -149,5 +149,3 @@ export type ParticleSystemPropsDescriptor = {
 
   renderer?: RendererDescriptor,
 }
-
-export type ParticleSystemPropsOverrides = Partial<ParticleSystemPropsDescriptor>;

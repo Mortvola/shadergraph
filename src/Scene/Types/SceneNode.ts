@@ -1,5 +1,5 @@
 import { vec3 } from "wgpu-matrix";
-import type { SceneNodeDescriptor } from "./Types";
+import { ObjectType, type SceneNodeDescriptor } from "./Types";
 import type { SceneNodeInterface } from "./Types";
 import type {
   SceneNodeComponent, LightPropsDescriptor, NewSceneNodeComponent,
@@ -82,7 +82,7 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
 
       if (descriptor.object.nodes) {
         object.nodes = (await Promise.all(descriptor.object.nodes.map(async (id) => {
-          const child = await objectManager.get(id);
+          const child = await objectManager.getSceneNode(id);
 
           if (child) {
             child.parent = object
@@ -119,6 +119,7 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
       id: this.id < 0 ? undefined : this.id,
       name: this.name,
       object: {
+        type: ObjectType.NodeObject,
         components: this.components.map((c) => ({
           id: c.id,
           type: c.type,
@@ -137,10 +138,10 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
 
   async save(): Promise<void> {
     if (this.id < 0) {
-      objectManager.add(this)
+      await objectManager.add(this)
     }
     else {
-      objectManager.update(this)
+      await objectManager.update(this)
     }      
   }
 

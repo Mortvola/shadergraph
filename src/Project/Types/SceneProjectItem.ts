@@ -17,8 +17,8 @@ class SceneProjectItem extends ProjectItem<SceneInterface> {
 
     if (changed) {
       runInAction(() => {
-        if (this.item?.rootObject) {
-          this.item.rootObject.name = name;
+        if (this.item?.tree) {
+          this.item.tree.name = name;
         }  
       })
       

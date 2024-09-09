@@ -223,8 +223,6 @@ export type LightPropsDescriptor = {
   quadratic: number,
 }
 
-export type LightPropsOverrides = Partial<LightPropsDescriptor>
-
 export interface LightPropsInterface {
   color: number[],
   constant: number,

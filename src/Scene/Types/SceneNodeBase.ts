@@ -1,12 +1,12 @@
 import { vec3 } from "wgpu-matrix";
 import { observable, runInAction } from "mobx";
 import type { NewSceneNodeComponent, SceneNodeComponent, TransformPropsInterface } from "../../Renderer/Types";
-import NodeBase from "./NodeBase";
+import ObjectBase from "./ObjectBase";
 import type { SceneNodeBaseInterface } from "./Types";
 import TransformProps from "../../Renderer/Properties/TransformProps";
 import RenderNode from "../../Renderer/Drawables/SceneNodes/RenderNode";
 
-export class SceneNodeBase extends NodeBase implements SceneNodeBaseInterface {
+export class SceneNodeBase extends ObjectBase implements SceneNodeBaseInterface {
   @observable
   accessor components: SceneNodeComponent[] = []
 
@@ -130,12 +130,12 @@ export class SceneNodeBase extends NodeBase implements SceneNodeBaseInterface {
     this.onChange();
   }
 
-  toDescriptor(): object {
-    throw new Error('not implemented')
-  }
-
   isPrefabInstanceRoot(): boolean {
     return false;
+  }
+
+  toDescriptor(): object {
+    return {}    
   }
 }
 

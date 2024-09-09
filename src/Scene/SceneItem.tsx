@@ -3,14 +3,14 @@ import styles from './SceneItem.module.scss';
 import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import type { MenuItemLike } from '../ContextMenu/types';
-import type { SceneNodeBaseInterface } from "./Types/Types";
 import type { SceneInterface } from "./Types/Types";
 import { isPrefabInstanceObject } from './Types/PrefabNodeInstance';
+import type TreeNode from './Types/TreeNode';
 
 type PropsType = {
   project: SceneInterface,
-  item: SceneNodeBaseInterface,
-  onSelect?: (item: SceneNodeBaseInterface) => void,
+  item: TreeNode,
+  onSelect?: (item: TreeNode) => void,
   selected: boolean,
   draggable?: boolean,
 }
@@ -34,7 +34,7 @@ const SceneItem: React.FC<PropsType> = observer(({
     event.dataTransfer.clearData();
     event.dataTransfer.setData("application/scene-item", item.id.toString());
 
-    project.draggingItem = item;
+    project.draggingNode = item;
   }
 
   const handleDrag = () => {
@@ -42,7 +42,7 @@ const SceneItem: React.FC<PropsType> = observer(({
   }
 
   const handleDragEnd = () => {
-    project.draggingItem = null;
+    project.draggingNode = null;
   }
 
   const [editing, setEditing] = React.useState<boolean>(false);
@@ -111,7 +111,7 @@ const SceneItem: React.FC<PropsType> = observer(({
       {
         editing
           ? <input type="text" value={name} onBlur={handleBlur} onChange={handleChange} autoFocus onFocus={handleFocus} />
-          : `${item.name}`
+          : `${item.nodeObject.name}`
       }
       {
         showMenu

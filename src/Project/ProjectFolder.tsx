@@ -44,7 +44,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
       setDroppable(true);
     } else if ((
       event.dataTransfer.types[0] === 'application/scene-item'
-      && store.scene?.draggingItem
+      && store.scene?.draggingNode
     )) {
       event.dataTransfer.dropEffect = 'copy';
       setDroppable(true);
@@ -77,7 +77,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
       }
       else if (event.dataTransfer.types[0] === 'application/scene-item') {
         console.log(event.dataTransfer.types[0])
-        const sceneNode = store.scene?.draggingItem
+        const sceneNode = store.scene?.draggingNode
 
         if (isSceneNode(sceneNode)) {
           ( async () => {
@@ -120,7 +120,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
       store.project.createNewItem(name, folder.newItemType!, folder)
     }
 
-    setName('');
+    // setName('');
   }
 
   const handleBlur = () => {
