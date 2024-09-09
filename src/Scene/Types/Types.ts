@@ -1,7 +1,7 @@
 import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
 import type { PropertyBaseInterface } from "../../Renderer/Properties/Types";
 import type {
-  ComponentDescriptor, ComponentType, LightPropsDescriptor, NewSceneNodeComponent,
+  ComponentDescriptor, LightPropsDescriptor, NewSceneNodeComponent,
   RenderNodeInterface, SceneNodeComponent, TransformPropsInterface,
 } from "../../Renderer/Types";
 import type { EntityInterface } from "../../State/types";
@@ -54,7 +54,7 @@ export interface PrefabNodeInstanceInterface extends SceneNodeBaseInterface {
 export type PrefabNodeDescriptor = {
   id: number;
   name: string;
-  components: PrefabComponentDescriptor[];
+  components: ComponentDescriptor[];
   transformProps?: TransformPropsDescriptor;
   nodes: PrefabNodeDescriptor[];
 };
@@ -127,12 +127,9 @@ export type SceneNodeDescriptor = {
   id: number;
   name: string;
   object: {
-    translate?: number[];
-    rotate?: number[];
-    scale?: number[];
-    components?: ComponentDescriptor[];
-    items?: ComponentDescriptor[]; // deprecated
-    objects?: number[];
+    components: ComponentDescriptor[];
+    transformProps: TransformPropsDescriptor;
+    nodes: number[];
   };
 }
 
@@ -150,7 +147,7 @@ export type PrefabInstanceDescriptor = {
 
 export type PrefabInstanceNodeDesriptor = {
   id: number;
-  components: PrefabComponentDescriptor[];
+  components: ComponentDescriptor[];
   transformProps?: TransformPropsDescriptor;
 }
 
@@ -158,12 +155,6 @@ export const isPrefabInstanceDescriptor = (r: unknown): r is PrefabInstanceDescr
   r !== undefined && r !== undefined
   && (r as PrefabInstanceDescriptor).object?.prefabId !== undefined
 )
-
-export type PrefabComponentDescriptor = {
-  id: number;
-  type: ComponentType;
-  props?: PrefabPropsDescriptor;
-}
 
 export type PrefabPropsDescriptor = ParticleSystemPropsDescriptor | LightPropsDescriptor;
 

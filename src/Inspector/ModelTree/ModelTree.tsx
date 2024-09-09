@@ -36,7 +36,7 @@ const ModelTree: React.FC<PropsType> = observer(({
 
     materials[node.name] = materialId;
 
-    onChange({ id: modelItem.id, materials, toDescriptor: () => { return { type: ComponentType.Mesh, props: {} } } })
+    onChange({ id: modelItem.id, materials, toDescriptor: () => { return { id: -1, type: ComponentType.Mesh, props: {} } } })
   }
 
   const renderTree = () => {

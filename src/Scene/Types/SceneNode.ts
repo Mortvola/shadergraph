@@ -29,21 +29,15 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
       object.id = descriptor.id;
       object.name = descriptor?.name ?? object.name;
 
-      object.transformProps = new TransformProps(descriptor.object, object.transformChanged);
+      object.transformProps = new TransformProps(descriptor.object.transformProps, object.transformChanged);
 
-      let components = descriptor.object.components;
-      if (!components) {
-        components = descriptor.object.items;
-      }
+      const components = descriptor.object.components;
 
       if (components) {
         object.components = (await Promise.all(components.map(async (c) => {
           switch (c.type) {
             case ComponentType.ParticleSystem: {
-              let propsDescriptor = c.props as ParticleSystemPropsDescriptor;
-              if (!propsDescriptor) {
-                propsDescriptor = c.item as ParticleSystemPropsDescriptor;
-              }
+              const propsDescriptor = c.props as ParticleSystemPropsDescriptor;
 
               const props = new ParticleSystemProps(propsDescriptor);
               props.onChange = object.onChange;
@@ -62,10 +56,7 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
             }
 
             case ComponentType.Light: {
-              let propsDescriptor = c.props as LightPropsDescriptor;
-              if (!propsDescriptor) {
-                propsDescriptor = c.item as LightPropsDescriptor;
-              }
+              const propsDescriptor = c.props as LightPropsDescriptor;
 
               const props = new LightProps(propsDescriptor);
               props.onChange = object.onChange;
@@ -89,8 +80,8 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
         .filter((c) => c !== undefined)
       }
 
-      if (descriptor.object.objects) {
-        object.nodes = (await Promise.all(descriptor.object.objects.map(async (id) => {
+      if (descriptor.object.nodes) {
+        object.nodes = (await Promise.all(descriptor.object.nodes.map(async (id) => {
           const child = await objectManager.get(id);
 
           if (child) {
@@ -133,12 +124,10 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
           type: c.type,
           props: c.props.toDescriptor(),
         })),
-        objects: this.nodes.map((o) => {
+        nodes: this.nodes.map((o) => {
           return (o.getObjectId())
         }),
-        translate: [...this.transformProps.translate.get()],
-        rotate: [...this.transformProps.rotate.get()],
-        scale: [...this.transformProps.scale.get()],  
+        transformProps: this.transformProps.toDescriptor()!,
         nextComponentId: this.nextComponentId,
       }
     }
