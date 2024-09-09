@@ -1,6 +1,6 @@
 import { vec3 } from "wgpu-matrix";
 import type { TransformPropsInterface } from "../Types";
-import type { TransformPropsDescriptor } from "../../State/types";
+import type { TransformPropsDescriptor } from "../../Scene/Types/Types";
 import { PropsBase, removeUndefinedKeys } from "./Types";
 import { PSVec3Type } from "./Property";
 

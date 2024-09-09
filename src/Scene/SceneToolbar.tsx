@@ -3,9 +3,9 @@ import type { MenuItemLike } from '../ContextMenu/types';
 import { useStores } from '../State/store';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import styles from '../Project/Project.module.scss'
-import SceneObject from './Types/SceneObject';
+import SceneNode from './Types/SceneNode';
 import ParticleSystem from '../Renderer/ParticleSystem/ParticleSystem';
-import type { NewSceneObjectComponent } from '../Renderer/Types';
+import type { NewSceneNodeComponent } from '../Renderer/Types';
 import { ComponentType } from '../Renderer/Types';
 import Light from '../Renderer/Drawables/Light';
 import type { SceneInterface } from "./Types/Types";
@@ -46,7 +46,7 @@ const SceneToolbar: React.FC<PropsType> = ({
   const menuItems = React.useCallback((): MenuItemLike[] => ([
     { name: 'Create scene object', action: async () => {
       if (scene) {
-        const object = new SceneObject()
+        const object = new SceneNode()
 
         await object.save();
 
@@ -57,12 +57,12 @@ const SceneToolbar: React.FC<PropsType> = ({
     } },
     { name: 'Create particle system', action: async () => {
       if (scene) {
-        const object = new SceneObject()
+        const object = new SceneNode()
 
         const props = new ParticleSystemProps();
         const particleSystem = new ParticleSystem(props);
 
-        const item: NewSceneObjectComponent = {
+        const item: NewSceneNodeComponent = {
           type: ComponentType.ParticleSystem,
           props: props,
           component: particleSystem,
@@ -77,12 +77,12 @@ const SceneToolbar: React.FC<PropsType> = ({
     } },
     { name: 'Create light', action: async () => {
       if (scene) {
-        const object = new SceneObject()
+        const object = new SceneNode()
 
         const props = new LightProps();
         const light = new Light(props);
 
-        const item: NewSceneObjectComponent = {
+        const item: NewSceneNodeComponent = {
           type: ComponentType.Light,
           props: props,
           component: light,

@@ -7,17 +7,18 @@ import type { ShaderDescriptor } from './shaders/ShaderDescriptor';
 import type SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
 import type ShaderGraph from './ShaderBuilder/ShaderGraph';
 import type { ParticleSystemPropsDescriptor } from './ParticleSystem/Types';
-import type { MaterialItemInterface, TransformPropsDescriptor } from '../State/types';
+import type { MaterialItemInterface } from '../State/types';
 import type ParticleSystemProps from './ParticleSystem/ParticleSystemProps';
 import type LightProps from './Properties/LightProps';
 import type { PSVec3Type } from './Properties/Property';
 import type { ValueType } from './ShaderBuilder/GraphDescriptor';
 import type { ParticleSystemPropsInterface } from './ParticleSystem/ParticleSystemPropsInterface';
+import type { TransformPropsDescriptor } from '../Scene/Types/Types';
 
-export interface SceneNodeInterface {
-  nodes: SceneNodeInterface[];
+export interface RenderNodeInterface {
+  nodes: RenderNodeInterface[];
 
-  parentNode: SceneNodeInterface | null;
+  parentNode: RenderNodeInterface | null;
 
   components: Set<ComponentInterface>;
 
@@ -43,9 +44,9 @@ export interface SceneNodeInterface {
 
   getTransform(): Mat4;
 
-  addNode(node: SceneNodeInterface): void;
+  addNode(node: RenderNodeInterface): void;
 
-  removeNode(node: SceneNodeInterface): void;
+  removeNode(node: RenderNodeInterface): void;
 
   detachSelf(): void;
 
@@ -61,13 +62,13 @@ export interface RenderPassInterface {
 export type RenderPass2DInterface = object;
 
 export interface SceneGraphInterface {
-  addNode(node: SceneNodeInterface): void;
+  addNode(node: RenderNodeInterface): void;
 
-  nodeAdded(node: SceneNodeInterface): void;
+  nodeAdded(node: RenderNodeInterface): void;
 
-  removeNode(node: SceneNodeInterface): void;
+  removeNode(node: RenderNodeInterface): void;
 
-  nodeRemoved(node: SceneNodeInterface): void;
+  nodeRemoved(node: RenderNodeInterface): void;
 
   componentAdded(component: ComponentInterface): void;
 }
@@ -202,7 +203,7 @@ export enum ComponentType {
 export interface ComponentInterface {
   type: ComponentType;
 
-  sceneNode: SceneNodeInterface | null;
+  renderNode: RenderNodeInterface | null;
 
   onChange?: () =>void;
 
@@ -238,14 +239,14 @@ export interface LightInterface extends ComponentInterface {
   props: LightPropsInterface;
 }
 
-export type SceneObjectComponent = {
+export type SceneNodeComponent = {
   id: number,
   type: ComponentType,
   props: ParticleSystemProps | LightProps,
   component?: ParticleSystemInterface | LightInterface,
 }
 
-export type NewSceneObjectComponent = Omit<SceneObjectComponent, 'id'>
+export type NewSceneNodeComponent = Omit<SceneNodeComponent, 'id'>
 
 export interface TransformPropsInterface {
   translate: PSVec3Type;
@@ -256,7 +257,7 @@ export interface TransformPropsInterface {
 }
 
 export type GameObject = {
-  items: SceneObjectComponent[],
+  items: SceneNodeComponent[],
 }
 
 export type GameObjectRecord = {

@@ -8,20 +8,20 @@ import TransformProps from "../../Renderer/Properties/TransformProps";
 import type { LightPropsInterface } from "../../Renderer/Types";
 import { ComponentType } from "../../Renderer/Types";
 import Entity from "../../State/Entity";
-import type { ConnectedObject, ObjectOverrides, PrefabInstanceInterface, SceneObjectInterface } from "./Types";
+import type { ConnectedObject, ObjectOverrides, PrefabInstanceInterface, SceneNodeInterface } from "./Types";
 import type { PrefabInstanceNodeDesriptor } from "./Types";
 import type { PrefabInstanceDescriptor } from "./Types";
-import type { SceneObjectBaseInterface } from "./Types";
+import type { SceneNodeBaseInterface } from "./Types";
 import type { PrefabNodeInterface } from "./Types";
 import type { PrefabInterface } from "./Types";
 import { prefabManager } from "./PrefabManager";
-import PrefabInstanceObject, { isPrefabInstanceObject } from "./PrefabInstanceObject";
+import PrefabNodeInstance, { isPrefabInstanceObject } from "./PrefabNodeInstance";
 import { objectManager } from "./ObjectManager";
 
 class PrefabInstance extends Entity implements PrefabInstanceInterface {
   prefab: PrefabInterface
 
-  root?: PrefabInstanceObject
+  root?: PrefabNodeInstance
 
   autosave = true;
 
@@ -53,8 +53,8 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     prefab: PrefabInterface,  // refers to the prefab itself
     prefabNode: PrefabNodeInterface, // A node within the prefab itself
     descriptor?: PrefabInstanceDescriptor,
-  ): Promise<PrefabInstanceObject> {
-    const object = new PrefabInstanceObject(this, prefabNode);
+  ): Promise<PrefabNodeInstance> {
+    const object = new PrefabNodeInstance(this, prefabNode);
 
     const nodeDescriptor = descriptor?.object.nodes?.find((n) => n.id === prefabNode.id);
 
@@ -83,7 +83,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
 
           const ps = new ParticleSystem(props)
 
-          object.sceneNode.addComponent(ps)
+          object.renderNode.addComponent(ps)
 
           return {
             id: c.id,
@@ -97,7 +97,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
         case ComponentType.Light: {
           const light = new Light(c.props as LightPropsInterface);
 
-          object.sceneNode.addComponent(light)
+          object.renderNode.addComponent(light)
 
           return {
             id: c.id,
@@ -113,7 +113,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     })))
       .filter((c) => c !== undefined)
     
-    object.objects = await Promise.all(prefabNode.nodes.map((node) => this.fromPrefabNode(prefab, node, descriptor)));
+    object.nodes = await Promise.all(prefabNode.nodes.map((node) => this.fromPrefabNode(prefab, node, descriptor)));
 
     const connectedObjects = descriptor?.object.connectedObjects
     if (connectedObjects) {
@@ -122,25 +122,25 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
           const newObject = await objectManager.get(connectedObject.objectId)
 
           if (newObject) {
-            object.objects.push(newObject)
+            object.nodes.push(newObject)
             newObject.parent = object;
           }
         }
       }  
     }
 
-    for (const child of object.objects) {
+    for (const child of object.nodes) {
       child.parent = object;
-      object.sceneNode.addNode(child.sceneNode)
+      object.renderNode.addNode(child.renderNode)
     }
 
     // Setup the transform and copy it to the scene node.
     object.transformProps = new TransformProps(nodeDescriptor?.transformProps, object.transformChanged, prefabNode.transformProps as TransformProps);;
 
-    vec3.copy(object.transformProps.translate.get(), object.sceneNode.translate)
-    vec3.copy(object.transformProps.scale.get(), object.sceneNode.scale)
+    vec3.copy(object.transformProps.translate.get(), object.renderNode.translate)
+    vec3.copy(object.transformProps.scale.get(), object.renderNode.scale)
 
-    object.ancestor = prefabNode;
+    object.baseNode = prefabNode;
 
     return object;
   }
@@ -149,7 +149,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     let max = 0;
 
     if (this.root) {
-      let stack: SceneObjectBaseInterface[] = [this.root];
+      let stack: SceneNodeBaseInterface[] = [this.root];
 
       while (stack.length > 0) {
         const instanceObject = stack[0];
@@ -159,7 +159,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
           max = instanceObject.id
         }
 
-        for (const object of instanceObject.objects) {
+        for (const object of instanceObject.nodes) {
           // If this is an instance object and the prefab instance is the one we are processing then
           // add the object to the stack.
           if (isPrefabInstanceObject(object) && object.prefabInstance === this) {
@@ -172,25 +172,25 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     return max;
   }
 
-  async attachSceneObject(
-    sceneObject: SceneObjectInterface,
+  async attachSceneNode(
+    sceneNode: SceneNodeInterface,
   ): Promise<void> {
     const id = this.getMaxNodeId() + 1;
-    const parent = (sceneObject.parent as PrefabInstanceObject);
-    const prefabParent = (sceneObject.parent as PrefabInstanceObject).ancestor;
+    const parent = (sceneNode.parent as PrefabNodeInstance);
+    const prefabParent = (sceneNode.parent as PrefabNodeInstance).baseNode;
 
-    const prefabRoot = this.prefab.addSceneObjects(sceneObject, id, prefabParent);
+    const prefabRoot = this.prefab.addSceneNodes(sceneNode, id, prefabParent);
 
-    let root: PrefabInstanceObject | null = null;
+    let root: PrefabNodeInstance | null = null;
 
     // Starting at the root of the new prefab tree branch, add a prefab instance object
-    let stack: { prefabNode: PrefabNodeInterface, parent: PrefabInstanceObject | null }[] = [{ prefabNode: prefabRoot, parent}];
+    let stack: { prefabNode: PrefabNodeInterface, parent: PrefabNodeInstance | null }[] = [{ prefabNode: prefabRoot, parent}];
 
     while (stack.length > 0) {
       const { prefabNode, parent } = stack[0];
       stack = stack.slice(1);
 
-      const node = new PrefabInstanceObject(this, prefabNode);
+      const node = new PrefabNodeInstance(this, prefabNode);
 
       node.prefabInstance = this;
     
@@ -217,7 +217,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
 
             const ps = new ParticleSystem(props)
 
-            node.sceneNode.addComponent(ps)
+            node.renderNode.addComponent(ps)
 
             return {
               id: c.id,
@@ -231,7 +231,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
           case ComponentType.Light: {
             const light = new Light(c.props as LightPropsInterface);
 
-            node.sceneNode.addComponent(light)
+            node.renderNode.addComponent(light)
 
             return {
               id: c.id,
@@ -249,16 +249,16 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
       
       if (parent) {
         node.parent = parent
-        parent.sceneNode.addNode(node.sceneNode)
+        parent.renderNode.addNode(node.renderNode)
       }
 
       // Setup the transform and copy it to the scene node.
       node.transformProps = new TransformProps(undefined, node.transformChanged, prefabNode.transformProps as TransformProps);
 
-      vec3.copy(node.transformProps.translate.get(), node.sceneNode.translate)
-      vec3.copy(node.transformProps.scale.get(), node.sceneNode.scale)
+      vec3.copy(node.transformProps.translate.get(), node.renderNode.translate)
+      vec3.copy(node.transformProps.scale.get(), node.renderNode.scale)
 
-      node.ancestor = prefabNode;
+      node.baseNode = prefabNode;
 
       // Push prefab children on to the stack
       for (const child of prefabNode.nodes) {
@@ -272,7 +272,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
 
     this.autosave = false;
 
-    sceneObject.detachSelf()
+    sceneNode.detachSelf()
 
     this.autosave = true;
 
@@ -315,7 +315,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     const connectedObjects: ConnectedObject[] = [];
 
     if (this.root) {
-      let stack: SceneObjectBaseInterface[] = [this.root];
+      let stack: SceneNodeBaseInterface[] = [this.root];
 
       while (stack.length > 0) {
         const instanceObject = stack[0];
@@ -347,7 +347,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
         }
 
         // Add the node's children to the stack
-        for (const object of instanceObject.objects) {
+        for (const object of instanceObject.nodes) {
           // If this is an instance object and the prefab instance is the one we are processing then
           // add the object to the stack. Otherwise, add the object to the connected object array.
           if (isPrefabInstanceObject(object) && object.prefabInstance === this) {
@@ -367,7 +367,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     const overrides: ObjectOverrides[] = []
 
     if (this.root) {
-      let stack: PrefabInstanceObject[] = [this.root]
+      let stack: PrefabNodeInstance[] = [this.root]
 
       while (stack.length > 0) {
         const instanceObject = stack[0];
@@ -388,7 +388,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
         objectOverrides.overrides = objectOverrides.overrides.concat(t2)
 
         // Add the node's children to the stack
-        for (const object of instanceObject.objects) {
+        for (const object of instanceObject.nodes) {
           // If this is an instance object and the prefab instance is the one we are processing then
           // add the object to the stack. Otherwise, add the object to the connected object array.
           if (isPrefabInstanceObject(object) && object.prefabInstance === this) {

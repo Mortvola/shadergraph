@@ -1,10 +1,10 @@
 import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
 import type { PropertyBaseInterface } from "../../Renderer/Properties/Types";
 import type {
-  ComponentDescriptor, ComponentType, LightPropsDescriptor, NewSceneObjectComponent,
-  SceneNodeInterface, SceneObjectComponent, TransformPropsInterface,
+  ComponentDescriptor, ComponentType, LightPropsDescriptor, NewSceneNodeComponent,
+  RenderNodeInterface, SceneNodeComponent, TransformPropsInterface,
 } from "../../Renderer/Types";
-import type { EntityInterface, TransformPropsDescriptor } from "../../State/types";
+import type { EntityInterface } from "../../State/types";
 
 export interface PrefabInterface {
   id: number;
@@ -15,7 +15,7 @@ export interface PrefabInterface {
 
   autosave: boolean;
 
-  addSceneObjects(startingObject: SceneObjectInterface, id: number, parentNode: PrefabNodeInterface | null): PrefabNodeInterface;
+  addSceneNodes(startingObject: SceneNodeInterface, id: number, parentNode: PrefabNodeInterface | null): PrefabNodeInterface;
 
   toDescriptor(): PrefabDescriptor;
 
@@ -27,15 +27,13 @@ export interface PrefabNodeInterface {
 
   name: string;
 
-  components: SceneObjectComponent[];
+  components: SceneNodeComponent[];
 
   nodes: PrefabNodeInterface[];
 
   transformProps: TransformPropsInterface;
 
   prefab: PrefabInterface;
-
-  ancestor?: PrefabNodeInterface;
 
   toDescriptor(): PrefabNodeDescriptor;
 }
@@ -48,8 +46,8 @@ export type PrefabDescriptor = {
   };
 };
 
-export interface PrefabInstanceObjectInterface extends SceneObjectBaseInterface {
-  ancestor: PrefabNodeInterface;
+export interface PrefabNodeInstanceInterface extends SceneNodeBaseInterface {
+  baseNode: PrefabNodeInterface;
 
 }
 
@@ -64,39 +62,39 @@ export type PrefabNodeDescriptor = {
 export interface SceneInterface {
   name: string;
 
-  selectedObject: SceneObjectBaseInterface | null;
+  selectedObject: SceneNodeBaseInterface | null;
 
-  rootObject: SceneObjectInterface | PrefabInstanceObjectInterface;
+  rootObject: SceneNodeInterface | PrefabNodeInstanceInterface;
 
-  draggingItem: SceneObjectBaseInterface | null;
+  draggingItem: SceneNodeBaseInterface | null;
 
-  addObject(object: SceneObjectInterface): void;
+  addObject(object: SceneNodeInterface): void;
 
-  setSelectedObject(object: SceneObjectBaseInterface): void;
+  setSelectedObject(object: SceneNodeBaseInterface): void;
 
   renderScene(): Promise<void>;
 }
 
-export interface SceneObjectBaseInterface extends EntityInterface {
-  components: SceneObjectComponent[];
+export interface SceneNodeBaseInterface extends EntityInterface {
+  components: SceneNodeComponent[];
 
-  objects: SceneObjectBaseInterface[];
+  nodes: SceneNodeBaseInterface[];
 
   transformProps: TransformPropsInterface;
 
-  parent: SceneObjectBaseInterface | null;
+  parent: SceneNodeBaseInterface | null;
 
-  sceneNode: SceneNodeInterface;
+  renderNode: RenderNodeInterface;
 
-  addObject(object: SceneObjectBaseInterface): void;
+  addObject(object: SceneNodeBaseInterface): void;
 
-  removeObject(object: SceneObjectBaseInterface): void;
+  removeObject(object: SceneNodeBaseInterface): void;
 
-  addComponent(component: NewSceneObjectComponent): void;
+  addComponent(component: NewSceneNodeComponent): void;
 
-  removeComponent(component: SceneObjectComponent): void;
+  removeComponent(component: SceneNodeComponent): void;
 
-  isAncestor(item: SceneObjectBaseInterface): boolean;
+  isAncestor(item: SceneNodeBaseInterface): boolean;
 
   changeName(name: string): void;
 
@@ -107,25 +105,25 @@ export interface SceneObjectBaseInterface extends EntityInterface {
   isPrefabInstanceRoot(): boolean;
 }
 
-export const isSceneObject = (r: unknown): r is SceneObjectInterface => (
+export const isSceneNode = (r: unknown): r is SceneNodeInterface => (
   r !== null && r !== undefined
-  && (r as PrefabInstanceObjectInterface).ancestor === undefined
+  && (r as PrefabNodeInstanceInterface).baseNode === undefined
 )
 
-export interface SceneObjectInterface extends SceneObjectBaseInterface {
-  components: SceneObjectComponent[];
+export interface SceneNodeInterface extends SceneNodeBaseInterface {
+  components: SceneNodeComponent[];
 
   save(): Promise<void>;
 
   getNextComponentId(): number;
 }
 
-export const isGameObject = (r: unknown): r is SceneObjectInterface => (
+export const isGameObject = (r: unknown): r is SceneNodeInterface => (
   r !== undefined && r !== null &&
-  (r as SceneObjectInterface).components !== undefined
+  (r as SceneNodeInterface).components !== undefined
 )
 
-export type SceneObjectDescriptor = {
+export type SceneNodeDescriptor = {
   id: number;
   name: string;
   object: {
@@ -169,7 +167,7 @@ export type PrefabComponentDescriptor = {
 
 export type PrefabPropsDescriptor = ParticleSystemPropsDescriptor | LightPropsDescriptor;
 
-export type CconnectedObjectOverride = { connectedObject: SceneObjectBaseInterface };
+export type CconnectedObjectOverride = { connectedObject: SceneNodeBaseInterface };
 export type PropertyOverride = { property: PropertyBaseInterface };
 
 export const isPropertyOverride = (r: unknown): r is PropertyOverride => (
@@ -177,7 +175,7 @@ export const isPropertyOverride = (r: unknown): r is PropertyOverride => (
 )
 
 export type ObjectOverrides = {
-  object: SceneObjectBaseInterface,
+  object: SceneNodeBaseInterface,
   overrides: (CconnectedObjectOverride | PropertyOverride)[],
 }
 
@@ -186,14 +184,14 @@ export interface PrefabInstanceInterface {
 
   autosave: boolean;
 
-  root?: PrefabInstanceObjectInterface
+  root?: PrefabNodeInstanceInterface
 
   save(): Promise<void>;
 
   getOverrides(): ObjectOverrides[];
 
-  attachSceneObject(
-    sceneObject: SceneObjectBaseInterface,
+  attachSceneNode(
+    sceneNode: SceneNodeBaseInterface,
   ): Promise<void>
 }
 
@@ -204,3 +202,11 @@ export type SceneDescriptor = {
     objects: number;
   };
 }
+
+export type TransformPropsDescriptor = {
+  translate?: number[];
+  rotate?: number[];
+  scale?: number[];
+};
+
+export type TransformPropsOverrides = Partial<TransformPropsDescriptor>;

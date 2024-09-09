@@ -6,7 +6,7 @@ import {
 } from "../Types";
 import { gravity, intersectionPlane } from "../Math";
 import Particle from "./Particle";
-import SceneNode from "../Drawables/SceneNodes/SceneNode";
+import RenderNode from "../Drawables/SceneNodes/RenderNode";
 import Component from "../Drawables/Component";
 import type { ParticleSystemPropsInterface } from "./ParticleSystemPropsInterface";
 
@@ -182,10 +182,10 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
   }
 
   async renderParticle(particle: Particle, t: number) {
-    if (this.props.renderer.enabled.get() && this.sceneNode) {
+    if (this.props.renderer.enabled.get() && this.renderNode) {
       if (particle.sceneNode === null) {
-        particle.sceneNode = new SceneNode();
-        this.sceneNode.addNode(particle.sceneNode)  
+        particle.sceneNode = new RenderNode();
+        this.renderNode.addNode(particle.sceneNode)  
       }
 
       if (particle.drawable === null) {

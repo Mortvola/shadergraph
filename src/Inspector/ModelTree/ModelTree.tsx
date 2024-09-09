@@ -1,9 +1,9 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { useStores } from '../../State/store';
-import type { SceneNodeInterface, DrawableComponentInterface, ModelItem} from '../../Renderer/Types';
+import type { RenderNodeInterface, DrawableComponentInterface, ModelItem} from '../../Renderer/Types';
 import { ComponentType } from '../../Renderer/Types';
-import { isSceneNode } from '../../Renderer/Drawables/SceneNodes/SceneNode';
+import { isRenderNode } from '../../Renderer/Drawables/SceneNodes/RenderNode';
 import { isDrawableNode } from '../../Renderer/Drawables/SceneNodes/utils';
 import MeshNode from './MeshNode';
 
@@ -19,7 +19,7 @@ const ModelTree: React.FC<PropsType> = observer(({
   const store = useStores();
   // const { project: { selectedItem }, materials} = store;
 
-  const [model, setModel] = React.useState<SceneNodeInterface | null>(null)
+  const [model, setModel] = React.useState<RenderNodeInterface | null>(null)
 
   React.useEffect(() => {
     (async () => {
@@ -44,7 +44,7 @@ const ModelTree: React.FC<PropsType> = observer(({
 
     if (model) {
       let key = 0;
-      let stack: { level: number, node: SceneNodeInterface }[] = [{ level: 0, node: model }];
+      let stack: { level: number, node: RenderNodeInterface }[] = [{ level: 0, node: model }];
 
       while (stack.length > 0) {
         key += 1;
@@ -65,7 +65,7 @@ const ModelTree: React.FC<PropsType> = observer(({
           )  
         }
 
-        if (isSceneNode(node.node)) {
+        if (isRenderNode(node.node)) {
           stack = node.node.nodes.map((n) => ({
             level: node.level + 1,
             node: n,

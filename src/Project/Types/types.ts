@@ -1,20 +1,20 @@
-import type { SceneNodeInterface, ParticleSystemInterface, ShaderRecord } from "../../Renderer/Types";
+import type { RenderNodeInterface, ParticleSystemInterface, ShaderRecord } from "../../Renderer/Types";
 import type { GraphInterface } from "../../State/GraphInterface";
 import type {
   GameObject2DInterface, MaterialItemInterface,
   TextureInterface,
 } from "../../State/types";
-import type { SceneObjectInterface } from "../../Scene/Types/Types";
+import type { SceneNodeInterface } from "../../Scene/Types/Types";
 import type { SceneInterface } from "../../Scene/Types/Types";
 import type { PrefabInterface } from "../../Scene/Types/Types";
 
 export type ProjectItemLike =
-  ProjectItemInterface<SceneObjectInterface> |
+  ProjectItemInterface<SceneNodeInterface> |
   ProjectItemInterface<GameObject2DInterface> |
   ProjectItemInterface<MaterialItemInterface> |
   ProjectItemInterface<TextureInterface> |
   ProjectItemInterface<GraphInterface> |
-  ProjectItemInterface<SceneNodeInterface> |
+  ProjectItemInterface<RenderNodeInterface> |
   ProjectItemInterface<ParticleSystemInterface> |
   ProjectItemInterface<ShaderRecord> |
   ProjectItemInterface<SceneInterface> |
@@ -75,7 +75,7 @@ export const isShaderItem = (r: ProjectItemLike | null | undefined): r is Projec
   && (r.type === ProjectItemType.Shader)
 )
 
-export const isModelItem = (r: ProjectItemLike | null | undefined): r is ProjectItemInterface<SceneNodeInterface> => (
+export const isModelItem = (r: ProjectItemLike | null | undefined): r is ProjectItemInterface<RenderNodeInterface> => (
   r !== null && r !== undefined
   && (r.type === ProjectItemType.Model)
 )

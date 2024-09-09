@@ -14,8 +14,8 @@ class Light extends Component implements LightInterface {
   }
 
   get worldPosition(): Vec4 {
-    if (this.sceneNode) {
-      return vec4.transformMat4(vec4.create(0, 0, 0, 1), this.sceneNode.transform);
+    if (this.renderNode) {
+      return vec4.transformMat4(vec4.create(0, 0, 0, 1), this.renderNode.transform);
     }
 
     return vec4.create(0, 0, 0, 1);

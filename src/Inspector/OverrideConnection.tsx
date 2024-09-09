@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './Overrides.module.scss';
-import type { SceneObjectBaseInterface } from '../Scene/Types/Types';
-import { isPrefabInstanceObject } from '../Scene/Types/PrefabInstanceObject';
+import type { SceneNodeBaseInterface } from '../Scene/Types/Types';
+import { isPrefabInstanceObject } from '../Scene/Types/PrefabNodeInstance';
 
 type PropsType = {
-  connectedObject: SceneObjectBaseInterface,
+  connectedObject: SceneNodeBaseInterface,
 }
 
 const OverrideConnection: React.FC<PropsType> = ({
@@ -15,7 +15,7 @@ const OverrideConnection: React.FC<PropsType> = ({
 
   const handleApplyClick = () => {
     if (isPrefabInstanceObject(connectedObject.parent)) {
-      connectedObject.parent.prefabInstance.attachSceneObject(connectedObject);
+      connectedObject.parent.prefabInstance.attachSceneNode(connectedObject);
     }
   }
 

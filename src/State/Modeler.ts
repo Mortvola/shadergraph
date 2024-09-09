@@ -1,10 +1,10 @@
 import { makeObservable, observable, runInAction } from "mobx";
 import Mesh from "../Renderer/Drawables/Mesh";
-import SceneNode, { isSceneNode } from "../Renderer/Drawables/SceneNodes/SceneNode";
+import RenderNode, { isRenderNode } from "../Renderer/Drawables/SceneNodes/RenderNode";
 import DrawableComponent from "../Renderer/Drawables/DrawableComponent";
 import { isDrawableNode } from "../Renderer/Drawables/SceneNodes/utils";
 import type Renderer from "../Renderer/Renderer";
-import type { SceneNodeInterface, DrawableComponentInterface, MaterialInterface } from "../Renderer/Types";
+import type { RenderNodeInterface, DrawableComponentInterface, MaterialInterface } from "../Renderer/Types";
 import type { ModelerInterface, NodeMaterials } from "./types";
 import { downloadFbx } from "../Fbx/LoadFbx";
 import type { FbxNodeInterface} from "../Fbx/types";
@@ -14,15 +14,15 @@ import { vec3 } from "wgpu-matrix";
 import type { StoreInterface } from "./StoreInterface";
 
 class Modeler implements ModelerInterface {
-  model: SceneNodeInterface | null = null;
+  model: RenderNodeInterface | null = null;
 
-  loading: Record<number, Promise<SceneNodeInterface | undefined>> = {}
+  loading: Record<number, Promise<RenderNodeInterface | undefined>> = {}
 
   renderer: Renderer;
 
   store: StoreInterface;
 
-  modelMap: Map<string, SceneNodeInterface> = new Map()
+  modelMap: Map<string, RenderNodeInterface> = new Map()
 
   constructor(renderer: Renderer, store: StoreInterface) {
     this.renderer = renderer;
@@ -60,7 +60,7 @@ class Modeler implements ModelerInterface {
     return model;
   }
 
-  async assignModel(model: SceneNodeInterface | null, materials?: NodeMaterials) {
+  async assignModel(model: RenderNodeInterface | null, materials?: NodeMaterials) {
     if (this.model) {
       this.renderer.removeSceneNode(this.model);
     }
@@ -80,8 +80,8 @@ class Modeler implements ModelerInterface {
     })
   }
 
-  async assignMaterals(model: SceneNodeInterface, materials: NodeMaterials) {
-    let stack: SceneNodeInterface[] = [model];
+  async assignMaterals(model: RenderNodeInterface, materials: NodeMaterials) {
+    let stack: RenderNodeInterface[] = [model];
 
     while (stack.length > 0) {
       const node = stack[0];
@@ -98,14 +98,14 @@ class Modeler implements ModelerInterface {
           }
         }
       }
-      else if (isSceneNode(node)) {
+      else if (isRenderNode(node)) {
         stack = stack.concat(node.nodes)
       }
     }
   }
 
-  getDrawableNode(node: SceneNodeInterface): DrawableComponentInterface | null {
-    if (isSceneNode(node)) {
+  getDrawableNode(node: RenderNodeInterface): DrawableComponentInterface | null {
+    if (isRenderNode(node)) {
       for (const child of node.nodes) {
         const n = this.getDrawableNode(child);
 
@@ -134,7 +134,7 @@ class Modeler implements ModelerInterface {
 
 export default Modeler;
 
-export const loadFbx = async (name: string): Promise<SceneNodeInterface | undefined> => {
+export const loadFbx = async (name: string): Promise<RenderNodeInterface | undefined> => {
   const result = await downloadFbx(name)
 
   if (result) {
@@ -146,9 +146,9 @@ const parseFbxModel = async (
   node: FbxNodeInterface,
   name: string,
   nodeMaterials?: NodeMaterials,
-): Promise<SceneNodeInterface | undefined> => {
+): Promise<RenderNodeInterface | undefined> => {
   if (isFbxContainerNode(node)) {
-    const container = new SceneNode();
+    const container = new RenderNode();
 
     vec3.copy(node.scale, container.scale);
     vec3.copy(node.translate, container.translate);
@@ -199,7 +199,7 @@ const parseFbxModel = async (
     //   materialDescriptor = litMaterial;
     // }  
 
-    const drawableNode = new SceneNode();
+    const drawableNode = new RenderNode();
     const drawable = await DrawableComponent.create(mesh);
 
     drawableNode.addComponent(drawable);

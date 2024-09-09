@@ -1,23 +1,23 @@
 import { vec3 } from "wgpu-matrix";
 import { observable, runInAction } from "mobx";
-import type { NewSceneObjectComponent, SceneObjectComponent, TransformPropsInterface } from "../../Renderer/Types";
+import type { NewSceneNodeComponent, SceneNodeComponent, TransformPropsInterface } from "../../Renderer/Types";
 import NodeBase from "./NodeBase";
-import type { SceneObjectBaseInterface } from "./Types";
+import type { SceneNodeBaseInterface } from "./Types";
 import TransformProps from "../../Renderer/Properties/TransformProps";
-import SceneNode from "../../Renderer/Drawables/SceneNodes/SceneNode";
+import RenderNode from "../../Renderer/Drawables/SceneNodes/RenderNode";
 
-export class SceneObjectBase extends NodeBase implements SceneObjectBaseInterface {
+export class SceneNodeBase extends NodeBase implements SceneNodeBaseInterface {
   @observable
-  accessor components: SceneObjectComponent[] = []
+  accessor components: SceneNodeComponent[] = []
 
   @observable
-  accessor objects: SceneObjectBase[] = [];
+  accessor nodes: SceneNodeBase[] = [];
+
+  parent: SceneNodeBase | null = null;
 
   transformProps: TransformPropsInterface = new TransformProps();
 
-  sceneNode = new SceneNode();
-
-  parent: SceneObjectBase | null = null;
+  renderNode = new RenderNode();
 
   nextComponentId = 0;
 
@@ -44,40 +44,40 @@ export class SceneObjectBase extends NodeBase implements SceneObjectBaseInterfac
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  addComponent(_component: NewSceneObjectComponent) {
+  addComponent(_component: NewSceneNodeComponent) {
     throw new Error('not implemented')
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  removeComponent(_component: SceneObjectComponent) {
+  removeComponent(_component: SceneNodeComponent) {
     throw new Error('not implemented')
   }
 
-  async addObject(object: SceneObjectBase): Promise<void> {
+  async addObject(object: SceneNodeBase): Promise<void> {
     return runInAction(async () => {
-      this.objects = [
-        ...this.objects,
+      this.nodes = [
+        ...this.nodes,
         object,
       ];
 
       object.parent = this;
-      this.sceneNode.addNode(object.sceneNode)
+      this.renderNode.addNode(object.renderNode)
 
       this.onChange();
     })
   }
 
-  removeObject(object: SceneObjectBase) {
-    const index = this.objects.findIndex((o) => o === object)
+  removeObject(object: SceneNodeBase) {
+    const index = this.nodes.findIndex((o) => o === object)
 
     if (index !== -1) {
       runInAction(() => {
-        this.objects = [
-          ...this.objects.slice(0, index),
-          ...this.objects.slice(index + 1),
+        this.nodes = [
+          ...this.nodes.slice(0, index),
+          ...this.nodes.slice(index + 1),
         ]
 
-        this.sceneNode.removeNode(object.sceneNode)
+        this.renderNode.removeNode(object.renderNode)
 
         this.onChange();
       })
@@ -98,9 +98,9 @@ export class SceneObjectBase extends NodeBase implements SceneObjectBaseInterfac
     })
   }
 
-  isAncestor(item: SceneObjectBase): boolean {
+  isAncestor(item: SceneNodeBase): boolean {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let child: SceneObjectBase | null = this;
+    let child: SceneNodeBase | null = this;
     for (;;) {
       if (child === null || child.parent === item) {
         break;
@@ -124,8 +124,8 @@ export class SceneObjectBase extends NodeBase implements SceneObjectBaseInterfac
   }
 
   transformChanged = () => {
-    vec3.copy(this.transformProps.translate.get(), this.sceneNode.translate)
-    vec3.copy(this.transformProps.scale.get(), this.sceneNode.scale)
+    vec3.copy(this.transformProps.translate.get(), this.renderNode.translate)
+    vec3.copy(this.transformProps.scale.get(), this.renderNode.scale)
 
     this.onChange();
   }

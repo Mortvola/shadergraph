@@ -1,17 +1,17 @@
 import { objectManager } from "./ObjectManager";
-import { SceneObjectBase } from "./SceneObjectBase";
-import type { PrefabInstanceInterface, PrefabInstanceObjectInterface, PrefabNodeInterface } from "./Types";
+import { SceneNodeBase } from "./SceneNodeBase";
+import type { PrefabInstanceInterface, PrefabNodeInstanceInterface, PrefabNodeInterface } from "./Types";
 
-export class PrefabInstanceObject extends SceneObjectBase implements PrefabInstanceObjectInterface {
+export class PrefabNodeInstance extends SceneNodeBase implements PrefabNodeInstanceInterface {
   prefabInstance: PrefabInstanceInterface;
 
-  ancestor: PrefabNodeInterface;
+  baseNode: PrefabNodeInterface;
 
   constructor(prefabInstance: PrefabInstanceInterface, ancestor: PrefabNodeInterface) {
     super()
 
     this.prefabInstance = prefabInstance;
-    this.ancestor = ancestor
+    this.baseNode = ancestor
   }
 
   getObjectId(): number {
@@ -35,9 +35,9 @@ export class PrefabInstanceObject extends SceneObjectBase implements PrefabInsta
   }
 }
 
-export const isPrefabInstanceObject = (r: unknown): r is PrefabInstanceObject => (
+export const isPrefabInstanceObject = (r: unknown): r is PrefabNodeInstance => (
   r !== undefined && r !== null
-  && (r as PrefabInstanceObject).prefabInstance !== undefined
+  && (r as PrefabNodeInstance).prefabInstance !== undefined
 )
 
-export default PrefabInstanceObject
+export default PrefabNodeInstance

@@ -1,6 +1,6 @@
 import type { Vec4 } from "wgpu-matrix"
 import type DrawableComponent from "../Drawables/DrawableComponent";
-import type SceneNode from "../Drawables/SceneNodes/SceneNode";
+import type RenderNode from "../Drawables/SceneNodes/RenderNode";
 
 let id = 0;
 
@@ -15,7 +15,7 @@ class Particle {
 
   lifetime: number;
 
-  sceneNode: SceneNode | null = null;
+  sceneNode: RenderNode | null = null;
 
   drawable: DrawableComponent | null = null;
 

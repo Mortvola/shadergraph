@@ -1,17 +1,17 @@
 import { runInAction } from "mobx";
 import Http from "../../Http/src";
 import PrefabInstance from "./PrefabInstance";
-import SceneObject from "./SceneObject";
-import type { SceneObjectBase } from "./SceneObjectBase";
-import type { SceneObjectBaseInterface} from "./Types";
+import SceneNode from "./SceneNode";
+import type { SceneNodeBase } from "./SceneNodeBase";
+import type { SceneNodeBaseInterface} from "./Types";
 import {
-  isPrefabInstanceDescriptor, type PrefabInstanceDescriptor, type SceneObjectDescriptor,
+  isPrefabInstanceDescriptor, type PrefabInstanceDescriptor, type SceneNodeDescriptor,
 } from "./Types";
-import { isPrefabInstanceObject } from "./PrefabInstanceObject";
+import { isPrefabInstanceObject } from "./PrefabNodeInstance";
 
 class ObjectManager {
   async get(id: number) {
-    const response = await Http.get<SceneObjectDescriptor | PrefabInstanceDescriptor>(`/api/scene-objects/${id}`)
+    const response = await Http.get<SceneNodeDescriptor | PrefabInstanceDescriptor>(`/api/scene-objects/${id}`)
 
     if (response.ok) {
       const descriptor = await response.body();
@@ -23,11 +23,11 @@ class ObjectManager {
         // return undefined
       }
 
-      return SceneObject.fromDescriptor(descriptor)
+      return SceneNode.fromDescriptor(descriptor)
     }  
   }
 
-  async add(object: SceneObjectBase) {
+  async add(object: SceneNodeBase) {
     const descriptor = object.toDescriptor();
 
     const response = await Http.post<Omit<unknown, 'id'>, { id: number }>(`/api/scene-objects`, descriptor);
@@ -39,14 +39,14 @@ class ObjectManager {
     }  
   }
 
-  async update(object: SceneObjectBase) {
+  async update(object: SceneNodeBase) {
     const response = await Http.patch<unknown, void>(`/api/scene-objects/${object.id}`, object.toDescriptor());
 
     if (response.ok) { /* empty */ }  
 
   }
 
-  async delete(object: SceneObjectBase) {
+  async delete(object: SceneNodeBase) {
     if (isPrefabInstanceObject(object)) {
       const prefabInstance = object.prefabInstance;
 
@@ -57,7 +57,7 @@ class ObjectManager {
         
         const instanceRoot = object.prefabInstance.root;
         if (instanceRoot) {
-          let stack: SceneObjectBaseInterface[] = [instanceRoot];
+          let stack: SceneNodeBaseInterface[] = [instanceRoot];
     
           while (stack.length > 0) {
             const instanceObject = stack[0];
@@ -72,10 +72,10 @@ class ObjectManager {
               instanceObject.detachSelf();
             }
             else {
-              instanceObject.sceneNode.detachSelf()
+              instanceObject.renderNode.detachSelf()
             }
     
-            stack = stack.concat(instanceObject.objects.map((o) => o));
+            stack = stack.concat(instanceObject.nodes.map((o) => o));
           }
         }
       }

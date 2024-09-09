@@ -5,7 +5,7 @@ import Folder from "./Folder";
 import ProjectItem from "./ProjectItem";
 import type { FolderInterface, ProjectInterface, ProjectItemLike} from "./types";
 import { ProjectItemType, isFolder } from "./types";
-import type { ParticleSystemInterface, SceneNodeInterface } from "../../Renderer/Types";
+import type { ParticleSystemInterface, RenderNodeInterface } from "../../Renderer/Types";
 import SceneProjectItem from "./SceneProjectItem";
 import PrefabProjectItem from "./PrefabProjectItem";
 import ShaderProjectItem from "./ShaderProjectItem";
@@ -318,7 +318,7 @@ class Project implements ProjectInterface {
         return new SceneProjectItem(rec.id, rec.name, folder, rec.itemId)
 
       case ProjectItemType.Model:
-        return new ProjectItem<SceneNodeInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+        return new ProjectItem<RenderNodeInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
 
       case ProjectItemType.Texture:
         return new TextureProjectItem(rec.id, rec.name, folder, rec.itemId)

@@ -7,12 +7,12 @@ import {
 } from 'webgpu-utils';
 import Camera from './Camera';
 import { degToRad } from './Math';
-import SceneNode, { isSceneNode } from './Drawables/SceneNodes/SceneNode';
+import RenderNode, { isRenderNode } from './Drawables/SceneNodes/RenderNode';
 import DeferredRenderPass from './RenderPasses/DeferredRenderPass';
 import type Light from './Drawables/Light';
 import CartesianAxes from './Drawables/CartesianAxes';
 import DrawableComponent from './Drawables/DrawableComponent';
-import type { RendererInterface, SceneNodeInterface, DrawableComponentInterface } from './Types';
+import type { RendererInterface, RenderNodeInterface, DrawableComponentInterface } from './Types';
 import { lineMaterial } from './Materials/Line';
 import { lights } from "./shaders/lights";
 import { gpu } from './Gpu';
@@ -117,7 +117,7 @@ class Renderer implements RendererInterface {
 
   debugView = false;
 
-  constructor(frameBindGroupLayout: GPUBindGroupLayout, cartesianAxes: DrawableComponent, floor?: SceneNodeInterface) {
+  constructor(frameBindGroupLayout: GPUBindGroupLayout, cartesianAxes: DrawableComponent, floor?: RenderNodeInterface) {
     this.createCameraBindGroups(frameBindGroupLayout);
 
     // this.reticle = reticle;
@@ -159,11 +159,11 @@ class Renderer implements RendererInterface {
 
     const cartesianAxes = await DrawableComponent.create(new CartesianAxes(), { shaderDescriptor: lineMaterial })
     
-    let floor: SceneNode | undefined = undefined;
+    let floor: RenderNode | undefined = undefined;
 
     if (withFloor) {
       const quad = await Mesh.create(plane(50, 50, [1, 1, 1, 1]), 0)
-      floor = new SceneNode();
+      floor = new RenderNode();
       const component = await DrawableComponent.create(quad, { shaderDescriptor: { lit: true }})
       floor.addComponent(component)
       floor.postTransforms.push(mat4.fromQuat(quat.fromEuler(degToRad(270), 0, 0, "xyz")))  
@@ -276,11 +276,11 @@ class Renderer implements RendererInterface {
     }
   }
 
-  addSceneNode(node: SceneNodeInterface) {
+  addSceneNode(node: RenderNodeInterface) {
     this.scene.addNode(node);
   }
 
-  removeSceneNode(node: SceneNodeInterface) {
+  removeSceneNode(node: RenderNodeInterface) {
     this.scene.removeNode(node);
   }
 
@@ -535,7 +535,7 @@ class Renderer implements RendererInterface {
     }
   }
 
-  setOutlineMesh(sceneNode: SceneNodeInterface | null): boolean {
+  setOutlineMesh(sceneNode: RenderNodeInterface | null): boolean {
     if (sceneNode === null) {
       this.outlineMesh = null
     }
@@ -545,7 +545,7 @@ class Renderer implements RendererInterface {
           this.outlineMesh = node
           return true;
         }
-        else if (isSceneNode(node)) {
+        else if (isRenderNode(node)) {
           const result = this.setOutlineMesh(node);
   
           if (result) {

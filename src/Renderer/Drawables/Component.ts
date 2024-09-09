@@ -1,9 +1,9 @@
-import type { ComponentDescriptor, ComponentInterface, ComponentType, SceneNodeInterface } from "../Types";
+import type { ComponentDescriptor, ComponentInterface, ComponentType, RenderNodeInterface } from "../Types";
 
 class Component implements ComponentInterface {
   type: ComponentType;
 
-  sceneNode: SceneNodeInterface | null = null;
+  renderNode: RenderNodeInterface | null = null;
 
   onChange?: () => void;
 

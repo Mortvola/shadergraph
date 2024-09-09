@@ -1,10 +1,10 @@
 import React from 'react';
-import type { SceneObjectBaseInterface } from "../Scene/Types/Types";
+import type { SceneNodeBaseInterface } from "../Scene/Types/Types";
 import { isGameObject2D } from '../State/types';
 import { useStores } from '../State/store';
 import styles from './Inspector.module.scss'
 import { observer } from 'mobx-react-lite';
-import type { NewSceneObjectComponent, SceneObjectComponent } from '../Renderer/Types';
+import type { NewSceneNodeComponent, SceneNodeComponent } from '../Renderer/Types';
 import { ComponentType } from '../Renderer/Types';
 import GameObject2D from './GameObject2d';
 import ContextMenu from '../ContextMenu/ContextMenu';
@@ -21,11 +21,11 @@ import Overrides from './Overrides';
 import { Position } from './PopupWrapper';
 
 type PropsType = {
-  sceneObject: SceneObjectBaseInterface
+  sceneNode: SceneNodeBaseInterface
 }
 
-const SceneObject: React.FC<PropsType> = observer(({
-  sceneObject,
+const SceneNode: React.FC<PropsType> = observer(({
+  sceneNode,
 }) => {
   const store = useStores()
 
@@ -114,11 +114,11 @@ const SceneObject: React.FC<PropsType> = observer(({
     // })
   // }
 
-  const handleDelete = (component: SceneObjectComponent) => {
-    sceneObject.removeComponent(component);
+  const handleDelete = (component: SceneNodeComponent) => {
+    sceneNode.removeComponent(component);
   }
 
-  const renderItem = (item: SceneObjectComponent) => {
+  const renderItem = (item: SceneNodeComponent) => {
     switch (item.type) {
       // case ComponentType.Mesh:
       //   return <ModelTree modelItem={item.item as ModelItem} onChange={handleModelChange} />
@@ -136,7 +136,7 @@ const SceneObject: React.FC<PropsType> = observer(({
     return null;
   }
 
-  const componentTypeName = (item: SceneObjectComponent) => {
+  const componentTypeName = (item: SceneNodeComponent) => {
     switch (item.type) {
       case ComponentType.Mesh:
         return 'Model';
@@ -181,13 +181,13 @@ const SceneObject: React.FC<PropsType> = observer(({
       case ComponentType.Light: {
         const props = new LightProps()
         const light = new Light(props);
-        const component: NewSceneObjectComponent = {
+        const component: NewSceneNodeComponent = {
           type: ComponentType.Light,
           props: props,
           component: light,
         };
 
-        sceneObject.addComponent(component);
+        sceneNode.addComponent(component);
         break;
       }
 
@@ -203,19 +203,19 @@ const SceneObject: React.FC<PropsType> = observer(({
   
           // particleSystemManager.add(particleSystem);
   
-          const item: NewSceneObjectComponent = {
+          const item: NewSceneNodeComponent = {
             type: ComponentType.ParticleSystem,
             props: props,
             component: particleSystem,
           }
   
-          sceneObject.addComponent(item);  
+          sceneNode.addComponent(item);  
         })()
 
         break;
       }
     }
-  }, [sceneObject])
+  }, [sceneNode])
 
   const menuItems = React.useCallback((): MenuItemLike[] => ([
     { name: 'Model', action: () => { addComponent(ComponentType.Mesh)} },
@@ -227,14 +227,14 @@ const SceneObject: React.FC<PropsType> = observer(({
   return (
     <div className={styles.gameObject} onDragOver={handleDragOver} onDrop={handleDrop}>
       <div className={styles.title}>
-        {`Name: ${sceneObject.name}`}
+        {`Name: ${sceneNode.name}`}
         <div>
           <button ref={buttonRef} onClick={handleAddClick}>Add Component</button>
           {
-            sceneObject.isPrefabInstanceRoot()
+            sceneNode.isPrefabInstanceRoot()
               ? (
                 <PopupButton label="Overrides" position={Position.top}>
-                  <Overrides sceneObject={sceneObject} />
+                  <Overrides sceneNode={sceneNode} />
                 </PopupButton>
               )
               : null
@@ -242,13 +242,13 @@ const SceneObject: React.FC<PropsType> = observer(({
         </div>
       </div>
       <div>
-        <Transform transformProps={sceneObject.transformProps} />
+        <Transform transformProps={sceneNode.transformProps} />
         {
-          isGameObject2D(sceneObject)
+          isGameObject2D(sceneNode)
             ? (
-              <GameObject2D gameObject={sceneObject} />
+              <GameObject2D gameObject={sceneNode} />
             )
-            : sceneObject.components.map((component) => (
+            : sceneNode.components.map((component) => (
                 <div className={styles.item} key={component.id ?? 0} >
                   <div className={styles.componentTitle}>
                     { componentTypeName(component) }
@@ -271,4 +271,4 @@ const SceneObject: React.FC<PropsType> = observer(({
   )
 })
 
-export default SceneObject;
+export default SceneNode;

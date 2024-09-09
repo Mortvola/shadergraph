@@ -3,14 +3,14 @@ import styles from './SceneItem.module.scss';
 import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import type { MenuItemLike } from '../ContextMenu/types';
-import type { SceneObjectBaseInterface } from "./Types/Types";
+import type { SceneNodeBaseInterface } from "./Types/Types";
 import type { SceneInterface } from "./Types/Types";
-import { isPrefabInstanceObject } from './Types/PrefabInstanceObject';
+import { isPrefabInstanceObject } from './Types/PrefabNodeInstance';
 
 type PropsType = {
   project: SceneInterface,
-  item: SceneObjectBaseInterface,
-  onSelect?: (item: SceneObjectBaseInterface) => void,
+  item: SceneNodeBaseInterface,
+  onSelect?: (item: SceneNodeBaseInterface) => void,
   selected: boolean,
   draggable?: boolean,
 }

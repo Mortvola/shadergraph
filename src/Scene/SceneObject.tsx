@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './Scene.module.scss';
-import type { SceneObjectInterface } from "./Types/Types";
+import type { SceneNodeInterface } from "./Types/Types";
 
 type PropsType = {
-  object: SceneObjectInterface,
-  onClick?: (object: SceneObjectInterface) => void,
+  object: SceneNodeInterface,
+  onClick?: (object: SceneNodeInterface) => void,
   selected?: boolean,
 }
 

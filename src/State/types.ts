@@ -33,14 +33,6 @@ export interface EntityInterface {
   name: string;
 }
 
-export type TransformPropsDescriptor = {
-  translate?: number[],
-  rotate?: number[],
-  scale?: number[],
-}
-
-export type TransformPropsOverrides = Partial<TransformPropsDescriptor>
-
 export interface GameObject2DInterface extends EntityInterface {
   width: number
 

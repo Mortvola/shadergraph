@@ -19,8 +19,8 @@ class RangeCircle extends Component {
   }
 
   get transform() {
-    if (this.sceneNode) {
-      return this.sceneNode.transform;
+    if (this.renderNode) {
+      return this.renderNode.transform;
     }
 
     return mat4.identity()

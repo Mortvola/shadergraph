@@ -1,4 +1,4 @@
-import type { SceneObjectComponent, TransformPropsInterface } from "../../Renderer/Types";
+import type { SceneNodeComponent, TransformPropsInterface } from "../../Renderer/Types";
 import { ComponentType } from "../../Renderer/Types";
 import type { PrefabNodeDescriptor } from "./Types";
 import type { PrefabNodeInterface } from "./Types";
@@ -10,17 +10,15 @@ import LightProps from "../../Renderer/Properties/LightProps";
 import NodeBase from "./NodeBase";
 
 class PrefabNode extends NodeBase implements PrefabNodeInterface {
-  components: SceneObjectComponent[] = []
+  components: SceneNodeComponent[] = []
 
   nodes: PrefabNode[] = [];
 
-  parentNode: PrefabNode | null = null;
-
-  prefab: PrefabInterface;
-
-  ancestor?: PrefabNode;
+  parent: PrefabNode | null = null;
 
   transformProps: TransformPropsInterface = new TransformProps();
+
+  prefab: PrefabInterface;
 
   constructor(prefab: PrefabInterface, id = -1, name?: string) {
     super(id, name ?? `Prefab Node ${Math.abs(id)}`)
@@ -65,7 +63,7 @@ class PrefabNode extends NodeBase implements PrefabNodeInterface {
       })
 
       for (const node of prefabNode.nodes) {
-        node.parentNode = prefabNode;
+        node.parent = prefabNode;
       }
     }
 

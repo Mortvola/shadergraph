@@ -1,7 +1,7 @@
 import React from 'react';
 import SceneToolbar from './SceneToolbar';
 import { observer } from 'mobx-react-lite';
-import type { SceneObjectBaseInterface } from "./Types/Types";
+import type { SceneNodeBaseInterface } from "./Types/Types";
 import type { SceneInterface } from "./Types/Types";
 import SceneFolder from './SceneFolder';
 import styles from './Scene.module.scss'
@@ -13,7 +13,7 @@ type PropsType = {
 const Scene: React.FC<PropsType> = observer(({
   scene,
 }) => {
-  const handleObjectClick = (object: SceneObjectBaseInterface) => {    
+  const handleObjectClick = (object: SceneNodeBaseInterface) => {    
     scene?.setSelectedObject(object)
   }
 

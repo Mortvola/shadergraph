@@ -1,7 +1,7 @@
 import type { Mat4, Quat, Vec4} from 'wgpu-matrix';
 import { mat4, quat, vec3 } from 'wgpu-matrix';
 import type DrawableInterface from "../DrawableInterface";
-import type { SceneNodeInterface, RendererInterface, SceneGraphInterface} from '../../Types';
+import type { RenderNodeInterface, RendererInterface, SceneGraphInterface} from '../../Types';
 import { ComponentType } from '../../Types';
 import { isDrawableNode } from './utils';
 import type Component from '../Component';
@@ -16,10 +16,10 @@ export type HitTestResult = {
 
 const rotationOrder: quat.RotationOrder = 'xyz';
 
-class SceneNode implements SceneNodeInterface {
-  nodes: SceneNodeInterface[] = [];
+class RenderNode implements RenderNodeInterface {
+  nodes: RenderNodeInterface[] = [];
 
-  parentNode: SceneNodeInterface | null = null;
+  parentNode: RenderNodeInterface | null = null;
 
   components: Set<Component> = new Set();
   
@@ -69,7 +69,8 @@ class SceneNode implements SceneNodeInterface {
     this.angles = getEulerAngles(this.qRotate);
   }
 
-  computeTransform(transform = mat4.identity(), prepend = true) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  computeTransform(transform = mat4.identity(), _prepend = true) {
     mat4.translate(transform, this.translate, this.transform);
     mat4.multiply(this.transform, this.getRotation(), this.transform);
     mat4.scale(this.transform, this.scale, this.transform);
@@ -83,14 +84,14 @@ class SceneNode implements SceneNodeInterface {
     throw new Error('not implementd');
   }
 
-  addNode(node: SceneNodeInterface) {
+  addNode(node: RenderNodeInterface) {
     this.nodes.push(node);
     node.parentNode = this;
 
     this.scene?.nodeAdded(node);
   }
 
-  removeNode(node: SceneNodeInterface) {
+  removeNode(node: RenderNodeInterface) {
     const index = this.nodes.findIndex((n) => n === node);
 
     if (index !== -1) {      
@@ -111,7 +112,7 @@ class SceneNode implements SceneNodeInterface {
     }
   }
 
-  findNode(node: SceneNode) {
+  findNode(node: RenderNode) {
     const index = this.nodes.findIndex((n) => n === node);
 
     if (index === -1) {
@@ -121,14 +122,14 @@ class SceneNode implements SceneNodeInterface {
 
   addComponent(component: Component) {
     this.components.add(component);
-    component.sceneNode = this;
+    component.renderNode = this;
 
     this.scene?.componentAdded(component)
   }
 
   removeComponent(component: Component) {
     this.components.delete(component);
-    component.sceneNode = null;
+    component.renderNode = null;
   }
 
   updateTransforms(mat = mat4.identity(), renderer: RendererInterface | null) {
@@ -138,7 +139,7 @@ class SceneNode implements SceneNodeInterface {
       node.computeTransform(this.transform);
 
       if (renderer) {
-        if (isSceneNode(node)) {
+        if (isRenderNode(node)) {
           for (const component of Array.from(node.components)) {
             const c = component as DrawableComponent
 
@@ -164,7 +165,7 @@ class SceneNode implements SceneNodeInterface {
           node.updateTransforms(this.transform, renderer);
         }
       }
-      else if (isSceneNode(node)) {
+      else if (isRenderNode(node)) {
         node.updateTransforms(this.transform, renderer);
       }
     }
@@ -180,7 +181,7 @@ class SceneNode implements SceneNodeInterface {
           result = node.hitTest(origin, ray)    
         }
       }
-      else if (isSceneNode(node)) {
+      else if (isRenderNode(node)) {
         result = node.modelHitTest(origin, ray, filter);
       }
 
@@ -199,8 +200,8 @@ class SceneNode implements SceneNodeInterface {
   }
 }
 
-export const isSceneNode = (r: unknown): r is SceneNode => (
-  (r as SceneNode).nodes !== undefined
+export const isRenderNode = (r: unknown): r is RenderNode => (
+  (r as RenderNode).nodes !== undefined
 )
 
-export default SceneNode;
+export default RenderNode;

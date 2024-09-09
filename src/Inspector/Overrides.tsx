@@ -1,6 +1,6 @@
 import React from 'react';
-import { isPrefabInstanceObject } from '../Scene/Types/PrefabInstanceObject';
-import { isPropertyOverride, type ObjectOverrides, type SceneObjectBaseInterface } from '../Scene/Types/Types';
+import { isPrefabInstanceObject } from '../Scene/Types/PrefabNodeInstance';
+import { isPropertyOverride, type ObjectOverrides, type SceneNodeBaseInterface } from '../Scene/Types/Types';
 import styles from './Overrides.module.scss';
 import PopupButton from './PopupButton';
 import OverrideComparison from './OverrideComparison';
@@ -8,23 +8,23 @@ import { Position } from './PopupWrapper';
 import OverrideConnection from './OverrideConnection';
 
 type PropsType = {
-  sceneObject: SceneObjectBaseInterface,
+  sceneNode: SceneNodeBaseInterface,
 }
 
 const Overrides: React.FC<PropsType> = ({
-  sceneObject,
+  sceneNode,
 }) => {
   const [overrides, setOverrides] = React.useState<ObjectOverrides[]>([])
 
   React.useEffect(() => {
-    if (isPrefabInstanceObject(sceneObject)) {
-      setOverrides(sceneObject.prefabInstance.getOverrides())
+    if (isPrefabInstanceObject(sceneNode)) {
+      setOverrides(sceneNode.prefabInstance.getOverrides())
     }
   }, [])
 
   return (
     <div className={styles.layout}>
-      <div>{sceneObject.name}</div>
+      <div>{sceneNode.name}</div>
       <div className={styles.body}>
         {
           overrides.map((object) => (

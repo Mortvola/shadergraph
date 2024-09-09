@@ -1,24 +1,24 @@
 import { runInAction } from "mobx";
-import type SceneObject from "../../Scene/Types/SceneObject";
-import type { SceneObjectInterface } from "../../Scene/Types/Types";
+import type SceneNode from "../../Scene/Types/SceneNode";
+import type { SceneNodeInterface } from "../../Scene/Types/Types";
 import ProjectItem from "./ProjectItem";
 import { ComponentType } from "../../Renderer/Types";
 import type { FolderInterface} from "./types";
 import { ProjectItemType } from "./types";
 import { objectManager } from "../../Scene/Types/ObjectManager";
 
-class SceneObjectProjectItem extends ProjectItem<SceneObjectInterface> {
+class SceneObjectProjectItem extends ProjectItem<SceneNodeInterface> {
   constructor(id: number, name: string, parent: FolderInterface | null, itemId: number | null) {
     super(id, name, ProjectItemType.SceneObject, parent, itemId);
   }
 
-  async getItem(): Promise<SceneObjectInterface | null> {
+  async getItem(): Promise<SceneNodeInterface | null> {
     if (this.item) {
       return this.item;
     }
 
     if (this.itemId !== null) {
-      const object = (await objectManager.get(this.itemId) ?? null) as SceneObject;;
+      const object = (await objectManager.get(this.itemId) ?? null) as SceneNode;;
 
       runInAction(() => {
         this.item = object;

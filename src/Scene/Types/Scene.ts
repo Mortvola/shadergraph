@@ -1,11 +1,11 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import SceneObject from "./SceneObject";
+import SceneNode from "./SceneNode";
 import { store } from "../../State/store";
 import Http from "../../Http/src";
 import type { SceneDescriptor } from "./Types";
-import type { SceneObjectBaseInterface } from "./Types";
+import type { SceneNodeBaseInterface } from "./Types";
 import type { SceneInterface } from "./Types";
-import type PrefabInstanceObject from "./PrefabInstanceObject";
+import type PrefabNodeInstance from "./PrefabNodeInstance";
 import { objectManager } from "./ObjectManager";
 
 class Scene implements SceneInterface {
@@ -13,11 +13,11 @@ class Scene implements SceneInterface {
 
   name = '';
 
-  rootObject: SceneObject | PrefabInstanceObject = new SceneObject();
+  rootObject: SceneNode | PrefabNodeInstance = new SceneNode();
 
-  selectedObject: SceneObjectBaseInterface | null = null;
+  selectedObject: SceneNodeBaseInterface | null = null;
 
-  draggingItem: SceneObjectBaseInterface | null = null;
+  draggingItem: SceneNodeBaseInterface | null = null;
 
   constructor() {
     makeObservable(this, {
@@ -55,17 +55,17 @@ class Scene implements SceneInterface {
     })
   }
 
-  setSelectedObject(object: SceneObjectBaseInterface) {
+  setSelectedObject(object: SceneNodeBaseInterface) {
     runInAction(() => {
       this.selectedObject = object;
     })
   }
 
   async renderScene() {
-    store.mainView.addSceneNode(this.rootObject.sceneNode);
+    store.mainView.addSceneNode(this.rootObject.renderNode);
   }
 
-  addObject(object: SceneObject) {
+  addObject(object: SceneNode) {
     this.rootObject.addObject(object)
   }
 

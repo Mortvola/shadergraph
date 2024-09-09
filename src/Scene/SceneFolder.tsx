@@ -3,15 +3,15 @@ import SceneItem from './SceneItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
-import type { SceneObjectBaseInterface } from "./Types/Types";
+import type { SceneNodeBaseInterface } from "./Types/Types";
 import type { SceneInterface } from "./Types/Types";
 import { isPrefabItem } from '../Project/Types/types';
 import PrefabInstance from './Types/PrefabInstance';
 
 type PropsType = {
   project: SceneInterface,
-  folder: SceneObjectBaseInterface,
-  onSelect?: (item: SceneObjectBaseInterface) => void,
+  folder: SceneNodeBaseInterface,
+  onSelect?: (item: SceneNodeBaseInterface) => void,
   level: number,
 }
 
@@ -154,7 +154,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
             : null
         } */}
         {
-          folder.objects.map((i) => (
+          folder.nodes.map((i) => (
             <SceneFolder
               key={`children:${i.id}`}
               project={project}

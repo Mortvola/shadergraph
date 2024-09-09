@@ -1,7 +1,7 @@
 import TransformProps from "../../Renderer/Properties/TransformProps";
 import Entity from "../../State/Entity";
-import type { SceneObjectInterface } from "./Types";
-import type { SceneObjectBaseInterface } from "./Types";
+import type { SceneNodeInterface } from "./Types";
+import type { SceneNodeBaseInterface } from "./Types";
 import type { PrefabDescriptor } from "./Types";
 import type { PrefabInterface } from "./Types";
 import PrefabNode from "./PrefabNode";
@@ -36,18 +36,18 @@ class Prefab extends Entity implements PrefabInterface {
     return prefabObject;
   }
 
-  static fromSceneObject(startingObject: SceneObjectInterface): Prefab | undefined {
+  static fromSceneNode(startingObject: SceneNodeInterface): Prefab | undefined {
     const id = 0;
 
     const prefab = new Prefab(-1, this.name);
 
-    prefab.addSceneObjects(startingObject, id, null);
+    prefab.addSceneNodes(startingObject, id, null);
 
     return prefab;
   }
 
-  addSceneObjects(startingObject: SceneObjectInterface, id: number, parentNode: PrefabNode | null): PrefabNode {
-    let stack: { object: SceneObjectBaseInterface, parent: PrefabNode | null }[] = [{ object: startingObject, parent: parentNode }];
+  addSceneNodes(startingNode: SceneNodeInterface, id: number, parentNode: PrefabNode | null): PrefabNode {
+    let stack: { object: SceneNodeBaseInterface, parent: PrefabNode | null }[] = [{ object: startingNode, parent: parentNode }];
 
     let root: PrefabNode | undefined = undefined;
 
@@ -59,7 +59,7 @@ class Prefab extends Entity implements PrefabInterface {
       id += 1;
 
       // Add the current objects children to the stack
-      stack = stack.concat(object.objects.map((o) => ({
+      stack = stack.concat(object.nodes.map((o) => ({
         object: o,
         parent: prefabNode,
       })));
@@ -95,7 +95,7 @@ class Prefab extends Entity implements PrefabInterface {
 
       // Link the prefabObject with its parent.
       if (parent) {
-        prefabNode.parentNode = parent;
+        prefabNode.parent = parent;
         parent.nodes.push(prefabNode)
       }
       

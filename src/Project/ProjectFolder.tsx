@@ -6,7 +6,7 @@ import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
 import Prefab from '../Scene/Types/Prefab';
-import { isSceneObject } from "../Scene/Types/Types";
+import { isSceneNode } from "../Scene/Types/Types";
 
 type PropsType = {
   folder: FolderInterface,
@@ -77,11 +77,11 @@ const ProjectFolder: React.FC<PropsType> = observer(({
       }
       else if (event.dataTransfer.types[0] === 'application/scene-item') {
         console.log(event.dataTransfer.types[0])
-        const sceneObject = store.scene?.draggingItem
+        const sceneNode = store.scene?.draggingItem
 
-        if (isSceneObject(sceneObject)) {
+        if (isSceneNode(sceneNode)) {
           ( async () => {
-            const prefab = Prefab.fromSceneObject(sceneObject);
+            const prefab = Prefab.fromSceneNode(sceneNode);
 
             if (prefab) {
               // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -32,9 +32,9 @@ class DrawableComponent extends Component implements DrawableComponentInterface 
   }
 
   hitTest(origin: Vec4, vector: Vec4): { point: Vec4, t: number, drawable: DrawableInterface} | null {
-    if (this.sceneNode) {
+    if (this.renderNode) {
       // Transform origin and ray into model space.
-      const inverseTransform = mat4.inverse(this.sceneNode.getTransform());
+      const inverseTransform = mat4.inverse(this.renderNode.getTransform());
       const localVector = vec4.transformMat4(vector, inverseTransform);
       const localOrigin = vec4.transformMat4(origin, inverseTransform);
 
@@ -42,7 +42,7 @@ class DrawableComponent extends Component implements DrawableComponentInterface 
 
       if (result) {
         // Convert the intersection point into world coordinates.
-        const point = vec4.transformMat4(result.point, this.sceneNode.getTransform());
+        const point = vec4.transformMat4(result.point, this.renderNode.getTransform());
 
         return { point, t: result.t, drawable: this.drawable };      
       }

@@ -4,7 +4,7 @@ import { ComponentType } from '../../Renderer/Types';
 import { useStores } from '../../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './ModelTree.module.scss';
-import type { SceneObjectInterface } from "../../Scene/Types/Types";
+import type { SceneNodeInterface } from "../../Scene/Types/Types";
 
 type PropsType = {
   node: DrawableComponentInterface,
@@ -20,9 +20,9 @@ const MeshNode: React.FC<PropsType> = observer(({
   const store = useStores()
   const { project: { selectedItem } } = store;
 
-  let gameObject: SceneObjectInterface | null = null;
+  let gameObject: SceneNodeInterface | null = null;
   if (selectedItem && selectedItem.type === 'object') {
-    gameObject = selectedItem.item as SceneObjectInterface
+    gameObject = selectedItem.item as SceneNodeInterface
   }
 
   const handleDragOver: React.DragEventHandler = (event) => {

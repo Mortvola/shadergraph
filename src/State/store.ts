@@ -10,7 +10,7 @@ import Renderer from "../Renderer/Renderer";
 import type { ProjectItemInterface, ProjectItemLike } from "../Project/Types/types";
 import { isSceneItem, isShaderItem } from "../Project/Types/types";
 import type {
-  SceneNodeInterface} from "../Renderer/Types";
+  RenderNodeInterface} from "../Renderer/Types";
 import {
   ComponentType,
 } from "../Renderer/Types";
@@ -138,8 +138,8 @@ class Store implements StoreInterface {
     }
   }
 
-  async getModel(item: ProjectItemInterface<SceneNodeInterface>) {
-    let model: SceneNodeInterface | null = await item.getItem();
+  async getModel(item: ProjectItemInterface<RenderNodeInterface>) {
+    let model: RenderNodeInterface | null = await item.getItem();
 
     if (!model && item.itemId) {
       model = await this.previewModeler.getModel(item.itemId) ?? null;

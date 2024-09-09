@@ -1,8 +1,8 @@
 import { vec3 } from "wgpu-matrix";
-import type { SceneObjectDescriptor } from "./Types";
-import type { SceneObjectInterface } from "./Types";
+import type { SceneNodeDescriptor } from "./Types";
+import type { SceneNodeInterface } from "./Types";
 import type {
-  SceneObjectComponent, LightPropsDescriptor, NewSceneObjectComponent,
+  SceneNodeComponent, LightPropsDescriptor, NewSceneNodeComponent,
 } from "../../Renderer/Types";
 import {
   ComponentType
@@ -13,16 +13,16 @@ import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import LightProps from "../../Renderer/Properties/LightProps";
 import TransformProps from "../../Renderer/Properties/TransformProps";
-import { SceneObjectBase } from "./SceneObjectBase";
+import { SceneNodeBase } from "./SceneNodeBase";
 import { objectManager } from "./ObjectManager";
 
-class SceneObject extends SceneObjectBase implements SceneObjectInterface {
+class SceneNode extends SceneNodeBase implements SceneNodeInterface {
   constructor(id?: number, name?: string) {
     super(id, name)
   }
 
-  static async fromDescriptor(descriptor?: SceneObjectDescriptor) {
-    const object = new SceneObject();
+  static async fromDescriptor(descriptor?: SceneNodeDescriptor) {
+    const object = new SceneNode();
     object.autosave = false;
 
     if (descriptor) {
@@ -51,7 +51,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
 
               const ps = new ParticleSystem(props)
 
-              object.sceneNode.addComponent(ps)
+              object.renderNode.addComponent(ps)
 
               return {
                 id: c.id ?? object.getNextComponentId(),
@@ -73,7 +73,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
 
               const light = new Light(props);
 
-              object.sceneNode.addComponent(light)
+              object.renderNode.addComponent(light)
 
               return {
                 id: c.id ?? object.getNextComponentId(),
@@ -90,12 +90,12 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
       }
 
       if (descriptor.object.objects) {
-        object.objects = (await Promise.all(descriptor.object.objects.map(async (id) => {
+        object.nodes = (await Promise.all(descriptor.object.objects.map(async (id) => {
           const child = await objectManager.get(id);
 
           if (child) {
             child.parent = object
-            object.sceneNode.addNode(child.sceneNode)
+            object.renderNode.addNode(child.renderNode)
           }
 
           return child;
@@ -110,8 +110,8 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
         }  
       }
 
-      vec3.copy(object.transformProps.translate.get(), object.sceneNode.translate)
-      vec3.copy(object.transformProps.scale.get(), object.sceneNode.scale)
+      vec3.copy(object.transformProps.translate.get(), object.renderNode.translate)
+      vec3.copy(object.transformProps.scale.get(), object.renderNode.scale)
     }
 
     object.autosave = true;
@@ -123,7 +123,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
     return this.id
   }
 
-  toDescriptor(): SceneObjectDescriptor | Omit<SceneObjectDescriptor, 'id'> {
+  toDescriptor(): SceneNodeDescriptor | Omit<SceneNodeDescriptor, 'id'> {
     const descriptor = {
       id: this.id < 0 ? undefined : this.id,
       name: this.name,
@@ -133,7 +133,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
           type: c.type,
           props: c.props.toDescriptor(),
         })),
-        objects: this.objects.map((o) => {
+        objects: this.nodes.map((o) => {
           return (o.getObjectId())
         }),
         translate: [...this.transformProps.translate.get()],
@@ -165,7 +165,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
     return objectManager.delete(this)
   }
 
-  addComponent(component: NewSceneObjectComponent) {
+  addComponent(component: NewSceneNodeComponent) {
     this.components = [
       ...this.components,
       {
@@ -177,13 +177,13 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
     component.props.onChange = this.onChange;
 
     if (component.component) {
-      this.sceneNode.addComponent(component.component)
+      this.renderNode.addComponent(component.component)
     }
 
     this.onChange()
   }
 
-  removeComponent(component: SceneObjectComponent) {
+  removeComponent(component: SceneNodeComponent) {
     const index = this.components.findIndex((i) => i.id === component.id)
 
     if (index !== -1) {
@@ -193,7 +193,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
       ]
 
       if (component.component) {
-        this.sceneNode.removeComponent(component.component)
+        this.renderNode.removeComponent(component.component)
       }
 
       this.onChange()
@@ -201,4 +201,4 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
   }
 }
 
-export default SceneObject;
+export default SceneNode;

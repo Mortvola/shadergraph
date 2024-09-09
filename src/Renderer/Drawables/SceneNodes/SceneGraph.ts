@@ -1,13 +1,13 @@
 import type ParticleSystem from "../../ParticleSystem/ParticleSystem";
-import type { SceneNodeInterface, RendererInterface, SceneGraphInterface} from "../../Types";
+import type { RenderNodeInterface, RendererInterface, SceneGraphInterface} from "../../Types";
 import { ComponentType } from "../../Types";
 import type Component from "../Component";
 import type Light from "../Light";
 import type RangeCircle from "../RangeCircle";
-import SceneNode, { isSceneNode } from "./SceneNode";
+import RenderNode, { isRenderNode } from "./RenderNode";
 
 class SceneGraph implements SceneGraphInterface {
-  scene = new SceneNode()
+  scene = new RenderNode()
 
   lights: Set<Light> = new Set();
 
@@ -19,13 +19,13 @@ class SceneGraph implements SceneGraphInterface {
     this.scene.scene = this;
   }
 
-  addNode(node: SceneNodeInterface) {
+  addNode(node: RenderNodeInterface) {
     this.scene.addNode(node);
     this.nodeAdded(node);
   }
 
-  nodeAdded(node: SceneNodeInterface) {
-    let stack: SceneNodeInterface[] = [node]
+  nodeAdded(node: RenderNodeInterface) {
+    let stack: RenderNodeInterface[] = [node]
 
     while (stack.length > 0) {
       const n = stack[0];
@@ -55,13 +55,13 @@ class SceneGraph implements SceneGraphInterface {
     }
   }
 
-  removeNode(node: SceneNodeInterface) {
+  removeNode(node: RenderNodeInterface) {
     this.scene.removeNode(node);
     this.nodeRemoved(node);
   }
 
-  nodeRemoved(node: SceneNodeInterface) {
-    let stack: SceneNodeInterface[] = [node]
+  nodeRemoved(node: RenderNodeInterface) {
+    let stack: RenderNodeInterface[] = [node]
 
     while (stack.length > 0) {
       const n = stack[0];
@@ -69,7 +69,7 @@ class SceneGraph implements SceneGraphInterface {
 
       n.scene = null;
     
-      if (isSceneNode(n)) {
+      if (isRenderNode(n)) {
         stack.push(...n.nodes)
 
         // Look the set of components for lights and
