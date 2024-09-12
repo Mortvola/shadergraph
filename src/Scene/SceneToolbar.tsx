@@ -56,7 +56,12 @@ const SceneToolbar: React.FC<PropsType> = ({
 
         await objectManager.add(node);
 
-        scene.addNode(node);  
+        if (scene.selectedNode) {
+          scene.selectedNode.addNode(node)
+        }
+        else {
+          scene.addNode(node);
+        }
 
         scene.setSelectedObject(node);
       }
