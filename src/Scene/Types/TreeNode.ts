@@ -2,13 +2,13 @@ import { observable, runInAction } from "mobx";
 import RenderNode from "../../Renderer/Drawables/SceneNodes/RenderNode";
 import { getNextObjectId } from "../../State/Entity";
 import { objectManager } from "./ObjectManager";
-import SceneNode from "./SceneNode";
+import SceneObject from "./SceneObject";
 import { ObjectType, type TreeNodeDescriptor } from "./Types";
 import ObjectBase from "./ObjectBase";
 import type ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import type LightProps from "../../Renderer/Properties/LightProps";
 import { ComponentType, type LightInterface, type ParticleSystemInterface } from "../../Renderer/Types";
-import type { SceneNodeBase } from "./SceneNodeBase";
+import type { SceneNodeBase } from "./SceneObjectBase";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 
 type NodeComponent = {
@@ -25,13 +25,13 @@ class TreeNode extends ObjectBase {
 
   parent?: TreeNode;
 
-  _nodeObject = new SceneNode();
+  _nodeObject = new SceneObject();
 
-  get nodeObject(): SceneNode {
+  get nodeObject(): SceneObject {
     return this._nodeObject
   }
 
-  set nodeObject(object: SceneNode) {
+  set nodeObject(object: SceneObject) {
     this._nodeObject = object
     this.getComponentProps()
   }

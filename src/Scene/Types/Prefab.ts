@@ -1,7 +1,7 @@
 import TransformProps from "../../Renderer/Properties/TransformProps";
 import Entity from "../../State/Entity";
-import type { SceneNodeInterface } from "./Types";
-import type { SceneNodeBaseInterface } from "./Types";
+import type { SceneObjectInterface } from "./Types";
+import type { SceneObjectBaseInterface } from "./Types";
 import type { PrefabDescriptor } from "./Types";
 import type { PrefabInterface } from "./Types";
 import PrefabNode from "./PrefabNode";
@@ -36,7 +36,7 @@ class Prefab extends Entity implements PrefabInterface {
     return prefabObject;
   }
 
-  static fromSceneNode(startingObject: SceneNodeInterface): Prefab | undefined {
+  static fromSceneNode(startingObject: SceneObjectInterface): Prefab | undefined {
     const id = 0;
 
     const prefab = new Prefab(-1, this.name);
@@ -46,8 +46,8 @@ class Prefab extends Entity implements PrefabInterface {
     return prefab;
   }
 
-  addSceneNodes(startingNode: SceneNodeInterface, id: number, parentNode: PrefabNode | null): PrefabNode {
-    let stack: { object: SceneNodeBaseInterface, parent: PrefabNode | null }[] = [{ object: startingNode, parent: parentNode }];
+  addSceneNodes(startingNode: SceneObjectInterface, id: number, parentNode: PrefabNode | null): PrefabNode {
+    let stack: { object: SceneObjectBaseInterface, parent: PrefabNode | null }[] = [{ object: startingNode, parent: parentNode }];
 
     let root: PrefabNode | undefined = undefined;
 

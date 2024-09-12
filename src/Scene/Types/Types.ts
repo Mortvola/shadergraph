@@ -1,8 +1,8 @@
 import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
 import type { PropertyBaseInterface } from "../../Renderer/Properties/Types";
 import type {
-  ComponentDescriptor, LightPropsDescriptor, NewSceneNodeComponent,
-  SceneNodeComponent, TransformPropsInterface,
+  ComponentDescriptor, LightPropsDescriptor, NewSceneObjectComponent,
+  SceneObjectComponent as SceneObjectComponent, TransformPropsInterface,
 } from "../../Renderer/Types";
 import type { EntityInterface } from "../../State/types";
 import type Tree from "./Tree";
@@ -17,7 +17,7 @@ export interface PrefabInterface {
 
   autosave: boolean;
 
-  addSceneNodes(startingObject: SceneNodeInterface, id: number, parentNode: PrefabNodeInterface | null): PrefabNodeInterface;
+  addSceneNodes(startingObject: SceneObjectInterface, id: number, parentNode: PrefabNodeInterface | null): PrefabNodeInterface;
 
   toDescriptor(): PrefabDescriptor;
 
@@ -29,7 +29,7 @@ export interface PrefabNodeInterface {
 
   name: string;
 
-  components: SceneNodeComponent[];
+  components: SceneObjectComponent[];
 
   nodes: PrefabNodeInterface[];
 
@@ -48,9 +48,8 @@ export type PrefabDescriptor = {
   };
 };
 
-export interface PrefabNodeInstanceInterface extends SceneNodeBaseInterface {
+export interface PrefabNodeInstanceInterface extends SceneObjectBaseInterface {
   baseNode: PrefabNodeInterface;
-
 }
 
 export type PrefabNodeDescriptor = {
@@ -75,16 +74,16 @@ export interface SceneInterface {
   renderScene(): Promise<void>;
 }
 
-export interface SceneNodeBaseInterface extends EntityInterface {
-  components: SceneNodeComponent[];
+export interface SceneObjectBaseInterface extends EntityInterface {
+  components: SceneObjectComponent[];
 
   transformProps: TransformPropsInterface;
 
   // renderNode: RenderNodeInterface;
 
-  addComponent(component: NewSceneNodeComponent): void;
+  addComponent(component: NewSceneObjectComponent): void;
 
-  removeComponent(component: SceneNodeComponent): void;
+  removeComponent(component: SceneObjectComponent): void;
 
   changeName(name: string): void;
 
@@ -95,22 +94,22 @@ export interface SceneNodeBaseInterface extends EntityInterface {
   isPrefabInstanceRoot(): boolean;
 }
 
-export const isSceneNode = (r: unknown): r is SceneNodeInterface => (
+export const isSceneObject = (r: unknown): r is SceneObjectInterface => (
   r !== null && r !== undefined
   && (r as PrefabNodeInstanceInterface).baseNode === undefined
 )
 
-export interface SceneNodeInterface extends SceneNodeBaseInterface {
-  components: SceneNodeComponent[];
+export interface SceneObjectInterface extends SceneObjectBaseInterface {
+  components: SceneObjectComponent[];
 
   save(): Promise<void>;
 
   getNextComponentId(): number;
 }
 
-export const isGameObject = (r: unknown): r is SceneNodeInterface => (
+export const isGameObject = (r: unknown): r is SceneObjectInterface => (
   r !== undefined && r !== null &&
-  (r as SceneNodeInterface).components !== undefined
+  (r as SceneObjectInterface).components !== undefined
 )
 
 export type SceneNodeDescriptor = {
@@ -148,7 +147,7 @@ export const isPrefabInstanceDescriptor = (r: unknown): r is PrefabInstanceDescr
 
 export type PrefabPropsDescriptor = ParticleSystemPropsDescriptor | LightPropsDescriptor;
 
-export type CconnectedObjectOverride = { connectedObject: SceneNodeBaseInterface };
+export type CconnectedObjectOverride = { connectedObject: SceneObjectBaseInterface };
 export type PropertyOverride = { property: PropertyBaseInterface };
 
 export const isPropertyOverride = (r: unknown): r is PropertyOverride => (
@@ -156,7 +155,7 @@ export const isPropertyOverride = (r: unknown): r is PropertyOverride => (
 )
 
 export type ObjectOverrides = {
-  object: SceneNodeBaseInterface,
+  object: SceneObjectBaseInterface,
   overrides: (CconnectedObjectOverride | PropertyOverride)[],
 }
 
@@ -172,7 +171,7 @@ export interface PrefabInstanceInterface {
   getOverrides(): ObjectOverrides[];
 
   attachSceneNode(
-    sceneNode: SceneNodeBaseInterface,
+    sceneNode: SceneObjectBaseInterface,
   ): Promise<void>
 }
 

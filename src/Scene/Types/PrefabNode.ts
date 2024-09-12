@@ -1,4 +1,4 @@
-import type { SceneNodeComponent, TransformPropsInterface } from "../../Renderer/Types";
+import type { SceneObjectComponent, TransformPropsInterface } from "../../Renderer/Types";
 import { ComponentType } from "../../Renderer/Types";
 import type { PrefabNodeDescriptor } from "./Types";
 import type { PrefabNodeInterface } from "./Types";
@@ -10,7 +10,7 @@ import LightProps from "../../Renderer/Properties/LightProps";
 import ObjectBase from "./ObjectBase";
 
 class PrefabNode extends ObjectBase implements PrefabNodeInterface {
-  components: SceneNodeComponent[] = []
+  components: SceneObjectComponent[] = []
 
   nodes: PrefabNode[] = [];
 
@@ -91,7 +91,7 @@ class PrefabNode extends ObjectBase implements PrefabNodeInterface {
   }
 
   detachSelf() {
-    
+
   }
 }
 

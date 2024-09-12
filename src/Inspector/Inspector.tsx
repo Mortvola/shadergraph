@@ -6,9 +6,9 @@ import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import Http from '../Http/src';
 import type Texture from '../State/Texture';
-import SceneNode from './SceneNode';
+import SceneObject from './SceneObject';
 import type { MaterialItemInterface } from '../State/types';
-import type { SceneNodeInterface } from "../Scene/Types/Types";
+import type { SceneObjectInterface } from "../Scene/Types/Types";
 
 const Inspector: React.FC = observer(() => {
   const { project, scene } = useStores();
@@ -45,7 +45,7 @@ const Inspector: React.FC = observer(() => {
 
   const renderView = () => {
     if (scene?.selectedNode) {
-      return <SceneNode sceneNode={scene.selectedNode.nodeObject} />
+      return <SceneObject sceneObject={scene.selectedNode.nodeObject} />
     }
 
     if (project.selectedItem) {
@@ -53,7 +53,7 @@ const Inspector: React.FC = observer(() => {
         case 'object':
           return (
             project.selectedItem.item
-              ? <SceneNode sceneNode={project.selectedItem.item as SceneNodeInterface} />
+              ? <SceneObject sceneObject={project.selectedItem.item as SceneObjectInterface} />
               : null
           )
 

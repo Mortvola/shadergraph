@@ -4,12 +4,12 @@ import type {
   GameObject2DInterface, MaterialItemInterface,
   TextureInterface,
 } from "../../State/types";
-import type { SceneNodeInterface } from "../../Scene/Types/Types";
+import type { SceneObjectInterface } from "../../Scene/Types/Types";
 import type { SceneInterface } from "../../Scene/Types/Types";
 import type { PrefabInterface } from "../../Scene/Types/Types";
 
 export type ProjectItemLike =
-  ProjectItemInterface<SceneNodeInterface> |
+  ProjectItemInterface<SceneObjectInterface> |
   ProjectItemInterface<GameObject2DInterface> |
   ProjectItemInterface<MaterialItemInterface> |
   ProjectItemInterface<TextureInterface> |

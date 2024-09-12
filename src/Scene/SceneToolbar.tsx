@@ -3,8 +3,8 @@ import type { MenuItemLike } from '../ContextMenu/types';
 import { useStores } from '../State/store';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import styles from '../Project/Project.module.scss'
-import SceneNode from './Types/SceneNode';
-import type { NewSceneNodeComponent } from '../Renderer/Types';
+import SceneObject from './Types/SceneObject';
+import type { NewSceneObjectComponent } from '../Renderer/Types';
 import { ComponentType } from '../Renderer/Types';
 import type { SceneInterface } from "./Types/Types";
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
@@ -46,7 +46,7 @@ const SceneToolbar: React.FC<PropsType> = ({
   const menuItems = React.useCallback((): MenuItemLike[] => ([
     { name: 'Create scene object', action: async () => {
       if (scene) {
-        const object = new SceneNode()
+        const object = new SceneObject()
 
         await object.save();
 
@@ -63,7 +63,7 @@ const SceneToolbar: React.FC<PropsType> = ({
     } },
     { name: 'Create particle system', action: async () => {
       if (scene) {
-        const object = new SceneNode();
+        const object = new SceneObject();
 
         await objectManager.add(object);
 
@@ -91,11 +91,11 @@ const SceneToolbar: React.FC<PropsType> = ({
     } },
     { name: 'Create light', action: async () => {
       if (scene) {
-        const object = new SceneNode()
+        const object = new SceneObject()
 
         const props = new LightProps();
 
-        const item: NewSceneNodeComponent = {
+        const item: NewSceneObjectComponent = {
           type: ComponentType.Light,
           props: props,
         }

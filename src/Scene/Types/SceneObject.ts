@@ -1,7 +1,7 @@
 import { ObjectType, type SceneNodeDescriptor } from "./Types";
-import type { SceneNodeInterface } from "./Types";
+import type { SceneObjectInterface } from "./Types";
 import type {
-  SceneNodeComponent, LightPropsDescriptor, NewSceneNodeComponent,
+  SceneObjectComponent, LightPropsDescriptor, NewSceneObjectComponent,
 } from "../../Renderer/Types";
 import {
   ComponentType
@@ -12,16 +12,16 @@ import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import LightProps from "../../Renderer/Properties/LightProps";
 import TransformProps from "../../Renderer/Properties/TransformProps";
-import { SceneNodeBase } from "./SceneNodeBase";
+import { SceneNodeBase as SceneObjectBase } from "./SceneObjectBase";
 import { objectManager } from "./ObjectManager";
 
-class SceneNode extends SceneNodeBase implements SceneNodeInterface {
+class SceneObject extends SceneObjectBase implements SceneObjectInterface {
   constructor(id?: number, name?: string) {
     super(id, name)
   }
 
   static async fromDescriptor(descriptor?: SceneNodeDescriptor) {
-    const object = new SceneNode();
+    const object = new SceneObject();
     object.autosave = false;
 
     if (descriptor) {
@@ -137,7 +137,7 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
     return objectManager.delete(this)
   }
 
-  addComponent(component: NewSceneNodeComponent) {
+  addComponent(component: NewSceneObjectComponent) {
     this.components = [
       ...this.components,
       {
@@ -155,7 +155,7 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
     this.onChange()
   }
 
-  removeComponent(component: SceneNodeComponent) {
+  removeComponent(component: SceneObjectComponent) {
     const index = this.components.findIndex((i) => i.id === component.id)
 
     if (index !== -1) {
@@ -173,4 +173,4 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
   }
 }
 
-export default SceneNode;
+export default SceneObject;

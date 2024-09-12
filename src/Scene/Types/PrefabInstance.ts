@@ -8,10 +8,10 @@ import TransformProps from "../../Renderer/Properties/TransformProps";
 import type { LightPropsInterface } from "../../Renderer/Types";
 import { ComponentType } from "../../Renderer/Types";
 import Entity from "../../State/Entity";
-import type { ConnectedObject, ObjectOverrides, PrefabInstanceInterface, SceneNodeInterface } from "./Types";
+import type { ConnectedObject, ObjectOverrides, PrefabInstanceInterface, SceneObjectInterface } from "./Types";
 import type { PrefabInstanceNodeDesriptor } from "./Types";
 import type { PrefabInstanceDescriptor } from "./Types";
-import type { SceneNodeBaseInterface } from "./Types";
+import type { SceneObjectBaseInterface } from "./Types";
 import type { PrefabNodeInterface } from "./Types";
 import type { PrefabInterface } from "./Types";
 import { prefabManager } from "./PrefabManager";
@@ -149,7 +149,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     let max = 0;
 
     if (this.root) {
-      let stack: SceneNodeBaseInterface[] = [this.root];
+      let stack: SceneObjectBaseInterface[] = [this.root];
 
       while (stack.length > 0) {
         const instanceObject = stack[0];
@@ -173,7 +173,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
   }
 
   async attachSceneNode(
-    sceneNode: SceneNodeInterface,
+    sceneNode: SceneObjectInterface,
   ): Promise<void> {
     // const id = this.getMaxNodeId() + 1;
     // const parent = (sceneNode.parent as PrefabNodeInstance);
@@ -315,7 +315,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     const connectedObjects: ConnectedObject[] = [];
 
     if (this.root) {
-      let stack: SceneNodeBaseInterface[] = [this.root];
+      let stack: SceneObjectBaseInterface[] = [this.root];
 
       while (stack.length > 0) {
         const instanceObject = stack[0];

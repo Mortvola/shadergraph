@@ -236,14 +236,14 @@ export interface LightInterface extends ComponentInterface {
   props: LightPropsInterface;
 }
 
-export type SceneNodeComponent = {
+export type SceneObjectComponent = {
   id: number,
   type: ComponentType,
   props: ParticleSystemProps | LightProps,
   // component?: ParticleSystemInterface | LightInterface,
 }
 
-export type NewSceneNodeComponent = Omit<SceneNodeComponent, 'id'>
+export type NewSceneObjectComponent = Omit<SceneObjectComponent, 'id'>
 
 export interface TransformPropsInterface {
   translate: PSVec3Type;
@@ -254,7 +254,7 @@ export interface TransformPropsInterface {
 }
 
 export type GameObject = {
-  items: SceneNodeComponent[],
+  items: SceneObjectComponent[],
 }
 
 export type GameObjectRecord = {

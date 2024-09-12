@@ -1,16 +1,16 @@
 import { observable, runInAction } from "mobx";
-import type { NewSceneNodeComponent, SceneNodeComponent, TransformPropsInterface } from "../../Renderer/Types";
+import type { NewSceneObjectComponent, SceneObjectComponent, TransformPropsInterface } from "../../Renderer/Types";
 import ObjectBase from "./ObjectBase";
-import type { SceneNodeBaseInterface } from "./Types";
+import type { SceneObjectBaseInterface } from "./Types";
 import TransformProps from "../../Renderer/Properties/TransformProps";
 
   
-export class SceneNodeBase extends ObjectBase implements SceneNodeBaseInterface {
+export class SceneNodeBase extends ObjectBase implements SceneObjectBaseInterface {
   @observable
-  accessor components: SceneNodeComponent[] = []
+  accessor components: SceneObjectComponent[] = []
 
-  componentOverrides: SceneNodeComponent[] = []
-  
+  componentOverrides: SceneObjectComponent[] = []
+
   transformProps: TransformPropsInterface = new TransformProps();
 
   // renderNode = new RenderNode();
@@ -44,12 +44,12 @@ export class SceneNodeBase extends ObjectBase implements SceneNodeBaseInterface 
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  addComponent(_component: NewSceneNodeComponent) {
+  addComponent(_component: NewSceneObjectComponent) {
     throw new Error('not implemented')
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  removeComponent(_component: SceneNodeComponent) {
+  removeComponent(_component: SceneObjectComponent) {
     throw new Error('not implemented')
   }
 

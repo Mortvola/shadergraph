@@ -1,5 +1,5 @@
 import { objectManager } from "./ObjectManager";
-import { SceneNodeBase } from "./SceneNodeBase";
+import { SceneNodeBase } from "./SceneObjectBase";
 import type { PrefabInstanceInterface, PrefabNodeInstanceInterface, PrefabNodeInterface } from "./Types";
 
 class PrefabNodeInstance extends SceneNodeBase implements PrefabNodeInstanceInterface {
