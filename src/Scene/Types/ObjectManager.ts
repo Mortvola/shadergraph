@@ -2,7 +2,7 @@ import { runInAction } from "mobx";
 import Http from "../../Http/src";
 import SceneObject from "./SceneObject";
 import {
-  isSceneNodeDescriptor, isTreeDescriptor, isTreeNodeDescriptor, type PrefabInstanceDescriptor, type SceneNodeDescriptor,
+  isSceneNodeDescriptor as isSceneObjectDescriptor, isTreeDescriptor, isTreeNodeDescriptor, type PrefabInstanceDescriptor, type SceneNodeDescriptor,
 } from "./Types";
 import Tree from "./Tree";
 import TreeNode from "./TreeNode";
@@ -54,10 +54,10 @@ class ObjectManager {
     throw new Error('object type mismatch')
   }
 
-  async getSceneNode(id: number) {
+  async getSceneObject(id: number) {
     const descriptor = await this.get(id);
 
-    if (isSceneNodeDescriptor(descriptor)) {
+    if (isSceneObjectDescriptor(descriptor)) {
       return SceneObject.fromDescriptor(descriptor)
     }
 

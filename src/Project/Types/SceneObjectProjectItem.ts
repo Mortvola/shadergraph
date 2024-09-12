@@ -18,7 +18,7 @@ class SceneObjectProjectItem extends ProjectItem<SceneObjectInterface> {
     }
 
     if (this.itemId !== null) {
-      const object = (await objectManager.getSceneNode(this.itemId) ?? null) as SceneObject;;
+      const object = (await objectManager.getSceneObject(this.itemId) ?? null) as SceneObject;;
 
       runInAction(() => {
         this.item = object;

@@ -240,7 +240,6 @@ export type SceneObjectComponent = {
   id: number,
   type: ComponentType,
   props: ParticleSystemProps | LightProps,
-  // component?: ParticleSystemInterface | LightInterface,
 }
 
 export type NewSceneObjectComponent = Omit<SceneObjectComponent, 'id'>

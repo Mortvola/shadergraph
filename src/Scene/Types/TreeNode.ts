@@ -25,7 +25,7 @@ class TreeNode extends ObjectBase {
 
   parent?: TreeNode;
 
-  _nodeObject = new SceneObject();
+  private _nodeObject = new SceneObject();
 
   get nodeObject(): SceneObject {
     return this._nodeObject
@@ -47,12 +47,12 @@ class TreeNode extends ObjectBase {
 
     treeNode.id = descriptor.id;
 
-    treeNode.nodes = (await Promise.all(descriptor.object.nodes.map(async (nodeId) => {
-      return objectManager.getTreeNode(nodeId)
-    })))
+    treeNode.nodes = (await Promise.all(descriptor.object.nodes.map(async (nodeId) => (
+      objectManager.getTreeNode(nodeId)
+    ))))
       .filter((n) => n !== undefined)
 
-    treeNode.nodeObject = await objectManager.getSceneNode(descriptor.object.objectId) ?? treeNode.nodeObject
+    treeNode.nodeObject = await objectManager.getSceneObject(descriptor.object.objectId) ?? treeNode.nodeObject
 
     for (const child of treeNode.nodes) {
       child.parent = treeNode
@@ -150,25 +150,16 @@ class TreeNode extends ObjectBase {
               // );
               const props = comp.props as ParticleSystemProps;
     
-              props.onChange = object.onChange;
-              props.node = object;
+              // props.onChange = object.onChange;
+              // props.node = object;
     
               const ps = new ParticleSystem(props)
-    
-              // object.renderNode.addComponent(ps)
     
               components.set(comp.id, {
                 type: comp.type,
                 props,
                 component: ps,
               })
-              // return {
-              //   id: c.id,
-              //   type: c.type,
-              //   props: props,
-              //   // object: ps,
-              //   node: object,
-              // }
 
               break;
             }

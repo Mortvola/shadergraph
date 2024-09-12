@@ -13,8 +13,6 @@ export class SceneNodeBase extends ObjectBase implements SceneObjectBaseInterfac
 
   transformProps: TransformPropsInterface = new TransformProps();
 
-  // renderNode = new RenderNode();
-
   baseObject?: SceneNodeBase
 
   derivedObjects: SceneNodeBase[] = []

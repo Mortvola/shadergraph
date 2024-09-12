@@ -6,9 +6,7 @@ import type {
 import {
   ComponentType
 } from "../../Renderer/Types";
-import Light from "../../Renderer/Drawables/Light";
 import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
-import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import LightProps from "../../Renderer/Properties/LightProps";
 import TransformProps from "../../Renderer/Properties/TransformProps";
@@ -42,15 +40,10 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
               props.onChange = object.onChange;
               props.node = object;
 
-              const ps = new ParticleSystem(props)
-
-              // object.renderNode.addComponent(ps)
-
               return {
                 id: c.id ?? object.getNextComponentId(),
                 type: c.type,
                 props,
-                object: ps,
               }
             }
 
@@ -61,15 +54,10 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
               props.onChange = object.onChange;
               props.node = object;
 
-              const light = new Light(props);
-
-              // object.renderNode.addComponent(light)
-
               return {
                 id: c.id ?? object.getNextComponentId(),
                 type: c.type,
                 props,
-                object: light,
               }
             }
           }
