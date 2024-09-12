@@ -28,12 +28,17 @@ const ContextMenu: React.FC<PropsType> = ({
     setMenuPosition({ x: event.clientX, y: event.clientY })
   }
 
+  const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
+    event.stopPropagation();
+    onClose();
+  }
+
   return (
     createPortal(
       <div
         ref={ref}
         className={styles.wrapper}
-        onClick={onClose}
+        onClick={handleClick}
         onContextMenu={handleContextMenu}
       >
         <Menu

@@ -10,7 +10,7 @@ const MenuItem: React.FC<PropsType> = ({
   originPosition,
   item,
 }) => {
-  const handleClick = () => {
+  const handleClick: React.MouseEventHandler<HTMLDivElement> = () => {
     item.action(originPosition[0], originPosition[1]);
   }
 

@@ -8,7 +8,7 @@ import { isPrefabInstanceObject } from './Types/PrefabNodeInstance';
 import type TreeNode from './Types/TreeNode';
 
 type PropsType = {
-  project: SceneInterface,
+  scene: SceneInterface,
   item: TreeNode,
   onSelect?: (item: TreeNode) => void,
   selected: boolean,
@@ -16,7 +16,7 @@ type PropsType = {
 }
 
 const SceneItem: React.FC<PropsType> = observer(({
-  project,
+  scene,
   item,
   onSelect,
   selected,
@@ -34,7 +34,7 @@ const SceneItem: React.FC<PropsType> = observer(({
     event.dataTransfer.clearData();
     event.dataTransfer.setData("application/scene-item", item.id.toString());
 
-    project.draggingNode = item;
+    scene.draggingNode = item;
   }
 
   const handleDrag = () => {
@@ -42,7 +42,7 @@ const SceneItem: React.FC<PropsType> = observer(({
   }
 
   const handleDragEnd = () => {
-    project.draggingNode = null;
+    scene.draggingNode = null;
   }
 
   const [editing, setEditing] = React.useState<boolean>(false);
@@ -75,7 +75,7 @@ const SceneItem: React.FC<PropsType> = observer(({
 
   const menuItems = React.useCallback((): MenuItemLike[] => {
     const items: MenuItemLike[] = [
-      { name: 'Delete', action: () => { item.delete() } },
+      { name: 'Delete', action: () => { item.delete(); scene.setSelectedObject(null) } },
     ];
     
     return items;

@@ -43,7 +43,7 @@ class Scene implements SceneInterface {
     })
   }
 
-  setSelectedObject(node: TreeNode) {
+  setSelectedObject(node: TreeNode | null) {
     runInAction(() => {
       this.selectedNode = node;
     })
@@ -54,7 +54,12 @@ class Scene implements SceneInterface {
   }
 
   addNode(node: TreeNode) {
-    this.tree.root.addNode(node)
+    if (this.selectedNode) {
+      this.selectedNode.addNode(node)
+    }
+    else {
+      this.tree.root.addNode(node)
+    }
   }
 
   saveChanges = async () => {

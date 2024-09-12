@@ -7,14 +7,14 @@ import type { SceneInterface } from "./Types/Types";
 import type TreeNode from './Types/TreeNode';
 
 type PropsType = {
-  project: SceneInterface,
+  scene: SceneInterface,
   folder: TreeNode,
   onSelect?: (item: TreeNode) => void,
   level: number,
 }
 
 const SceneFolder: React.FC<PropsType> = observer(({
-  project,
+  scene,
   folder,
   onSelect,
   level,
@@ -33,10 +33,10 @@ const SceneFolder: React.FC<PropsType> = observer(({
 
     if ((
       event.dataTransfer.types[0] === 'application/scene-item'
-      && project.draggingNode
-      && project.draggingNode.parent !== folder
-      && project.draggingNode !== folder
-      && !folder.isAncestor(project.draggingNode)
+      && scene.draggingNode
+      && scene.draggingNode.parent !== folder
+      && scene.draggingNode !== folder
+      && !folder.isAncestor(scene.draggingNode)
     )) {
       event.dataTransfer.dropEffect = 'move';
       setDroppable(true);      
@@ -61,12 +61,12 @@ const SceneFolder: React.FC<PropsType> = observer(({
     event.preventDefault();
 
     if (droppable) {
-      if (project.draggingNode && event.dataTransfer.types[0] === 'application/scene-item') {
-        const item = project.draggingNode;
+      if (scene.draggingNode && event.dataTransfer.types[0] === 'application/scene-item') {
+        const node = scene.draggingNode;
 
-        item.detachSelf();
+        node.detachSelf();
 
-        folder.addNode(item);    
+        folder.addNode(node);    
       }
       else if (
         event.dataTransfer.types[0] === 'application/project-item'
@@ -132,10 +132,10 @@ const SceneFolder: React.FC<PropsType> = observer(({
     >
       <SceneItem
         key={folder.id}
-        project={project}
+        scene={scene}
         item={folder}
         onSelect={onSelect}
-        selected={folder === project.selectedNode}
+        selected={folder === scene.selectedNode}
         draggable
       />
       <div
@@ -159,7 +159,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
           folder.nodes.map((i) => (
             <SceneFolder
               key={`children:${i.id}`}
-              project={project}
+              scene={scene}
               folder={i}
               onSelect={onSelect}
               level={level + 1}
