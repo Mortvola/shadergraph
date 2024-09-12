@@ -10,6 +10,7 @@ import type LightProps from "../../Renderer/Properties/LightProps";
 import { ComponentType, type LightInterface, type ParticleSystemInterface } from "../../Renderer/Types";
 import type { SceneObjectBase } from "./SceneObjectBase";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
+import { vec3 } from "wgpu-matrix";
 
 type NodeComponent = {
   type: ComponentType,
@@ -34,6 +35,8 @@ class TreeNode extends ObjectBase {
   set nodeObject(object: SceneObject) {
     this._nodeObject = object
     this.getComponentProps()
+    vec3.copy(this.nodeObject.transformProps.translate.get(), this.renderNode.translate)
+    vec3.copy(this.nodeObject.transformProps.scale.get(), this.renderNode.scale)
   }
 
   renderNode = new RenderNode();
@@ -53,6 +56,7 @@ class TreeNode extends ObjectBase {
       .filter((n) => n !== undefined)
 
     treeNode.nodeObject = await objectManager.getSceneObject(descriptor.object.objectId) ?? treeNode.nodeObject
+    treeNode.nodeObject.treeNode = treeNode;
 
     for (const child of treeNode.nodes) {
       child.parent = treeNode
@@ -202,7 +206,11 @@ class TreeNode extends ObjectBase {
     objectManager.update(this);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  transformChanged() {
+    vec3.copy(this.nodeObject.transformProps.translate.get(), this.renderNode.translate)
+    vec3.copy(this.nodeObject.transformProps.scale.get(), this.renderNode.scale)
+  }
+
   changeName(name: string) {
     this.nodeObject.changeName(name)
   }

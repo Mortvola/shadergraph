@@ -3,6 +3,7 @@ import type { NewSceneObjectComponent, SceneObjectComponent, TransformPropsInter
 import ObjectBase from "./ObjectBase";
 import type { SceneObjectBaseInterface } from "./Types";
 import TransformProps from "../../Renderer/Properties/TransformProps";
+import type TreeNode from "./TreeNode";
 
   
 export class SceneObjectBase extends ObjectBase implements SceneObjectBaseInterface {
@@ -16,6 +17,8 @@ export class SceneObjectBase extends ObjectBase implements SceneObjectBaseInterf
   baseObject?: SceneObjectBase
 
   derivedObjects: SceneObjectBase[] = []
+
+  treeNode?: TreeNode;
 
   nextComponentId = 0;
 
@@ -73,8 +76,7 @@ export class SceneObjectBase extends ObjectBase implements SceneObjectBaseInterf
   }
 
   transformChanged = () => {
-    // vec3.copy(this.transformProps.translate.get(), this.renderNode.translate)
-    // vec3.copy(this.transformProps.scale.get(), this.renderNode.scale)
+    this.treeNode?.transformChanged()
 
     this.onChange();
   }
