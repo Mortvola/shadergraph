@@ -5,7 +5,7 @@ import { objectManager } from "./ObjectManager";
 import SceneNode from "./SceneNode";
 import { ObjectType, type TreeNodeDescriptor } from "./Types";
 import ObjectBase from "./ObjectBase";
-import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
+import type ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import type LightProps from "../../Renderer/Properties/LightProps";
 import { ComponentType, type LightInterface, type ParticleSystemInterface } from "../../Renderer/Types";
 import type { SceneNodeBase } from "./SceneNodeBase";
@@ -216,7 +216,7 @@ class TreeNode extends ObjectBase {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   changeName(name: string) {
-
+    this.nodeObject.changeName(name)
   }
 }
 
