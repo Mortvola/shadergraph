@@ -2,7 +2,7 @@ import { runInAction } from "mobx";
 import Http from "../../Http/src";
 import SceneObject from "./SceneObject";
 import {
-  isSceneNodeDescriptor as isSceneObjectDescriptor, isTreeDescriptor, isTreeNodeDescriptor, type PrefabInstanceDescriptor, type SceneNodeDescriptor,
+  isSceneObjectDescriptor as isSceneObjectDescriptor, isTreeDescriptor, isTreeNodeDescriptor, type PrefabInstanceDescriptor, type SceneObjectDescriptor,
 } from "./Types";
 import Tree from "./Tree";
 import TreeNode from "./TreeNode";
@@ -10,7 +10,7 @@ import type ObjectBase from "./ObjectBase";
 
 class ObjectManager {
   async get(id: number) {
-    const response = await Http.get<SceneNodeDescriptor | PrefabInstanceDescriptor>(`/api/scene-objects/${id}`)
+    const response = await Http.get<SceneObjectDescriptor | PrefabInstanceDescriptor>(`/api/scene-objects/${id}`)
 
     if (response.ok) {
       return await response.body();

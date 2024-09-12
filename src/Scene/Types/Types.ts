@@ -112,7 +112,7 @@ export const isGameObject = (r: unknown): r is SceneObjectInterface => (
   (r as SceneObjectInterface).components !== undefined
 )
 
-export type SceneNodeDescriptor = {
+export type SceneObjectDescriptor = {
   id: number;
   name: string;
   object: {
@@ -170,7 +170,7 @@ export interface PrefabInstanceInterface {
 
   getOverrides(): ObjectOverrides[];
 
-  attachSceneNode(
+  attachSceneObject(
     sceneNode: SceneObjectBaseInterface,
   ): Promise<void>
 }
@@ -250,6 +250,6 @@ export const isTreeNodeDescriptor = (r: unknown): r is TreeNodeDescriptor => (
   (r as TreeNodeDescriptor)?.object?.type === ObjectType.TreeNode
 )
 
-export const isSceneNodeDescriptor = (r: unknown): r is SceneNodeDescriptor => (
-  (r as SceneNodeDescriptor)?.object?.type === ObjectType.NodeObject
+export const isSceneObjectDescriptor = (r: unknown): r is SceneObjectDescriptor => (
+  (r as SceneObjectDescriptor)?.object?.type === ObjectType.NodeObject
 )

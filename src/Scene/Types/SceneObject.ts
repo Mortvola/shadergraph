@@ -1,16 +1,13 @@
-import { ObjectType, type SceneNodeDescriptor } from "./Types";
-import type { SceneObjectInterface } from "./Types";
-import type {
-  SceneObjectComponent, LightPropsDescriptor, NewSceneObjectComponent,
-} from "../../Renderer/Types";
+import { ObjectType, type SceneObjectDescriptor, type SceneObjectInterface } from "./Types";
 import {
-  ComponentType
+  type SceneObjectComponent, type LightPropsDescriptor, type NewSceneObjectComponent,
+  ComponentType,
 } from "../../Renderer/Types";
 import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
 import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import LightProps from "../../Renderer/Properties/LightProps";
 import TransformProps from "../../Renderer/Properties/TransformProps";
-import { SceneNodeBase as SceneObjectBase } from "./SceneObjectBase";
+import { SceneObjectBase as SceneObjectBase } from "./SceneObjectBase";
 import { objectManager } from "./ObjectManager";
 
 class SceneObject extends SceneObjectBase implements SceneObjectInterface {
@@ -18,7 +15,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
     super(id, name)
   }
 
-  static async fromDescriptor(descriptor?: SceneNodeDescriptor) {
+  static async fromDescriptor(descriptor?: SceneObjectDescriptor) {
     const object = new SceneObject();
     object.autosave = false;
 
@@ -87,7 +84,7 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
     return this.id
   }
 
-  toDescriptor(): SceneNodeDescriptor | Omit<SceneNodeDescriptor, 'id'> {
+  toDescriptor(): SceneObjectDescriptor | Omit<SceneObjectDescriptor, 'id'> {
     const descriptor = {
       id: this.id < 0 ? undefined : this.id,
       name: this.name,

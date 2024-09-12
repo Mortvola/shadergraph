@@ -5,7 +5,7 @@ import type { SceneObjectBaseInterface } from "./Types";
 import TransformProps from "../../Renderer/Properties/TransformProps";
 
   
-export class SceneNodeBase extends ObjectBase implements SceneObjectBaseInterface {
+export class SceneObjectBase extends ObjectBase implements SceneObjectBaseInterface {
   @observable
   accessor components: SceneObjectComponent[] = []
 
@@ -13,9 +13,9 @@ export class SceneNodeBase extends ObjectBase implements SceneObjectBaseInterfac
 
   transformProps: TransformPropsInterface = new TransformProps();
 
-  baseObject?: SceneNodeBase
+  baseObject?: SceneObjectBase
 
-  derivedObjects: SceneNodeBase[] = []
+  derivedObjects: SceneObjectBase[] = []
 
   nextComponentId = 0;
 

@@ -8,7 +8,7 @@ import ObjectBase from "./ObjectBase";
 import type ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import type LightProps from "../../Renderer/Properties/LightProps";
 import { ComponentType, type LightInterface, type ParticleSystemInterface } from "../../Renderer/Types";
-import type { SceneNodeBase } from "./SceneObjectBase";
+import type { SceneObjectBase } from "./SceneObjectBase";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 
 type NodeComponent = {
@@ -124,8 +124,8 @@ class TreeNode extends ObjectBase {
   }
 
   private getComponentProps() {
-    const stack: SceneNodeBase[] = [];
-    let nodeObject: SceneNodeBase | undefined = this._nodeObject;
+    const stack: SceneObjectBase[] = [];
+    let nodeObject: SceneObjectBase | undefined = this._nodeObject;
 
     // Generate array of object derivations so that we can work
     // backwards from the base object to the most recent derivation.
@@ -149,9 +149,6 @@ class TreeNode extends ObjectBase {
               //   comp.props as ParticleSystemProps,
               // );
               const props = comp.props as ParticleSystemProps;
-    
-              // props.onChange = object.onChange;
-              // props.node = object;
     
               const ps = new ParticleSystem(props)
     

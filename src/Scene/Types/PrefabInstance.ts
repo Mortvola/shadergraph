@@ -172,7 +172,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     return max;
   }
 
-  async attachSceneNode(
+  async attachSceneObject(
     sceneNode: SceneObjectInterface,
   ): Promise<void> {
     // const id = this.getMaxNodeId() + 1;
