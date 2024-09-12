@@ -1,4 +1,3 @@
-import { vec3 } from "wgpu-matrix";
 import { ObjectType, type SceneNodeDescriptor } from "./Types";
 import type { SceneNodeInterface } from "./Types";
 import type {
@@ -45,7 +44,7 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
 
               const ps = new ParticleSystem(props)
 
-              object.renderNode.addComponent(ps)
+              // object.renderNode.addComponent(ps)
 
               return {
                 id: c.id ?? object.getNextComponentId(),
@@ -64,7 +63,7 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
 
               const light = new Light(props);
 
-              object.renderNode.addComponent(light)
+              // object.renderNode.addComponent(light)
 
               return {
                 id: c.id ?? object.getNextComponentId(),
@@ -80,20 +79,6 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
         .filter((c) => c !== undefined)
       }
 
-      if (descriptor.object.nodes) {
-        object.nodes = (await Promise.all(descriptor.object.nodes.map(async (id) => {
-          const child = await objectManager.getSceneNode(id);
-
-          if (child) {
-            child.parent = object
-            object.renderNode.addNode(child.renderNode)
-          }
-
-          return child;
-        })))
-        .filter((o) => o !== undefined);
-      }
-
       // Fix any scale values that are zero.
       for (let i = 0; i < object.transformProps.scale.get().length; i += 1) {
         if (object.transformProps.scale.get()[i] === 0) {
@@ -101,8 +86,8 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
         }  
       }
 
-      vec3.copy(object.transformProps.translate.get(), object.renderNode.translate)
-      vec3.copy(object.transformProps.scale.get(), object.renderNode.scale)
+      // vec3.copy(object.transformProps.translate.get(), object.renderNode.translate)
+      // vec3.copy(object.transformProps.scale.get(), object.renderNode.scale)
     }
 
     object.autosave = true;
@@ -125,9 +110,6 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
           type: c.type,
           props: c.props.toDescriptor(),
         })),
-        nodes: this.nodes.map((o) => {
-          return (o.getObjectId())
-        }),
         transformProps: this.transformProps.toDescriptor()!,
         nextComponentId: this.nextComponentId,
       }
@@ -166,9 +148,9 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
 
     component.props.onChange = this.onChange;
 
-    if (component.component) {
-      this.renderNode.addComponent(component.component)
-    }
+    // if (component.component) {
+      // this.renderNode.addComponent(component.component)
+    // }
 
     this.onChange()
   }
@@ -182,9 +164,9 @@ class SceneNode extends SceneNodeBase implements SceneNodeInterface {
         ...this.components.slice(index + 1),
       ]
 
-      if (component.component) {
-        this.renderNode.removeComponent(component.component)
-      }
+      // if (component.component) {
+        // this.renderNode.removeComponent(component.component)
+      // }
 
       this.onChange()
     }

@@ -4,10 +4,8 @@ import { useStores } from '../State/store';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import styles from '../Project/Project.module.scss'
 import SceneNode from './Types/SceneNode';
-import ParticleSystem from '../Renderer/ParticleSystem/ParticleSystem';
 import type { NewSceneNodeComponent } from '../Renderer/Types';
 import { ComponentType } from '../Renderer/Types';
-import Light from '../Renderer/Drawables/Light';
 import type { SceneInterface } from "./Types/Types";
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
 import LightProps from '../Renderer/Properties/LightProps';
@@ -65,22 +63,26 @@ const SceneToolbar: React.FC<PropsType> = ({
     } },
     { name: 'Create particle system', action: async () => {
       if (scene) {
-        const object = new SceneNode()
+        const object = new SceneNode();
+
+        await objectManager.add(object);
 
         const props = new ParticleSystemProps();
-        const particleSystem = new ParticleSystem(props);
+        // const particleSystem = new ParticleSystem(props);
 
-        const item: NewSceneNodeComponent = {
+        object.addComponent({
           type: ComponentType.ParticleSystem,
           props: props,
-          component: particleSystem,
-        }
-
-        object.addComponent(item);
+          // component: particleSystem,
+        });
   
+        // await object.save();
+
         const node = new TreeNode()
 
         node.nodeObject = object;
+
+        await objectManager.add(node);
 
         scene.addNode(node);
 
@@ -92,19 +94,21 @@ const SceneToolbar: React.FC<PropsType> = ({
         const object = new SceneNode()
 
         const props = new LightProps();
-        const light = new Light(props);
 
         const item: NewSceneNodeComponent = {
           type: ComponentType.Light,
           props: props,
-          component: light,
         }
 
         object.addComponent(item);
 
+        await object.save();
+
         const node = new TreeNode();
 
         node.nodeObject = object;
+
+        await objectManager.add(node);
 
         scene.addNode(node);
 

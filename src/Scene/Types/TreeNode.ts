@@ -5,22 +5,41 @@ import { objectManager } from "./ObjectManager";
 import SceneNode from "./SceneNode";
 import { ObjectType, type TreeNodeDescriptor } from "./Types";
 import ObjectBase from "./ObjectBase";
+import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
+import type LightProps from "../../Renderer/Properties/LightProps";
+import { ComponentType, type LightInterface, type ParticleSystemInterface } from "../../Renderer/Types";
+import type { SceneNodeBase } from "./SceneNodeBase";
+import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
+
+type NodeComponent = {
+  type: ComponentType,
+  props: ParticleSystemProps | LightProps,
+  component: ParticleSystemInterface | LightInterface,
+}
 
 class TreeNode extends ObjectBase {
   @observable
   accessor nodes: TreeNode[] = [];
 
+  components: Map<number, NodeComponent> = new Map();
+
   parent?: TreeNode;
 
-  nodeObject: SceneNode;
+  _nodeObject = new SceneNode();
 
-  renderNode: RenderNode;
+  get nodeObject(): SceneNode {
+    return this._nodeObject
+  }
+
+  set nodeObject(object: SceneNode) {
+    this._nodeObject = object
+    this.getComponentProps()
+  }
+
+  renderNode = new RenderNode();
 
   constructor() {
     super(getNextObjectId(), '')
-
-    this.nodeObject = new SceneNode()
-    this.renderNode = new RenderNode();
   }
 
   static async fromDescriptor(descriptor: TreeNodeDescriptor) {
@@ -33,11 +52,12 @@ class TreeNode extends ObjectBase {
     })))
       .filter((n) => n !== undefined)
 
+    treeNode.nodeObject = await objectManager.getSceneNode(descriptor.object.objectId) ?? treeNode.nodeObject
+
     for (const child of treeNode.nodes) {
       child.parent = treeNode
+      treeNode.renderNode.addNode(child.renderNode)
     }
-
-    treeNode.nodeObject = await objectManager.getSceneNode(descriptor.object.objectId) ?? treeNode.nodeObject
 
     return treeNode;
   }
@@ -100,6 +120,82 @@ class TreeNode extends ObjectBase {
 
         this.onChange();
       })
+    }
+  }
+
+  private getComponentProps() {
+    const stack: SceneNodeBase[] = [];
+    let nodeObject: SceneNodeBase | undefined = this._nodeObject;
+
+    // Generate array of object derivations so that we can work
+    // backwards from the base object to the most recent derivation.
+    while (nodeObject) {
+      stack.push(nodeObject)
+
+      nodeObject = nodeObject.baseObject;
+    }
+
+    const components: Map<number, NodeComponent> = new Map();
+
+    while (stack.length > 0) {
+      const object = stack.pop();
+
+      if (object) {
+        for (const comp of object.components) {
+          switch (comp.type) {
+            case ComponentType.ParticleSystem: {    
+              // const props = new ParticleSystemProps(
+              //   undefined,
+              //   comp.props as ParticleSystemProps,
+              // );
+              const props = comp.props as ParticleSystemProps;
+    
+              props.onChange = object.onChange;
+              props.node = object;
+    
+              const ps = new ParticleSystem(props)
+    
+              // object.renderNode.addComponent(ps)
+    
+              components.set(comp.id, {
+                type: comp.type,
+                props,
+                component: ps,
+              })
+              // return {
+              //   id: c.id,
+              //   type: c.type,
+              //   props: props,
+              //   // object: ps,
+              //   node: object,
+              // }
+
+              break;
+            }
+    
+            case ComponentType.Light: {
+            //   const light = new Light(c.props as LightPropsInterface);
+    
+            //   // object.renderNode.addComponent(light)
+    
+            //   return {
+            //     id: c.id,
+            //     type: c.type,
+            //     props: c.props,
+            //     object: light,
+            //     node: object,
+            //   }
+            // }
+            }
+          }
+        }
+      }
+    }
+
+    this.components = components;
+
+    for (const [, component] of this.components) {
+      this.renderNode.addComponent(component.component)
     }
   }
 

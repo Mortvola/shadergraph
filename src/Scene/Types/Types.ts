@@ -2,7 +2,7 @@ import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSyste
 import type { PropertyBaseInterface } from "../../Renderer/Properties/Types";
 import type {
   ComponentDescriptor, LightPropsDescriptor, NewSceneNodeComponent,
-  RenderNodeInterface, SceneNodeComponent, TransformPropsInterface,
+  SceneNodeComponent, TransformPropsInterface,
 } from "../../Renderer/Types";
 import type { EntityInterface } from "../../State/types";
 import type Tree from "./Tree";
@@ -78,23 +78,13 @@ export interface SceneInterface {
 export interface SceneNodeBaseInterface extends EntityInterface {
   components: SceneNodeComponent[];
 
-  nodes: SceneNodeBaseInterface[];
-
   transformProps: TransformPropsInterface;
 
-  parent: SceneNodeBaseInterface | null;
-
-  renderNode: RenderNodeInterface;
-
-  addObject(object: SceneNodeBaseInterface): void;
-
-  removeObject(object: SceneNodeBaseInterface): void;
+  // renderNode: RenderNodeInterface;
 
   addComponent(component: NewSceneNodeComponent): void;
 
   removeComponent(component: SceneNodeComponent): void;
-
-  isAncestor(item: SceneNodeBaseInterface): boolean;
 
   changeName(name: string): void;
 
@@ -130,7 +120,6 @@ export type SceneNodeDescriptor = {
     type: ObjectType;
     components: ComponentDescriptor[];
     transformProps: TransformPropsDescriptor;
-    nodes: number[];
   };
 }
 

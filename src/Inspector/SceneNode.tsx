@@ -10,9 +10,7 @@ import GameObject2D from './GameObject2d';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import type { MenuItemLike } from '../ContextMenu/types';
 import ParticleSystem from './ParticleSystem/ParticleSystem';
-import ParticleSystemData from '../Renderer/ParticleSystem/ParticleSystem';
 import LightComponent from './Light';
-import Light from '../Renderer/Drawables/Light';
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
 import LightProps from '../Renderer/Properties/LightProps';
 import Transform from './Transform';
@@ -180,11 +178,11 @@ const SceneNode: React.FC<PropsType> = observer(({
 
       case ComponentType.Light: {
         const props = new LightProps()
-        const light = new Light(props);
+        // const light = new Light(props);
         const component: NewSceneNodeComponent = {
           type: ComponentType.Light,
           props: props,
-          component: light,
+          // component: light,
         };
 
         sceneNode.addComponent(component);
@@ -199,14 +197,14 @@ const SceneNode: React.FC<PropsType> = observer(({
       case ComponentType.ParticleSystem: {
         (async () => {
           const props = new ParticleSystemProps();
-          const particleSystem = new ParticleSystemData(props);
+          // const particleSystem = new ParticleSystemData(props);
   
           // particleSystemManager.add(particleSystem);
   
           const item: NewSceneNodeComponent = {
             type: ComponentType.ParticleSystem,
             props: props,
-            component: particleSystem,
+            // component: particleSystem,
           }
   
           sceneNode.addComponent(item);  

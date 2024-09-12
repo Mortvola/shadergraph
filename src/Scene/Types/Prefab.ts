@@ -59,10 +59,10 @@ class Prefab extends Entity implements PrefabInterface {
       id += 1;
 
       // Add the current objects children to the stack
-      stack = stack.concat(object.nodes.map((o) => ({
-        object: o,
-        parent: prefabNode,
-      })));
+      // stack = stack.concat(object.nodes.map((o) => ({
+      //   object: o,
+      //   parent: prefabNode,
+      // })));
 
       prefabNode.name = object.name;
 

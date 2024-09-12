@@ -15,7 +15,7 @@ import type { SceneNodeBaseInterface } from "./Types";
 import type { PrefabNodeInterface } from "./Types";
 import type { PrefabInterface } from "./Types";
 import { prefabManager } from "./PrefabManager";
-import PrefabNodeInstance, { isPrefabInstanceObject } from "./PrefabNodeInstance";
+import PrefabNodeInstance from "./PrefabNodeInstance";
 import { objectManager } from "./ObjectManager";
 
 class PrefabInstance extends Entity implements PrefabInstanceInterface {
@@ -83,7 +83,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
 
           const ps = new ParticleSystem(props)
 
-          object.renderNode.addComponent(ps)
+          // object.renderNode.addComponent(ps)
 
           return {
             id: c.id,
@@ -97,7 +97,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
         case ComponentType.Light: {
           const light = new Light(c.props as LightPropsInterface);
 
-          object.renderNode.addComponent(light)
+          // object.renderNode.addComponent(light)
 
           return {
             id: c.id,
@@ -113,7 +113,7 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
     })))
       .filter((c) => c !== undefined)
     
-    object.nodes = await Promise.all(prefabNode.nodes.map((node) => this.fromPrefabNode(prefab, node, descriptor)));
+    // object.nodes = await Promise.all(prefabNode.nodes.map((node) => this.fromPrefabNode(prefab, node, descriptor)));
 
     const connectedObjects = descriptor?.object.connectedObjects
     if (connectedObjects) {
@@ -122,23 +122,23 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
           const newObject = await objectManager.getSceneNode(connectedObject.objectId)
 
           if (newObject) {
-            object.nodes.push(newObject)
-            newObject.parent = object;
+            // object.nodes.push(newObject)
+            // newObject.parent = object;
           }
         }
       }  
     }
 
-    for (const child of object.nodes) {
-      child.parent = object;
-      object.renderNode.addNode(child.renderNode)
-    }
+    // for (const child of object.nodes) {
+    //   child.parent = object;
+    //   object.renderNode.addNode(child.renderNode)
+    // }
 
     // Setup the transform and copy it to the scene node.
     object.transformProps = new TransformProps(nodeDescriptor?.transformProps, object.transformChanged, prefabNode.transformProps as TransformProps);;
 
-    vec3.copy(object.transformProps.translate.get(), object.renderNode.translate)
-    vec3.copy(object.transformProps.scale.get(), object.renderNode.scale)
+    // vec3.copy(object.transformProps.translate.get(), object.renderNode.translate)
+    // vec3.copy(object.transformProps.scale.get(), object.renderNode.scale)
 
     object.baseNode = prefabNode;
 
@@ -159,13 +159,13 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
           max = instanceObject.id
         }
 
-        for (const object of instanceObject.nodes) {
-          // If this is an instance object and the prefab instance is the one we are processing then
-          // add the object to the stack.
-          if (isPrefabInstanceObject(object) && object.prefabInstance === this) {
-            stack.push(object)
-          }
-        }
+        // for (const object of instanceObject.nodes) {
+        //   // If this is an instance object and the prefab instance is the one we are processing then
+        //   // add the object to the stack.
+        //   if (isPrefabInstanceObject(object) && object.prefabInstance === this) {
+        //     stack.push(object)
+        //   }
+        // }
       }  
     }
 
@@ -175,112 +175,112 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
   async attachSceneNode(
     sceneNode: SceneNodeInterface,
   ): Promise<void> {
-    const id = this.getMaxNodeId() + 1;
-    const parent = (sceneNode.parent as PrefabNodeInstance);
-    const prefabParent = (sceneNode.parent as PrefabNodeInstance).baseNode;
+    // const id = this.getMaxNodeId() + 1;
+    // const parent = (sceneNode.parent as PrefabNodeInstance);
+    // const prefabParent = (sceneNode.parent as PrefabNodeInstance).baseNode;
 
-    const prefabRoot = this.prefab.addSceneNodes(sceneNode, id, prefabParent);
+    // const prefabRoot = this.prefab.addSceneNodes(sceneNode, id, prefabParent);
 
-    let root: PrefabNodeInstance | null = null;
+    // let root: PrefabNodeInstance | null = null;
 
-    // Starting at the root of the new prefab tree branch, add a prefab instance object
-    let stack: { prefabNode: PrefabNodeInterface, parent: PrefabNodeInstance | null }[] = [{ prefabNode: prefabRoot, parent}];
+    // // Starting at the root of the new prefab tree branch, add a prefab instance object
+    // let stack: { prefabNode: PrefabNodeInterface, parent: PrefabNodeInstance | null }[] = [{ prefabNode: prefabRoot, parent}];
 
-    while (stack.length > 0) {
-      const { prefabNode, parent } = stack[0];
-      stack = stack.slice(1);
+    // while (stack.length > 0) {
+    //   const { prefabNode, parent } = stack[0];
+    //   stack = stack.slice(1);
 
-      const node = new PrefabNodeInstance(this, prefabNode);
+    //   const node = new PrefabNodeInstance(this, prefabNode);
 
-      node.prefabInstance = this;
+    //   node.prefabInstance = this;
     
-      node.id = prefabNode.id;
-      node.name = prefabNode.name;
+    //   node.id = prefabNode.id;
+    //   node.name = prefabNode.name;
 
-      node.components = prefabNode.components.map((c) => {
-        // Find a component descriptor that matches the id and type of the prefab component.
-        // const componentDescriptor = nodeDescriptor?.components.find((component) => (
-        //   component.id === c.id && component.type === c.type
-        // ));
+    //   node.components = prefabNode.components.map((c) => {
+    //     // Find a component descriptor that matches the id and type of the prefab component.
+    //     // const componentDescriptor = nodeDescriptor?.components.find((component) => (
+    //     //   component.id === c.id && component.type === c.type
+    //     // ));
 
-        switch (c.type) {
-          case ComponentType.ParticleSystem: {
-            const prefabProps = c.props as ParticleSystemProps;
+    //     switch (c.type) {
+    //       case ComponentType.ParticleSystem: {
+    //         const prefabProps = c.props as ParticleSystemProps;
 
-            const props = new ParticleSystemProps(
-              undefined,
-              prefabProps,
-            );
+    //         const props = new ParticleSystemProps(
+    //           undefined,
+    //           prefabProps,
+    //         );
 
-            props.onChange = node.onChange;
-            props.node = node;
+    //         props.onChange = node.onChange;
+    //         props.node = node;
 
-            const ps = new ParticleSystem(props)
+    //         const ps = new ParticleSystem(props)
 
-            node.renderNode.addComponent(ps)
+    //         node.renderNode.addComponent(ps)
 
-            return {
-              id: c.id,
-              type: c.type,
-              props: props,
-              object: ps,
-              node,
-            }
-          }
+    //         return {
+    //           id: c.id,
+    //           type: c.type,
+    //           props: props,
+    //           object: ps,
+    //           node,
+    //         }
+    //       }
 
-          case ComponentType.Light: {
-            const light = new Light(c.props as LightPropsInterface);
+    //       case ComponentType.Light: {
+    //         const light = new Light(c.props as LightPropsInterface);
 
-            node.renderNode.addComponent(light)
+    //         node.renderNode.addComponent(light)
 
-            return {
-              id: c.id,
-              type: c.type,
-              props: c.props,
-              object: light,
-              node,
-            }
-          }
-        }
+    //         return {
+    //           id: c.id,
+    //           type: c.type,
+    //           props: c.props,
+    //           object: light,
+    //           node,
+    //         }
+    //       }
+    //     }
 
-        return undefined
-      })
-        .filter((c) => c !== undefined)
+    //     return undefined
+    //   })
+    //     .filter((c) => c !== undefined)
       
-      if (parent) {
-        node.parent = parent
-        parent.renderNode.addNode(node.renderNode)
-      }
+    //   if (parent) {
+    //     node.parent = parent
+    //     parent.renderNode.addNode(node.renderNode)
+    //   }
 
-      // Setup the transform and copy it to the scene node.
-      node.transformProps = new TransformProps(undefined, node.transformChanged, prefabNode.transformProps as TransformProps);
+    //   // Setup the transform and copy it to the scene node.
+    //   node.transformProps = new TransformProps(undefined, node.transformChanged, prefabNode.transformProps as TransformProps);
 
-      vec3.copy(node.transformProps.translate.get(), node.renderNode.translate)
-      vec3.copy(node.transformProps.scale.get(), node.renderNode.scale)
+    //   vec3.copy(node.transformProps.translate.get(), node.renderNode.translate)
+    //   vec3.copy(node.transformProps.scale.get(), node.renderNode.scale)
 
-      node.baseNode = prefabNode;
+    //   node.baseNode = prefabNode;
 
-      // Push prefab children on to the stack
-      for (const child of prefabNode.nodes) {
-        stack.push({ prefabNode: child, parent: node })
-      }
+    //   // Push prefab children on to the stack
+    //   for (const child of prefabNode.nodes) {
+    //     stack.push({ prefabNode: child, parent: node })
+    //   }
 
-      if (!root) {
-        root = node;
-      }
-    }
+    //   if (!root) {
+    //     root = node;
+    //   }
+    // }
 
-    this.autosave = false;
+    // this.autosave = false;
 
-    sceneNode.detachSelf()
+    // sceneNode.detachSelf()
 
-    this.autosave = true;
+    // this.autosave = true;
 
-    if (!root) {
-      throw new Error('root is undefeind');      
-    }
+    // if (!root) {
+    //   throw new Error('root is undefeind');      
+    // }
     
-    parent.addObject(root);
+    // parent.addObject(root);
 
     // this.save()
   }
@@ -347,16 +347,16 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
         }
 
         // Add the node's children to the stack
-        for (const object of instanceObject.nodes) {
-          // If this is an instance object and the prefab instance is the one we are processing then
-          // add the object to the stack. Otherwise, add the object to the connected object array.
-          if (isPrefabInstanceObject(object) && object.prefabInstance === this) {
-            stack.push(object)
-          }
-          else {
-            connectedObjects.push({ prefabNodeId: instanceObject.id, objectId: object.id });
-          }
-        }
+        // for (const object of instanceObject.nodes) {
+        //   // If this is an instance object and the prefab instance is the one we are processing then
+        //   // add the object to the stack. Otherwise, add the object to the connected object array.
+        //   if (isPrefabInstanceObject(object) && object.prefabInstance === this) {
+        //     stack.push(object)
+        //   }
+        //   else {
+        //     connectedObjects.push({ prefabNodeId: instanceObject.id, objectId: object.id });
+        //   }
+        // }
       }
     }
 
@@ -388,16 +388,16 @@ class PrefabInstance extends Entity implements PrefabInstanceInterface {
         objectOverrides.overrides = objectOverrides.overrides.concat(t2)
 
         // Add the node's children to the stack
-        for (const object of instanceObject.nodes) {
-          // If this is an instance object and the prefab instance is the one we are processing then
-          // add the object to the stack. Otherwise, add the object to the connected object array.
-          if (isPrefabInstanceObject(object) && object.prefabInstance === this) {
-            stack.push(object)
-          }
-          else {
-            objectOverrides.overrides.push({ connectedObject: object })
-          }
-        }
+        // for (const object of instanceObject.nodes) {
+        //   // If this is an instance object and the prefab instance is the one we are processing then
+        //   // add the object to the stack. Otherwise, add the object to the connected object array.
+        //   if (isPrefabInstanceObject(object) && object.prefabInstance === this) {
+        //     stack.push(object)
+        //   }
+        //   else {
+        //     objectOverrides.overrides.push({ connectedObject: object })
+        //   }
+        // }
         
         if (objectOverrides.overrides.length > 0) {
           overrides.push(objectOverrides)

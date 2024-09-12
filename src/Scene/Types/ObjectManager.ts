@@ -1,11 +1,9 @@
 import { runInAction } from "mobx";
 import Http from "../../Http/src";
 import SceneNode from "./SceneNode";
-import type { SceneNodeBaseInterface} from "./Types";
 import {
   isSceneNodeDescriptor, isTreeDescriptor, isTreeNodeDescriptor, type PrefabInstanceDescriptor, type SceneNodeDescriptor,
 } from "./Types";
-import { isPrefabInstanceObject } from "./PrefabNodeInstance";
 import Tree from "./Tree";
 import TreeNode from "./TreeNode";
 import type ObjectBase from "./ObjectBase";
@@ -86,40 +84,40 @@ class ObjectManager {
   }
 
   async delete(object: ObjectBase) {
-    if (isPrefabInstanceObject(object)) {
-      const prefabInstance = object.prefabInstance;
+    // if (isPrefabInstanceObject(object)) {
+    //   const prefabInstance = object.prefabInstance;
 
-      const response = await Http.delete(`/api/scene-objects/${prefabInstance.id}`);
+    //   const response = await Http.delete(`/api/scene-objects/${prefabInstance.id}`);
 
-      if (response.ok) {
-        prefabInstance.autosave = false;
+    //   if (response.ok) {
+    //     prefabInstance.autosave = false;
         
-        const instanceRoot = object.prefabInstance.root;
-        if (instanceRoot) {
-          let stack: SceneNodeBaseInterface[] = [instanceRoot];
+    //     const instanceRoot = object.prefabInstance.root;
+    //     if (instanceRoot) {
+    //       let stack: SceneNodeBaseInterface[] = [instanceRoot];
     
-          while (stack.length > 0) {
-            const instanceObject = stack[0];
-            stack = stack.slice(1);
+    //       while (stack.length > 0) {
+    //         const instanceObject = stack[0];
+    //         stack = stack.slice(1);
     
-            // For the root node, detach it from its connection. This should
-            // cause the parent object to save without the connection and
-            // remove the scene node from the scene graph.
-            // For all other nodes, just manually detach the scene node from the scene
-            // graph.
-            if (instanceObject === instanceRoot) {
-              instanceObject.detachSelf();
-            }
-            else {
-              instanceObject.renderNode.detachSelf()
-            }
+    //         // For the root node, detach it from its connection. This should
+    //         // cause the parent object to save without the connection and
+    //         // remove the scene node from the scene graph.
+    //         // For all other nodes, just manually detach the scene node from the scene
+    //         // graph.
+    //         if (instanceObject === instanceRoot) {
+    //           instanceObject.detachSelf();
+    //         }
+    //         else {
+    //           instanceObject.renderNode.detachSelf()
+    //         }
     
-            stack = stack.concat(instanceObject.nodes.map((o) => o));
-          }
-        }
-      }
-    }
-    else {
+    //         stack = stack.concat(instanceObject.nodes.map((o) => o));
+    //       }
+    //     }
+    //   }
+    // }
+    // else {
       const response = await Http.delete(`/api/scene-objects/${object.id}`);
 
       if (response.ok) {
@@ -127,7 +125,7 @@ class ObjectManager {
           object.detachSelf()
         })
       }
-    }
+    // }
   }
 }
 
