@@ -33,6 +33,7 @@ class Folder extends ProjectItem<FolderInterface> implements FolderInterface {
 
   isAncestor(item: ProjectItemLike): boolean {
     if (isFolder(item)) {
+      // eslint-disable-next-line @typescript-eslint/no-this-alias
       let child: FolderInterface | null = this;
       for (;;) {
         if (child === null || child.parent === item) {

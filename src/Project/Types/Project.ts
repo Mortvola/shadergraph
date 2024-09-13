@@ -217,7 +217,7 @@ class Project implements ProjectInterface {
     return payload;
   }
 
-  async createNewItem(name: string, type: ProjectItemType, folder: FolderInterface, payload?: unknown) {
+  async createNewItem(name: string, type: ProjectItemType, folder: FolderInterface, payload?: unknown): Promise<ProjectItemLike | undefined> {
     let parentId: number | null = folder.id;
     if (parentId === -1) {
       parentId = null;
@@ -291,7 +291,7 @@ class Project implements ProjectInterface {
     }
   }
 
-  private constructProjectItem(rec: ProjectItemRecord, folder: FolderInterface) {
+  private constructProjectItem(rec: ProjectItemRecord, folder: FolderInterface): ProjectItemLike {
     switch (rec.type) {
       case ProjectItemType.Folder:
         return new Folder(rec.id, rec.name, folder, this)

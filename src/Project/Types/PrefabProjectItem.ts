@@ -1,7 +1,4 @@
 import { runInAction } from "mobx";
-import Http from "../../Http/src";
-import Prefab from "../../Scene/Types/Prefab";
-import type { PrefabDescriptor } from "../../Scene/Types/Types";
 import type { PrefabInterface } from "../../Scene/Types/Types";
 import ProjectItem from "./ProjectItem";
 import type { FolderInterface} from "./types";

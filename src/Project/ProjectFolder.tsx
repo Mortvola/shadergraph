@@ -1,5 +1,5 @@
 import React from 'react';
-import type { FolderInterface, ProjectItemLike} from './Types/types';
+import type { FolderInterface, ProjectInterface, ProjectItemLike} from './Types/types';
 import { ProjectItemType } from './Types/types';
 import ProjectItem from './ProjectItem';
 import { useStores } from '../State/store';
@@ -9,6 +9,7 @@ import Prefab from '../Scene/Types/Prefab';
 import { isSceneObject } from "../Scene/Types/Types";
 
 type PropsType = {
+  project: ProjectInterface,
   folder: FolderInterface,
   onSelect: (item: ProjectItemLike) => void,
   level: number,
@@ -16,6 +17,7 @@ type PropsType = {
 }
 
 const ProjectFolder: React.FC<PropsType> = observer(({
+  project,
   folder,
   onSelect,
   level,
@@ -24,8 +26,8 @@ const ProjectFolder: React.FC<PropsType> = observer(({
   const store = useStores();
 
   React.useEffect(() => {
-    store.project.getFolder(folder);
-  }, [folder, store])
+    project.getFolder(folder);
+  }, [project, folder])
 
   const [droppable, setDroppable] = React.useState<boolean>(false);
 
@@ -87,7 +89,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
               // eslint-disable-next-line @typescript-eslint/no-unused-vars
               const { id, ...descriptor } = prefab.toDescriptor();
 
-              const item = await store.project.createNewItem(prefab.name, ProjectItemType.Prefab, folder, {
+              const item = await project.createNewItem(prefab.name, ProjectItemType.Prefab, folder, {
                 parentId: folder.id,
                 ...descriptor,
               })
@@ -114,17 +116,17 @@ const ProjectFolder: React.FC<PropsType> = observer(({
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (event.code === 'Escape') {
-      store.project.cancelNewItem(folder)
+      project.cancelNewItem(folder)
     }
     else if (event.code === 'Enter' && name.length > 0) {
-      store.project.createNewItem(name, folder.newItemType!, folder)
+      project.createNewItem(name, folder.newItemType!, folder)
     }
 
     // setName('');
   }
 
   const handleBlur = () => {
-    store.project.cancelNewItem(folder);
+    project.cancelNewItem(folder);
     setName('');
   }
 
@@ -137,6 +139,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
       i.type === 'folder'
         ? (
             <ProjectFolder
+              project={project}
               key={`children:${i.id}`}
               folder={i as FolderInterface}
               onSelect={onSelect}
@@ -148,7 +151,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
             key={`${i.type}:${i.id}`}
             item={i}
             onSelect={onSelect}
-            selected={i.id === store.project.selectedItem?.id}
+            selected={i.id === project.selectedItem?.id}
             draggable
           />    
         )
@@ -176,7 +179,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
             key={`${folder.type}:${folder.id}`}
             item={folder}
             onSelect={onSelect}
-            selected={folder.id === store.project.selectedItem?.id}
+            selected={folder.id === project.selectedItem?.id}
             draggable
           />
           {

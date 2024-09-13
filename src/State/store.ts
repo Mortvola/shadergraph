@@ -95,8 +95,7 @@ class Store implements StoreInterface {
           //   }
           // }    
         }
-        else if (component.type === ComponentType.Decal) {
-        }
+        else if (component.type === ComponentType.Decal) { /* empty */ }
       }  
     }
 

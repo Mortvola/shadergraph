@@ -35,9 +35,22 @@ export enum ProjectItemType {
 }
 
 export interface ProjectInterface {
+  projectItems: FolderInterface | null
+
   selectedItem: ProjectItemLike | null
 
-  getItemByItemId(id: number, type: string): ProjectItemLike | undefined
+  getFolder(folder: FolderInterface): void;
+
+  getItemByItemId(id: number, type: string): ProjectItemLike | undefined;
+
+  createNewItem(
+    name: string,
+    type: ProjectItemType,
+    folder: FolderInterface,
+    payload?: unknown,
+  ): Promise<ProjectItemLike | undefined>
+
+  cancelNewItem(folder: FolderInterface): void;
 }
 
 export interface ProjectItemInterface<T> {

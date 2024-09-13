@@ -1,12 +1,18 @@
 import React from 'react';
-import type { ProjectItemLike } from './Types/types';
+import type { ProjectInterface, ProjectItemLike } from './Types/types';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import ProjectFolder from './ProjectFolder';
 import ProjectToolbar from './ProjectToolbar';
 import styles from './Project.module.scss';
 
-const Project: React.FC = observer(() => {
+type PropsType = {
+  project: ProjectInterface,
+}
+
+const Project: React.FC<PropsType> = observer(({
+  project,
+}) => {
   const store = useStores();
 
   const handleSelect = async (item: ProjectItemLike) => {
@@ -17,10 +23,11 @@ const Project: React.FC = observer(() => {
     <div className={styles.layout}>
       <div className={styles.project}>
         {
-          store.project.projectItems
+          project.projectItems
             ? (
               <ProjectFolder
-                folder={store.project.projectItems}
+                project={project}
+                folder={project.projectItems}
                 onSelect={handleSelect}
                 level={0}
               >
