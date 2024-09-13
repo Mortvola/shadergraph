@@ -2,7 +2,7 @@ import { observable, runInAction } from "mobx";
 import { store } from "../../State/store";
 import Http from "../../Http/src";
 import { type SceneDescriptor } from "./Types";
-import type { SceneInterface } from "./Types";
+import type { SceneInterface, SceneItemType } from "./Types";
 import Tree from "./Tree";
 import { objectManager } from "./ObjectManager";
 import type TreeNode from "./TreeNode";
@@ -69,6 +69,18 @@ class Scene implements SceneInterface {
     else {
       await Http.patch(`/api/scenes/${this.tree.id}`, this.toDescriptor())  
     }
+  }
+
+  addNewItem(type: SceneItemType) {
+    runInAction(() => {
+      let parent = this.selectedNode
+
+      if (parent === null) {
+        parent = this.tree.root;
+      }
+
+      parent.newItemType = type;
+    })
   }
 }
 

@@ -3,7 +3,7 @@ import RenderNode from "../../Renderer/Drawables/SceneNodes/RenderNode";
 import { getNextObjectId } from "../../State/Entity";
 import { objectManager } from "./ObjectManager";
 import SceneObject from "./SceneObject";
-import { ObjectType, type TreeNodeDescriptor } from "./Types";
+import { ObjectType, type SceneItemType, type TreeNodeDescriptor } from "./Types";
 import ObjectBase from "./ObjectBase";
 import type ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import type LightProps from "../../Renderer/Properties/LightProps";
@@ -40,6 +40,9 @@ class TreeNode extends ObjectBase {
   }
 
   renderNode = new RenderNode();
+
+  @observable
+  accessor newItemType: SceneItemType | undefined = undefined;
 
   constructor() {
     super(getNextObjectId(), '')
@@ -213,6 +216,12 @@ class TreeNode extends ObjectBase {
 
   changeName(name: string) {
     this.nodeObject.changeName(name)
+  }
+
+  cancelNewItem() {
+    runInAction(() => {
+      this.newItemType = undefined;
+    })
   }
 }
 

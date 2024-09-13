@@ -3,14 +3,7 @@ import type { MenuItemLike } from '../ContextMenu/types';
 import { useStores } from '../State/store';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import styles from '../Project/Project.module.scss'
-import SceneObject from './Types/SceneObject';
-import type { NewSceneObjectComponent } from '../Renderer/Types';
-import { ComponentType } from '../Renderer/Types';
-import type { SceneInterface } from "./Types/Types";
-import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
-import LightProps from '../Renderer/Properties/LightProps';
-import TreeNode from './Types/TreeNode';
-import { objectManager } from './Types/ObjectManager';
+import { SceneItemType, type SceneInterface } from "./Types/Types";
 
 type PropsType = {
   scene?: SceneInterface,
@@ -46,73 +39,17 @@ const SceneToolbar: React.FC<PropsType> = ({
   const menuItems = React.useCallback((): MenuItemLike[] => ([
     { name: 'Create scene object', action: async () => {
       if (scene) {
-        const object = new SceneObject()
-
-        await object.save();
-
-        const node = new TreeNode()
-
-        node.nodeObject = object;
-
-        await objectManager.add(node);
-
-        scene.addNode(node);
-
-        scene.setSelectedObject(node);
+        scene.addNewItem(SceneItemType.SceneObject)
       }
     } },
     { name: 'Create particle system', action: async () => {
       if (scene) {
-        const object = new SceneObject();
-
-        await objectManager.add(object);
-
-        const props = new ParticleSystemProps();
-        // const particleSystem = new ParticleSystem(props);
-
-        object.addComponent({
-          type: ComponentType.ParticleSystem,
-          props: props,
-          // component: particleSystem,
-        });
-  
-        // await object.save();
-
-        const node = new TreeNode()
-
-        node.nodeObject = object;
-
-        await objectManager.add(node);
-
-        scene.addNode(node);
-
-        scene.setSelectedObject(node);
+        scene.addNewItem(SceneItemType.ParticleSystem)
       }
     } },
     { name: 'Create light', action: async () => {
       if (scene) {
-        const object = new SceneObject()
-
-        const props = new LightProps();
-
-        const item: NewSceneObjectComponent = {
-          type: ComponentType.Light,
-          props: props,
-        }
-
-        object.addComponent(item);
-
-        await object.save();
-
-        const node = new TreeNode();
-
-        node.nodeObject = object;
-
-        await objectManager.add(node);
-
-        scene.addNode(node);
-
-        scene.setSelectedObject(node);
+        scene.addNewItem(SceneItemType.Light)
       }
     } }
 

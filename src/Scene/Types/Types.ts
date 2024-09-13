@@ -8,6 +8,12 @@ import type { EntityInterface } from "../../State/types";
 import type Tree from "./Tree";
 import type TreeNode from "./TreeNode";
 
+export enum SceneItemType {
+  SceneObject = 'SceneObject',
+  ParticleSystem = 'ParticleSystem',
+  Light = 'Light',
+}
+
 export interface PrefabInterface {
   id: number;
 
@@ -72,6 +78,8 @@ export interface SceneInterface {
   setSelectedObject(node: TreeNode | null): void;
 
   renderScene(): Promise<void>;
+
+  addNewItem(type: SceneItemType): void;
 }
 
 export interface SceneObjectBaseInterface extends EntityInterface {

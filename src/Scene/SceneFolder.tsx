@@ -3,8 +3,13 @@ import SceneItem from './SceneItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
-import type { SceneInterface } from "./Types/Types";
-import type TreeNode from './Types/TreeNode';
+import { SceneItemType, type SceneInterface } from "./Types/Types";
+import TreeNode from './Types/TreeNode';
+import SceneObject from './Types/SceneObject';
+import { objectManager } from './Types/ObjectManager';
+import { ComponentType, type NewSceneObjectComponent } from '../Renderer/Types';
+import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
+import LightProps from '../Renderer/Properties/LightProps';
 
 type PropsType = {
   scene: SceneInterface,
@@ -97,28 +102,104 @@ const SceneFolder: React.FC<PropsType> = observer(({
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [name, setName] = React.useState<string>('')
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
-    // if (event.code === 'Escape') {
-    //   project.cancelNewItem(folder)
-    //   setName('');
-    // }
-    // else if (event.code === 'Enter' && name.length > 0) {
-    //   project.createNewItem(name, folder.newItem!, folder)
-    //   setName('');
-    // }
+    if (event.code === 'Escape') {
+      folder.cancelNewItem()
+      setName('');
+    }
+    else if (event.code === 'Enter' && name.length > 0) {
+      (
+        async () => {
+          switch (folder.newItemType) {
+            case SceneItemType.SceneObject: {
+              const object = new SceneObject(undefined, name)
+  
+              await object.save();
+  
+              const node = new TreeNode()
+  
+              node.nodeObject = object;
+  
+              await objectManager.add(node);
+  
+              scene.addNode(node);
+  
+              scene.setSelectedObject(node);
+    
+              break;
+            }
+
+            case SceneItemType.ParticleSystem: {
+              const object = new SceneObject();
+
+              await objectManager.add(object);
+      
+              const props = new ParticleSystemProps();
+              // const particleSystem = new ParticleSystem(props);
+      
+              object.addComponent({
+                type: ComponentType.ParticleSystem,
+                props: props,
+                // component: particleSystem,
+              });
+        
+              // await object.save();
+      
+              const node = new TreeNode()
+      
+              node.nodeObject = object;
+      
+              await objectManager.add(node);
+      
+              scene.addNode(node);
+      
+              scene.setSelectedObject(node);
+
+              break;
+            }
+
+            case SceneItemType.Light: {
+              const object = new SceneObject()
+
+              const props = new LightProps();
+      
+              const item: NewSceneObjectComponent = {
+                type: ComponentType.Light,
+                props: props,
+              }
+      
+              object.addComponent(item);
+      
+              await object.save();
+      
+              const node = new TreeNode();
+      
+              node.nodeObject = object;
+      
+              await objectManager.add(node);
+      
+              scene.addNode(node);
+      
+              scene.setSelectedObject(node);
+      
+              break;
+            }
+          }
+
+          folder.cancelNewItem()
+          setName('');    
+        }
+      )()
+    }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleBlur = () => {
-    // project.cancelNewItem(folder);
-    // setName('');
+    folder.cancelNewItem();
+    setName('');
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     setName(event.target.value)
   }
@@ -141,8 +222,8 @@ const SceneFolder: React.FC<PropsType> = observer(({
       <div
         style={{ paddingLeft: level > 0 ? 16 : 0 }}
       >
-        {/* {
-          folder.newItem
+        {
+          folder.newItemType
             ? (
               <input
                 type="text"
@@ -154,7 +235,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
               />
             )
             : null
-        } */}
+        }
         {
           folder.nodes.map((i) => (
             <SceneFolder
