@@ -1,5 +1,5 @@
 import React from 'react';
-import { isPrefabInstanceObject } from '../Scene/Types/PrefabNodeInstance';
+// import { isPrefabInstanceObject } from '../Scene/Types/PrefabNodeInstance';
 import { isPropertyOverride, type ObjectOverrides, type SceneObjectBaseInterface } from '../Scene/Types/Types';
 import styles from './Overrides.module.scss';
 import PopupButton from './PopupButton';
@@ -16,11 +16,11 @@ const Overrides: React.FC<PropsType> = ({
 }) => {
   const [overrides, setOverrides] = React.useState<ObjectOverrides[]>([])
 
-  React.useEffect(() => {
-    if (isPrefabInstanceObject(sceneNode)) {
-      setOverrides(sceneNode.prefabInstance.getOverrides())
-    }
-  }, [])
+  // React.useEffect(() => {
+  //   if (isPrefabInstanceObject(sceneNode)) {
+  //     setOverrides(sceneNode.prefabInstance.getOverrides())
+  //   }
+  // }, [])
 
   return (
     <div className={styles.layout}>

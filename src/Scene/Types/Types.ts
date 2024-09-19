@@ -53,9 +53,9 @@ export type PrefabDescriptor = {
   };
 };
 
-export interface PrefabNodeInstanceInterface extends SceneObjectBaseInterface {
-  baseNode: PrefabNodeInterface;
-}
+// export interface PrefabNodeInstanceInterface extends SceneObjectBaseInterface {
+//   baseNode: PrefabNodeInterface;
+// }
 
 export type PrefabNodeDescriptor = {
   id: number;
@@ -169,21 +169,21 @@ export type ObjectOverrides = {
   overrides: (CconnectedObjectOverride | PropertyOverride)[],
 }
 
-export interface PrefabInstanceInterface {
-  id: number;
+// export interface PrefabInstanceInterface {
+//   id: number;
 
-  autosave: boolean;
+//   autosave: boolean;
 
-  root?: PrefabNodeInstanceInterface
+//   root?: PrefabNodeInstanceInterface
 
-  save(): Promise<void>;
+//   save(): Promise<void>;
 
-  getOverrides(): ObjectOverrides[];
+//   getOverrides(): ObjectOverrides[];
 
-  attachSceneObject(
-    sceneNode: SceneObjectBaseInterface,
-  ): Promise<void>
-}
+//   attachSceneObject(
+//     sceneNode: SceneObjectBaseInterface,
+//   ): Promise<void>
+// }
 
 export type SceneDescriptor = {
   id: number;
@@ -222,7 +222,7 @@ export type TreeNodeDescriptor = {
   parentNodeId: number,
   // subtreeId: number,
   object?: SceneObjectDescriptor,
-  children: TreeNodeDescriptor[],
+  children?: TreeNodeDescriptor[],
   // object: {
   //   type: ObjectType,
   //   nodes: number[] // Can be a TreeNode or a TreeInstance.

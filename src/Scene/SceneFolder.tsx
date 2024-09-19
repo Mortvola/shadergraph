@@ -187,7 +187,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
       
               await objectManager.add(node);
       
-              scene.addNode(node);
+              scene.addNode(node, false);
       
               scene.setSelectedObject(node);
       

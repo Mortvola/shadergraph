@@ -3,7 +3,7 @@ import type { PrefabInterface } from "../../Scene/Types/Types";
 import ProjectItem from "./ProjectItem";
 import type { FolderInterface} from "./types";
 import { ProjectItemType } from "./types";
-import { prefabManager } from "../../Scene/Types/PrefabManager";
+// import { prefabManager } from "../../Scene/Types/PrefabManager";
 
 class PrefabProjectItem extends ProjectItem<PrefabInterface> {
   constructor(id: number, name: string, parent: FolderInterface | null, itemId: number | null) {
@@ -32,17 +32,17 @@ class PrefabProjectItem extends ProjectItem<PrefabInterface> {
     }
 
     if (this.itemId) {
-      const prefab = await prefabManager.get(this.itemId)
+      // const prefab = await prefabManager.get(this.itemId)
   
-      if (prefab) {
-        prefab.id = this.itemId;
+      // if (prefab) {
+      //   prefab.id = this.itemId;
 
-        runInAction(() => {
-          this.item = prefab;
-        })
+      //   runInAction(() => {
+      //     this.item = prefab;
+      //   })
 
-        return prefab;
-      }
+      //   return prefab;
+      // }
     }
 
     return null;

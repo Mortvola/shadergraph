@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import type { MenuItemLike } from '../ContextMenu/types';
 import type { SceneInterface } from "./Types/Types";
-import { isPrefabInstanceObject } from './Types/PrefabNodeInstance';
+// import { isPrefabInstanceObject } from './Types/PrefabNodeInstance';
 import type TreeNode from './Types/TreeNode';
 
 type PropsType = {
