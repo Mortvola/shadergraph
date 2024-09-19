@@ -1,4 +1,4 @@
-import { makeObservable, observable, runInAction } from "mobx";
+import { observable, runInAction } from "mobx";
 import Http from "../../Http/src";
 import type { FolderInterface, ProjectItemInterface, ProjectItemLike, ProjectItemType } from "./types";
 import { particleSystemManager } from "../../Renderer/ParticleSystem/ParticleSystemManager";
@@ -6,7 +6,8 @@ import { particleSystemManager } from "../../Renderer/ParticleSystem/ParticleSys
 class ProjectItem<T> implements ProjectItemInterface<T> {
   id: number
 
-  name: string
+  @observable
+  accessor name: string
 
   type: ProjectItemType
 
@@ -14,7 +15,8 @@ class ProjectItem<T> implements ProjectItemInterface<T> {
 
   parent: FolderInterface | null = null;
 
-  item: T | null = null;
+  @observable
+  accessor item: T | null = null;
 
   constructor(id: number, name: string, type: ProjectItemType, parent: FolderInterface | null, itemId: number | null) {
     this.id = id;
@@ -22,11 +24,6 @@ class ProjectItem<T> implements ProjectItemInterface<T> {
     this.parent = parent
     this.name = name;
     this.type = type;
-
-    makeObservable(this, {
-      name: observable,
-      item: observable,
-    })
   }
 
   async changeName(name: string): Promise<boolean> {

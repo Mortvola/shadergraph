@@ -5,7 +5,6 @@ import type {
   SceneObjectComponent as SceneObjectComponent, TransformPropsInterface,
 } from "../../Renderer/Types";
 import type { EntityInterface } from "../../State/types";
-import type Tree from "./Tree";
 import type TreeNode from "./TreeNode";
 
 export enum SceneItemType {
@@ -67,13 +66,13 @@ export type PrefabNodeDescriptor = {
 };
 
 export interface SceneInterface {
-  selectedNode: TreeNode | null;
+  root: TreeNode | undefined;
 
-  tree: Tree;
+  selectedNode: TreeNode | null;
 
   draggingNode: TreeNode | null;
 
-  addNode(node: TreeNode): void;
+  addNode(node: TreeNode, autosave: boolean): void;
 
   setSelectedObject(node: TreeNode | null): void;
 
@@ -102,9 +101,11 @@ export interface SceneObjectBaseInterface extends EntityInterface {
   isPrefabInstanceRoot(): boolean;
 }
 
-export const isSceneObject = (r: unknown): r is SceneObjectInterface => (
-  r !== null && r !== undefined
-  && (r as PrefabNodeInstanceInterface).baseNode === undefined
+export const isTreeNode = (r: unknown): r is TreeNode => (
+  (r as TreeNode)?.renderNode !== undefined
+  && (r as TreeNode)?.nodeObject !== undefined
+  && (r as TreeNode)?.nodes !== undefined
+  && (r as TreeNode)?.components !== undefined
 )
 
 export interface SceneObjectInterface extends SceneObjectBaseInterface {
@@ -121,13 +122,14 @@ export const isGameObject = (r: unknown): r is SceneObjectInterface => (
 )
 
 export type SceneObjectDescriptor = {
-  id: number;
-  name: string;
+  id: number,
+  name: string,
   object: {
-    type: ObjectType;
-    components: ComponentDescriptor[];
-    transformProps: TransformPropsDescriptor;
-  };
+    type: ObjectType,
+    components: ComponentDescriptor[],
+    transformProps: TransformPropsDescriptor,
+  },
+  baseObjectId?: number,
 }
 
 export type ConnectedObject = { prefabNodeId: number, objectId: number }
@@ -186,9 +188,7 @@ export interface PrefabInstanceInterface {
 export type SceneDescriptor = {
   id: number;
   name: string;
-  scene: {
-    tree: number;
-  };
+  rootNodeId: number;
 }
 
 export type TransformPropsDescriptor = {
@@ -205,25 +205,29 @@ export enum ObjectType {
   NodeObjectOverride = 'ObjectOverride',
 }
 
-export type NodeObjectDescriptor = {
-  id: number,
-  type: ObjectType,
-  components: ComponentDescriptor[];
-  transformProps?: TransformPropsDescriptor;
-}
+// export type NodeObjectDescriptor = {
+//   id: number,
+//   type: ObjectType,
+//   components: ComponentDescriptor[];
+//   transformProps?: TransformPropsDescriptor;
+// }
 
-export class NodeObject {
+// export class NodeObject {
 
-}
+// }
 
 export type TreeNodeDescriptor = {
   id: number,
-  name: string,
-  object: {
-    type: ObjectType,
-    nodes: number[] // Can be a TreeNode or a TreeInstance.
-    objectId: number,
-  }
+  treeId: number,
+  parentNodeId: number,
+  // subtreeId: number,
+  object?: SceneObjectDescriptor,
+  children: TreeNodeDescriptor[],
+  // object: {
+  //   type: ObjectType,
+  //   nodes: number[] // Can be a TreeNode or a TreeInstance.
+  //   objectId: number,
+  // }
 }
 
 export type TreeDescriptor = {
@@ -255,7 +259,8 @@ export const isTreeDescriptor = (r: unknown): r is TreeDescriptor => (
 )
 
 export const isTreeNodeDescriptor = (r: unknown): r is TreeNodeDescriptor => (
-  (r as TreeNodeDescriptor)?.object?.type === ObjectType.TreeNode
+  // (r as TreeNodeDescriptor)?.object?.type === ObjectType.TreeNode
+  true
 )
 
 export const isSceneObjectDescriptor = (r: unknown): r is SceneObjectDescriptor => (

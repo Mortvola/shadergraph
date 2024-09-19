@@ -10,6 +10,8 @@ import { objectManager } from './Types/ObjectManager';
 import { ComponentType, type NewSceneObjectComponent } from '../Renderer/Types';
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
 import LightProps from '../Renderer/Properties/LightProps';
+import { ProjectItemType } from '../Project/Types/types';
+import Http from '../Http/src';
 
 type PropsType = {
   scene: SceneInterface,
@@ -47,7 +49,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
       setDroppable(true);      
     } else if ((
       event.dataTransfer.types[0] === 'application/project-item'
-      && store.draggingItem?.type === 'prefab'  
+      && store.draggingItem?.type === ProjectItemType.TreeNode
     )) {
       event.dataTransfer.dropEffect = 'link';
       setDroppable(true);
@@ -75,11 +77,29 @@ const SceneFolder: React.FC<PropsType> = observer(({
       }
       else if (
         event.dataTransfer.types[0] === 'application/project-item'
-        && store.draggingItem?.type === 'prefab'
+        && store.draggingItem?.type === ProjectItemType.TreeNode
       ) {
-        // (async () => {
-        //   const item = store.draggingItem;
+        const item = store.draggingItem;
 
+        (async () => {
+          console.log((item.itemId))
+
+          if (item.itemId === null) {
+            throw new Error('itemId is null')
+          }
+
+          // const treeNode = await objectManager.getTreeNode(item.itemId!)
+          const response = await Http.post('/api/tree-nodes', {
+            parentNodeId: folder.id,
+            rootNodeId: item.itemId
+          })
+
+          if (response.ok) {
+            const body = await response.body()
+
+
+          }
+          // console.log(treeNode.id)
         //   if (isPrefabItem(item)) {
         //     const prefab = await item.getItem();
   
@@ -95,7 +115,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
         //       }
         //     }
         //   }
-        // })()
+        })()
       }
 
       setDroppable(false);
@@ -116,46 +136,33 @@ const SceneFolder: React.FC<PropsType> = observer(({
             case SceneItemType.SceneObject: {
               const object = new SceneObject(undefined, name)
   
-              await object.save();
+              const node = await objectManager.add(object, folder)
   
-              const node = new TreeNode()
-  
-              node.nodeObject = object;
-  
-              await objectManager.add(node);
-  
-              scene.addNode(node);
-  
-              scene.setSelectedObject(node);
+              if (node) {
+                scene.setSelectedObject(node);
+              }
     
               break;
             }
 
             case SceneItemType.ParticleSystem: {
-              const object = new SceneObject();
+              const object = new SceneObject(undefined, name);
+              object.autosave = false;
 
-              await objectManager.add(object);
-      
               const props = new ParticleSystemProps();
-              // const particleSystem = new ParticleSystem(props);
-      
+
               object.addComponent({
                 type: ComponentType.ParticleSystem,
                 props: props,
-                // component: particleSystem,
               });
-        
-              // await object.save();
-      
-              const node = new TreeNode()
-      
-              node.nodeObject = object;
-      
-              await objectManager.add(node);
-      
-              scene.addNode(node);
-      
-              scene.setSelectedObject(node);
+
+              const node = await objectManager.add(object, folder);
+
+              object.autosave = true;
+              
+              if (node) {
+                scene.setSelectedObject(node);
+              }
 
               break;
             }

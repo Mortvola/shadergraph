@@ -5,6 +5,7 @@ import { useStores } from '../../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './ModelTree.module.scss';
 import type { SceneObjectInterface } from "../../Scene/Types/Types";
+import { ProjectItemType } from '../../Project/Types/types';
 
 type PropsType = {
   node: DrawableComponentInterface,
@@ -21,7 +22,7 @@ const MeshNode: React.FC<PropsType> = observer(({
   const { project: { selectedItem } } = store;
 
   let gameObject: SceneObjectInterface | null = null;
-  if (selectedItem && selectedItem.type === 'object') {
+  if (selectedItem && selectedItem.type === ProjectItemType.SceneObject) {
     gameObject = selectedItem.item as SceneObjectInterface
   }
 

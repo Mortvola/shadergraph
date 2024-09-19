@@ -16,11 +16,11 @@ class SceneProjectItem extends ProjectItem<SceneInterface> {
     const changed = await super.changeName(name);
 
     if (changed) {
-      runInAction(() => {
-        if (this.item?.tree) {
-          this.item.tree.name = name;
-        }  
-      })
+      // runInAction(() => {
+      //   if (this.item?.tree) {
+      //     this.item.tree.name = name;
+      //   }  
+      // })
       
       return true;
     }

@@ -1,6 +1,5 @@
 import { type IReactionDisposer, observable, reaction, runInAction } from "mobx";
 import type { LineageEntry, PropertyBaseInterface, PropertyType2, PropsBase } from "./Types";
-import type { PrefabNodeInterface } from "../../Scene/Types/Types";
 
 export class PropertyBase implements PropertyBaseInterface {
   @observable accessor override = false;
@@ -39,8 +38,8 @@ export class PropertyBase implements PropertyBaseInterface {
     let property: PropertyBase | undefined = this.original;
 
     while (property) {
-      const node = (property.props.node as unknown) as PrefabNodeInterface;
-      lineage.push({ property, name: node?.name ?? 'unknown node', container: node?.prefab.name ?? 'unknown prefab'})
+      const node = property.props.node;
+      lineage.push({ property, name: node?.name ?? 'unknown node', container: 'unknown prefab'})
 
       property = property.original
     }

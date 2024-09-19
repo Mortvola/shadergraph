@@ -64,15 +64,29 @@ class ObjectManager {
     throw new Error('object type mismatch')
   }
 
-  async add(object: ObjectBase) {
+  async add(object: ObjectBase, parentNode?: TreeNode): Promise<TreeNode | undefined> {
     const descriptor = object.toDescriptor();
 
-    const response = await Http.post<Omit<unknown, 'id'>, { id: number }>(`/api/scene-objects`, descriptor);
+    const response = await Http.post<Omit<unknown, 'id'>, { id: number, nodeId: number }>(`/api/scene-objects`, {
+      parentNodeId: parentNode?.id,
+      ...descriptor,
+    });
 
     if (response.ok) {
       const body = await response.body();
 
       object.id = body.id;
+
+      if (parentNode) {
+        const node = new TreeNode()
+  
+        node.id = body.nodeId
+        node.nodeObject = object as SceneObject;
+
+        parentNode.addNode(node);
+
+        return node
+      }
     }  
   }
 
@@ -80,7 +94,6 @@ class ObjectManager {
     const response = await Http.patch<unknown, void>(`/api/scene-objects/${object.id}`, object.toDescriptor());
 
     if (response.ok) { /* empty */ }  
-
   }
 
   async delete(object: ObjectBase) {

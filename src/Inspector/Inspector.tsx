@@ -9,6 +9,7 @@ import type Texture from '../State/Texture';
 import SceneObject from './SceneObject';
 import type { MaterialItemInterface } from '../State/types';
 import type { SceneObjectInterface } from "../Scene/Types/Types";
+import { ProjectItemType } from '../Project/Types/types';
 
 const Inspector: React.FC = observer(() => {
   const { project, scene } = useStores();
@@ -50,14 +51,14 @@ const Inspector: React.FC = observer(() => {
 
     if (project.selectedItem) {
       switch (project.selectedItem.type) {
-        case 'object':
+        case ProjectItemType.SceneObject:
           return (
             project.selectedItem.item
               ? <SceneObject sceneObject={project.selectedItem.item as SceneObjectInterface} />
               : null
           )
 
-        case 'material':
+        case ProjectItemType.Material:
           return (
             <Material materialItem={project.selectedItem.item as MaterialItemInterface} />
           )

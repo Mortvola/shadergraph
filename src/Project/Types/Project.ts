@@ -13,6 +13,7 @@ import MaterialProjectItem from "./MaterialProjectItem";
 import TextureProjectItem from "./TextureProjectItem";
 import SceneObjectProjectItem from "./SceneObjectProjectItem";
 import type { ProjectItemRecord } from "../../State/ProjectItemRecord";
+import type TreeNode from "../../Scene/Types/TreeNode";
 
 class Project implements ProjectInterface {
   @observable
@@ -152,7 +153,7 @@ class Project implements ProjectInterface {
         break;
       }
 
-      case 'object': {
+      case ProjectItemType.SceneObject: {
         payload = {
           name,
           object: {},
@@ -202,7 +203,7 @@ class Project implements ProjectInterface {
         break
       }
 
-      case 'scene': {
+      case ProjectItemType.Scene: {
         payload = {
           name,
           scene: {
@@ -217,7 +218,12 @@ class Project implements ProjectInterface {
     return payload;
   }
 
-  async createNewItem(name: string, type: ProjectItemType, folder: FolderInterface, payload?: unknown): Promise<ProjectItemLike | undefined> {
+  async createNewItem(
+    name: string,
+    type: ProjectItemType,
+    folder: FolderInterface,
+    payload?: unknown,
+  ): Promise<ProjectItemLike | undefined> {
     let parentId: number | null = folder.id;
     if (parentId === -1) {
       parentId = null;
@@ -232,7 +238,7 @@ class Project implements ProjectInterface {
         break;
       }
 
-      case 'object': {
+      case ProjectItemType.SceneObject: {
         url = '/api/scene-objects'
 
         break
@@ -262,7 +268,7 @@ class Project implements ProjectInterface {
         break
       }
 
-      case 'scene': {
+      case ProjectItemType.Scene: {
         url = '/api/scenes'
 
         break
@@ -322,6 +328,9 @@ class Project implements ProjectInterface {
 
       case ProjectItemType.Texture:
         return new TextureProjectItem(rec.id, rec.name, folder, rec.itemId)
+
+      case ProjectItemType.TreeNode:
+        return new ProjectItem<TreeNode>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
     }
   }
 

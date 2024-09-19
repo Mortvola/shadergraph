@@ -5,8 +5,9 @@ import ProjectItem from './ProjectItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
-import Prefab from '../Scene/Types/Prefab';
-import { isSceneObject } from "../Scene/Types/Types";
+import { isTreeNode, type SceneObjectInterface } from "../Scene/Types/Types";
+import Http from '../Http/src';
+import ProjectItemData from './Types/ProjectItem';
 
 type PropsType = {
   project: ProjectInterface,
@@ -78,32 +79,27 @@ const ProjectFolder: React.FC<PropsType> = observer(({
         )()
       }
       else if (event.dataTransfer.types[0] === 'application/scene-item') {
-        console.log(event.dataTransfer.types[0])
-        const sceneNode = store.scene?.draggingNode
+        if (isTreeNode(store.scene?.draggingNode)) {
+          const sceneNode = store.scene?.draggingNode;
 
-        if (isSceneObject(sceneNode)) {
           ( async () => {
-            const prefab = Prefab.fromSceneNode(sceneNode);
+              const object = sceneNode.nodeObject;
 
-            if (prefab) {
-              // eslint-disable-next-line @typescript-eslint/no-unused-vars
-              const { id, ...descriptor } = prefab.toDescriptor();
-
-              const item = await project.createNewItem(prefab.name, ProjectItemType.Prefab, folder, {
+              const response = await Http.post<unknown, { id: number, name: string, type: ProjectItemType }>('/api/folders/item', {
                 parentId: folder.id,
-                ...descriptor,
+                name: object.name,
+                itemId: sceneNode.id,
+                type: ProjectItemType.TreeNode,
               })
 
-              if (item) {
-                if (item.itemId === null) {
-                  throw new Error('itemId is null')
-                }
-                
-                prefab.id = item.itemId;
-                item.item = prefab;
-                store.selectItem(item);
+              if (response.ok) {
+                const body = await response.body();
+
+                const projectItem = new ProjectItemData<SceneObjectInterface>(body.id, body.name, body.type, folder, object.id);
+                projectItem.item = object;
+
+                folder.addItem(projectItem)
               }
-            }
           })()
         }
       }

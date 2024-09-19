@@ -7,6 +7,7 @@ import type {
 import type { SceneObjectInterface } from "../../Scene/Types/Types";
 import type { SceneInterface } from "../../Scene/Types/Types";
 import type { PrefabInterface } from "../../Scene/Types/Types";
+import type TreeNode from "../../Scene/Types/TreeNode";
 
 export type ProjectItemLike =
   ProjectItemInterface<SceneObjectInterface> |
@@ -19,7 +20,8 @@ export type ProjectItemLike =
   ProjectItemInterface<ShaderRecord> |
   ProjectItemInterface<SceneInterface> |
   ProjectItemInterface<PrefabInterface> |
-  ProjectItemInterface<FolderInterface>;
+  ProjectItemInterface<FolderInterface> |
+  ProjectItemInterface<TreeNode>;
 
 export enum ProjectItemType {
   Particle = 'particle',
@@ -32,6 +34,7 @@ export enum ProjectItemType {
   Scene = 'scene',
   Object2D = 'object2D',
   Prefab = 'prefab',
+  TreeNode = 'tree-node',
 }
 
 export interface ProjectInterface {

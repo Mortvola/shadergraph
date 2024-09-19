@@ -30,9 +30,8 @@ const Scene: React.FC<PropsType> = observer(({
         <SceneToolbar scene={scene} />
       </div>
       <SceneFolder
-        key={'scene'}
         scene={scene}
-        folder={scene.tree.root}
+        folder={scene.root!}
         onSelect={handleObjectClick}
         level={1}
       />

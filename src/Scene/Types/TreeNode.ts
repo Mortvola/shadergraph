@@ -3,7 +3,7 @@ import RenderNode from "../../Renderer/Drawables/SceneNodes/RenderNode";
 import { getNextObjectId } from "../../State/Entity";
 import { objectManager } from "./ObjectManager";
 import SceneObject from "./SceneObject";
-import { ObjectType, type SceneItemType, type TreeNodeDescriptor } from "./Types";
+import { type SceneItemType, type TreeNodeDescriptor } from "./Types";
 import ObjectBase from "./ObjectBase";
 import type ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import type LightProps from "../../Renderer/Properties/LightProps";
@@ -11,6 +11,8 @@ import { ComponentType, type LightInterface, type ParticleSystemInterface } from
 import type { SceneObjectBase } from "./SceneObjectBase";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import { vec3 } from "wgpu-matrix";
+import { sceneManager } from "./SceneManager";
+import Http from "../../Http/src";
 
 type NodeComponent = {
   type: ComponentType,
@@ -44,6 +46,10 @@ class TreeNode extends ObjectBase {
   @observable
   accessor newItemType: SceneItemType | undefined = undefined;
 
+  treeId?: number;
+
+  autosave = true;
+
   constructor() {
     super(getNextObjectId(), '')
   }
@@ -53,12 +59,12 @@ class TreeNode extends ObjectBase {
 
     treeNode.id = descriptor.id;
 
-    treeNode.nodes = (await Promise.all(descriptor.object.nodes.map(async (nodeId) => (
-      objectManager.getTreeNode(nodeId)
-    ))))
-      .filter((n) => n !== undefined)
+    // treeNode.nodes = (await Promise.all(descriptor.object.nodes.map(async (nodeId) => (
+    //   objectManager.getTreeNode(nodeId)
+    // ))))
+    //   .filter((n) => n !== undefined)
 
-    treeNode.nodeObject = await objectManager.getSceneObject(descriptor.object.objectId) ?? treeNode.nodeObject
+    // treeNode.nodeObject = await objectManager.getSceneObject(descriptor.object.objectId) ?? treeNode.nodeObject
     treeNode.nodeObject.treeNode = treeNode;
 
     for (const child of treeNode.nodes) {
@@ -72,12 +78,15 @@ class TreeNode extends ObjectBase {
   toDescriptor(): TreeNodeDescriptor | Omit<TreeNodeDescriptor, 'id'> {
     return {
       id: this.id >= 0 ? this.id : undefined,
-      name: this.name,
-      object: {
-        type: ObjectType.TreeNode,
-        nodes: this.nodes.map((node) => node.id),
-        objectId: this.nodeObject.id,
-      }    
+      treeId: 0,
+      parentNodeId: 0,
+      // subtreeId: 0,
+      // name: this.name,
+      // object: {
+      //   type: ObjectType.TreeNode,
+      //   nodes: this.nodes.map((node) => node.id),
+      //   objectId: this.nodeObject.id,
+      // }    
     }
   }
 
@@ -109,7 +118,7 @@ class TreeNode extends ObjectBase {
       node.parent = this;
       this.renderNode.addNode(node.renderNode)
 
-      this.onChange();
+      // this.onChange();
     })
   }
 
@@ -125,7 +134,7 @@ class TreeNode extends ObjectBase {
 
         this.renderNode.removeNode(node.renderNode)
 
-        this.onChange();
+        // this.onChange();
       })
     }
   }
@@ -202,11 +211,19 @@ class TreeNode extends ObjectBase {
   }
 
   async delete() {
-    await objectManager.delete(this);
+    const response = await Http.delete(`/api/tree-nodes/${this.id}`);
+
+    if (response.ok) {
+      runInAction(() => {
+        this.detachSelf()
+      })
+    }
   }
 
-  onChange() {
-    objectManager.update(this);
+  async onChange() {
+    if (this.autosave) {
+      await sceneManager.update(this);
+    }
   }
 
   transformChanged() {

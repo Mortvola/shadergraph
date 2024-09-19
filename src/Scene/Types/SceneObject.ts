@@ -15,53 +15,94 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
     super(id, name)
   }
 
-  static async fromDescriptor(descriptor?: SceneObjectDescriptor) {
+  static async fromDescriptor(descriptor?: SceneObjectDescriptor, baseObject?: SceneObject) {
     const object = new SceneObject();
     object.autosave = false;
 
     if (descriptor) {
       object.id = descriptor.id;
-      object.name = descriptor?.name ?? object.name;
+      object.name = baseObject?.name ?? descriptor?.name ?? object.name;
 
       object.transformProps = new TransformProps(descriptor.object.transformProps, object.transformChanged);
 
-      const components = descriptor.object.components;
-
-      if (components) {
-        object.components = (await Promise.all(components.map(async (c) => {
+      if (baseObject) {
+        object.components = baseObject.components.map((c) => {
+          const componentDescriptor = descriptor?.object.components.find((component) => (
+            component.id === c.id && component.type === c.type
+          ));
+    
           switch (c.type) {
             case ComponentType.ParticleSystem: {
-              const propsDescriptor = c.props as ParticleSystemPropsDescriptor;
-
-              const props = new ParticleSystemProps(propsDescriptor);
+              const prefabProps = c.props as ParticleSystemProps;
+    
+              const props = new ParticleSystemProps(
+                componentDescriptor?.props as ParticleSystemPropsDescriptor,
+                prefabProps,
+              );
+    
               props.onChange = object.onChange;
               props.node = object;
-
+    
               return {
-                id: c.id ?? object.getNextComponentId(),
+                id: c.id,
                 type: c.type,
-                props,
+                props: props,
               }
             }
-
+    
             case ComponentType.Light: {
-              const propsDescriptor = c.props as LightPropsDescriptor;
-
-              const props = new LightProps(propsDescriptor);
-              props.onChange = object.onChange;
-              props.node = object;
-
+    
               return {
-                id: c.id ?? object.getNextComponentId(),
+                id: c.id,
                 type: c.type,
-                props,
+                props: c.props,
               }
             }
-          }
+          }    
+        })
+          .filter((c) => c !== undefined)
 
-          return undefined
-        })))
-        .filter((c) => c !== undefined)
+        object.baseObject = baseObject
+      }
+      else {
+        const components = descriptor.object.components;
+
+        if (components) {
+          object.components = components.map((c) => {
+            switch (c.type) {
+              case ComponentType.ParticleSystem: {
+                const propsDescriptor = c.props as ParticleSystemPropsDescriptor;
+  
+                const props = new ParticleSystemProps(propsDescriptor);
+                props.onChange = object.onChange;
+                props.node = object;
+  
+                return {
+                  id: c.id ?? object.getNextComponentId(),
+                  type: c.type,
+                  props,
+                }
+              }
+  
+              case ComponentType.Light: {
+                const propsDescriptor = c.props as LightPropsDescriptor;
+  
+                const props = new LightProps(propsDescriptor);
+                props.onChange = object.onChange;
+                props.node = object;
+  
+                return {
+                  id: c.id ?? object.getNextComponentId(),
+                  type: c.type,
+                  props,
+                }
+              }
+            }
+  
+            return undefined
+          })
+            .filter((c) => c !== undefined)  
+        }
       }
 
       // Fix any scale values that are zero.
@@ -93,9 +134,10 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
         components: this.components.map((c) => ({
           id: c.id,
           type: c.type,
-          props: c.props.toDescriptor(),
-        })),
-        transformProps: this.transformProps.toDescriptor()!,
+          props: c.props.toDescriptor(this.baseObject !== undefined),
+        }))
+          .filter((c) => c.props !== undefined),
+        transformProps: this.transformProps.toDescriptor(/*this.baseObject !== undefined*/)!,
         nextComponentId: this.nextComponentId,
       }
     }
