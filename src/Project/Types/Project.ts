@@ -7,7 +7,6 @@ import type { FolderInterface, ProjectInterface, ProjectItemLike} from "./types"
 import { ProjectItemType, isFolder } from "./types";
 import type { ParticleSystemInterface, RenderNodeInterface } from "../../Renderer/Types";
 import SceneProjectItem from "./SceneProjectItem";
-import PrefabProjectItem from "./PrefabProjectItem";
 import ShaderProjectItem from "./ShaderProjectItem";
 import MaterialProjectItem from "./MaterialProjectItem";
 import TextureProjectItem from "./TextureProjectItem";
@@ -144,15 +143,6 @@ class Project implements ProjectInterface {
     let payload: unknown = {};
 
     switch (type) {
-      case 'prefab': {
-        payload = {
-          name,
-          prefab: {},
-        }
-
-        break;
-      }
-
       case ProjectItemType.SceneObject: {
         payload = {
           name,
@@ -232,12 +222,6 @@ class Project implements ProjectInterface {
     let url: string | undefined = undefined;
 
     switch (type) {
-      case 'prefab': {
-        url = '/api/prefabs'
-
-        break;
-      }
-
       case ProjectItemType.SceneObject: {
         url = '/api/scene-objects'
 
@@ -301,9 +285,6 @@ class Project implements ProjectInterface {
     switch (rec.type) {
       case ProjectItemType.Folder:
         return new Folder(rec.id, rec.name, folder, this)
-
-      case ProjectItemType.Prefab:
-        return new PrefabProjectItem(rec.id, rec.name, folder, rec.itemId)
 
       case ProjectItemType.SceneObject:
         return new SceneObjectProjectItem(rec.id, rec.name, folder, rec.itemId)

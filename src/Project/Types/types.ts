@@ -6,7 +6,6 @@ import type {
 } from "../../State/types";
 import type { SceneObjectInterface } from "../../Scene/Types/Types";
 import type { SceneInterface } from "../../Scene/Types/Types";
-import type { PrefabInterface } from "../../Scene/Types/Types";
 import type TreeNode from "../../Scene/Types/TreeNode";
 
 export type ProjectItemLike =
@@ -19,7 +18,6 @@ export type ProjectItemLike =
   ProjectItemInterface<ParticleSystemInterface> |
   ProjectItemInterface<ShaderRecord> |
   ProjectItemInterface<SceneInterface> |
-  ProjectItemInterface<PrefabInterface> |
   ProjectItemInterface<FolderInterface> |
   ProjectItemInterface<TreeNode>;
 
@@ -33,7 +31,6 @@ export enum ProjectItemType {
   Folder = 'folder',
   Scene = 'scene',
   Object2D = 'object2D',
-  Prefab = 'prefab',
   TreeNode = 'tree-node',
 }
 
@@ -79,11 +76,6 @@ export interface ProjectItemInterface<T> {
 export const isSceneItem = (r: ProjectItemLike | null | undefined): r is ProjectItemInterface<SceneInterface> => (
   r !== null && r !== undefined
   && (r.type === ProjectItemType.Scene)
-)
-
-export const isPrefabItem = (r: ProjectItemLike | null | undefined): r is ProjectItemInterface<PrefabInterface> => (
-  r !== null && r !== undefined
-  && (r.type === ProjectItemType.Prefab)
 )
 
 export const isShaderItem = (r: ProjectItemLike | null | undefined): r is ProjectItemInterface<GraphInterface> => (

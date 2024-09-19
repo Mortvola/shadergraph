@@ -13,38 +13,6 @@ export enum SceneItemType {
   Light = 'Light',
 }
 
-export interface PrefabInterface {
-  id: number;
-
-  name: string;
-
-  root?: PrefabNodeInterface;
-
-  autosave: boolean;
-
-  addSceneNodes(startingObject: SceneObjectInterface, id: number, parentNode: PrefabNodeInterface | null): PrefabNodeInterface;
-
-  toDescriptor(): PrefabDescriptor;
-
-  save(): Promise<void>;
-}
-
-export interface PrefabNodeInterface {
-  id: number;
-
-  name: string;
-
-  components: SceneObjectComponent[];
-
-  nodes: PrefabNodeInterface[];
-
-  transformProps: TransformPropsInterface;
-
-  prefab: PrefabInterface;
-
-  toDescriptor(): PrefabNodeDescriptor;
-}
-
 export type PrefabDescriptor = {
   id: number;
   name: string;
