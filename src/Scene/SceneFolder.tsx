@@ -3,7 +3,7 @@ import SceneItem from './SceneItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
-import { SceneItemType, type SceneInterface } from "./Types/Types";
+import { NodesResponse, SceneItemType, type SceneInterface } from "./Types/Types";
 import TreeNode from './Types/TreeNode';
 import SceneObject from './Types/SceneObject';
 import { objectManager } from './Types/ObjectManager';
@@ -12,6 +12,7 @@ import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps'
 import LightProps from '../Renderer/Properties/LightProps';
 import { ProjectItemType } from '../Project/Types/types';
 import Http from '../Http/src';
+import Scene from './Types/Scene';
 
 type PropsType = {
   scene: SceneInterface,
@@ -88,8 +89,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
             throw new Error('itemId is null')
           }
 
-          // const treeNode = await objectManager.getTreeNode(item.itemId!)
-          const response = await Http.post('/api/tree-nodes', {
+          const response = await Http.post<unknown, NodesResponse>('/api/tree-nodes', {
             parentNodeId: folder.id,
             rootNodeId: item.itemId
           })
@@ -97,24 +97,12 @@ const SceneFolder: React.FC<PropsType> = observer(({
           if (response.ok) {
             const body = await response.body()
 
+            const tree = await Scene.treeFromDescriptor(body);
 
+            if (tree) {
+              folder.addNode(tree);
+            }
           }
-          // console.log(treeNode.id)
-        //   if (isPrefabItem(item)) {
-        //     const prefab = await item.getItem();
-  
-        //     if (prefab) {
-        //       const prefabInstance = await PrefabInstance.fromPrefab(prefab);
-    
-        //       if (prefabInstance) {
-        //         await prefabInstance.save();
-                
-        //         if (prefabInstance.root) {
-        //           folder.addNode(prefabInstance.root);
-        //         }
-        //       }
-        //     }
-        //   }
         })()
       }
 

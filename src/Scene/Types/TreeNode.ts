@@ -209,7 +209,7 @@ class TreeNode extends ObjectBase {
   }
 
   async delete() {
-    const response = await Http.delete(`/api/tree-nodes/${this.id}`);
+    const response = await Http.delete(`/api/tree-nodes/${this.treeId ?? this.id}`);
 
     if (response.ok) {
       runInAction(() => {

@@ -224,3 +224,12 @@ export const isTreeNodeDescriptor = (r: unknown): r is TreeNodeDescriptor => (
 export const isSceneObjectDescriptor = (r: unknown): r is SceneObjectDescriptor => (
   (r as SceneObjectDescriptor)?.object?.type === ObjectType.NodeObject
 )
+
+export type TreeNodeDescriptor2 = {
+  id: number,
+  treeId?: number,
+  objectId: number,
+  children: TreeNodeDescriptor2[],
+}
+
+export type NodesResponse = { root: TreeNodeDescriptor2, objects: SceneObjectDescriptor[] }

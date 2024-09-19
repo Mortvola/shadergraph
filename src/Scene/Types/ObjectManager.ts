@@ -68,7 +68,8 @@ class ObjectManager {
     const descriptor = object.toDescriptor();
 
     const response = await Http.post<Omit<unknown, 'id'>, { id: number, nodeId: number }>(`/api/scene-objects`, {
-      parentNodeId: parentNode?.id,
+      parentNodeId: parentNode?.treeId ?? parentNode?.id,
+      parentSubnodeId: parentNode?.treeId !== undefined ? parentNode?.id : undefined,
       ...descriptor,
     });
 
