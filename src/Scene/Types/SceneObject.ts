@@ -1,18 +1,38 @@
-import { ObjectType, type SceneObjectDescriptor, type SceneObjectInterface } from "./Types";
+import { observable, runInAction } from "mobx";
 import {
-  type SceneObjectComponent, type LightPropsDescriptor, type NewSceneObjectComponent,
-  ComponentType,
+  ComponentType, type LightPropsDescriptor, type NewSceneObjectComponent,
+  type SceneObjectComponent, type TransformPropsInterface,
 } from "../../Renderer/Types";
-import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
-import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
-import LightProps from "../../Renderer/Properties/LightProps";
+import ObjectBase from "./ObjectBase";
+import { ObjectType, type SceneObjectInterface, type SceneObjectDescriptor } from "./Types";
 import TransformProps from "../../Renderer/Properties/TransformProps";
-import { SceneObjectBase as SceneObjectBase } from "./SceneObjectBase";
+import type TreeNode from "./TreeNode";
 import { objectManager } from "./ObjectManager";
+import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
+import { type ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
+import LightProps from "../../Renderer/Properties/LightProps";
 
-class SceneObject extends SceneObjectBase implements SceneObjectInterface {
+  
+class SceneObject extends ObjectBase implements SceneObjectInterface {
+  @observable
+  accessor components: SceneObjectComponent[] = []
+
+  componentOverrides: SceneObjectComponent[] = []
+
+  transformProps: TransformPropsInterface = new TransformProps();
+
+  baseObject?: SceneObject
+
+  derivedObjects: SceneObject[] = []
+
+  treeNode?: TreeNode;
+
+  nextComponentId = 0;
+
+  autosave = true;
+
   constructor(id?: number, name?: string) {
-    super(id, name)
+    super(id, name ?? `Scene Object ${Math.abs(id ?? 0)}`)
   }
 
   static async fromDescriptor(descriptor?: SceneObjectDescriptor, baseObject?: SceneObject) {
@@ -125,26 +145,6 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
     return this.id
   }
 
-  toDescriptor(): SceneObjectDescriptor | Omit<SceneObjectDescriptor, 'id'> {
-    const descriptor = {
-      id: this.id < 0 ? undefined : this.id,
-      name: this.name,
-      object: {
-        type: ObjectType.NodeObject,
-        components: this.components.map((c) => ({
-          id: c.id,
-          type: c.type,
-          props: c.props.toDescriptor(this.baseObject !== undefined),
-        }))
-          .filter((c) => c.props !== undefined),
-        transformProps: this.transformProps.toDescriptor(/*this.baseObject !== undefined*/)!,
-        nextComponentId: this.nextComponentId,
-      }
-    }
-
-    return descriptor;
-  }
-
   async save(): Promise<void> {
     if (this.id < 0) {
       await objectManager.add(this)
@@ -197,6 +197,57 @@ class SceneObject extends SceneObjectBase implements SceneObjectInterface {
 
       this.onChange()
     }
+  }
+
+  detachSelf() {
+    // if (this.parent) {
+    //   this.parent.removeObject(this);
+    //   this.parent = null;
+    // }
+  }
+
+  changeName(name: string) {
+    runInAction(() => {
+      this.name = name;
+      this.onChange();
+    })
+  }
+
+  getNextComponentId(): number {
+    const nextComponentId = this.nextComponentId;
+    this.nextComponentId += 1;
+
+    return nextComponentId;    
+  }
+
+  transformChanged = () => {
+    this.treeNode?.transformChanged()
+
+    this.onChange();
+  }
+
+  isPrefabInstanceRoot(): boolean {
+    return false;
+  }
+
+  toDescriptor(): SceneObjectDescriptor | Omit<SceneObjectDescriptor, 'id'> {
+    const descriptor = {
+      id: this.id < 0 ? undefined : this.id,
+      name: this.name,
+      object: {
+        type: ObjectType.NodeObject,
+        components: this.components.map((c) => ({
+          id: c.id,
+          type: c.type,
+          props: c.props.toDescriptor(this.baseObject !== undefined),
+        }))
+          .filter((c) => c.props !== undefined),
+        transformProps: this.transformProps.toDescriptor(/*this.baseObject !== undefined*/)!,
+        nextComponentId: this.nextComponentId,
+      }
+    }
+
+    return descriptor;
   }
 }
 

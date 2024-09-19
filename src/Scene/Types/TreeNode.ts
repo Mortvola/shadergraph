@@ -1,17 +1,16 @@
 import { observable, runInAction } from "mobx";
 import RenderNode from "../../Renderer/Drawables/SceneNodes/RenderNode";
 import { getNextObjectId } from "../../State/Entity";
-import SceneObject from "./SceneObject";
 import { type SceneItemType, type TreeNodeDescriptor } from "./Types";
 import ObjectBase from "./ObjectBase";
 import type ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import type LightProps from "../../Renderer/Properties/LightProps";
 import { ComponentType, type LightInterface, type ParticleSystemInterface } from "../../Renderer/Types";
-import type { SceneObjectBase } from "./SceneObjectBase";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import { vec3 } from "wgpu-matrix";
 import { sceneManager } from "./SceneManager";
 import Http from "../../Http/src";
+import SceneObject from "./SceneObject";
 
 type NodeComponent = {
   type: ComponentType,
@@ -139,8 +138,8 @@ class TreeNode extends ObjectBase {
   }
 
   private getComponentProps() {
-    const stack: SceneObjectBase[] = [];
-    let nodeObject: SceneObjectBase | undefined = this._nodeObject;
+    const stack: SceneObject[] = [];
+    let nodeObject: SceneObject | undefined = this._nodeObject;
 
     // Generate array of object derivations so that we can work
     // backwards from the base object to the most recent derivation.

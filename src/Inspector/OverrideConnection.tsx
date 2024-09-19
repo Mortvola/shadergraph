@@ -1,9 +1,9 @@
 import React from 'react';
 import styles from './Overrides.module.scss';
-import type { SceneObjectBaseInterface } from '../Scene/Types/Types';
+import type { SceneObjectInterface } from '../Scene/Types/Types';
 
 type PropsType = {
-  connectedObject: SceneObjectBaseInterface,
+  connectedObject: SceneObjectInterface,
 }
 
 const OverrideConnection: React.FC<PropsType> = ({

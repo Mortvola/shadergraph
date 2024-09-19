@@ -1,5 +1,4 @@
 import React from 'react';
-import type { SceneObjectBaseInterface } from "../Scene/Types/Types";
 import { isGameObject2D } from '../State/types';
 import { useStores } from '../State/store';
 import styles from './Inspector.module.scss'
@@ -17,9 +16,10 @@ import Transform from './Transform';
 import PopupButton from './PopupButton';
 import Overrides from './Overrides';
 import { Position } from './PopupWrapper';
+import { type SceneObjectInterface } from '../Scene/Types/Types';
 
 type PropsType = {
-  sceneObject: SceneObjectBaseInterface
+  sceneObject: SceneObjectInterface
 }
 
 const SceneObject: React.FC<PropsType> = observer(({

@@ -1,6 +1,6 @@
 import React from 'react';
 // import { isPrefabInstanceObject } from '../Scene/Types/PrefabNodeInstance';
-import { isPropertyOverride, type ObjectOverrides, type SceneObjectBaseInterface } from '../Scene/Types/Types';
+import { isPropertyOverride, type ObjectOverrides, type SceneObjectInterface } from '../Scene/Types/Types';
 import styles from './Overrides.module.scss';
 import PopupButton from './PopupButton';
 import OverrideComparison from './OverrideComparison';
@@ -8,7 +8,7 @@ import { Position } from './PopupWrapper';
 import OverrideConnection from './OverrideConnection';
 
 type PropsType = {
-  sceneNode: SceneObjectBaseInterface,
+  sceneNode: SceneObjectInterface,
 }
 
 const Overrides: React.FC<PropsType> = ({

@@ -21,10 +21,6 @@ export type PrefabDescriptor = {
   };
 };
 
-// export interface PrefabNodeInstanceInterface extends SceneObjectBaseInterface {
-//   baseNode: PrefabNodeInterface;
-// }
-
 export type PrefabNodeDescriptor = {
   id: number;
   name: string;
@@ -49,12 +45,17 @@ export interface SceneInterface {
   addNewItem(type: SceneItemType): void;
 }
 
-export interface SceneObjectBaseInterface extends EntityInterface {
+export const isTreeNode = (r: unknown): r is TreeNode => (
+  (r as TreeNode)?.renderNode !== undefined
+  && (r as TreeNode)?.nodeObject !== undefined
+  && (r as TreeNode)?.nodes !== undefined
+  && (r as TreeNode)?.components !== undefined
+)
+
+export interface SceneObjectInterface extends EntityInterface {
   components: SceneObjectComponent[];
 
   transformProps: TransformPropsInterface;
-
-  // renderNode: RenderNodeInterface;
 
   addComponent(component: NewSceneObjectComponent): void;
 
@@ -67,17 +68,6 @@ export interface SceneObjectBaseInterface extends EntityInterface {
   delete(): Promise<void>;
 
   isPrefabInstanceRoot(): boolean;
-}
-
-export const isTreeNode = (r: unknown): r is TreeNode => (
-  (r as TreeNode)?.renderNode !== undefined
-  && (r as TreeNode)?.nodeObject !== undefined
-  && (r as TreeNode)?.nodes !== undefined
-  && (r as TreeNode)?.components !== undefined
-)
-
-export interface SceneObjectInterface extends SceneObjectBaseInterface {
-  components: SceneObjectComponent[];
 
   save(): Promise<void>;
 
@@ -125,7 +115,7 @@ export const isPrefabInstanceDescriptor = (r: unknown): r is PrefabInstanceDescr
 
 export type PrefabPropsDescriptor = ParticleSystemPropsDescriptor | LightPropsDescriptor;
 
-export type CconnectedObjectOverride = { connectedObject: SceneObjectBaseInterface };
+export type ConnectedObjectOverride = { connectedObject: SceneObjectInterface };
 export type PropertyOverride = { property: PropertyBaseInterface };
 
 export const isPropertyOverride = (r: unknown): r is PropertyOverride => (
@@ -133,8 +123,8 @@ export const isPropertyOverride = (r: unknown): r is PropertyOverride => (
 )
 
 export type ObjectOverrides = {
-  object: SceneObjectBaseInterface,
-  overrides: (CconnectedObjectOverride | PropertyOverride)[],
+  object: SceneObjectInterface,
+  overrides: (ConnectedObjectOverride | PropertyOverride)[],
 }
 
 // export interface PrefabInstanceInterface {
