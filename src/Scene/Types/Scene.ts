@@ -2,7 +2,7 @@ import { observable, runInAction } from "mobx";
 import { store } from "../../State/store";
 import Http from "../../Http/src";
 import { type SceneDescriptor } from "./Types";
-import type { NodesResponse, SceneInterface, SceneItemType, TreeNodeDescriptor2 } from "./Types";
+import type { NodesResponse, SceneInterface, SceneItemType, TreeNodeDescriptor } from "./Types";
 import TreeNode from "./TreeNode";
 import SceneObject from "./SceneObject";
 
@@ -86,7 +86,8 @@ class Scene implements SceneInterface {
       objectMap.set(object.id, sceneObject)
     }
 
-    let stack: { nodeDescriptor: TreeNodeDescriptor2, parent: TreeNode | undefined }[] = [{ nodeDescriptor: descriptor.root, parent: undefined }]
+    type StackEntry = { nodeDescriptor: TreeNodeDescriptor, parent: TreeNode | undefined }
+    let stack: StackEntry[] = [{ nodeDescriptor: descriptor.root, parent: undefined }]
 
     while (stack.length > 0) {
       const { nodeDescriptor, parent } = stack[0]

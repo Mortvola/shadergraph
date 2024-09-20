@@ -1,14 +1,12 @@
 import { observable, runInAction } from "mobx";
 import RenderNode from "../../Renderer/Drawables/SceneNodes/RenderNode";
-import { getNextObjectId } from "../../State/Entity";
-import { type SceneItemType, type TreeNodeDescriptor } from "./Types";
-import ObjectBase from "./ObjectBase";
+import Entity, { getNextObjectId } from "../../State/Entity";
+import { type SceneItemType } from "./Types";
 import type ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import type LightProps from "../../Renderer/Properties/LightProps";
 import { ComponentType, type LightInterface, type ParticleSystemInterface } from "../../Renderer/Types";
 import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
 import { vec3 } from "wgpu-matrix";
-import { sceneManager } from "./SceneManager";
 import Http from "../../Http/src";
 import SceneObject from "./SceneObject";
 
@@ -18,7 +16,7 @@ type NodeComponent = {
   component: ParticleSystemInterface | LightInterface,
 }
 
-class TreeNode extends ObjectBase {
+class TreeNode extends Entity {
   @observable
   accessor nodes: TreeNode[] = [];
 
@@ -50,42 +48,6 @@ class TreeNode extends ObjectBase {
 
   constructor() {
     super(getNextObjectId(), '')
-  }
-
-  static async fromDescriptor(descriptor: TreeNodeDescriptor) {
-    const treeNode = new TreeNode()
-
-    treeNode.id = descriptor.id;
-
-    // treeNode.nodes = (await Promise.all(descriptor.object.nodes.map(async (nodeId) => (
-    //   objectManager.getTreeNode(nodeId)
-    // ))))
-    //   .filter((n) => n !== undefined)
-
-    // treeNode.nodeObject = await objectManager.getSceneObject(descriptor.object.objectId) ?? treeNode.nodeObject
-    treeNode.nodeObject.treeNode = treeNode;
-
-    for (const child of treeNode.nodes) {
-      child.parent = treeNode
-      treeNode.renderNode.addNode(child.renderNode)
-    }
-
-    return treeNode;
-  }
-
-  toDescriptor(): TreeNodeDescriptor | Omit<TreeNodeDescriptor, 'id'> {
-    return {
-      id: this.id >= 0 ? this.id : undefined,
-      treeId: 0,
-      parentNodeId: 0,
-      // subtreeId: 0,
-      // name: this.name,
-      // object: {
-      //   type: ObjectType.TreeNode,
-      //   nodes: this.nodes.map((node) => node.id),
-      //   objectId: this.nodeObject.id,
-      // }    
-    }
   }
 
   isAncestor(node: TreeNode): boolean {
@@ -220,7 +182,7 @@ class TreeNode extends ObjectBase {
 
   async onChange() {
     if (this.autosave) {
-      await sceneManager.update(this);
+      // await sceneManager.update(this);
     }
   }
 

@@ -173,7 +173,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
       
               node.nodeObject = object;
       
-              await objectManager.add(node);
+              // await objectManager.add(node);
       
               scene.addNode(node, false);
       

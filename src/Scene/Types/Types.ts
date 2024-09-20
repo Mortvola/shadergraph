@@ -128,22 +128,6 @@ export type ObjectOverrides = {
   overrides: (ConnectedObjectOverride | PropertyOverride)[],
 }
 
-// export interface PrefabInstanceInterface {
-//   id: number;
-
-//   autosave: boolean;
-
-//   root?: PrefabNodeInstanceInterface
-
-//   save(): Promise<void>;
-
-//   getOverrides(): ObjectOverrides[];
-
-//   attachSceneObject(
-//     sceneNode: SceneObjectBaseInterface,
-//   ): Promise<void>
-// }
-
 export type SceneDescriptor = {
   id: number;
   name: string;
@@ -164,76 +148,18 @@ export enum ObjectType {
   NodeObjectOverride = 'ObjectOverride',
 }
 
-// export type NodeObjectDescriptor = {
-//   id: number,
-//   type: ObjectType,
-//   components: ComponentDescriptor[];
-//   transformProps?: TransformPropsDescriptor;
-// }
-
-// export class NodeObject {
-
-// }
-
 export type TreeNodeDescriptor = {
   id: number,
-  treeId: number,
-  parentNodeId: number,
-  // subtreeId: number,
-  object?: SceneObjectDescriptor,
-  children?: TreeNodeDescriptor[],
-  // object: {
-  //   type: ObjectType,
-  //   nodes: number[] // Can be a TreeNode or a TreeInstance.
-  //   objectId: number,
-  // }
+  treeId?: number,
+  objectId: number,
+  children: TreeNodeDescriptor[],
 }
-
-export type TreeDescriptor = {
-  id: number,
-  name: string,
-  object: {
-    type: ObjectType,
-    root: number // References a TreeNode  
-  }
-}
-
-export type NodeObjectOverride = {
-  id: number,
-  type: ObjectType,
-  baseNodeId: number, // Can be a NodeObjectOverride or a NodeObject
-  components: ComponentDescriptor[];
-  transformProps?: TransformPropsDescriptor;
-  connections: number[], // Can be a TreeNode or a TreeInstance
-}
-
-export type TreeInstance = {
-  tree: number,
-  type: ObjectType,
-  nodes: number[], // Array of NodeObjectOverride ids.
-}
-
-export const isTreeDescriptor = (r: unknown): r is TreeDescriptor => (
-  (r as TreeDescriptor)?.object?.type === ObjectType.Tree
-)
-
-export const isTreeNodeDescriptor = (r: unknown): r is TreeNodeDescriptor => (
-  // (r as TreeNodeDescriptor)?.object?.type === ObjectType.TreeNode
-  true
-)
 
 export const isSceneObjectDescriptor = (r: unknown): r is SceneObjectDescriptor => (
   (r as SceneObjectDescriptor)?.object?.type === ObjectType.NodeObject
 )
 
-export type TreeNodeDescriptor2 = {
-  id: number,
-  treeId?: number,
-  objectId: number,
-  children: TreeNodeDescriptor2[],
-}
-
-export type NodesResponse = { root: TreeNodeDescriptor2, objects: SceneObjectDescriptor[] }
+export type NodesResponse = { root: TreeNodeDescriptor, objects: SceneObjectDescriptor[] }
 
 export type ItemResponse = {
   item: {
@@ -241,7 +167,7 @@ export type ItemResponse = {
     name: string,
     type: ProjectItemType,
   },
-  root?: TreeNodeDescriptor2,
+  root?: TreeNodeDescriptor,
   objects?: SceneObjectDescriptor[],
 }
 
