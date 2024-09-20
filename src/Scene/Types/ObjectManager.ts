@@ -1,8 +1,9 @@
 import { runInAction } from "mobx";
 import Http from "../../Http/src";
-import SceneObject from "./SceneObject";
+import SceneObject from './SceneObject';
 import {
-  isSceneObjectDescriptor as isSceneObjectDescriptor, isTreeDescriptor, isTreeNodeDescriptor, type PrefabInstanceDescriptor, type SceneObjectDescriptor,
+  isSceneObjectDescriptor, isTreeDescriptor, isTreeNodeDescriptor,
+  type PrefabInstanceDescriptor, type SceneObjectDescriptor,
 } from "./Types";
 import Tree from "./Tree";
 import TreeNode from "./TreeNode";

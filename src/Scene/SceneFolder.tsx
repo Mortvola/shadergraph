@@ -3,7 +3,7 @@ import SceneItem from './SceneItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
-import { NodesResponse, SceneItemType, type SceneInterface } from "./Types/Types";
+import { type NodesResponse, SceneItemType, type SceneInterface } from "./Types/Types";
 import TreeNode from './Types/TreeNode';
 import SceneObject from './Types/SceneObject';
 import { objectManager } from './Types/ObjectManager';

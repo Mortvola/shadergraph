@@ -1,3 +1,4 @@
+import { type ProjectItemType } from "../../Project/Types/types";
 import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
 import type { PropertyBaseInterface } from "../../Renderer/Properties/Types";
 import type {
@@ -233,3 +234,14 @@ export type TreeNodeDescriptor2 = {
 }
 
 export type NodesResponse = { root: TreeNodeDescriptor2, objects: SceneObjectDescriptor[] }
+
+export type ItemResponse = {
+  item: {
+    id: number,
+    name: string,
+    type: ProjectItemType,
+  },
+  root?: TreeNodeDescriptor2,
+  objects?: SceneObjectDescriptor[],
+}
+

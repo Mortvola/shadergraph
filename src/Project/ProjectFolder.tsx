@@ -1,13 +1,14 @@
 import React from 'react';
 import type { FolderInterface, ProjectInterface, ProjectItemLike} from './Types/types';
-import { ProjectItemType } from './Types/types';
 import ProjectItem from './ProjectItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
-import { isTreeNode, type SceneObjectInterface } from "../Scene/Types/Types";
+import { isTreeNode, type ItemResponse } from "../Scene/Types/Types";
 import Http from '../Http/src';
 import ProjectItemData from './Types/ProjectItem';
+import type TreeNode from '../Scene/Types/TreeNode';
+import Scene from '../Scene/Types/Scene';
 
 type PropsType = {
   project: ProjectInterface,
@@ -83,22 +84,27 @@ const ProjectFolder: React.FC<PropsType> = observer(({
           const sceneNode = store.scene?.draggingNode;
 
           ( async () => {
-              const object = sceneNode.nodeObject;
-
-              const response = await Http.post<unknown, { id: number, name: string, type: ProjectItemType }>('/api/folders/item', {
-                parentId: folder.id,
-                name: object.name,
-                itemId: sceneNode.id,
-                type: ProjectItemType.TreeNode,
+              const response = await Http.post<unknown, ItemResponse>('/api/tree-nodes/tree', {
+                folderId: folder.id,
+                nodeId: sceneNode.id,
               })
 
               if (response.ok) {
                 const body = await response.body();
 
-                const projectItem = new ProjectItemData<SceneObjectInterface>(body.id, body.name, body.type, folder, object.id);
-                projectItem.item = object;
+                const projectItem = new ProjectItemData<TreeNode>(body.item.id, body.item.name, body.item.type, folder, sceneNode.id);
+                projectItem.item = sceneNode;
 
                 folder.addItem(projectItem)
+
+                if (body.root && body.objects) {
+                  const root = await Scene.treeFromDescriptor({ root: body.root, objects: body.objects });
+
+                  if (root) {
+                    sceneNode.parent?.addNode(root);
+                    sceneNode.detachSelf();
+                  }
+                }
               }
           })()
         }
