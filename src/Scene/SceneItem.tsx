@@ -4,8 +4,8 @@ import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import type { MenuItemLike } from '../ContextMenu/types';
 import type { SceneInterface } from "./Types/Types";
-// import { isPrefabInstanceObject } from './Types/PrefabNodeInstance';
 import type TreeNode from './Types/TreeNode';
+import { Box } from 'lucide-react';
 
 type PropsType = {
   scene: SceneInterface,
@@ -108,6 +108,7 @@ const SceneItem: React.FC<PropsType> = observer(({
       tabIndex={0}
       onContextMenu={handleContextMenu}
     >
+      <Box fill={item.treeId === undefined || item.treeId === item.parent?.treeId ? '#FFF' : '#07F'} size="14" />
       {
         editing
           ? <input type="text" value={name} onBlur={handleBlur} onChange={handleChange} autoFocus onFocus={handleFocus} />

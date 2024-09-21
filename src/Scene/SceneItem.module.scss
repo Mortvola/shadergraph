@@ -1,7 +1,7 @@
 .item {
-  // display: flex;
-  // flex-direction: row;
-  // justify-content: space-between;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 
   &.selected {
     background-color: lightgray;

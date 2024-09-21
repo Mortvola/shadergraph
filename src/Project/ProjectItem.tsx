@@ -1,6 +1,6 @@
 import React from 'react';
 import type { FolderInterface, ProjectItemLike } from './Types/types';
-import { isShaderItem } from './Types/types';
+import { isShaderItem, ProjectItemType } from './Types/types';
 import styles from './ProjectItem.module.scss';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
@@ -11,6 +11,7 @@ import type { MaterialItemInterface } from '../State/types';
 import { runInAction } from 'mobx';
 import ProjectItemObject from "../Project/Types/ProjectItem";
 import type { ProjectItemRecord } from '../State/ProjectItemRecord';
+import { Box } from 'lucide-react';
 
 type PropsType = {
   item: ProjectItemLike,
@@ -142,6 +143,11 @@ const ProjectItem: React.FC<PropsType> = observer(({
       tabIndex={0}
       onContextMenu={handleContextMenu}
     >
+      {
+        item.type === ProjectItemType.TreeNode
+          ? <Box fill="#07F" size="14" />
+          : null
+      }
       {
         editing
           ? <input type="text" value={name} onBlur={handleBlur} onChange={handleChange} autoFocus onFocus={handleFocus} />
