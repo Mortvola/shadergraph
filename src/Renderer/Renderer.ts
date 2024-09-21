@@ -33,6 +33,7 @@ import type RangeCircle from './Drawables/RangeCircle';
 import SceneGraph from './Drawables/SceneNodes/SceneGraph';
 import DecalPass from './RenderPasses/DecalPass';
 import CombinePass from './RenderPasses/CombinePass';
+import { runInAction } from 'mobx';
 
 const requestPostAnimationFrame = (task: (timestamp: number) => void) => {
   requestAnimationFrame((timestamp: number) => {
@@ -563,13 +564,17 @@ class Renderer implements RendererInterface {
   }
 
   zoomOut() {
-    this.camera.offset += 1;
-    this.camera.rotateX -= 1;
+    runInAction(() => {
+      this.camera.offset += 1;
+      this.camera.rotateX -= 1;  
+    })
   }
 
   zoomIn() {
-    this.camera.offset -= 1;
-    this.camera.rotateX += 1;
+    runInAction(() => {
+      this.camera.offset -= 1;
+      this.camera.rotateX += 1;  
+    })
   }
 
   canvasResize(width: number, height: number, scaleX: number, scaleY: number, viewportWidth: number, viewportHeight: number) {

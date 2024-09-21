@@ -1,6 +1,7 @@
 import type { Vec4, Mat4} from 'wgpu-matrix';
 import { vec4, mat4, quat, vec3 } from 'wgpu-matrix';
 import { normalizeDegrees, degToRad, radToDeg } from './Math';
+import { observable, runInAction } from 'mobx';
 
 export type ProjectionType = 'Perspective' | 'Orthographic';
 
@@ -13,15 +14,18 @@ class Camera {
 
   viewTransform = mat4.identity();
 
-  offset = 5;
+  @observable
+  accessor offset = 5;
 
   position = vec4.create(0, 0, 0, 1);
 
-  rotateX = -35;
+  @observable
+  accessor rotateX = -35;
 
   rotateY = 0;
 
-  finalRotateY = 0;
+  @observable
+  accessor finalRotateY = 0;
 
   near = 0.125;
   
@@ -102,7 +106,9 @@ class Camera {
     const angle = normalizeDegrees(radToDeg(Math.atan2(v1[0], v1[2])))
 
     this.position = p2;
-    this.finalRotateY = 0;
+    runInAction(() => {
+      this.finalRotateY = 0;
+    })
     this.rotateY = angle
     this.finalTranslate = this.rotationPoint.slice()
   }
@@ -118,8 +124,10 @@ class Camera {
       this.updateRotation = false
     }
 
-    this.finalRotateY = normalizeDegrees(this.finalRotateY + deltaX);
-    this.rotateX = normalizeDegrees(this.rotateX + deltaY);
+    runInAction(() => {
+      this.finalRotateY = normalizeDegrees(this.finalRotateY + deltaX);
+      this.rotateX = normalizeDegrees(this.rotateX + deltaY);  
+    })
 
     this.computeViewTransform();
   }
@@ -140,7 +148,9 @@ class Camera {
   }
 
   changeOffset(delta: number) {
-    this.offset *= (1 + (delta / 16));
+    runInAction(() => {
+      this.offset *= (1 + (delta / 16));
+    })
 
     this.computeViewTransform();
   }

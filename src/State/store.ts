@@ -5,7 +5,7 @@ import type {
   ModelInterface} from "./types";
 import type { SceneInterface } from "../Scene/Types/Types";
 import { isGameObject } from "../Scene/Types/Types";
-import { makeObservable, observable, runInAction } from "mobx";
+import { makeObservable, observable, reaction, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
 import type { ProjectItemInterface, ProjectItemLike } from "../Project/Types/types";
 import { isSceneItem, isShaderItem, ProjectItemType } from "../Project/Types/types";
@@ -57,6 +57,31 @@ class Store implements StoreInterface {
       project: observable,
       scene: observable,
     })
+
+    // Restore camera settings from local storage
+    const cameraSettings = localStorage.getItem('camera');
+    if (cameraSettings) {
+      runInAction(() => {
+        this.mainView.camera.offset = JSON.parse(cameraSettings)?.offset ?? this.mainView.camera.offset
+        this.mainView.camera.rotateX = JSON.parse(cameraSettings)?.rotateX ?? this.mainView.camera.rotateX
+        this.mainView.camera.finalRotateY = JSON.parse(cameraSettings)?.finalRotateY ?? this.mainView.camera.finalRotateY
+      })
+    }
+
+    reaction(
+      () => ({
+        offset: this.mainView.camera.offset,
+        rotateX: this.mainView.camera.rotateX,
+        finalRotateY: this.mainView.camera.finalRotateY,
+      }), 
+      () => {
+        localStorage.setItem('camera', JSON.stringify({
+          offset: this.mainView.camera.offset,
+          rotateX: this.mainView.camera.rotateX,
+          finalRotateY: this.mainView.camera.finalRotateY,
+        }))
+      },
+    )
   }
 
   static async create() {
