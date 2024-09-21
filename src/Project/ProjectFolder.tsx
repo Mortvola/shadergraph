@@ -86,7 +86,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
           ( async () => {
               const response = await Http.post<unknown, ItemResponse>('/api/tree-nodes/tree', {
                 folderId: folder.id,
-                nodeId: sceneNode.id,
+                nodeId: sceneNode.treeId ?? sceneNode.id,
               })
 
               if (response.ok) {
