@@ -135,10 +135,12 @@ class Store implements StoreInterface {
 
           if (scene) {
             runInAction(() => {
+              if (this.scene) {
+                this.scene.removeScene()
+              }
               this.scene = scene;
-            })
-    
-            await scene.renderScene();
+              scene.renderScene();
+            })    
           }  
         }
   

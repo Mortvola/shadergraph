@@ -41,7 +41,7 @@ export interface SceneInterface {
 
   setSelectedObject(node: TreeNode | null): void;
 
-  renderScene(): Promise<void>;
+  renderScene(): void;
 
   addNewItem(type: SceneItemType): void;
 }

@@ -135,9 +135,15 @@ class Scene implements SceneInterface {
     })
   }
 
-  async renderScene() {
+  renderScene() {
     if (this.root) {
       store.mainView.addSceneNode(this.root.renderNode);
+    }
+  }
+
+  removeScene() {
+    if (this.root) {
+      store.mainView.removeSceneNode(this.root.renderNode);
     }
   }
 
