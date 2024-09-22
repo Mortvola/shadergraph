@@ -43,6 +43,8 @@ export interface SceneInterface {
 
   renderScene(): void;
 
+  removeScene(): void;
+
   addNewItem(type: SceneItemType): void;
 }
 

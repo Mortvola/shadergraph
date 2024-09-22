@@ -21,10 +21,6 @@ class Project implements ProjectInterface {
   @observable
   accessor selectedItem: ProjectItemLike | null = null;
 
-  constructor() {
-    this.open(1)
-  }
-
   async open(projectId: number) {
     const response = await Http.get<{ id: number, name: string, rootFolder: number }>(`/api/projects/${projectId}`);
 
@@ -73,7 +69,7 @@ class Project implements ProjectInterface {
       parentId = null;
     }
 
-    const response = await Http.post<{ name: string, parentId: number | null }, ProjectItemRecord>('/folders', {
+    const response = await Http.post<{ name: string, parentId: number | null }, ProjectItemRecord>('/api/folders', {
       name: 'New Folder', parentId,
     });
 

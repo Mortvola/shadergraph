@@ -1,3 +1,7 @@
+$navbar-padding-y: 0;
+
+@import '../node_modules/bootstrap/scss/bootstrap';
+
 html,
 body {
   overscroll-behavior-y: none;
@@ -43,4 +47,5 @@ canvas {
 .canvas-wrapper {
   width: 100%;
   height: 100%;
+  grid-area: canvas;
 }

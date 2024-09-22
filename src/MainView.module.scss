@@ -1,7 +1,8 @@
 .main {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 200px;
-  grid-template-rows: minmax(0, 1fr);
+  grid-template-rows: max-content minmax(0, 1fr);
+  grid-template-areas: "menubar sidebar" "canvas sidebar" "inspector sidebar";
   width: 100%;
   height: 100%;
   user-select: none;
@@ -14,6 +15,11 @@
   }
 }
 
+.menubar {
+  grid-area: menubar;
+  background-color: darkgray;
+}
+
 .sidebar {
   display: grid;
   grid-template-rows: max-content minmax(0, 1fr);
@@ -22,4 +28,5 @@
   background-color: white;
   box-sizing: border-box;
   font-size: 14px;
+  grid-area: sidebar;
 }

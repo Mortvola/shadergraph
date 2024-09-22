@@ -92,6 +92,12 @@ const ShaderEditor: React.FC<PropsType> = observer(({
     }
   }
 
+  const handleClose = () => {
+    if (onHide) {
+      onHide()
+    }
+  }
+
   return (
     <div
       ref={ref}
@@ -103,6 +109,7 @@ const ShaderEditor: React.FC<PropsType> = observer(({
     >
       <Toolbar>
         <button type="button" onClick={handleSave}>Save</button>
+        <button type="button" onClick={handleClose}>Close</button>
       </Toolbar>
       <Canvas2d renderer2d={shaderGraphRenderer}/>
       <Graph parent={ref} />

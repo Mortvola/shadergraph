@@ -11,7 +11,7 @@ import type { MaterialItemInterface } from '../State/types';
 import { runInAction } from 'mobx';
 import ProjectItemObject from "../Project/Types/ProjectItem";
 import type { ProjectItemRecord } from '../State/ProjectItemRecord';
-import { Box } from 'lucide-react';
+import { Box, Boxes } from 'lucide-react';
 
 type PropsType = {
   item: ProjectItemLike,
@@ -131,6 +131,18 @@ const ProjectItem: React.FC<PropsType> = observer(({
     event.target.select();
   }
 
+  const renderIcon = () => {
+    switch (item.type) {
+      case ProjectItemType.TreeNode: 
+        return <Box fill="#07F" size="14" />;
+
+      case ProjectItemType.Scene:
+        return <Boxes size="14" />
+    }
+
+    return null;
+  }
+
   return (
     <div
       className={`${styles.item} ${selected ? styles.selected : ''}`}
@@ -144,9 +156,7 @@ const ProjectItem: React.FC<PropsType> = observer(({
       onContextMenu={handleContextMenu}
     >
       {
-        item.type === ProjectItemType.TreeNode
-          ? <Box fill="#07F" size="14" />
-          : null
+        renderIcon()
       }
       {
         editing

@@ -3,6 +3,8 @@
   height: 200px;
   background-color: lightgray;
 
+  grid-area: inspector;
+  
   &> div {
     height: 100%;
     overflow-y: auto;

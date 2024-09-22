@@ -5,7 +5,7 @@ import type {
   ModelInterface} from "./types";
 import type { SceneInterface } from "../Scene/Types/Types";
 import { isGameObject } from "../Scene/Types/Types";
-import { makeObservable, observable, reaction, runInAction } from "mobx";
+import { observable, reaction, runInAction } from "mobx";
 import Renderer from "../Renderer/Renderer";
 import type { ProjectItemInterface, ProjectItemLike } from "../Project/Types/types";
 import { isSceneItem, isShaderItem, ProjectItemType } from "../Project/Types/types";
@@ -31,32 +31,33 @@ class Store implements StoreInterface {
 
   mainViewModeler: Modeler;
 
-  models: ModelInterface[] = [];
+  @observable
+  accessor models: ModelInterface[] = [];
 
   mainView: Renderer;
 
   shaderPreview: Renderer;
 
-  project = new Project();
+  @observable
+  accessor project: Project;
 
-  scene?: SceneInterface;
+  @observable
+  accessor scene: SceneInterface | undefined;
 
   // projectItems = new Folder(-1, '', null, this)
 
   draggingItem: ProjectItemLike | null = null;
 
   private constructor(mainRenderer: Renderer, previewRenderer: Renderer) {
+    this.project = new Project();
+    const projectId = parseInt(localStorage.getItem('projectId') ?? '1', 10);
+    this.project.open(projectId);
+
     this.mainView = mainRenderer;
     this.shaderPreview = previewRenderer;
 
     this.mainViewModeler = new Modeler(this.mainView, this);
     this.previewModeler = new Modeler(previewRenderer, this);
-
-    makeObservable(this, {
-      models: observable,
-      project: observable,
-      scene: observable,
-    })
 
     // Restore camera settings from local storage
     const cameraSettings = localStorage.getItem('camera');
