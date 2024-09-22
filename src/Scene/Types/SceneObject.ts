@@ -43,8 +43,6 @@ class SceneObject extends ObjectBase implements SceneObjectInterface {
       object.id = descriptor.id;
       object.name = baseObject?.name ?? descriptor?.name ?? object.name;
 
-      object.transformProps = new TransformProps(descriptor.object.transformProps, object.transformChanged);
-
       if (baseObject) {
         object.components = baseObject.components.map((c) => {
           const componentDescriptor = descriptor?.object.components.find((component) => (
@@ -83,6 +81,12 @@ class SceneObject extends ObjectBase implements SceneObjectInterface {
           .filter((c) => c !== undefined)
 
         object.baseObject = baseObject
+
+        object.transformProps = new TransformProps(
+          descriptor.object.transformProps,
+          object.transformChanged,
+          baseObject.transformProps,
+        );
       }
       else {
         const components = descriptor.object.components;
@@ -123,6 +127,8 @@ class SceneObject extends ObjectBase implements SceneObjectInterface {
           })
             .filter((c) => c !== undefined)  
         }
+
+        object.transformProps = new TransformProps(descriptor.object.transformProps, object.transformChanged);
       }
 
       // Fix any scale values that are zero.
