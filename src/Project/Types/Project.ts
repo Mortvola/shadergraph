@@ -135,7 +135,7 @@ class Project implements ProjectInterface {
     })
   }
 
-  static getDefaultPayload(name: string, type: ProjectItemType) {
+  static getDefaultPayload(name: string, parentId: number | undefined, type: ProjectItemType) {
     let payload: unknown = {};
 
     switch (type) {
@@ -199,6 +199,13 @@ class Project implements ProjectInterface {
 
         break
       }
+
+      case ProjectItemType.Folder: {
+        payload = {
+          name,
+          parentId,
+        }
+      }
     }
 
     return payload;
@@ -253,6 +260,12 @@ class Project implements ProjectInterface {
 
         break
       }
+
+      case ProjectItemType.Folder: {
+        url = '/api/folders'
+
+        break;
+      }
     }
 
     runInAction(() => {
@@ -262,7 +275,7 @@ class Project implements ProjectInterface {
     if (url) {
       const response = await Http.post<unknown, ProjectItemRecord>(
         `${url}?parentId=${parentId}`,
-        payload ?? Project.getDefaultPayload(name, type),
+        payload ?? Project.getDefaultPayload(name, parentId ?? undefined, type),
       )
 
       if (response.ok) {

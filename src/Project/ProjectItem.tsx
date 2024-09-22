@@ -16,6 +16,7 @@ import { Box, Boxes } from 'lucide-react';
 type PropsType = {
   item: ProjectItemLike,
   onSelect: (item: ProjectItemLike) => void,
+  onOpen?: (item: ProjectItemLike) => void,
   selected: boolean,
   draggable?: boolean,
 }
@@ -23,6 +24,7 @@ type PropsType = {
 const ProjectItem: React.FC<PropsType> = observer(({
   item,
   onSelect,
+  onOpen,
   selected,
   draggable = false,
 }) => {
@@ -30,6 +32,12 @@ const ProjectItem: React.FC<PropsType> = observer(({
 
   const handleClick = () => {
     onSelect(item)
+  }
+
+  const handleDoubleClick = () => {
+    if (onOpen) {
+      onOpen(item)
+    }
   }
 
   const handleDragStart: React.DragEventHandler = (event) => {
@@ -147,6 +155,7 @@ const ProjectItem: React.FC<PropsType> = observer(({
     <div
       className={`${styles.item} ${selected ? styles.selected : ''}`}
       onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
       draggable={draggable}
       onDragStart={handleDragStart}
       onDrag={handleDrag}

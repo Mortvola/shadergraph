@@ -1,5 +1,4 @@
 import React from "react";
-import type Graph from "./Graph";
 import Modeler from "./Modeler";
 import type {
   ModelInterface} from "./types";
@@ -17,13 +16,11 @@ import {
 import { shaderGraphRenderer } from "../Main";
 import Project from "../Project/Types/Project";
 import type { StoreInterface } from "./StoreInterface";
+import { type GraphInterface } from "./GraphInterface";
 
 class Store implements StoreInterface {
-  get graph(): Graph | null {
-    return this.project.selectedItem?.type === 'shader' && this.project.selectedItem?.item
-      ? this.project.selectedItem?.item as Graph
-      : null
-  }
+  @observable
+  accessor graph: GraphInterface | null = null
 
   private dragObject: unknown | null = null;
 
@@ -128,7 +125,9 @@ class Store implements StoreInterface {
     runInAction(() => {
       this.project.selectedItem = item;
     })
+  }
 
+  async openItem(item: ProjectItemLike) {
     switch (item.type) {
       case ProjectItemType.Scene: {
         if (isSceneItem(item)) {
@@ -155,7 +154,8 @@ class Store implements StoreInterface {
           if (shader) {
             runInAction(() => {
               shaderGraphRenderer.setTranslation(0, 0)
-              this.graph?.applyMaterial()  
+              this.graph = shader
+              this.graph.applyMaterial()  
             })  
           }  
         }

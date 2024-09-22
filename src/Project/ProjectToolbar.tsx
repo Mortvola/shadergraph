@@ -49,8 +49,8 @@ const ProjectToolbar: React.FC = () => {
     } },
     { name: 'Create material', action: () => { store.project.addNewItem(ProjectItemType.Material) } },
     { name: 'Create shader', action: () => { store.project.addNewItem(ProjectItemType.Shader) } },
-    { name: 'Create scene', action: () => { store.project.addNewItem(ProjectItemType.Scene)}},
-    { name: 'Create folder', action: () => { store.project.createFolder() } },
+    { name: 'Create scene', action: () => { store.project.addNewItem(ProjectItemType.Scene) } },
+    { name: 'Create folder', action: () => { store.project.addNewItem(ProjectItemType.Folder) } },
   ]), [store.project]);
   
   const handleTextureFileSelection: React.ChangeEventHandler<HTMLInputElement> = async (event) => {

@@ -9,11 +9,13 @@ import Http from '../Http/src';
 import ProjectItemData from './Types/ProjectItem';
 import type TreeNode from '../Scene/Types/TreeNode';
 import Scene from '../Scene/Types/Scene';
+import NewProjectItem from './NewProjectItem';
 
 type PropsType = {
   project: ProjectInterface,
   folder: FolderInterface,
   onSelect: (item: ProjectItemLike) => void,
+  onOpen?: (item: ProjectItemLike) => void,
   level: number,
   children?: React.ReactNode,
 }
@@ -22,6 +24,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
   project,
   folder,
   onSelect,
+  onOpen,
   level,
   children,
 }) => {
@@ -114,28 +117,6 @@ const ProjectFolder: React.FC<PropsType> = observer(({
     }
   }
 
-  const [name, setName] = React.useState<string>('')
-
-  const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
-    if (event.code === 'Escape') {
-      project.cancelNewItem(folder)
-    }
-    else if (event.code === 'Enter' && name.length > 0) {
-      project.createNewItem(name, folder.newItemType!, folder)
-    }
-
-    // setName('');
-  }
-
-  const handleBlur = () => {
-    project.cancelNewItem(folder);
-    setName('');
-  }
-
-  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-    setName(event.target.value)
-  }
-
   const renderFolderItems = () => (
     folder.items.map((i) => (
       i.type === 'folder'
@@ -145,6 +126,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
               key={`children:${i.id}`}
               folder={i as FolderInterface}
               onSelect={onSelect}
+              onOpen={onOpen}
               level={level + 1}
             />
         )
@@ -153,6 +135,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
             key={`${i.type}:${i.id}`}
             item={i}
             onSelect={onSelect}
+            onOpen={onOpen}
             selected={i.id === project.selectedItem?.id}
             draggable
           />    
@@ -181,6 +164,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
             key={`${folder.type}:${folder.id}`}
             item={folder}
             onSelect={onSelect}
+            onOpen={onOpen}
             selected={folder.id === project.selectedItem?.id}
             draggable
           />
@@ -193,20 +177,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
       <div
         style={{ paddingLeft: 12 }}
       >
-        {
-          folder.newItemType
-            ? (
-              <input
-                type="text"
-                value={name}
-                onChange={handleChange}
-                onKeyDown={handleKeyDown}
-                onBlur={handleBlur}
-                autoFocus
-              />
-            )
-            : null
-        }
+        <NewProjectItem project={project} folder={folder} />
         {
           folder.open
             ? renderFolderItems()

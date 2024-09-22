@@ -31,5 +31,7 @@ export interface GraphInterface {
   addProperty(property: PropertyInterface): void;
 
   deleteProperty(property: PropertyInterface): void;
+
+  applyMaterial(): Promise<void>;
 }
 

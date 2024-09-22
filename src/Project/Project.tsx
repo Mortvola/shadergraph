@@ -15,8 +15,12 @@ const Project: React.FC<PropsType> = observer(({
 }) => {
   const store = useStores();
 
-  const handleSelect = async (item: ProjectItemLike) => {
+  const handleSelect = (item: ProjectItemLike) => {
     store.selectItem(item);
+  }
+
+  const handleOpen = (item: ProjectItemLike) => {
+    store.openItem(item)
   }
 
   return (
@@ -29,6 +33,7 @@ const Project: React.FC<PropsType> = observer(({
                 project={project}
                 folder={project.projectItems}
                 onSelect={handleSelect}
+                onOpen={handleOpen}
                 level={0}
               >
                 <ProjectToolbar />

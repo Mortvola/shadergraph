@@ -70,7 +70,7 @@ const MainView: React.FC = observer(() => {
 
   const handleShaderHide = () => {
     runInAction(() => {
-      project.selectedItem = null;
+      store.graph = null;
     })
   }
 
