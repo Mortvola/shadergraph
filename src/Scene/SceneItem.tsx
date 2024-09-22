@@ -5,7 +5,7 @@ import ContextMenu from '../ContextMenu/ContextMenu';
 import type { MenuItemLike } from '../ContextMenu/types';
 import type { SceneInterface } from "./Types/Types";
 import type TreeNode from './Types/TreeNode';
-import { Box } from 'lucide-react';
+import { Box, Plus } from 'lucide-react';
 
 type PropsType = {
   scene: SceneInterface,
@@ -96,6 +96,21 @@ const SceneItem: React.FC<PropsType> = observer(({
     event.target.select();
   }
 
+  const renderIcon = () => {
+    if (item.parent?.treeId !== undefined && item.treeId !== item.parent.treeId) {
+      return (
+        <div>
+          <Plus size="10" fill="#FFF" strokeWidth={4} />
+          <Box fill="#FFF" size="14" />
+        </div>
+      )
+    }
+
+    return (
+      <Box fill={item.treeId === undefined || item.treeId === item.parent?.treeId ? '#FFF' : '#07F'} size="14" />
+    )
+  }
+
   return (
     <div
       className={`${styles.item} ${selected ? styles.selected : ''} ${(item.treeId !== undefined) ? styles.prefab : ''}`}
@@ -108,7 +123,9 @@ const SceneItem: React.FC<PropsType> = observer(({
       tabIndex={0}
       onContextMenu={handleContextMenu}
     >
-      <Box fill={item.treeId === undefined || item.treeId === item.parent?.treeId ? '#FFF' : '#07F'} size="14" />
+      {
+        renderIcon()
+      }
       {
         editing
           ? <input type="text" value={name} onBlur={handleBlur} onChange={handleChange} autoFocus onFocus={handleFocus} />
