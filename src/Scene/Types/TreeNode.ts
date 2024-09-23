@@ -188,6 +188,11 @@ class TreeNode extends Entity {
 
   transformChanged() {
     vec3.copy(this.nodeObject.transformProps.translate.get(), this.renderNode.translate)
+    this.renderNode.setFromAngles(
+      this.nodeObject.transformProps.rotate.get()[0],
+      this.nodeObject.transformProps.rotate.get()[1],
+      this.nodeObject.transformProps.rotate.get()[2],
+    )
     vec3.copy(this.nodeObject.transformProps.scale.get(), this.renderNode.scale)
   }
 
