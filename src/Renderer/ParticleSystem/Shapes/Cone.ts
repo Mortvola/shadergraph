@@ -45,7 +45,7 @@ class Cone {
     mat4.rotateX(transform, degToRad(this.angle.get()), transform)
     vec4.transformMat4(p1, transform, p1)
 
-    const direction = vec4.subtract(p1, origin)
+    const direction = vec4.normalize(vec4.subtract(p1, origin))
 
     return [origin, direction];
   }

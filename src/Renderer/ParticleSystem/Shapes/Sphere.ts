@@ -26,7 +26,9 @@ class Sphere {
 
   getPositionAndDirection(): [Vec4, Vec4] {
     const p = this.getPoint();
-    return [p, p];
+    const direction = vec4.normalize(vec4.subtract(p, vec4.create(0, 0, 0, 1)));
+
+    return [p, direction];
   }
 
   // Find random point on a sphere with uniform distribution
