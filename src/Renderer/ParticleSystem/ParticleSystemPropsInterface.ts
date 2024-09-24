@@ -1,4 +1,4 @@
-import type { PSNumber } from "../Properties/Property";
+import type { PSNumber, PSSpace } from "../Properties/Property";
 import type PSColor from "../Properties/PSColor";
 import type PSValue from "../Properties/PSValue";
 import type Collision from "./Collision";
@@ -25,6 +25,8 @@ export interface ParticleSystemPropsInterface {
   startSize: PSValue;
 
   startColor: PSColor;
+
+  space: PSSpace;
 
   lifetimeColor: LifetimeColor;
 

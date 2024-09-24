@@ -1,12 +1,10 @@
 import { type IReactionDisposer, observable, reaction, runInAction } from "mobx";
-import type { LineageEntry, PropertyBaseInterface, PropertyType2, PropsBase } from "./Types";
+import type { LineageEntry, PropertyBaseInterface, PropsBase } from "./Types";
 
 export class PropertyBase implements PropertyBaseInterface {
   @observable accessor override = false;
 
   readonly name: string;
-
-  readonly type?: PropertyType2;
 
   original?: PropertyBase
 
@@ -18,9 +16,8 @@ export class PropertyBase implements PropertyBaseInterface {
 
   onRevertOverride?: () => void;
 
-  constructor(name: string, props: PropsBase, originalProp?: PropertyBase, type?: PropertyType2) {
+  constructor(name: string, props: PropsBase, originalProp?: PropertyBase) {
     this.name = name;
-    this.type = type;
     this.props = props;
     this.original = originalProp;
     

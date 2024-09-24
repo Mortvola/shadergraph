@@ -1,8 +1,8 @@
 import { observable, runInAction } from "mobx";
-import { RenderMode, ShapeType } from "../ParticleSystem/Types";
+import { RenderMode, ShapeType, SpaceType } from "../ParticleSystem/Types";
 import type { Vec3 } from "wgpu-matrix";
 import { vec3 } from "wgpu-matrix";
-import { PropertyType2, type PropsBase } from "./Types";
+import { type PropsBase } from "./Types";
 import PropertyBase from "./PropertyBase";
 
 export class Property<T extends { toString(): string } | undefined> extends PropertyBase {
@@ -36,9 +36,8 @@ export class Property<T extends { toString(): string } | undefined> extends Prop
     defaultValue: T,
     onChange?: () => void,
     previousProp?: Property<T>,
-    type?: PropertyType2,
   ) {
-    super(name, props, previousProp, type)
+    super(name, props, previousProp)
 
     this.value = value ?? defaultValue
 
@@ -85,6 +84,12 @@ export class PSNumber extends Property<number> {
   }
 }
 
+export class PSSpace extends Property<SpaceType> {
+  constructor(name: string, props: PropsBase, value?: SpaceType, defaultValue = SpaceType.Local, onChange?: () => void, previousProp?: PSSpace) {
+    super(name, props, value, defaultValue, onChange, previousProp)
+  }
+}
+
 export class PSRenderMode extends Property<RenderMode> {
   constructor(name: string, props: PropsBase, value?: RenderMode, defaultValue = RenderMode.Billboard, onChange?: () => void, previousProp?: PSRenderMode) {
     super(name, props, value, defaultValue, onChange, previousProp)
@@ -93,7 +98,7 @@ export class PSRenderMode extends Property<RenderMode> {
 
 export class PSShapeType extends Property<ShapeType> {
   constructor(name: string, props: PropsBase, value?: ShapeType, defaultValue = ShapeType.Cone, onChange?: () => void, previousProp?: PSShapeType) {
-    super(name, props, value, defaultValue, onChange, previousProp, PropertyType2.Shape)
+    super(name, props, value, defaultValue, onChange, previousProp)
   }
 }
 

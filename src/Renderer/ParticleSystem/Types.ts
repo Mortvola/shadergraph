@@ -97,6 +97,11 @@ export type CollisionDescriptor = PSModuleDescriptor & {
   dampen?: number,
 }
 
+export enum SpaceType {
+  Local = 'Local',
+  World = 'World',
+}
+
 export enum ShapeType {
   Cone = 'Cone',
   Sphere = 'Sphere',
@@ -134,6 +139,8 @@ export type ParticleSystemPropsDescriptor = {
   startVelocity?: PSValueDescriptor,
 
   startSize?: PSValueDescriptor,
+
+  space?: SpaceType,
 
   lifetimeSize?: LifetimeSizeDescriptor,
 

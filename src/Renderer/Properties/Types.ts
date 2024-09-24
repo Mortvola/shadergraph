@@ -9,14 +9,8 @@ export class PropsBase {
 
 export type LineageEntry = { property: PropertyBase, name: string, container: string };
 
-export enum PropertyType2 {
-  Shape = 'Shape',
-}
-
 export interface PropertyBaseInterface {
   name: string;
-
-  type?: PropertyType2
 
   original?: PropertyBase
 

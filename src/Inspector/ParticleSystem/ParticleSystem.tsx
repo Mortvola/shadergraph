@@ -10,6 +10,8 @@ import Collision from './Collision';
 import PSRenderer from './PSRenderer';
 import type ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemProps';
 import Property from '../Property';
+import { type SpaceType } from '../../Renderer/ParticleSystem/Types';
+import PSSpaceTypeSelector from './PSSpaceTypeSelector';
 
 type PropsType = {
   particleSystemProps: ParticleSystemProps,
@@ -34,6 +36,10 @@ const ParticleSystem: React.FC<PropsType> = observer(({
     particleSystemProps.rate.set(value, true);
   }
 
+  const handleSpaceChange = (value: SpaceType) => {
+    particleSystemProps.space.set(value, true);
+  }
+
   return (
     <div className={styles.particle}>
       <Property label="Duration" property={particleSystemProps.duration}>
@@ -56,6 +62,9 @@ const ParticleSystem: React.FC<PropsType> = observer(({
       </Property>
       <Property label="Start Color" property={particleSystemProps.startColor}>
         <PSColorInput value={particleSystemProps.startColor} />
+      </Property>
+      <Property label="Space" property={particleSystemProps.space}>
+        <PSSpaceTypeSelector value={particleSystemProps.space.get()} onChange={handleSpaceChange} />
       </Property>
       <Property label="Gravity Modifier" property={particleSystemProps.gravityModifier}>
         <PSValueInput value={particleSystemProps.gravityModifier} />

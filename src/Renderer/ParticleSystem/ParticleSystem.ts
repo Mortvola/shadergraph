@@ -9,6 +9,7 @@ import Particle from "./Particle";
 import RenderNode from "../Drawables/SceneNodes/RenderNode";
 import Component from "../Drawables/Component";
 import type { ParticleSystemPropsInterface } from "./ParticleSystemPropsInterface";
+import { SpaceType } from "./Types";
 
 class ParticleSystem extends Component implements ParticleSystemInterface {
   props: ParticleSystemPropsInterface
@@ -166,8 +167,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
         // Transform the position and velocity into world space to allow for gravity effect
         // and collision detection.
-        vec4.transformMat4(particle.position, this.renderNode.transform, particle.position)
-        vec4.transformMat4(particle.velocity, this.renderNode.transform, particle.velocity)
+        vec4.transformMat4(particle.position, particle.renderNode!.transform, particle.position)
+        vec4.transformMat4(particle.velocity, particle.renderNode!.transform, particle.velocity)
 
         // Adjust velocity with gravity
         vec4.addScaled(
@@ -193,8 +194,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         }
 
         // Transform velocity and position back into local space.
-        vec4.transformMat4(particle.position, this.renderNode.inverseTransform, particle.position)
-        vec4.transformMat4(particle.velocity, this.renderNode.inverseTransform, particle.velocity)
+        vec4.transformMat4(particle.position, particle.renderNode!.inverseTransform, particle.position)
+        vec4.transformMat4(particle.velocity, particle.renderNode!.inverseTransform, particle.velocity)
 
         await this.renderParticle(particle, t);
       }
@@ -205,7 +206,12 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     if (this.props.renderer.enabled.get() && this.renderNode) {
       if (particle.renderNode === null) {
         particle.renderNode = new RenderNode();
-        this.renderNode.addNode(particle.renderNode)  
+        if (this.props.space.get() === SpaceType.World) {
+          this.renderNode.scene!.addNode(particle.renderNode)  
+        } 
+        else {
+          this.renderNode.addNode(particle.renderNode)  
+        }
       }
 
       if (particle.drawable === null) {
@@ -270,6 +276,11 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         startSize,
         startColor,
       )
+
+      if (this.props.space.get() === SpaceType.World && this.renderNode) {
+        vec4.transformMat4(particle.position, this.renderNode.transform, particle.position)
+        vec4.transformMat4(particle.velocity, this.renderNode.transform, particle.velocity)  
+      }
 
       this.particles.set(particle.id, particle)
 
