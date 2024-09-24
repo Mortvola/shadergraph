@@ -9,7 +9,7 @@ import RenderNode, { isRenderNode } from "./RenderNode";
 import type DrawableComponent from "../DrawableComponent";
 
 class SceneGraph implements SceneGraphInterface {
-  scene = new RenderNode()
+  rootRenderNode = new RenderNode()
 
   lights: Set<Light> = new Set();
 
@@ -18,11 +18,11 @@ class SceneGraph implements SceneGraphInterface {
   particleSystems: Set<ParticleSystem> = new Set();
 
   constructor() {
-    this.scene.scene = this;
+    this.rootRenderNode.sceneGraph = this;
   }
 
   addNode(node: RenderNodeInterface) {
-    this.scene.addNode(node);
+    this.rootRenderNode.addNode(node);
     this.nodeAdded(node);
   }
 
@@ -33,7 +33,7 @@ class SceneGraph implements SceneGraphInterface {
       const n = stack[0];
       stack = stack.slice(1);
 
-      n.scene = this;
+      n.sceneGraph = this;
 
       stack.push(...n.nodes)
 
@@ -58,7 +58,7 @@ class SceneGraph implements SceneGraphInterface {
   }
 
   removeNode(node: RenderNodeInterface) {
-    this.scene.removeNode(node);
+    this.rootRenderNode.removeNode(node);
     this.nodeRemoved(node);
   }
 
@@ -69,7 +69,7 @@ class SceneGraph implements SceneGraphInterface {
       const n = stack[0];
       stack = stack.slice(1);
 
-      n.scene = null;
+      n.sceneGraph = null;
     
       if (isRenderNode(n)) {
         stack.push(...n.nodes)
@@ -96,7 +96,7 @@ class SceneGraph implements SceneGraphInterface {
   }
 
   updateTransforms() {
-    let stack: { node: RenderNodeInterface, transform: Mat4 }[] = [{ node: this.scene, transform: mat4.identity() }];
+    let stack: { node: RenderNodeInterface, transform: Mat4 }[] = [{ node: this.rootRenderNode, transform: mat4.identity() }];
   
     while (stack.length > 0) {
       const { node, transform } = stack[0];
@@ -109,7 +109,7 @@ class SceneGraph implements SceneGraphInterface {
   }
 
   addInstanceInfo(renderer: RendererInterface) {
-    let stack: RenderNodeInterface[] = [this.scene]
+    let stack: RenderNodeInterface[] = [this.rootRenderNode]
 
     while (stack.length > 0) {
       const node = stack[0];

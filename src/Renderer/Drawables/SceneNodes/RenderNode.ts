@@ -37,7 +37,7 @@ class RenderNode implements RenderNodeInterface {
 
   angles: number[];
 
-  scene: SceneGraphInterface | null = null;
+  sceneGraph: SceneGraphInterface | null = null;
 
   constructor() {
     this.angles = getEulerAngles(this.qRotate);
@@ -69,7 +69,6 @@ class RenderNode implements RenderNodeInterface {
     this.angles = getEulerAngles(this.qRotate);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   computeTransform(transform = mat4.identity()) {
     mat4.translate(transform, this.translate, this.transform);
     mat4.multiply(this.transform, this.getRotation(), this.transform);
@@ -90,7 +89,7 @@ class RenderNode implements RenderNodeInterface {
     this.nodes.push(node);
     node.parentNode = this;
 
-    this.scene?.nodeAdded(node);
+    this.sceneGraph?.nodeAdded(node);
   }
 
   removeNode(node: RenderNodeInterface) {
@@ -105,7 +104,7 @@ class RenderNode implements RenderNodeInterface {
 
     node.parentNode = null;
 
-    node.scene?.nodeRemoved(node)
+    node.sceneGraph?.nodeRemoved(node)
   }
 
   detachSelf() {
@@ -126,7 +125,7 @@ class RenderNode implements RenderNodeInterface {
     this.components.add(component);
     component.renderNode = this;
 
-    this.scene?.componentAdded(component)
+    this.sceneGraph?.componentAdded(component)
   }
 
   removeComponent(component: Component) {

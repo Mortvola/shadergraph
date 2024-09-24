@@ -1,7 +1,6 @@
 import { observable, runInAction } from "mobx";
 import Http from "../../Http/src";
 import type { FolderInterface, ProjectItemInterface, ProjectItemLike, ProjectItemType } from "./types";
-import { particleSystemManager } from "../../Renderer/ParticleSystem/ParticleSystemManager";
 
 class ProjectItem<T> implements ProjectItemInterface<T> {
   id: number
@@ -49,25 +48,7 @@ class ProjectItem<T> implements ProjectItemInterface<T> {
   }
 
   async getItem(): Promise<T | null> {
-    let item: T | null = this.item as (T | null);
-
-    if (!item) {
-      switch (this.type) {    
-        case 'particle': {
-          const particleSystem = await particleSystemManager.getParticleSystem(this.itemId!)
-  
-          if (particleSystem) {
-            item = particleSystem as T;
-
-            runInAction(() => {
-              this.item = item
-            })  
-          }
-      
-          break;
-        }
-      }
-    }
+    const item: T | null = this.item as (T | null);
 
     return item
   }

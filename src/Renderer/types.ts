@@ -36,7 +36,7 @@ export interface RenderNodeInterface {
 
   inverseTransform: Mat4;
 
-  scene: SceneGraphInterface | null;
+  sceneGraph: SceneGraphInterface | null;
 
   computeTransform(transform: Mat4, prepend?: boolean): void;
 
@@ -62,6 +62,8 @@ export interface RenderPassInterface {
 export type RenderPass2DInterface = object;
 
 export interface SceneGraphInterface {
+  rootRenderNode: RenderNodeInterface;
+
   addNode(node: RenderNodeInterface): void;
 
   nodeAdded(node: RenderNodeInterface): void;

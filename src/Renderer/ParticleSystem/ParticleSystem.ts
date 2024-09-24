@@ -46,7 +46,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
         // Find the point on the sphere that will collide with the plane if
         // we travel far enough.
-        const sphereIntersectionPoint = vec4.subtract(
+        const intersectionPointOnSphere = vec4.subtract(
           point.position,
           vec4.scale(
             planeNormal,
@@ -55,16 +55,16 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         )
 
         // Find the point on the plane that we will collide with if we travel far enough.
-        const planeInterSectionPoint = intersectionPlane(planeOrigin, planeNormal, sphereIntersectionPoint, vec4.normalize(point.velocity));
+        const intersectionPointOnPlane = intersectionPlane(planeOrigin, planeNormal, intersectionPointOnSphere, vec4.normalize(point.velocity));
 
-        if (planeInterSectionPoint) {
+        if (intersectionPointOnPlane) {
           // Will we travel far enough to hit the plane?
-          const distanceToCollision = vec3.distance(sphereIntersectionPoint, planeInterSectionPoint)
+          const distanceToCollision = vec3.distance(intersectionPointOnSphere, intersectionPointOnPlane)
           const distanceToDestination = vec3.length(vec4.scale(point.velocity, elapsedTime))
 
           // Compute the sphere origin to collision point distance for those cases where the sphere has already
           // partially embedded in the plane.
-          const originToCollision = vec3.distance(point.position, planeInterSectionPoint)
+          const originToCollision = vec3.distance(point.position, intersectionPointOnPlane)
 
           if (distanceToCollision < distanceToDestination || originToCollision < sphereRadius) {
             // Yes, the sphere and plane will collide
@@ -85,8 +85,11 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
             // movement along new vector with remaining time.
   
             // Compute the reflection vector and account for how much bounce.
+            // The dot product is the magnitude of the velocity projected on to the plane normal
+            // Subtracting a vector along the plane normal of that magnituted twice will give us the
+            // reflection vector. Subtracting only once will give us a vector along the plane (no bounce).
+            // Thus, the reason for scaling the vector by dot + dot * bounce factor.
             const dot = vec4.dot(point.velocity, planeNormal);
-
             vec4.subtract(point.velocity, vec4.scale(planeNormal, dot + dot * this.props.collision.bounce.get()), point.velocity)
 
             // Allow the collision to dampen the velocity
@@ -95,10 +98,10 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
             // Move the sphere to the intersection point
             // offset by the radius of the sphere along the plane normal.
             vec4.add(
-              planeInterSectionPoint,
+              intersectionPointOnPlane,
               vec4.scale(
                 planeNormal,
-                point.startSize / 2,
+                sphereRadius,
               ),
               point.position,
             )
@@ -106,10 +109,11 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
             const percentRemaining = 1 - distanceToCollision / distanceToDestination;
 
             // Add remaing amount to travel
-            point.position = vec4.addScaled(
+            vec4.addScaled(
               point.position,
               point.velocity,
               elapsedTime * percentRemaining,
+              point.position,
             );  
 
             return true;
@@ -165,10 +169,10 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
           throw new Error('renderNode is not set')
         }
 
-        // Transform the position and velocity into world space to allow for gravity effect
+        // Transform the position into world space to allow for gravity effect
         // and collision detection.
-        vec4.transformMat4(particle.position, particle.renderNode!.transform, particle.position)
-        vec4.transformMat4(particle.velocity, particle.renderNode!.transform, particle.velocity)
+        // Note that velocity is already in world space
+        vec4.transformMat4(particle.position, particle.parentRenderNode!.transform, particle.position)
 
         // Adjust velocity with gravity
         vec4.addScaled(
@@ -193,9 +197,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
           );
         }
 
-        // Transform velocity and position back into local space.
-        vec4.transformMat4(particle.position, particle.renderNode!.inverseTransform, particle.position)
-        vec4.transformMat4(particle.velocity, particle.renderNode!.inverseTransform, particle.velocity)
+        // Transform position back into local space.
+        vec4.transformMat4(particle.position, particle.parentRenderNode!.inverseTransform, particle.position)
 
         await this.renderParticle(particle, t);
       }
@@ -206,12 +209,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     if (this.props.renderer.enabled.get() && this.renderNode) {
       if (particle.renderNode === null) {
         particle.renderNode = new RenderNode();
-        if (this.props.space.get() === SpaceType.World) {
-          this.renderNode.scene!.addNode(particle.renderNode)  
-        } 
-        else {
-          this.renderNode.addNode(particle.renderNode)  
-        }
+        particle.parentRenderNode?.addNode(particle.renderNode);
       }
 
       if (particle.drawable === null) {
@@ -277,10 +275,18 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         startColor,
       )
 
-      if (this.props.space.get() === SpaceType.World && this.renderNode) {
-        vec4.transformMat4(particle.position, this.renderNode.transform, particle.position)
-        vec4.transformMat4(particle.velocity, this.renderNode.transform, particle.velocity)  
+      if (this.props.space.get() === SpaceType.World) {
+        particle.parentRenderNode = this.renderNode!.sceneGraph!.rootRenderNode
+
+        // Compute position to world psace.
+        vec4.transformMat4(particle.position, this.renderNode!.transform, particle.position)
       }
+      else {
+        particle.parentRenderNode = this.renderNode
+      }
+
+      // Convert velocity to world space
+      vec4.transformMat4(particle.velocity, this.renderNode!.transform, particle.velocity)  
 
       this.particles.set(particle.id, particle)
 
