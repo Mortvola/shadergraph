@@ -46,7 +46,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         // Find the point on the sphere that will collide with the plane if
         // we travel far enough.
         const sphereIntersectionPoint = vec4.subtract(
-          vec4.create(...point.position, 1),
+          point.position,
           vec4.scale(
             planeNormal,
             sphereRadius,
@@ -57,7 +57,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         const planeInterSectionPoint = intersectionPlane(planeOrigin, planeNormal, sphereIntersectionPoint, vec4.normalize(point.velocity));
 
         if (planeInterSectionPoint) {
-          // Will we travel fare enough to hit the plane?
+          // Will we travel far enough to hit the plane?
           const distanceToCollision = vec3.distance(sphereIntersectionPoint, planeInterSectionPoint)
           const distanceToDestination = vec3.length(vec4.scale(point.velocity, elapsedTime))
 
@@ -86,27 +86,26 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
             // Compute the reflection vector and account for how much bounce.
             const dot = vec4.dot(point.velocity, planeNormal);
 
-            point.velocity = vec4.subtract(point.velocity, vec4.scale(planeNormal, dot + dot * this.props.collision.bounce.get()))
+            vec4.subtract(point.velocity, vec4.scale(planeNormal, dot + dot * this.props.collision.bounce.get()), point.velocity)
 
             // Allow the collision to dampen the velocity
-            point.velocity = vec4.scale(point.velocity, 1 - this.props.collision.dampen.get())  
+            vec4.scale(point.velocity, 1 - this.props.collision.dampen.get(), point.velocity)  
 
             // Move the sphere to the intersection point
             // offset by the radius of the sphere along the plane normal.
-            const newlocation = vec4.add(
+            vec4.add(
               planeInterSectionPoint,
               vec4.scale(
                 planeNormal,
                 point.startSize / 2,
-              )    
+              ),
+              point.position,
             )
-
-            point.position = vec3.create(...newlocation.slice(0,3));
 
             const percentRemaining = 1 - distanceToCollision / distanceToDestination;
 
             // Add remaing amount to travel
-            point.position = vec3.addScaled(
+            point.position = vec4.addScaled(
               point.position,
               point.velocity,
               elapsedTime * percentRemaining,
@@ -122,23 +121,25 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
   }
 
   async update(time: number, elapsedTime: number): Promise<void> {
-    if (this.startTime === 0) {
-      this.startTime = time;
-    }
+    if (this.renderNode) {
+      if (this.startTime === 0) {
+        this.startTime = time;
+      }
 
-    const elapsedTime2 = ((time - this.startTime) / 1000.0) % this.props.duration.get() / this.props.duration.get();
+      const elapsedTime2 = ((time - this.startTime) / 1000.0) % this.props.duration.get() / this.props.duration.get();
 
-    if (this.lastEmitTime === 0) {
-      this.lastEmitTime = time;
+      if (this.lastEmitTime === 0) {
+        this.lastEmitTime = time;
 
-      await this.emitSome(1, time, elapsedTime2)
-    }
-    else {
-      // Update existing particles
-      await this.updateParticles(time, elapsedTime);
-    
-      // Add new particles
-      await this.emit(time, elapsedTime2)
+        await this.emitSome(1, time, elapsedTime2)
+      }
+      else {
+        // Update existing particles
+        await this.updateParticles(time, elapsedTime);
+      
+        // Add new particles
+        await this.emit(time, elapsedTime2)
+      }
     }
   }
 
@@ -147,19 +148,33 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       const t = (time - particle.startTime) / (particle.lifetime * 1000);
 
       if (t > 1.0) {
-        if (particle.sceneNode) {
-          particle.sceneNode.detachSelf();
-          particle.sceneNode = null;
+        // Particle's lifetime has expired. Remove the scene node from the graph
+        // and delete the particle.
+        if (particle.renderNode) {
+          particle.renderNode.detachSelf();
+          particle.renderNode = null;
         }
         
         this.particles.delete(particle.id)    
       }
       else {
+        const gravityVector = vec4.create(0, 1, 0, 0)
+
+        if (!this.renderNode) {
+          throw new Error('renderNode is not set')
+        }
+
+        // Transform the position and velocity into world space to allow for gravity effect
+        // and collision detection.
+        vec4.transformMat4(particle.position, this.renderNode.transform, particle.position)
+        vec4.transformMat4(particle.velocity, this.renderNode.transform, particle.velocity)
+
         // Adjust velocity with gravity
-        particle.velocity = vec4.addScaled(
+        vec4.addScaled(
           particle.velocity,
-          [0, 1, 0, 0],
+          gravityVector,
           this.props.gravityModifier.getValue(t) * gravity * elapsedTime,
+          particle.velocity,
         )
 
         if (this.props.lifetimeVelocity.enabled.get()) {
@@ -169,12 +184,17 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         if (!this.collided(particle,  elapsedTime)) {
           // No collision occured
           // Find new position with current velocity
-          particle.position = vec3.addScaled(
+          vec4.addScaled(
             particle.position,
             particle.velocity,
             elapsedTime,
+            particle.position,
           );
         }
+
+        // Transform velocity and position back into local space.
+        vec4.transformMat4(particle.position, this.renderNode.inverseTransform, particle.position)
+        vec4.transformMat4(particle.velocity, this.renderNode.inverseTransform, particle.velocity)
 
         await this.renderParticle(particle, t);
       }
@@ -183,17 +203,17 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
   async renderParticle(particle: Particle, t: number) {
     if (this.props.renderer.enabled.get() && this.renderNode) {
-      if (particle.sceneNode === null) {
-        particle.sceneNode = new RenderNode();
-        this.renderNode.addNode(particle.sceneNode)  
+      if (particle.renderNode === null) {
+        particle.renderNode = new RenderNode();
+        this.renderNode.addNode(particle.renderNode)  
       }
 
       if (particle.drawable === null) {
         particle.drawable = await this.props.renderer.createDrawableComponent()
-        particle.sceneNode.addComponent(particle.drawable);
+        particle.renderNode.addComponent(particle.drawable);
       }
 
-      vec3.copy(particle.position, particle.sceneNode.translate);
+      vec3.copy(particle.position, particle.renderNode.translate);
 
       let size = particle.startSize;
 
@@ -201,7 +221,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         size *= this.props.lifetimeSize.size.getValue(t);
       }
 
-      vec3.set(size, size, size, particle.sceneNode.scale)
+      vec3.set(size, size, size, particle.renderNode.scale)
 
       let lifetimeColor = [1, 1, 1, 1];
 
@@ -214,9 +234,9 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       particle.drawable.color[2] = lifetimeColor[2] * particle.startColor[2];
       particle.drawable.color[3] = lifetimeColor[3] * particle.startColor[3];    
     }
-    else if (particle.sceneNode !== null) {
-      particle.sceneNode.detachSelf();
-      particle.sceneNode = null;
+    else if (particle.renderNode !== null) {
+      particle.renderNode.detachSelf();
+      particle.renderNode = null;
     }
   }
 
@@ -259,9 +279,9 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
   removeParticles(): void {
     for (const [id, particle] of this.particles) {
-      if (particle.sceneNode) {
-        particle.sceneNode.detachSelf()
-        particle.sceneNode = null;
+      if (particle.renderNode) {
+        particle.renderNode.detachSelf()
+        particle.renderNode = null;
       }
 
       this.particles.delete(id)

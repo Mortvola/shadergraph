@@ -39,7 +39,7 @@ interface DrawableInterface {
 
   computeCentroid(): Vec4;
 
-  addInstanceInfo(mat4: Mat4, color: Vec4): void;
+  addInstanceInfo(transform: Mat4, inverseTransform: Mat4, color: Vec4): void;
 }
 
 export const isDrawableInterface = (r: unknown): r is DrawableInterface => (

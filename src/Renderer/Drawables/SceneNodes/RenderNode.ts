@@ -1,11 +1,9 @@
 import type { Mat4, Quat, Vec4} from 'wgpu-matrix';
 import { mat4, quat, vec3 } from 'wgpu-matrix';
 import type DrawableInterface from "../DrawableInterface";
-import type { RenderNodeInterface, RendererInterface, SceneGraphInterface} from '../../Types';
-import { ComponentType } from '../../Types';
+import type { RenderNodeInterface, SceneGraphInterface} from '../../Types';
 import { isDrawableNode } from './utils';
 import type Component from '../Component';
-import type DrawableComponent from '../DrawableComponent';
 import { getEulerAngles } from '../../Math';
 
 export type HitTestResult = {
@@ -26,6 +24,8 @@ class RenderNode implements RenderNodeInterface {
   name = '';
 
   transform = mat4.identity();
+
+  inverseTransform = mat4.identity();
 
   postTransforms: Mat4[] = [];
 
@@ -70,10 +70,12 @@ class RenderNode implements RenderNodeInterface {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  computeTransform(transform = mat4.identity(), _prepend = true) {
+  computeTransform(transform = mat4.identity()) {
     mat4.translate(transform, this.translate, this.transform);
     mat4.multiply(this.transform, this.getRotation(), this.transform);
     mat4.scale(this.transform, this.scale, this.transform);
+
+    mat4.inverse(this.transform, this.inverseTransform)
 
     for (const t of this.postTransforms) {
       mat4.multiply(this.transform, t, this.transform)
@@ -130,45 +132,6 @@ class RenderNode implements RenderNodeInterface {
   removeComponent(component: Component) {
     this.components.delete(component);
     component.renderNode = null;
-  }
-
-  updateTransforms(mat = mat4.identity(), renderer: RendererInterface | null) {
-    this.computeTransform(mat);
-    
-    for (const node of this.nodes) {
-      node.computeTransform(this.transform);
-
-      if (renderer) {
-        if (isRenderNode(node)) {
-          for (const component of Array.from(node.components)) {
-            const c = component as DrawableComponent
-
-            if (c.type === ComponentType.Drawable) {
-              c.instanceIndex = c.drawable.numInstances;
-              c.drawable.addInstanceInfo(node.transform, c.color);
-  
-              if (c.material.decal && renderer.decalPass) {
-                renderer.decalPass?.addDrawable(c);
-              }
-              else if (c.material.transparent && renderer.transparentPass) {
-                renderer.transparentPass!.addDrawable(c);
-              }
-              else if (c.material.lit && renderer.deferredRenderPass) {
-                renderer.deferredRenderPass!.addDrawable(c);
-              }
-              else if (renderer.unlitRenderPass) {
-                renderer.unlitRenderPass!.addDrawable(c);
-              }    
-            }
-          }  
-
-          node.updateTransforms(this.transform, renderer);
-        }
-      }
-      else if (isRenderNode(node)) {
-        node.updateTransforms(this.transform, renderer);
-      }
-    }
   }
 
   modelHitTest(origin: Vec4, ray: Vec4, filter?: (node: DrawableInterface) => boolean): HitTestResult | null {

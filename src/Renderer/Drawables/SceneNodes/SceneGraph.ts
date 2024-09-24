@@ -1,3 +1,4 @@
+import { type Mat4, mat4 } from "wgpu-matrix";
 import type ParticleSystem from "../../ParticleSystem/ParticleSystem";
 import type { RenderNodeInterface, RendererInterface, SceneGraphInterface} from "../../Types";
 import { ComponentType } from "../../Types";
@@ -5,6 +6,7 @@ import type Component from "../Component";
 import type Light from "../Light";
 import type RangeCircle from "../RangeCircle";
 import RenderNode, { isRenderNode } from "./RenderNode";
+import type DrawableComponent from "../DrawableComponent";
 
 class SceneGraph implements SceneGraphInterface {
   scene = new RenderNode()
@@ -93,8 +95,50 @@ class SceneGraph implements SceneGraphInterface {
     }
   }
 
-  updateTransforms(renderer: RendererInterface | null) {
-    this.scene.updateTransforms(undefined, renderer);
+  updateTransforms() {
+    let stack: { node: RenderNodeInterface, transform: Mat4 }[] = [{ node: this.scene, transform: mat4.identity() }];
+  
+    while (stack.length > 0) {
+      const { node, transform } = stack[0];
+      stack = stack.slice(1);
+
+      node.computeTransform(transform);
+
+      stack.push(...node.nodes.map((child) => ({ node: child, transform: node.transform })))
+    }
+  }
+
+  addInstanceInfo(renderer: RendererInterface) {
+    let stack: RenderNodeInterface[] = [this.scene]
+
+    while (stack.length > 0) {
+      const node = stack[0];
+      stack = stack .slice(1);
+
+      for (const component of Array.from(node.components)) {
+        const c = component as DrawableComponent
+
+        if (c.type === ComponentType.Drawable) {
+          c.instanceIndex = c.drawable.numInstances;
+          c.drawable.addInstanceInfo(node.transform, node.inverseTransform, c.color);
+
+          if (c.material.decal && renderer.decalPass) {
+            renderer.decalPass.addDrawable(c);
+          }
+          else if (c.material.transparent && renderer.transparentPass) {
+            renderer.transparentPass.addDrawable(c);
+          }
+          else if (c.material.lit && renderer.deferredRenderPass) {
+            renderer.deferredRenderPass.addDrawable(c);
+          }
+          else if (renderer.unlitRenderPass) {
+            renderer.unlitRenderPass.addDrawable(c);
+          }    
+        }
+      }
+
+      stack.push(...node.nodes)
+    }
   }
 
   getRangeCircles() : RangeCircle[] {

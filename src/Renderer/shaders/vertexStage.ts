@@ -40,16 +40,13 @@ export const getVertexStage = (drawableType: DrawableType, lit: boolean): string
   
           var output : VertexOut;
   
-          // scale and/or rotate the vertex vector
-          var vertexVector = modelMatrix[instanceIndex] * verts[vertexIndex];
-  
           // Get world origin point by taking the fourth vector from the
           // model-to-world transformation matrix
           var origin = vec4f(modelMatrix[instanceIndex][3].xyz, 1);
   
           // Now transform the origin into camera space and add 
           // the vertex vector.
-          var pos = viewMatrix * origin + vertexVector;
+          var pos = viewMatrix * origin + verts[vertexIndex];
   
           output.position = projectionMatrix * pos;
   

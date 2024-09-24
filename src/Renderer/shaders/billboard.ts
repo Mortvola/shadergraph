@@ -36,7 +36,8 @@ fn vs(
   var output : VertexOut;
 
   // scale and/or rotate the vertex vector
-  var vertexVector = modelMatrix[instanceIndex] * verts[vertexIndex];
+  // var vertexVector = modelMatrix[instanceIndex] * verts[vertexIndex];
+  var vertexVector = verts[vertexIndex];
 
   // Get world origin point by taking the fourth vector from the
   // model-to-world transformation matrix

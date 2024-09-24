@@ -15,7 +15,7 @@ class Particle {
 
   lifetime: number;
 
-  sceneNode: RenderNode | null = null;
+  renderNode: RenderNode | null = null;
 
   drawable: DrawableComponent | null = null;
 

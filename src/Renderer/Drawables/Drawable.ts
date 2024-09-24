@@ -87,13 +87,13 @@ class Drawable implements DrawableInterface {
     return vec4.create();
   }
 
-  addInstanceInfo(transform: Mat4, color: Vec4) {
+  addInstanceInfo(transform: Mat4, inverseTransform: Mat4, color: Vec4) {
     if (this.numInstances < maxInstances) {
       transform.forEach((float, index) => {
         this.modelMatrices[this.numInstances * 16 + index] = float;
       })
 
-      mat4.inverse(transform).forEach((float, index) => {
+      inverseTransform.forEach((float, index) => {
         this.inverseModelMatrices[this.numInstances * 16 + index] = float;
       })
 

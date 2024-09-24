@@ -34,11 +34,11 @@ export interface RenderNodeInterface {
 
   transform: Mat4;
 
+  inverseTransform: Mat4;
+
   scene: SceneGraphInterface | null;
 
   computeTransform(transform: Mat4, prepend?: boolean): void;
-
-  updateTransforms(mat: Mat4, renderer: RendererInterface | null): void;
 
   setFromAngles(x: number, y: number, z: number): void;
 

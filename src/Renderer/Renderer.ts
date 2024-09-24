@@ -151,7 +151,7 @@ class Renderer implements RendererInterface {
     // lightNode.addComponent(new Light());
     // this.scene.addNode(lightNode)
 
-    this.scene.updateTransforms(null);
+    this.scene.updateTransforms();
   }
 
   static async create(withFloor = true) {
@@ -400,7 +400,8 @@ class Renderer implements RendererInterface {
       this.renderedDimensions = [this.context.canvas.width, this.context.canvas.height];
     }
 
-    this.scene.updateTransforms(this);
+    this.scene.updateTransforms()
+    this.scene.addInstanceInfo(this);
 
     if (this.camera.projection === 'Perspective') {
       gpu.device.queue.writeBuffer(this.frameBindGroup.buffer[0], 0, this.camera.perspectiveTransform as Float32Array);
