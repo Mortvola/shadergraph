@@ -3,8 +3,8 @@ import Draggable from '../Draggable';
 import styles from './Controls.module.scss';
 import { useStores } from '../../State/store';
 import { observer } from 'mobx-react-lite';
-import type { CullMode } from '../../State/types';
 import Checkbox from './Checkbox';
+import { type CullMode } from '../../State/GraphInterface';
 
 const Controls: React.FC = observer(() => {
   const { graph } = useStores();

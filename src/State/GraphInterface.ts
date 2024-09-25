@@ -1,6 +1,8 @@
 import type ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
 import type { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
 
+export type CullMode = 'back' | 'none' | 'front';
+
 export interface GraphInterface {
   id: number | null;
   
@@ -11,6 +13,8 @@ export interface GraphInterface {
   graph: ShaderGraph;
 
   selectedNode: GraphNodeInterface | null;
+
+  dragConnector: [number, number][] | null;
   
   setName(name: string): void;
 
@@ -33,5 +37,15 @@ export interface GraphInterface {
   deleteProperty(property: PropertyInterface): void;
 
   applyMaterial(): Promise<void>;
+
+  setCullMode(mode: CullMode): void;
+
+  setTransparency: (transparent: boolean) => void;
+
+  setDepthWriteEnabled: (depthWriteEnabled: boolean) => void;
+
+  setLit: (lit: boolean) => void;
+
+  addNode(node: GraphNodeInterface): void;
 }
 

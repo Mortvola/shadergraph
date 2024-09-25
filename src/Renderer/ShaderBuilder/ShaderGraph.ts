@@ -1,4 +1,4 @@
-import type { CullMode } from "../../State/types";
+import { type CullMode } from "../../State/GraphInterface";
 import type { DrawableType } from "../Drawables/DrawableInterface";
 import { gpu } from "../Gpu";
 import { bloom } from "../RenderSetings";

@@ -11,8 +11,6 @@ export interface ModelerInterface {
 
 export type MaterialsInterface  = object;
 
-export type CullMode = 'back' | 'none' | 'front';
-
 export type ModelRecord = {
   id: number,
   name: string,

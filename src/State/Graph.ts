@@ -5,10 +5,9 @@ import Display from "../Renderer/ShaderBuilder/Nodes/Display";
 import type { MaterialInterface } from "../Renderer/Types";
 import type { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
 import Material from "../Renderer/Materials/Material";
-import type { CullMode } from "./types";
 import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
 import type { StoreInterface } from "./StoreInterface";
-import type { GraphInterface } from "./GraphInterface";
+import type { CullMode, GraphInterface } from "./GraphInterface";
 
 let nextShaderName = 0;
 
