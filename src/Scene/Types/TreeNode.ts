@@ -33,8 +33,7 @@ class TreeNode extends Entity {
   set nodeObject(object: SceneObject) {
     this._nodeObject = object
     this.getComponentProps()
-    vec3.copy(this.nodeObject.transformProps.translate.get(), this.renderNode.translate)
-    vec3.copy(this.nodeObject.transformProps.scale.get(), this.renderNode.scale)
+    this.transformChanged()
   }
 
   renderNode = new RenderNode();
