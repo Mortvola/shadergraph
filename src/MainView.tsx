@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './MainView.module.scss';
 import Canvas3d from './Canvas3d';
-import { store, useStores } from './State/store';
+import { useStores } from './State/store';
 import Inspector from './Inspector/Inspector';
 import Project from './Project/Project';
 import ShaderEditor from './ShaderEditor/ShaderEditor';
@@ -15,7 +15,8 @@ import OpenProjectDialog from './OpenProjectDialog';
 import { runInAction } from 'mobx';
 
 const MainView: React.FC = observer(() => {
-  const { mainView, scene, project } = useStores();
+  const store = useStores();
+  const { mainView, scene, project } = store;
 
   const [showDialog, setShowDialog] = React.useState<boolean>(false)
   
@@ -99,7 +100,7 @@ const MainView: React.FC = observer(() => {
               </div>
               <OpenProjectDialog show={showDialog} onHide={handleHideDialog} onSelect={handleSelect} />
             </>
-          )          
+          )
         }
     </>
   )
