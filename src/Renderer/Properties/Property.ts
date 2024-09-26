@@ -1,9 +1,8 @@
 import { observable, runInAction } from "mobx";
 import { RenderMode, ShapeType, SpaceType } from "../ParticleSystem/Types";
-import type { Vec3 } from "wgpu-matrix";
-import { vec3 } from "wgpu-matrix";
 import { type PropsBase } from "./Types";
 import PropertyBase from "./PropertyBase";
+import { vec3n, type Vec3n } from "wgpu-matrix";
 
 export class Property<T extends { toString(): string } | undefined> extends PropertyBase {
   @observable protected accessor value: T;
@@ -109,22 +108,22 @@ export class PSMaterialItem extends Property<number | undefined> {
   }
 }
 
-export class PSVec3Type extends Property<Vec3> {
-  constructor(name: string, props: PropsBase, value?: Vec3, defaultValue = vec3.create(), onChange?: () => void, previousProp?: PSVec3Type) {
+export class PSVec3Type extends Property<Vec3n> {
+  constructor(name: string, props: PropsBase, value?: Vec3n, defaultValue = vec3n.create(), onChange?: () => void, previousProp?: PSVec3Type) {
     super(name, props, value, defaultValue, onChange, previousProp)
   }
 
-  copyProp(other: Property<Vec3>) {
+  copyProp(other: Property<Vec3n>) {
     runInAction(() => {
-      this.value = vec3.create(...(other as PSVec3Type).value);
+      this.value = vec3n.create(...(other as PSVec3Type).value);
       this.override = false;  
     })
   }
 
-  toDescriptor(): Vec3 | undefined {
+  toDescriptor(): Vec3n | undefined {
     // Only output the descriptor if this a base property or if this is an override
     if (this.base === undefined || this.override) {
-      return vec3.create(...this.value)
+      return vec3n.create(...this.value)
     }
   }
 }

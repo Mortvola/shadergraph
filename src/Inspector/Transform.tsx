@@ -5,7 +5,7 @@ import styles from './Inspector.module.scss'
 import Property from './Property';
 import { observer } from 'mobx-react-lite';
 import { degToRad, radToDeg } from '../Renderer/Math';
-import { vec3 } from 'wgpu-matrix';
+import { vec3n } from 'wgpu-matrix';
 
 type PropsType = {
   transformProps: TransformProps,
@@ -15,7 +15,7 @@ const Transform: React.FC<PropsType> = observer(({
   transformProps,
 }) => {
   const handleTranslateXChange = (x: number) => {
-    transformProps.translate.set(vec3.create(
+    transformProps.translate.set(vec3n.create(
       x,
       transformProps.translate.get()[1],
       transformProps.translate.get()[2],
@@ -23,7 +23,7 @@ const Transform: React.FC<PropsType> = observer(({
   }
 
   const handleTranslateYChange = (y: number) => {
-    transformProps.translate.set(vec3.create(
+    transformProps.translate.set(vec3n.create(
       transformProps.translate.get()[0],
       y,
       transformProps.translate.get()[2],
@@ -31,7 +31,7 @@ const Transform: React.FC<PropsType> = observer(({
   }
 
   const handleTranslateZChange = (z: number) => {
-    transformProps.translate.set(vec3.create(
+    transformProps.translate.set(vec3n.create(
       transformProps.translate.get()[0],
       transformProps.translate.get()[1],
       z,
@@ -39,7 +39,7 @@ const Transform: React.FC<PropsType> = observer(({
   }
 
   const handleRotateXChange = (x: number) => {
-    transformProps.rotate.set(vec3.create(
+    transformProps.rotate.set(vec3n.create(
       degToRad(x),
       transformProps.rotate.get()[1],
       transformProps.rotate.get()[2],
@@ -47,7 +47,7 @@ const Transform: React.FC<PropsType> = observer(({
   }
 
   const handleRotateYChange = (y: number) => {
-    transformProps.rotate.set(vec3.create(
+    transformProps.rotate.set(vec3n.create(
       transformProps.rotate.get()[0],
       degToRad(y),
       transformProps.rotate.get()[2],
@@ -55,7 +55,7 @@ const Transform: React.FC<PropsType> = observer(({
   }
 
   const handleRotateZChange = (z: number) => {
-    transformProps.rotate.set(vec3.create(
+    transformProps.rotate.set(vec3n.create(
       transformProps.rotate.get()[0],
       transformProps.rotate.get()[1],
       degToRad(z),
@@ -63,7 +63,7 @@ const Transform: React.FC<PropsType> = observer(({
   }
 
   const handleScaleXChange = (x: number) => {
-    transformProps.scale.set(vec3.create(
+    transformProps.scale.set(vec3n.create(
       x,
       transformProps.scale.get()[1],
       transformProps.scale.get()[2],
@@ -71,7 +71,7 @@ const Transform: React.FC<PropsType> = observer(({
   }
 
   const handleScaleYChange = (y: number) => {
-    transformProps.scale.set(vec3.create(
+    transformProps.scale.set(vec3n.create(
       transformProps.scale.get()[0],
       y,
       transformProps.scale.get()[2],
@@ -79,7 +79,7 @@ const Transform: React.FC<PropsType> = observer(({
   }
 
   const handleScaleZChange = (z: number) => {
-    transformProps.scale.set(vec3.create(
+    transformProps.scale.set(vec3n.create(
       transformProps.scale.get()[0],
       transformProps.scale.get()[1],
       z,

@@ -1,4 +1,4 @@
-import { vec3 } from "wgpu-matrix";
+import { vec3n } from "wgpu-matrix";
 import type { TransformPropsInterface } from "../Types";
 import type { TransformPropsDescriptor } from "../../Scene/Types/Types";
 import { PropsBase, removeUndefinedKeys } from "./Types";
@@ -18,9 +18,9 @@ class TransformProps extends PropsBase implements TransformPropsInterface {
   ) {
     super()
 
-    this.translate = new PSVec3Type('Translate', this, descriptor?.translate ? vec3.create(...descriptor.translate) : undefined, vec3.create(0, 0, 0), onChange, previousProps?.translate)
-    this.rotate = new PSVec3Type('Rotate', this, descriptor?.rotate ? vec3.create(...descriptor.rotate) : undefined, vec3.create(0, 0, 0), onChange, previousProps?.rotate)
-    this.scale = new PSVec3Type('Scale', this, descriptor?.scale ? vec3.create(...descriptor.scale) : undefined, vec3.create(1, 1, 1), onChange, previousProps?.scale)
+    this.translate = new PSVec3Type('Translate', this, descriptor?.translate ? vec3n.create(...descriptor.translate) : undefined, vec3n.create(0, 0, 0), onChange, previousProps?.translate)
+    this.rotate = new PSVec3Type('Rotate', this, descriptor?.rotate ? vec3n.create(...descriptor.rotate) : undefined, vec3n.create(0, 0, 0), onChange, previousProps?.rotate)
+    this.scale = new PSVec3Type('Scale', this, descriptor?.scale ? vec3n.create(...descriptor.scale) : undefined, vec3n.create(1, 1, 1), onChange, previousProps?.scale)
   }
 
   toDescriptor(): TransformPropsDescriptor | undefined {
