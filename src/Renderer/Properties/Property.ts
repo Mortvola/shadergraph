@@ -12,7 +12,7 @@ export class Property<T extends { toString(): string } | undefined> extends Prop
     runInAction(() => {
       if (value !== undefined) {
         this.value = value;
-        this.override = override;
+        this.override = override && this.base !== undefined;
       }    
     })
   }
@@ -65,8 +65,9 @@ export class Property<T extends { toString(): string } | undefined> extends Prop
     })
   }
 
-  toDescriptor(overridesOnly = false): T | undefined {
-    if (!overridesOnly || this.override) {
+  toDescriptor(): T | undefined {
+    // Only output the descriptor if this a base property or if this is an override
+    if (this.base === undefined || this.override) {
       return this.value
     }
   }
@@ -120,8 +121,9 @@ export class PSVec3Type extends Property<Vec3> {
     })
   }
 
-  toDescriptor(overridesOnly = false): number[] | undefined {
-    if (!overridesOnly || this.override) {
+  toDescriptor(): number[] | undefined {
+    // Only output the descriptor if this a base property or if this is an override
+    if (this.base === undefined || this.override) {
       return [...this.value]
     }
   }

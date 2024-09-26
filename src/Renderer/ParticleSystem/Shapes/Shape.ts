@@ -34,19 +34,13 @@ class Shape extends PSModule {
     this.hemisphere = new Sphere(props, true, descriptor?.hemisphere, onChange, previousProps?.hemisphere);
   }
 
-  getOverrides() {
-    return [
-      this.type.getOverrides(),
-    ]
-  }
-
-  toDescriptor(overridesOnly = false): ShapeDescriptor | undefined {
+  toDescriptor(): ShapeDescriptor | undefined {
     const descriptor = {
-      enabled: this.enabled.toDescriptor(overridesOnly),
-      type: this.type.toDescriptor(overridesOnly),
-      cone: this.cone.toDescriptor(overridesOnly),
-      sphere: this.sphere.toDescriptor(overridesOnly),
-      hemisphere: this.hemisphere.toDescriptor(overridesOnly),
+      enabled: this.enabled.toDescriptor(),
+      type: this.type.toDescriptor(),
+      cone: this.cone.toDescriptor(),
+      sphere: this.sphere.toDescriptor(),
+      hemisphere: this.hemisphere.toDescriptor(),
     }
 
     return removeUndefinedKeys(descriptor)

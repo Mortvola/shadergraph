@@ -18,16 +18,10 @@ class LifetimeSize extends PSModule {
     })
   }
 
-  getOverrides() {
-    return [
-      this.size.getOverrides(),
-    ]
-  }
-
-  toDescriptor(overridesOnly = false): LifetimeSizeDescriptor | undefined {
+  toDescriptor(): LifetimeSizeDescriptor | undefined {
     const descriptor = {
-      enabled: this.enabled.toDescriptor(overridesOnly),
-      size: this.size.toDescriptor(overridesOnly),
+      enabled: this.enabled.toDescriptor(),
+      size: this.size.toDescriptor(),
     }
 
     return removeUndefinedKeys(descriptor)

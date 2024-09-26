@@ -18,7 +18,7 @@ const OverrideComparison: React.FC<PropsType> = ({
       <label>
         { `${property.name}:` }
         <div>{property.toString()}</div>
-        <div>{property.original?.toString()}</div>
+        <div>{property.base?.toString()}</div>
       </label>
       <div className={styles.buttons}>
         <button onClick={handleRevertClick}>Revert</button>

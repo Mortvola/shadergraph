@@ -43,18 +43,11 @@ class Renderer extends PSModule {
     }
   }
 
-  getOverrides() {
-    return [
-      this.mode.getOverrides(),
-      this.materialId.getOverrides(),
-    ]
-  }
-
-  toDescriptor(overridesOnly = false): RendererDescriptor | undefined {
+  toDescriptor(): RendererDescriptor | undefined {
     const descriptor = {
-      enabled: this.enabled.toDescriptor(overridesOnly),
-      mode: this.mode.toDescriptor(overridesOnly),
-      materialId: this.materialId?.toDescriptor(overridesOnly),
+      enabled: this.enabled.toDescriptor(),
+      mode: this.mode.toDescriptor(),
+      materialId: this.materialId?.toDescriptor(),
     }
 
     return removeUndefinedKeys(descriptor)

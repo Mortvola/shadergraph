@@ -33,17 +33,19 @@ const Property: React.FC<PropsType> = observer(({
   const handleOpenClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();
 
-    const element = ref.current;
+    if (property.override) {
+      const element = ref.current;
 
-    if (element) {
-      const rect = element.getBoundingClientRect();
-
-      setLineage(property.getLineage().map((l) => ({
-        value: l.property,
-        label: `Apply to ${l.name} in ${l.container}`,
-      })))
-
-      setOpen(rect);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+  
+        setLineage(property.getLineage().map((l) => ({
+          value: l.property,
+          label: `Apply to ${l.name} in ${l.container}`,
+        })))
+  
+        setOpen(rect);
+      }  
     }
   }
 

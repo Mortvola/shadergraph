@@ -2,11 +2,12 @@ import { type IReactionDisposer, observable, reaction, runInAction } from "mobx"
 import type { LineageEntry, PropertyBaseInterface, PropsBase } from "./Types";
 
 export class PropertyBase implements PropertyBaseInterface {
-  @observable accessor override = false;
+  @observable
+  accessor override = false;
 
   readonly name: string;
 
-  original?: PropertyBase
+  base?: PropertyBase
 
   variations: Set<PropertyBase> = new Set()
 
@@ -19,7 +20,7 @@ export class PropertyBase implements PropertyBaseInterface {
   constructor(name: string, props: PropsBase, originalProp?: PropertyBase) {
     this.name = name;
     this.props = props;
-    this.original = originalProp;
+    this.base = originalProp;
     
     if (originalProp) {
       originalProp.variations.add(this);
@@ -32,21 +33,21 @@ export class PropertyBase implements PropertyBaseInterface {
 
   getLineage(): LineageEntry[] {
     const lineage: LineageEntry[] = [];
-    let property: PropertyBase | undefined = this.original;
+    let property: PropertyBase | undefined = this.base;
 
     while (property) {
       const node = property.props.node;
       lineage.push({ property, name: node?.name ?? 'unknown node', container: 'unknown prefab'})
 
-      property = property.original
+      property = property.base
     }
 
     return lineage
   }
 
   revertOverride() {
-    if (this.original) {
-      this.copyProp(this.original)
+    if (this.base) {
+      this.copyProp(this.base)
     }
 
     if (this.onRevertOverride) {
@@ -60,7 +61,7 @@ export class PropertyBase implements PropertyBaseInterface {
   
       // Mark the change as an override unless the original is the
       // root property (.original === undefined)
-      original.override = original.original !== undefined
+      original.override = original.base !== undefined
   
       this.revertOverride()       
     })
@@ -117,12 +118,6 @@ export class PropertyBase implements PropertyBaseInterface {
     this.dataFunction = dataFunction;
 
     this.enableReaction();
-  }
-
-  getOverrides(): PropertyBase | undefined {
-    if (this.override) {
-      return this;
-    }
   }
 }
 

@@ -16,10 +16,10 @@ class Cone {
     this.originRadius = new PSNumber('Origin Radius', props, descriptor?.originRadius, 1, onChange, previousProp?.originRadius);
   }
 
-  toDescriptor(overridesOnly  = false): ConeDescriptor | undefined {
+  toDescriptor(): ConeDescriptor | undefined {
     const descriptor = {
-      angle: this.angle.toDescriptor(overridesOnly),
-      originRadius: this.originRadius.toDescriptor(overridesOnly),
+      angle: this.angle.toDescriptor(),
+      originRadius: this.originRadius.toDescriptor(),
     }
 
     return removeUndefinedKeys(descriptor)

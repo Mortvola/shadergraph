@@ -1,7 +1,7 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import styles from './Select.module.scss';
-import PropertyBase from '../Renderer/Properties/PropertyBase';
+import type PropertyBase from '../Renderer/Properties/PropertyBase';
 
 type PropsType = {
   onSelect: (value: PropertyBase | undefined) => void,

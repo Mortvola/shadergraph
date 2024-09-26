@@ -16,18 +16,11 @@ class Collision extends PSModule {
     this.dampen = new PSNumber('Dampen', props, descriptor?.dampen, 0, onChange, previousProps?.dampen);
   }
 
-  getOverrides() {
-    return [
-      this.bounce.getOverrides(),
-      this.dampen.getOverrides(),
-    ]
-  }
-
-  toDescriptor(overridesOnly = false): CollisionDescriptor | undefined {
+  toDescriptor(): CollisionDescriptor | undefined {
     const descriptor = {
-      enabled: this.enabled.toDescriptor(overridesOnly),
-      bounce: this.bounce.toDescriptor(overridesOnly),
-      dampen: this.dampen.toDescriptor(overridesOnly),
+      enabled: this.enabled.toDescriptor(),
+      bounce: this.bounce.toDescriptor(),
+      dampen: this.dampen.toDescriptor(),
     }
 
     return removeUndefinedKeys(descriptor)

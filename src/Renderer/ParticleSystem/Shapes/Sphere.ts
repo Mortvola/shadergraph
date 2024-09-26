@@ -15,10 +15,10 @@ class Sphere {
     this.hemisphere = hemisphere;
   }
 
-  toDescriptor(overridesOnly = false): SphereDescriptor | undefined {
+  toDescriptor(): SphereDescriptor | undefined {
     const descriptor = {
-      radius: this.radius.toDescriptor(overridesOnly),
-      hemisphere: (!overridesOnly || this.radius.override) ? this.hemisphere : undefined,
+      radius: this.radius.toDescriptor(),
+      hemisphere: (this.radius.base === undefined || this.radius.override) ? this.hemisphere : undefined,
     }
 
     return removeUndefinedKeys(descriptor)

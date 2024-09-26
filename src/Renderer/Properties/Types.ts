@@ -12,7 +12,7 @@ export type LineageEntry = { property: PropertyBase, name: string, container: st
 export interface PropertyBaseInterface {
   name: string;
 
-  original?: PropertyBase
+  base?: PropertyBase
 
   override: boolean
 

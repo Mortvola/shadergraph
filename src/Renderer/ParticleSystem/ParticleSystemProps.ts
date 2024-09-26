@@ -92,23 +92,23 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
     }
   }
 
-  toDescriptor(overridesOnly = false): ParticleSystemPropsDescriptor | undefined {
+  toDescriptor(): ParticleSystemPropsDescriptor | undefined {
     const descriptor = {
-      duration: this.duration.toDescriptor(overridesOnly),
-      maxPoints: this.maxPoints.toDescriptor(overridesOnly),
-      rate: this.rate.toDescriptor(overridesOnly),
-      shape: this.shape.toDescriptor(overridesOnly),
-      lifetime: this.lifetime.toDescriptor(overridesOnly),
-      startVelocity: this.startSpeed.toDescriptor(overridesOnly),
-      startSize: this.startSize.toDescriptor(overridesOnly),
-      startColor: this.startColor.toDescriptor(overridesOnly),
-      space: this.space.toDescriptor(overridesOnly),
-      gravityModifier: this.gravityModifier.toDescriptor(overridesOnly),
-      lifetimeSize: this.lifetimeSize.toDescriptor(overridesOnly),
-      lifetimeVelocity: this.lifetimeVelocity.toDescriptor(overridesOnly),
-      lifetimeColor: this.lifetimeColor.toDescriptor(overridesOnly),
-      collision: this.collision.toDescriptor(overridesOnly),
-      renderer: this.renderer.toDescriptor(overridesOnly),
+      duration: this.duration.toDescriptor(),
+      maxPoints: this.maxPoints.toDescriptor(),
+      rate: this.rate.toDescriptor(),
+      shape: this.shape.toDescriptor(),
+      lifetime: this.lifetime.toDescriptor(),
+      startVelocity: this.startSpeed.toDescriptor(),
+      startSize: this.startSize.toDescriptor(),
+      startColor: this.startColor.toDescriptor(),
+      space: this.space.toDescriptor(),
+      gravityModifier: this.gravityModifier.toDescriptor(),
+      lifetimeSize: this.lifetimeSize.toDescriptor(),
+      lifetimeVelocity: this.lifetimeVelocity.toDescriptor(),
+      lifetimeColor: this.lifetimeColor.toDescriptor(),
+      collision: this.collision.toDescriptor(),
+      renderer: this.renderer.toDescriptor(),
     }
 
     return removeUndefinedKeys(descriptor)

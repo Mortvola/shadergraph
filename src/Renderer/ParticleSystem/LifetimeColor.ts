@@ -18,16 +18,10 @@ class LifetimeColor extends PSModule {
     })
   }
 
-  getOverrides() {
-    return [
-      this.color.getOverrides(),
-    ]
-  }
-
-  toDescriptor(overridesOnly = false): LifetimeColorDescriptor | undefined {
+  toDescriptor(): LifetimeColorDescriptor | undefined {
     const descriptor = {
-      enabled: this.enabled.toDescriptor(overridesOnly),
-      color: this.color.toDescriptor(overridesOnly),
+      enabled: this.enabled.toDescriptor(),
+      color: this.color.toDescriptor(),
     };
 
     return removeUndefinedKeys(descriptor)

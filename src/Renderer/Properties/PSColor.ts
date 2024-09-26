@@ -19,7 +19,9 @@ class PSColor extends PropertyBase {
   set style(value: PropertyType<PSColorType>) {
     runInAction(() => {
       this._type = value.value;
-      this.override = value.override ?? this.override;
+      if (value.override) {
+        this.override = value.override && this.base !== undefined;
+      }
     })
   }
 
@@ -33,7 +35,9 @@ class PSColor extends PropertyBase {
   set color(value: PropertyType<ColorPair>) {
     runInAction(() => {
       this._color = value.value;
-      this.override = value.override ?? this.override;
+      if (value.override) {
+        this.override = value.override && this.base !== undefined;
+      }
     })
   }
 

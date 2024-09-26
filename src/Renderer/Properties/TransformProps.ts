@@ -23,11 +23,11 @@ class TransformProps extends PropsBase implements TransformPropsInterface {
     this.scale = new PSVec3Type('Scale', this, descriptor?.scale, vec3.create(1, 1, 1), onChange, previousProps?.scale)
   }
 
-  toDescriptor(overridesOnly = false): TransformPropsDescriptor | undefined {
+  toDescriptor(): TransformPropsDescriptor | undefined {
     const descriptor = {
-      translate: this.translate.toDescriptor(overridesOnly),
-      rotate: this.rotate.toDescriptor(overridesOnly),
-      scale: this.scale.toDescriptor(overridesOnly),
+      translate: this.translate.toDescriptor(),
+      rotate: this.rotate.toDescriptor(),
+      scale: this.scale.toDescriptor(),
     }
 
     return removeUndefinedKeys(descriptor)

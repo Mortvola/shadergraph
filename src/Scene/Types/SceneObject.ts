@@ -245,7 +245,7 @@ class SceneObject extends ObjectBase implements SceneObjectInterface {
         components: this.components.map((c) => ({
           id: c.id,
           type: c.type,
-          props: c.props.toDescriptor(this.baseObject !== undefined),
+          props: c.props.toDescriptor(),
         }))
           .filter((c) => c.props !== undefined),
         transformProps: this.transformProps.toDescriptor(/*this.baseObject !== undefined*/)!,

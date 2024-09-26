@@ -19,7 +19,7 @@ class PSValue extends PropertyBase {
     runInAction(() => {
       this._type = value.value;
       if (value.override) {
-        this.override = value.override
+        this.override = value.override && this.base !== undefined
       }
     })
   }
@@ -36,7 +36,7 @@ class PSValue extends PropertyBase {
     runInAction(() => {
       this._value = value.value;
       if (value.override !== undefined) {
-        this.override = value.override
+        this.override = value.override && this.base !== undefined
       }
     })
   }
@@ -57,7 +57,7 @@ class PSValue extends PropertyBase {
     runInAction(() => {
       this._curveRange = value.value;
       if (value.override !== undefined) {
-        this.override = value.override
+        this.override = value.override && this.base !== undefined
       }
     })
   }
