@@ -163,7 +163,7 @@ class Renderer implements RendererInterface {
     let floor: RenderNode | undefined = undefined;
 
     if (withFloor) {
-      const quad = await Mesh.create(plane(50, 50, [1, 1, 1, 1]), 0)
+      const quad = await Mesh.create(plane(50, 50, vec4.create(1, 1, 1, 1)), 0)
       floor = new RenderNode();
       const component = await DrawableComponent.create(quad, { shaderDescriptor: { lit: true }})
       floor.addComponent(component)

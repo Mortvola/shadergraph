@@ -18,16 +18,20 @@ class TransformProps extends PropsBase implements TransformPropsInterface {
   ) {
     super()
 
-    this.translate = new PSVec3Type('Translate', this, descriptor?.translate, vec3.create(0, 0, 0), onChange, previousProps?.translate)
-    this.rotate = new PSVec3Type('Rotate', this, descriptor?.rotate, vec3.create(0, 0, 0), onChange, previousProps?.rotate)
-    this.scale = new PSVec3Type('Scale', this, descriptor?.scale, vec3.create(1, 1, 1), onChange, previousProps?.scale)
+    this.translate = new PSVec3Type('Translate', this, descriptor?.translate ? vec3.create(...descriptor.translate) : undefined, vec3.create(0, 0, 0), onChange, previousProps?.translate)
+    this.rotate = new PSVec3Type('Rotate', this, descriptor?.rotate ? vec3.create(...descriptor.rotate) : undefined, vec3.create(0, 0, 0), onChange, previousProps?.rotate)
+    this.scale = new PSVec3Type('Scale', this, descriptor?.scale ? vec3.create(...descriptor.scale) : undefined, vec3.create(1, 1, 1), onChange, previousProps?.scale)
   }
 
   toDescriptor(): TransformPropsDescriptor | undefined {
+    const translateDescriptor = this.translate.toDescriptor();
+    const rotateDescriptor = this.rotate.toDescriptor();
+    const scaleDescriptor = this.scale.toDescriptor();
+
     const descriptor = {
-      translate: this.translate.toDescriptor(),
-      rotate: this.rotate.toDescriptor(),
-      scale: this.scale.toDescriptor(),
+      translate: translateDescriptor ? [...translateDescriptor] : undefined,
+      rotate: rotateDescriptor ? [...rotateDescriptor] : undefined,
+      scale: scaleDescriptor ? [...scaleDescriptor] : undefined,
     }
 
     return removeUndefinedKeys(descriptor)

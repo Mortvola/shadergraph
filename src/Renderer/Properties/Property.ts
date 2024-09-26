@@ -114,17 +114,17 @@ export class PSVec3Type extends Property<Vec3> {
     super(name, props, value, defaultValue, onChange, previousProp)
   }
 
-  copyProp(other: PSVec3Type) {
+  copyProp(other: Property<Vec3>) {
     runInAction(() => {
-      this.value = vec3.create(...other.value);
+      this.value = vec3.create(...(other as PSVec3Type).value);
       this.override = false;  
     })
   }
 
-  toDescriptor(): number[] | undefined {
+  toDescriptor(): Vec3 | undefined {
     // Only output the descriptor if this a base property or if this is an override
     if (this.base === undefined || this.override) {
-      return [...this.value]
+      return vec3.create(...this.value)
     }
   }
 }

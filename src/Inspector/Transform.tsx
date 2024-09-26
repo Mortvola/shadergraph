@@ -5,6 +5,7 @@ import styles from './Inspector.module.scss'
 import Property from './Property';
 import { observer } from 'mobx-react-lite';
 import { degToRad, radToDeg } from '../Renderer/Math';
+import { vec3 } from 'wgpu-matrix';
 
 type PropsType = {
   transformProps: TransformProps,
@@ -14,75 +15,75 @@ const Transform: React.FC<PropsType> = observer(({
   transformProps,
 }) => {
   const handleTranslateXChange = (x: number) => {
-    transformProps.translate.set([
+    transformProps.translate.set(vec3.create(
       x,
       transformProps.translate.get()[1],
       transformProps.translate.get()[2],
-    ], true)
+    ), true)
   }
 
   const handleTranslateYChange = (y: number) => {
-    transformProps.translate.set([
+    transformProps.translate.set(vec3.create(
       transformProps.translate.get()[0],
       y,
       transformProps.translate.get()[2],
-    ], true)
+    ), true)
   }
 
   const handleTranslateZChange = (z: number) => {
-    transformProps.translate.set([
+    transformProps.translate.set(vec3.create(
       transformProps.translate.get()[0],
       transformProps.translate.get()[1],
       z,
-    ], true)
+    ), true)
   }
 
   const handleRotateXChange = (x: number) => {
-    transformProps.rotate.set([
+    transformProps.rotate.set(vec3.create(
       degToRad(x),
       transformProps.rotate.get()[1],
       transformProps.rotate.get()[2],
-    ], true)
+    ), true)
   }
 
   const handleRotateYChange = (y: number) => {
-    transformProps.rotate.set([
+    transformProps.rotate.set(vec3.create(
       transformProps.rotate.get()[0],
       degToRad(y),
       transformProps.rotate.get()[2],
-    ], true)
+    ), true)
   }
 
   const handleRotateZChange = (z: number) => {
-    transformProps.rotate.set([
+    transformProps.rotate.set(vec3.create(
       transformProps.rotate.get()[0],
       transformProps.rotate.get()[1],
       degToRad(z),
-    ], true)
+    ), true)
   }
 
   const handleScaleXChange = (x: number) => {
-    transformProps.scale.set([
+    transformProps.scale.set(vec3.create(
       x,
       transformProps.scale.get()[1],
       transformProps.scale.get()[2],
-    ], true)
+    ), true)
   }
 
   const handleScaleYChange = (y: number) => {
-    transformProps.scale.set([
+    transformProps.scale.set(vec3.create(
       transformProps.scale.get()[0],
       y,
       transformProps.scale.get()[2],
-    ], true)
+    ), true)
   }
 
   const handleScaleZChange = (z: number) => {
-    transformProps.scale.set([
+    transformProps.scale.set(vec3.create(
       transformProps.scale.get()[0],
       transformProps.scale.get()[1],
       z,
-    ], true)
+    ), true)
   }
 
   return (

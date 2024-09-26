@@ -263,7 +263,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       const lifetime = this.props.lifetime.getValue(t);
       const startSpeed = this.props.startSpeed.getValue(t);
       const startSize = this.props.startSize.getValue(t);
-      const startColor = this.props.startColor.getColor(t);
+      const startColor = vec4.create(...this.props.startColor.getColor(t));
       const [position, direction] = this.props.shape.getPositionAndDirection();
 
       const particle = new Particle(
