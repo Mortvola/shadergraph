@@ -1,7 +1,7 @@
-import { fullscreenVertexStage } from "./fullscreenVertexStage";
+import { fullscreen } from "./vertex/fullscreen";
 
 export const outlineApplyShader = /*wgsl*/`
-${fullscreenVertexStage}
+${fullscreen}
 
 @group(0) @binding(0) var ourSampler: sampler;
 @group(0) @binding(1) var outlineTexture: texture_2d<f32>;

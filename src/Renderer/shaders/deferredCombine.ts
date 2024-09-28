@@ -1,11 +1,11 @@
 import { common } from "./common";
-import { fullscreenVertexStage } from "./fullscreenVertexStage";
+import { fullscreen } from "./vertex/fullscreen";
 import { phongFunction } from "./blinnPhongFunction";
 
 export const deferredCombine = /*wgsl*/`
 ${common}
 
-${fullscreenVertexStage}
+${fullscreen}
 
 ${phongFunction}
 

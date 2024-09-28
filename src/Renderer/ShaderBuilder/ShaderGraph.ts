@@ -8,7 +8,7 @@ import { getFragmentStage } from "../shaders/fragmentStage";
 import { meshInstances } from "../shaders/meshInstances";
 import type { ShaderDescriptor, ShaderType } from "../shaders/ShaderDescriptor";
 import { twirlFunction } from "../shaders/twirlFunction";
-import { getVertexStage } from "../shaders/vertexStage";
+import { getVertexStage } from "../shaders/vertex/vertexStage";
 import { voronoiFunction } from "../shaders/voronoiFunction";
 import type { DataType, GraphDescriptor } from "./GraphDescriptor";
 import Property from "./Property";
