@@ -40,7 +40,7 @@ class HttpResponse<T = void> {
         this.fetchedBody = this.response.json();
       }
       else {
-        this.fetchedBody = this.response.text() as any;
+        this.fetchedBody = this.response.text() as Promise<T>;
       }
     }
     catch (error) {
