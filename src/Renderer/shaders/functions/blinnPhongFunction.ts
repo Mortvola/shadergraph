@@ -1,4 +1,4 @@
-export const phongFunction = /*wgsl*/`
+export const blinnPhongFunction = /*wgsl*/`
 struct Lighting {
   diffuse: vec3f,
   specular: vec3f,

@@ -13,6 +13,10 @@ class Billboard extends Drawable {
     passEncoder.draw(6, this.numInstances);  
   }
 
+  addInstanceInfo(transform: Mat4, inverseTransform: Mat4, color: Vec4) {
+    super.addInstanceInfo(transform, inverseTransform, color)
+  }
+
   hitTest(p: Vec4, viewTransform: Mat4): { point: Vec4, t: number, drawable: Drawable} | null {
     return null;
   }

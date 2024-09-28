@@ -2,14 +2,14 @@ import { type CullMode } from "../../State/GraphInterface";
 import { DrawableType } from "../Drawables/DrawableInterface";
 import { gpu } from "../Gpu";
 import { bloom } from "../RenderSetings";
-import { phongFunction } from "../shaders/blinnPhongFunction";
+import { blinnPhongFunction } from "../shaders/functions/blinnPhongFunction";
 import { common } from "../shaders/common";
 import { getFragmentStage } from "../shaders/fragmentStage";
 import { meshInstances } from "../shaders/meshInstances";
 import type { ShaderDescriptor, ShaderType } from "../shaders/ShaderDescriptor";
-import { twirlFunction } from "../shaders/twirlFunction";
+import { twirlFunction } from "../shaders/functions/twirlFunction";
 import { getVertexStage } from "../shaders/vertex/vertexStage";
-import { voronoiFunction } from "../shaders/voronoiFunction";
+import { voronoiFunction } from "../shaders/functions/voronoiFunction";
 import type { DataType, GraphDescriptor } from "./GraphDescriptor";
 import Property from "./Property";
 import StageGraph from "./StageGraph";
@@ -194,7 +194,7 @@ class ShaderGraph {
       
       ${getVertexStage(drawableType, this.lit)}
   
-      ${(this.lit) ? phongFunction : ''}
+      ${(this.lit) ? blinnPhongFunction : ''}
   
       ${twirlFunction}
   

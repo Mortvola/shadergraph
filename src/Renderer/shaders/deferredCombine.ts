@@ -1,13 +1,13 @@
 import { common } from "./common";
 import { fullscreen } from "./vertex/fullscreen";
-import { phongFunction } from "./blinnPhongFunction";
+import { blinnPhongFunction } from "./functions/blinnPhongFunction";
 
 export const deferredCombine = /*wgsl*/`
 ${common}
 
 ${fullscreen}
 
-${phongFunction}
+${blinnPhongFunction}
 
 @group(1) @binding(0) var textureSampler: sampler;
 @group(1) @binding(1) var albedoTexture: texture_2d<f32>;
