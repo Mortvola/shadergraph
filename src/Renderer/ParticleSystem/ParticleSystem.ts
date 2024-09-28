@@ -20,6 +20,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
   lastEmitTime = 0;
 
+  rootNode = new RenderNode();
+
   constructor(props: ParticleSystemPropsInterface) {
     super(ComponentType.ParticleSystem)
   
@@ -127,6 +129,21 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
   async update(time: number, elapsedTime: number): Promise<void> {
     if (this.renderNode) {
+      if (this.rootNode.parentNode === null) {
+        this.renderNode.sceneGraph?.addNode(this.rootNode)
+      }
+
+      if (this.props.space.get() === SpaceType.Local) {
+        this.rootNode.translate = vec4.create(
+          this.renderNode.transform[3 * 4 + 0],
+          this.renderNode.transform[3 * 4 + 1],
+          this.renderNode.transform[3 * 4 + 2],
+          this.renderNode.transform[3 * 4 + 3],
+        )
+
+        this.rootNode.computeTransform(this.rootNode.parentNode?.transform)
+      }
+
       if (this.startTime === 0) {
         this.startTime = time;
       }
@@ -172,7 +189,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         // Transform the position into world space to allow for gravity effect
         // and collision detection.
         // Note that velocity is already in world space
-        vec4.transformMat4(particle.position, particle.parentRenderNode!.transform, particle.position)
+        vec4.transformMat4(particle.position, this.rootNode.transform, particle.position)
 
         // Adjust velocity with gravity
         vec4.addScaled(
@@ -198,7 +215,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         }
 
         // Transform position back into local space.
-        vec4.transformMat4(particle.position, particle.parentRenderNode!.inverseTransform, particle.position)
+        vec4.transformMat4(particle.position, this.rootNode.inverseTransform, particle.position)
 
         await this.renderParticle(particle, t);
       }
@@ -209,7 +226,6 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     if (this.props.renderer.enabled.get() && this.renderNode) {
       if (particle.renderNode === null) {
         particle.renderNode = new RenderNode();
-        particle.parentRenderNode?.addNode(particle.renderNode);
       }
 
       if (particle.drawable === null) {
@@ -236,7 +252,14 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       particle.drawable.color[0] = lifetimeColor[0] * particle.startColor[0];
       particle.drawable.color[1] = lifetimeColor[1] * particle.startColor[1];
       particle.drawable.color[2] = lifetimeColor[2] * particle.startColor[2];
-      particle.drawable.color[3] = lifetimeColor[3] * particle.startColor[3];    
+      particle.drawable.color[3] = lifetimeColor[3] * particle.startColor[3];   
+      
+      // If the particle's render node does not yet have a parent (its not attached to the scene graph)
+      // then add it ot the particle system's root node and update the node's transforms.
+      if (particle.renderNode.parentNode === null) {
+        this.rootNode?.addNode(particle.renderNode);
+        particle.renderNode.computeTransform(this.rootNode.transform)  
+      }
     }
     else if (particle.renderNode !== null) {
       particle.renderNode.detachSelf();
@@ -276,13 +299,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       )
 
       if (this.props.space.get() === SpaceType.World) {
-        particle.parentRenderNode = this.renderNode!.sceneGraph!.rootRenderNode
-
-        // Compute position to world psace.
+        // Transform the position to world psace.
         vec4.transformMat4(particle.position, this.renderNode!.transform, particle.position)
-      }
-      else {
-        particle.parentRenderNode = this.renderNode
       }
 
       // Convert velocity to world space

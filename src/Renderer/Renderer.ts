@@ -298,10 +298,14 @@ class Renderer implements RendererInterface {
         // Update frames per second
         if (fpsElapsedTime > 1000) {
           const fps = this.framesRendered / (fpsElapsedTime * 0.001);
-          this.onFpsChange && this.onFpsChange(fps);
+          if (this.onFpsChange) {
+            this.onFpsChange(fps);
+          }
           this.framesRendered = 0;
           this.startFpsTime = timestamp;
         }
+
+        this.scene.updateTransforms()
 
         // Move the camera using the set velocity.
         if (this.previousTimestamp !== null) {
@@ -400,7 +404,6 @@ class Renderer implements RendererInterface {
       this.renderedDimensions = [this.context.canvas.width, this.context.canvas.height];
     }
 
-    this.scene.updateTransforms()
     this.scene.addInstanceInfo(this);
 
     if (this.camera.projection === 'Perspective') {

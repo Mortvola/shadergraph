@@ -10,7 +10,7 @@ struct VertexOut {
   @builtin(position) position : vec4f,
   @location(0) color : vec4f,
   @location(1) texcoord: vec2f,
-  @location(2) @interpolate(flat) id: f32,
+  @location(2) @interpolate(flat) id: f32,  // Used with deferred lighting
   ${lit ? '@location(3) fragPos: vec4f,\n@location(4) normal: vec4f,' : ''}    
 }
     

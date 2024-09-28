@@ -1,5 +1,5 @@
 import type { Mat4, Vec4 } from 'wgpu-matrix';
-import { mat4, vec4 } from 'wgpu-matrix';
+import { vec4 } from 'wgpu-matrix';
 import type { DrawableType } from "./DrawableInterface";
 import type DrawableInterface from "./DrawableInterface";
 import { bindGroups } from '../BindGroups';

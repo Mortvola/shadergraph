@@ -1,7 +1,7 @@
 export const meshInstances = /*wgsl*/`
 struct InstanceInfo {
   color: vec4f,
-  id: f32,
+  id: f32,  // Used with deferred lighting
 }
 
 @group(1) @binding(0) var<uniform> modelMatrix: array<mat4x4f, 1000>;
