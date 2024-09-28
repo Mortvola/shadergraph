@@ -5,6 +5,7 @@ import { makeShaderDataDefinitions, makeStructuredView } from "webgpu-utils";
 import { trajectoryShader } from "../shaders/trajectory";
 import { gravity } from "../Math";
 import { gpu } from "../Gpu";
+import { DrawableType } from "./DrawableInterface";
 
 const defs = makeShaderDataDefinitions(trajectoryShader);
 
@@ -29,7 +30,7 @@ class Trajectory extends Drawable {
   trajectoryBindGroup: GPUBindGroup;
 
   constructor(trajectoryData: TrajectoryData) {
-    super('Billboard', 1);
+    super(DrawableType.Billboard, 1);
   
     this.name = 'Trajectory';
     

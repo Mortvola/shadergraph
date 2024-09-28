@@ -10,7 +10,7 @@ import TrajectoryPipeline from "./TrajectoryPipeline";
 import { bloom, outputFormat } from "../RenderSetings";
 import DecalPipeline from "./DecalPipeline";
 import type ShaderGraph from "../ShaderBuilder/ShaderGraph";
-import type { DrawableType } from "../Drawables/DrawableInterface";
+import { DrawableType } from "../Drawables/DrawableInterface";
 
 export type PipelineType =
   'Line'| 'reticle' | 'Trajectory' | 'Decal';
@@ -125,7 +125,7 @@ class PipelineManager implements PipelineManagerInterface {
       // eslint-disable-next-line prefer-const
       [shaderModule, vertProperties, fragProperties, code] = graph.generateShaderModule(drawableType, vertexProperties, root);
 
-      if (drawableType === 'Mesh') {
+      if (drawableType === DrawableType.Mesh) {
         vertexBufferLayout = [
           {
             attributes: [
@@ -162,7 +162,7 @@ class PipelineManager implements PipelineManagerInterface {
           }
         ];
       }
-      else if (drawableType === 'Mesh2D') {
+      else if (drawableType === DrawableType.Mesh2D) {
         vertexBufferLayout = [
           {
             attributes: [
@@ -225,7 +225,7 @@ class PipelineManager implements PipelineManagerInterface {
         }
       }
 
-      if (!graph.lit && bloom && drawableType !== 'Mesh2D') {
+      if (!graph.lit && bloom && drawableType !== DrawableType.Mesh2D) {
         targets.push({
           format: outputFormat,
         })

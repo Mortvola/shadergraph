@@ -2,6 +2,7 @@ import type { Vec4, Mat4 } from 'wgpu-matrix';
 import Drawable from './Drawable';
 import { bindGroups } from '../BindGroups';
 import { gpu } from '../Gpu';
+import { DrawableType } from './DrawableInterface';
 
 class Reticle extends Drawable {
   radius = new Float32Array(1);
@@ -11,7 +12,7 @@ class Reticle extends Drawable {
   uniformBuffer3: GPUBuffer;
 
   private constructor(radius: number) {
-    super('Billboard', 1)
+    super(DrawableType.Billboard, 1)
 
     this.name = 'Reticle';
     

@@ -3,6 +3,7 @@ import type DrawableInterface from "./DrawableInterface";
 import Drawable from './Drawable';
 import { gpu } from '../Gpu';
 import { maxInstances } from '../Constants';
+import { DrawableType } from './DrawableInterface';
 
 class CartesianAxes extends Drawable {
   vertexBuffer: GPUBuffer;
@@ -26,7 +27,7 @@ class CartesianAxes extends Drawable {
   numInstances = 0;
 
   constructor() {
-    super('Mesh', 1);
+    super(DrawableType.Mesh, 1);
     
     this.name = 'CartesianAxes';
     

@@ -1,9 +1,10 @@
 import type { Vec4, Mat4 } from 'wgpu-matrix';
 import Drawable from './Drawable';
+import { DrawableType } from './DrawableInterface';
 
 class HorizontalBillboard extends Drawable {
   constructor() {
-    super('HorizontalBillboard', 1);
+    super(DrawableType.HorizontalBillboard, 1);
 
     this.name = 'HorizontalBillboard'
   }

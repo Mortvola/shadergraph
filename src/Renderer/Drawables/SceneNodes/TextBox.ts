@@ -1,6 +1,7 @@
 import { font } from '../../Font';
 import { materialManager } from '../../Materials/MaterialManager';
 import type { MaterialInterface } from '../../Types';
+import { DrawableType } from '../DrawableInterface';
 import type Mesh2D from '../Mesh2D';
 import SceneNode2d from './SceneNode2d';
 
@@ -20,7 +21,7 @@ class TextBox extends SceneNode2d {
   async createMesh(maxWidth?: number): Promise<Mesh2D> {
     this.mesh = font.text(this.text, maxWidth)
 
-    this.fontMaterial = await materialManager.get(18, 'Mesh2D', [])
+    this.fontMaterial = await materialManager.get(18, DrawableType.Mesh2D, [])
 
     return this.mesh
   }

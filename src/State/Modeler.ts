@@ -12,6 +12,7 @@ import { isFbxContainerNode, isFbxGeometryNode } from "../Fbx/types";
 import { materialManager } from "../Renderer/Materials/MaterialManager";
 import { vec3 } from "wgpu-matrix";
 import type { StoreInterface } from "./StoreInterface";
+import { DrawableType } from "../Renderer/Drawables/DrawableInterface";
 
 class Modeler implements ModelerInterface {
   model: RenderNodeInterface | null = null;
@@ -91,7 +92,7 @@ class Modeler implements ModelerInterface {
         const id = materials[node.name];
 
         if (id !== undefined) {
-          const material = await materialManager.get(id, 'Mesh', []);
+          const material = await materialManager.get(id, DrawableType.Mesh, []);
 
           if (material) {
             node.material = material;

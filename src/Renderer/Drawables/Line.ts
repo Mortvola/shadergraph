@@ -1,5 +1,6 @@
 import { gpu } from "../Gpu";
 import Drawable from "./Drawable";
+import { DrawableType } from "./DrawableInterface";
 
 class Line extends Drawable {
   vertices: number[];
@@ -7,7 +8,7 @@ class Line extends Drawable {
   vertexBuffer: GPUBuffer;
 
   constructor(p1: number[][]) {
-    super('Line', 1);
+    super(DrawableType.Line, 1);
 
     this.name = 'Line'
   

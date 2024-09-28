@@ -9,8 +9,9 @@ import type TextBox from "./Drawables/SceneNodes/TextBox";
 import { isTextBox } from "./Drawables/SceneNodes/TextBox";
 import ElementNode, { isElementNode } from "./Drawables/SceneNodes/ElementNode";
 import { maxInstances } from "./Constants";
+import { DrawableType } from "./Drawables/DrawableInterface";
 
-const defaultMaterial = await Material.create('Mesh2D', [])
+const defaultMaterial = await Material.create(DrawableType.Mesh2D, [])
 
 type MapEntry = {
   firstIndex: number,

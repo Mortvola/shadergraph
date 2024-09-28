@@ -1,5 +1,5 @@
 import { type CullMode } from "../../State/GraphInterface";
-import type { DrawableType } from "../Drawables/DrawableInterface";
+import { DrawableType } from "../Drawables/DrawableInterface";
 import { gpu } from "../Gpu";
 import { bloom } from "../RenderSetings";
 import { phongFunction } from "../shaders/blinnPhongFunction";
@@ -179,7 +179,7 @@ class ShaderGraph {
       ${common}
   
       ${
-        drawableType === '2D' || drawableType === 'Mesh2D'
+        drawableType === DrawableType.TwoD || drawableType === DrawableType.Mesh2D
           ? ''
           : meshInstances
       }

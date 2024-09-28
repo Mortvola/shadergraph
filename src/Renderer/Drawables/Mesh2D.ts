@@ -1,4 +1,5 @@
 import Drawable from './Drawable';
+import { DrawableType } from './DrawableInterface';
 
 class Mesh2D extends Drawable {
   width: number;
@@ -12,7 +13,7 @@ class Mesh2D extends Drawable {
   indices: number[];
 
   constructor(vertices: number[], texcoord: number[], indices: number[], width: number, height: number) {
-    super('Mesh2D', 1)
+    super(DrawableType.Mesh2D, 1)
   
     this.name = 'Mesh2D';
     

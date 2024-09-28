@@ -8,6 +8,7 @@ import Material from "../Renderer/Materials/Material";
 import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
 import type { StoreInterface } from "./StoreInterface";
 import type { CullMode, GraphInterface } from "./GraphInterface";
+import { DrawableType } from "../Renderer/Drawables/DrawableInterface";
 
 let nextShaderName = 0;
 
@@ -246,7 +247,7 @@ class Graph implements GraphInterface {
     // Find a preview node.
     const preview = this.graph.fragment.nodes.find((n) => n.type === 'Preview');
 
-    return await Material.create('Mesh', [], { graph: this.graph, root: preview });
+    return await Material.create(DrawableType.Mesh, [], { graph: this.graph, root: preview });
   }
 }
 

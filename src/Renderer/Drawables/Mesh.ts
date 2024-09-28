@@ -3,6 +3,7 @@ import type SurfaceMesh from "./SurfaceMesh";
 import Drawable from './Drawable';
 import type DrawableInterface from './DrawableInterface';
 import { gpu } from '../Gpu';
+import { DrawableType } from './DrawableInterface';
 
 class Mesh extends Drawable {
   mesh: SurfaceMesh;
@@ -18,7 +19,7 @@ class Mesh extends Drawable {
   indexFormat: GPUIndexFormat = "uint16";
 
   constructor(mesh: SurfaceMesh, vertices: number[], normals: number[], texcoord: number[], indices: number[], id: number) {
-    super('Mesh', id)
+    super(DrawableType.Mesh, id)
   
     this.name = 'Mesh';
     

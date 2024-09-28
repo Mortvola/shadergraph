@@ -1,12 +1,12 @@
-import type { DrawableType } from "../Drawables/DrawableInterface";
+import { DrawableType } from "../Drawables/DrawableInterface";
 import { getMeshVertex } from "./meshVertex";
 
 export const getVertexStage = (drawableType: DrawableType, lit: boolean): string => {
   switch (drawableType) {
-    case 'Mesh':
+    case DrawableType.Mesh:
       return getMeshVertex(lit)
 
-    case 'Billboard':
+    case DrawableType.Billboard:
       return /*wgsl*/`
         struct VertexOut {
           @builtin(position) position : vec4f,
@@ -60,7 +60,7 @@ export const getVertexStage = (drawableType: DrawableType, lit: boolean): string
         }
       `;
 
-    case 'HorizontalBillboard':
+    case DrawableType.HorizontalBillboard:
       return /*wgsl*/`
         struct VertexOut {
           @builtin(position) position : vec4f,
@@ -114,7 +114,7 @@ export const getVertexStage = (drawableType: DrawableType, lit: boolean): string
         }
       `;
 
-    case 'Circle':
+    case DrawableType.Circle:
       return /*wgsl*/`
         struct VertexOut {
           @builtin(position) position : vec4f,
@@ -169,7 +169,7 @@ export const getVertexStage = (drawableType: DrawableType, lit: boolean): string
         }
       `
 
-      case '2D':
+      case DrawableType.TwoD:
         return /*wgsl*/`
           struct Dimensions {
             x: f32,
@@ -229,7 +229,7 @@ export const getVertexStage = (drawableType: DrawableType, lit: boolean): string
           }
         `
 
-      case 'Mesh2D':
+      case DrawableType.Mesh2D:
         return /*wgsl*/`
           @group(1) @binding(0) var<uniform> transform: array<mat3x3f, 1000>;
           @group(1) @binding(1) var<uniform> instanceColor: array<vec4f, 1000>;

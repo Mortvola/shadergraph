@@ -11,6 +11,7 @@ import { removeUndefinedKeys } from "../Properties/Types";
 import { PSMaterialItem, PSRenderMode } from "../Properties/Property";
 import type MaterialItem from "../MaterialItem";
 import { observable, runInAction } from "mobx";
+import { DrawableType } from "../Drawables/DrawableInterface";
 
 class Renderer extends PSModule {
   mode: PSRenderMode;
@@ -60,14 +61,14 @@ class Renderer extends PSModule {
   private createDrawable() {
     switch (this.mode.get()) {
       case RenderMode.Billboard:
-        if (!this.drawable || this.drawable.type !== 'Billboard') {
+        if (!this.drawable || this.drawable.type !== DrawableType.Billboard) {
           this.drawable = new Billboard()
         }
 
         break;
 
       case RenderMode.FlatBillboard:
-        if (!this.drawable || this.drawable.type !== 'HorizontalBillboard') {
+        if (!this.drawable || this.drawable.type !== DrawableType.HorizontalBillboard) {
           this.drawable = new HorizontalBillboard()
         }
 
