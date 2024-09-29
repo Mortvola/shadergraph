@@ -20,7 +20,8 @@ const PSRenderModeTypeSelector: React.FC<PropsType> = observer(({
   return (
     <select value={value} onChange={handleChange}>
       <option value={RenderMode.Billboard}>Billboard</option>
-      <option value={RenderMode.FlatBillboard}>Flat Billboard</option>
+      <option value={RenderMode.HorizontalBillboard}>Horizontal Billboard</option>
+      <option value={RenderMode.StretchedBillboard}>Stretched Billboard</option>
     </select>
   )
 })

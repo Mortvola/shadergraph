@@ -14,6 +14,7 @@ import type { PSVec3Type } from './Properties/Property';
 import type { ValueType } from './ShaderBuilder/GraphDescriptor';
 import type { ParticleSystemPropsInterface } from './ParticleSystem/ParticleSystemPropsInterface';
 import type { TransformPropsDescriptor } from '../Scene/Types/Types';
+import type Camera from './Camera';
 
 export interface RenderNodeInterface {
   nodes: RenderNodeInterface[];
@@ -147,7 +148,7 @@ export interface PipelineManagerInterface {
 export interface ParticleSystemInterface extends ComponentInterface {
   props: ParticleSystemPropsInterface
 
-  update(time: number, elapsedTime: number): Promise<void>
+  update(time: number, elapsedTime: number, camera: Camera): Promise<void>
 
   removeParticles(): void
 

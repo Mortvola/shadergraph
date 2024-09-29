@@ -10,12 +10,12 @@ export const billboard = /*wgsl*/`
   ) -> VertexOut
   {
     let verts = array(
-      vec4f(-1.0, 1.0, 0, 0),
-      vec4f(-1.0, -1.0, 0, 0),
-      vec4f(1.0, 1.0, 0, 0),
-      vec4f(1.0, 1.0, 0, 0),
-      vec4f(-1.0, -1.0, 0, 0),
-      vec4f(1.0, -1.0, 0, 0),
+      vec4f(-0.5, 0.5, 0, 1),
+      vec4f(-0.5, -0.5, 0, 1),
+      vec4f(0.5, 0.5, 0, 1),
+      vec4f(0.5, 0.5, 0, 1),
+      vec4f(-0.5, -0.5, 0, 1),
+      vec4f(0.5, -0.5, 0, 1),
     );
 
     let texcoords = array(
@@ -30,15 +30,16 @@ export const billboard = /*wgsl*/`
     var output : VertexOut;
 
     // scale and/or rotate the vertex vector
-    var vertexVector = modelMatrix[instanceIndex] * verts[vertexIndex];
+    // var vertexVector = modelMatrix[instanceIndex] * verts[vertexIndex];
 
     // Get world origin point by taking the fourth vector from the
     // model-to-world transformation matrix
-    var origin = vec4f(modelMatrix[instanceIndex][3].xyz, 1);
+    // var origin = vec4f(modelMatrix[instanceIndex][3].xyz, 1);
 
     // Now transform the origin into camera space and add 
     // the vertex vector.
-    var pos = viewMatrix * origin + vertexVector;
+    // var pos = viewMatrix * origin + vertexVector;
+    var pos = viewMatrix * modelMatrix[instanceIndex] * verts[vertexIndex];
     // var pos = viewMatrix * origin + verts[vertexIndex];
 
     output.position = projectionMatrix * pos;

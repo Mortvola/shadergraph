@@ -5,7 +5,6 @@ import type { StructuredView } from 'webgpu-utils';
 export enum DrawableType {
   Mesh = 'Mesh',
   Billboard = 'Billboard',
-  HorizontalBillboard = 'HorizontalBillboard',
   Circle = 'Circle',
   Line = 'Line',
   TwoD = '2D',

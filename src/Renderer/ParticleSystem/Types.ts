@@ -4,7 +4,8 @@ export type PSModuleDescriptor = {
 
 export enum RenderMode {
   Billboard = 'Billboard',
-  FlatBillboard = 'FlatBillboard',
+  HorizontalBillboard = 'Horizontal Billboard',
+  StretchedBillboard = 'Streteched Billboard',
 }
 
 export type RendererDescriptor = PSModuleDescriptor & {

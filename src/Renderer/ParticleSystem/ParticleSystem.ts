@@ -1,4 +1,4 @@
-import { vec3, vec4 } from "wgpu-matrix"
+import { mat3, mat4, vec3, vec4 } from "wgpu-matrix"
 import type {
   ParticleSystemInterface} from "../Types";
 import {
@@ -9,7 +9,8 @@ import Particle from "./Particle";
 import RenderNode from "../Drawables/SceneNodes/RenderNode";
 import Component from "../Drawables/Component";
 import type { ParticleSystemPropsInterface } from "./ParticleSystemPropsInterface";
-import { SpaceType } from "./Types";
+import { RenderMode, SpaceType } from "./Types";
+import type Camera from "../Camera";
 
 class ParticleSystem extends Component implements ParticleSystemInterface {
   props: ParticleSystemPropsInterface
@@ -127,22 +128,27 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     return false;
   }
 
-  async update(time: number, elapsedTime: number): Promise<void> {
+  async update(time: number, elapsedTime: number, camera: Camera): Promise<void> {
     if (this.renderNode) {
       if (this.rootNode.parentNode === null) {
         this.renderNode.sceneGraph?.addNode(this.rootNode)
       }
 
+      // Make sure the root node has the correct translate value
+      // based on rendering space.
       if (this.props.space.get() === SpaceType.Local) {
-        this.rootNode.translate = vec4.create(
+        vec3.set(
           this.renderNode.transform[3 * 4 + 0],
           this.renderNode.transform[3 * 4 + 1],
           this.renderNode.transform[3 * 4 + 2],
-          this.renderNode.transform[3 * 4 + 3],
+          this.rootNode.translate,
         )
-
-        this.rootNode.computeTransform(this.rootNode.parentNode?.transform)
       }
+      else {
+        vec3.set(0, 0, 0, this.rootNode.translate)
+      }
+
+      this.rootNode.computeTransform(this.rootNode.parentNode?.transform)
 
       if (this.startTime === 0) {
         this.startTime = time;
@@ -153,19 +159,19 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       if (this.lastEmitTime === 0) {
         this.lastEmitTime = time;
 
-        await this.emitSome(1, time, elapsedTime2)
+        await this.emitSome(1, time, elapsedTime2, camera)
       }
       else {
         // Update existing particles
-        await this.updateParticles(time, elapsedTime);
+        await this.updateParticles(time, elapsedTime, camera);
       
         // Add new particles
-        await this.emit(time, elapsedTime2)
+        await this.emit(time, elapsedTime2, camera)
       }
     }
   }
 
-  private async updateParticles(time: number, elapsedTime: number) {
+  private async updateParticles(time: number, elapsedTime: number, camera: Camera) {
     for (const [, particle] of this.particles) {
       const t = (time - particle.startTime) / (particle.lifetime * 1000);
 
@@ -217,12 +223,12 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         // Transform position back into local space.
         vec4.transformMat4(particle.position, this.rootNode.inverseTransform, particle.position)
 
-        await this.renderParticle(particle, t);
+        await this.renderParticle(particle, t, camera);
       }
     }
   }
 
-  async renderParticle(particle: Particle, t: number) {
+  async renderParticle(particle: Particle, t: number, camera: Camera) {
     if (this.props.renderer.enabled.get() && this.renderNode) {
       if (particle.renderNode === null) {
         particle.renderNode = new RenderNode();
@@ -260,6 +266,50 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         this.rootNode?.addNode(particle.renderNode);
         particle.renderNode.computeTransform(this.rootNode.transform)  
       }
+
+      const cameraPosition = vec4.create(
+        camera.viewTransform[3 * 4 + 0],
+        camera.viewTransform[3 * 4 + 1],
+        camera.viewTransform[3 * 4 + 2],
+        camera.viewTransform[3 * 4 + 3],
+      )
+    
+      // Transform the position into world space to allow for gravity effect
+      // and collision detection.
+      //const position = vec4.transformMat4(particle.position, this.rootNode.transform)
+      const position = vec4.create(
+        particle.renderNode.transform[3 * 4 + 0],
+        particle.renderNode.transform[3 * 4 + 1],
+        particle.renderNode.transform[3 * 4 + 2],
+        particle.renderNode.transform[3 * 4 + 3],
+      )
+
+      const transform = mat4.identity()
+
+      if (this.props.renderer.mode.get() === RenderMode.Billboard) {
+        const lookAt = vec3.normalize(vec4.subtract(cameraPosition, position))
+        let up = vec3.create(0, 1, 0);
+        const right = vec3.normalize(vec3.cross(up, lookAt));
+        up = vec3.normalize(vec3.cross(lookAt, right));
+
+        mat4.setAxis(transform, right, 0, transform)
+        mat4.setAxis(transform, up, 1, transform)
+        mat4.setAxis(transform, lookAt, 2, transform)  
+      }
+      else if (this.props.renderer.mode.get() === RenderMode.StretchedBillboard) {
+        let lookAt = vec3.normalize(vec4.subtract(cameraPosition, position))
+        const up = vec3.normalize(particle.velocity)
+        const right = vec3.normalize(vec3.cross(up, lookAt));
+        lookAt = vec3.normalize(vec3.cross(right, up));
+  
+        mat4.setAxis(transform, right, 0, transform)
+        mat4.setAxis(transform, up, 1, transform)
+        mat4.setAxis(transform, lookAt, 2, transform)
+
+        mat4.scale(transform, vec3.create(1, vec3.length(particle.velocity), 1), transform)
+      }      
+
+      mat4.multiply(particle.renderNode.transform, transform, particle.renderNode.transform);
     }
     else if (particle.renderNode !== null) {
       particle.renderNode.detachSelf();
@@ -267,7 +317,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     }
   }
 
-  private async emit(time: number, t: number) {
+  private async emit(time: number, t: number, camera: Camera) {
     if (this.particles.size < this.props.maxPoints.get()) {
       const emitElapsedTime = time - this.lastEmitTime;
 
@@ -276,12 +326,12 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       if (numToEmit > 0) {
         this.lastEmitTime = time;
       
-        await this.emitSome(numToEmit, time, t)
+        await this.emitSome(numToEmit, time, t, camera)
       }
     }
   }
 
-  async emitSome(numToEmit: number, startTime: number, t: number) {
+  async emitSome(numToEmit: number, startTime: number, t: number, camera: Camera) {
     for (; numToEmit > 0; numToEmit -= 1) {
       const lifetime = this.props.lifetime.getValue(t);
       const startSpeed = this.props.startSpeed.getValue(t);
@@ -308,7 +358,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
       this.particles.set(particle.id, particle)
 
-      await this.renderParticle(particle, 0);
+      await this.renderParticle(particle, 0, camera);
     }
   }
 

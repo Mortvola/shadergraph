@@ -87,8 +87,7 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
 
   handleChange = () => {
     if (this.onChange) {
-      console.log('handle change')
-        this.onChange();
+      this.onChange();
     }
   }
 

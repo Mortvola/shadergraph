@@ -1,10 +1,8 @@
 import PSModule from "./PSModule";
 import type { RendererDescriptor} from "./Types";
-import { RenderMode } from "./Types";
 import { materialManager } from "../Materials/MaterialManager";
 import type DrawableInterface from "../Drawables/DrawableInterface";
 import Billboard from "../Drawables/Billboard";
-import HorizontalBillboard from "../Drawables/HorizontalBillboard";
 import DrawableComponent from "../Drawables/DrawableComponent";
 import type { PropsBase} from "../Properties/Types";
 import { removeUndefinedKeys } from "../Properties/Types";
@@ -59,21 +57,25 @@ class Renderer extends PSModule {
   }
 
   private createDrawable() {
-    switch (this.mode.get()) {
-      case RenderMode.Billboard:
-        if (!this.drawable || this.drawable.type !== DrawableType.Billboard) {
-          this.drawable = new Billboard()
-        }
-
-        break;
-
-      case RenderMode.FlatBillboard:
-        if (!this.drawable || this.drawable.type !== DrawableType.HorizontalBillboard) {
-          this.drawable = new HorizontalBillboard()
-        }
-
-        break;
+    if (!this.drawable || this.drawable.type !== DrawableType.Billboard) {
+      this.drawable = new Billboard()
     }
+
+    // switch (this.mode.get()) {
+    //   case RenderMode.Billboard:
+    //     if (!this.drawable || this.drawable.type !== DrawableType.Billboard) {
+    //       this.drawable = new Billboard()
+    //     }
+
+    //     break;
+
+    //   case RenderMode.HorizontalBillboard:
+    //     if (!this.drawable || this.drawable.type !== DrawableType.HorizontalBillboard) {
+    //       this.drawable = new HorizontalBillboard()
+    //     }
+
+    //     break;
+    // }
   }
 
   async createDrawableComponent(): Promise<DrawableComponent> {
