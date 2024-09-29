@@ -99,7 +99,7 @@ class MaterialManager implements MaterialManagerInterface {
       }
     }
 
-    Http.patch(`/materials/${id}`, {
+    Http.patch(`/api/materials/${id}`, {
       properties
     })
   }

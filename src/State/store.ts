@@ -97,7 +97,7 @@ class Store implements StoreInterface {
     return this.dragObject;
   }
 
-  async selectItem(item: ProjectItemLike) {
+  async selectItem(item: ProjectItemLike | null) {
     if (this.project.selectedItem?.type === ProjectItemType.SceneObject && isGameObject(this.project.selectedItem.item)) {
       for (const component of this.project.selectedItem.item.components) {
         if (component.type === ComponentType.ParticleSystem) {
@@ -123,6 +123,11 @@ class Store implements StoreInterface {
     }
 
     runInAction(() => {
+      if (item && this.scene) {
+        this.scene.selectedNode = null;
+      }
+  
+      item?.getItem()
       this.project.selectedItem = item;
     })
   }

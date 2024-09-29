@@ -92,7 +92,7 @@ const MainView: React.FC = observer(() => {
                   </Nav>
                 </Navbar>
                 <Canvas3d renderer={mainView} onWheel={handleWheel} />
-                <Inspector />
+                <Inspector selectedItem={project.selectedItem} selectedNode={scene?.selectedNode} />
                 <div className={styles.sidebar}>
                   <Scene scene={scene} />
                   <Project project={project} />

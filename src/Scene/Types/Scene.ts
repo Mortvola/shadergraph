@@ -133,6 +133,10 @@ class Scene implements SceneInterface {
   setSelectedObject(node: TreeNode | null) {
     runInAction(() => {
       this.selectedNode = node;
+
+      if (node) {
+        store.selectItem(null);
+      }
     })
   }
 

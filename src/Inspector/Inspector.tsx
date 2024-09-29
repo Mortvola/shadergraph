@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from './Inspector.module.scss'
 import Material from './Material';
-import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import Http from '../Http/src';
@@ -9,13 +8,20 @@ import type Texture from '../State/Texture';
 import SceneObject from './SceneObject';
 import type { MaterialItemInterface } from '../State/types';
 import type { SceneObjectInterface } from "../Scene/Types/Types";
-import { ProjectItemType } from '../Project/Types/types';
+import { type ProjectItemLike, ProjectItemType } from '../Project/Types/types';
+import type TreeNode from '../Scene/Types/TreeNode';
 
-const Inspector: React.FC = observer(() => {
-  const { project, scene } = useStores();
+type PropsType = {
+  selectedItem: ProjectItemLike | null,
+  selectedNode?: TreeNode | null,
+}
 
-  if (project.selectedItem?.type === 'texture' && project.selectedItem.item) {
-    const selectedTexture = project.selectedItem.item as Texture;
+const Inspector: React.FC<PropsType> = observer(({
+  selectedItem,
+  selectedNode,
+}) => {
+  if (selectedItem?.type === 'texture' && selectedItem.item) {
+    const selectedTexture = selectedItem.item as Texture;
 
     const handleFlipYChange: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
       const checked = event.target.checked;
@@ -35,7 +41,7 @@ const Inspector: React.FC = observer(() => {
 
     return (
       <div className={styles.inspector}>
-        <div>{project.selectedItem.name}</div>
+        <div>{selectedItem.name}</div>
         <label>
           <input type="checkbox" checked={selectedTexture.flipY} onChange={handleFlipYChange} />
           Flip Y
@@ -45,22 +51,22 @@ const Inspector: React.FC = observer(() => {
   }
 
   const renderView = () => {
-    if (scene?.selectedNode) {
-      return <SceneObject sceneObject={scene.selectedNode.nodeObject} />
+    if (selectedNode) {
+      return <SceneObject sceneObject={selectedNode.nodeObject} />
     }
 
-    if (project.selectedItem) {
-      switch (project.selectedItem.type) {
+    if (selectedItem) {
+      switch (selectedItem.type) {
         case ProjectItemType.SceneObject:
           return (
-            project.selectedItem.item
-              ? <SceneObject sceneObject={project.selectedItem.item as SceneObjectInterface} />
+            selectedItem.item
+              ? <SceneObject sceneObject={selectedItem.item as SceneObjectInterface} />
               : null
           )
 
         case ProjectItemType.Material:
           return (
-            <Material materialItem={project.selectedItem.item as MaterialItemInterface} />
+            <Material materialItem={selectedItem.item as MaterialItemInterface} />
           )
 
         // case 'particle':
