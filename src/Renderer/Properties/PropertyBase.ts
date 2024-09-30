@@ -94,13 +94,13 @@ export class PropertyBase implements PropertyBaseInterface {
   }
 
   // Members and methods for managing the mobx reaction to report changes...
-  dataFunction?: () => unknown;
+  observables?: () => unknown;
 
   reactionDisposer?: IReactionDisposer;
 
   enableReaction() {
-    if (this.dataFunction) {
-      this.reactionDisposer = reaction(this.dataFunction, () => {
+    if (this.observables) {
+      this.reactionDisposer = reaction(this.observables, () => {
         if (this.onChange) {
           this.onChange()
         }
@@ -114,8 +114,8 @@ export class PropertyBase implements PropertyBaseInterface {
     }
   }
 
-  reactOnChange(dataFunction: () => unknown) {
-    this.dataFunction = dataFunction;
+  reactOnChange(observables: () => unknown) {
+    this.observables = observables;
 
     this.enableReaction();
   }

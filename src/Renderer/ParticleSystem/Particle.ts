@@ -19,11 +19,11 @@ class Particle {
 
   drawable: DrawableComponent | null = null;
 
-  startSize: number;
+  startSize: [number, number, number];
 
   startColor: Vec4;
 
-  constructor(position: Vec4, velocity: Vec4, startTime: number, lifetime: number, startSize: number, startColor: Vec4) {
+  constructor(position: Vec4, velocity: Vec4, startTime: number, lifetime: number, startSize: [number, number, number], startColor: Vec4) {
     this.id = id;
     id += 1;
 

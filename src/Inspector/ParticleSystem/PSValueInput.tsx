@@ -26,7 +26,7 @@ const PSValueInput: React.FC<PropsType> = observer(({
   }
 
   const handleRangeChange = (range: [number, number]) => {
-    value.value = { value: range, override: true };
+    value.curveRange = { value: range, override: true };
   }
 
   return (

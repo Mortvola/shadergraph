@@ -75,6 +75,14 @@ export type PSValueDescriptor = {
   curveRange?: [number, number],
 }
 
+export type PSValue3DDescriptor = {
+  separateAxes: boolean,
+  type: PSValueType,
+  values: [PSValueDescriptor, PSValueDescriptor, PSValueDescriptor]
+
+  value?: [number, number],
+}
+
 export const isPSValue = (r: unknown): r is PSValueDescriptor => (
   (r as PSValueDescriptor).type !== undefined
   && (r as PSValueDescriptor).value !== undefined
@@ -139,7 +147,7 @@ export type ParticleSystemPropsDescriptor = {
 
   startVelocity?: PSValueDescriptor,
 
-  startSize?: PSValueDescriptor,
+  startSize?: PSValue3DDescriptor,
 
   space?: SpaceType,
 

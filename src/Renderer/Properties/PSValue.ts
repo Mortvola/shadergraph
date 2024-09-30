@@ -118,7 +118,7 @@ class PSValue extends PropertyBase {
         return 'Curve'
 
       case PSValueType.RandomeCurve:
-        return 'Randome Curve'
+        return 'Random Curve'
     }
   }
 
@@ -149,8 +149,8 @@ class PSValue extends PropertyBase {
     ]}
   }
 
-  toDescriptor(overridesOnly = false): PSValueDescriptor | undefined {
-    if (!overridesOnly || this.override) {
+  toDescriptor(): PSValueDescriptor | undefined {
+    if (this.base === undefined || this.override) {
       return ({
         type: this.style,
         value: this.value,

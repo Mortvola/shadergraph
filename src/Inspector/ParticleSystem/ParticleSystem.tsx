@@ -12,6 +12,7 @@ import type ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSyst
 import Property from '../Property';
 import { type SpaceType } from '../../Renderer/ParticleSystem/Types';
 import PSSpaceTypeSelector from './PSSpaceTypeSelector';
+import PSValue3DInput from './PSValue3DInput';
 
 type PropsType = {
   particleSystemProps: ParticleSystemProps,
@@ -58,7 +59,7 @@ const ParticleSystem: React.FC<PropsType> = observer(({
         <PSValueInput value={particleSystemProps.startSpeed} />
       </Property>
       <Property label="Start Size" property={particleSystemProps.startSize}>
-        <PSValueInput value={particleSystemProps.startSize} />
+        <PSValue3DInput value={particleSystemProps.startSize} />
       </Property>
       <Property label="Start Color" property={particleSystemProps.startColor}>
         <PSColorInput value={particleSystemProps.startColor} />

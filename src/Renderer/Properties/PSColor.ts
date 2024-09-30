@@ -110,8 +110,8 @@ class PSColor extends PropertyBase {
       ];
   }
 
-  toDescriptor(overridesOnly = false): PSColorDescriptor | undefined {
-    if (!overridesOnly || this.override) {
+  toDescriptor(): PSColorDescriptor | undefined {
+    if (this.base === undefined || this.override) {
       return ({
         type: this.style,
         color: [this.color[0].slice(), this.color[1].slice()],

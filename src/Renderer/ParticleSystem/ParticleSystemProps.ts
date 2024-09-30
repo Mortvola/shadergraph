@@ -6,11 +6,11 @@ import LifetimeSize from "./LIfetimeSize";
 import LifetimeVelocity from "./LifetimeVelocity";
 import PSColor from "../Properties/PSColor";
 import PSValue from "../Properties/PSValue";
+import PSValue3D from "../Properties/PSValue3D";
 import Renderer from "./Renderer";
 import Shape from "./Shapes/Shape";
-import type {
-  ParticleSystemPropsDescriptor} from "./Types";
 import {
+  type ParticleSystemPropsDescriptor,
   PSValueType, RenderMode, ShapeType,
   SpaceType,
 } from "./Types";
@@ -29,7 +29,7 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
 
   startSpeed: PSValue;
 
-  startSize: PSValue;
+  startSize: PSValue3D;
 
   startColor: PSColor;
 
@@ -59,7 +59,7 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
     this.lifetime = new PSValue('Lifetime', this, descriptor?.lifetime, { type: PSValueType.Constant, value: [5, 5] }, this.handleChange, previousProps?.lifetime);
     this.shape = new Shape(this, descriptor?.shape, { enabled: true, type: ShapeType.Cone, }, this.handleChange, previousProps?.shape);
     this.startSpeed = new PSValue('Start Speed', this, descriptor?.startVelocity, {}, this.handleChange, previousProps?.startSpeed);
-    this.startSize = new PSValue('Start Size', this, descriptor?.startSize, {}, this.handleChange, previousProps?.startSize);
+    this.startSize = new PSValue3D('Start Size', this, descriptor?.startSize, undefined, this.handleChange, previousProps?.startSize);
     this.startColor = new PSColor('Start Color', this, descriptor?.startColor, this.handleChange, previousProps?.startColor);
     this.space = new PSSpace('Space', this, descriptor?.space, SpaceType.Local, this.handleChange, previousProps?.space);
     this.lifetimeSize = new LifetimeSize(this, descriptor?.lifetimeSize, this.handleChange, previousProps?.lifetimeSize);

@@ -1,4 +1,4 @@
-import { mat3, mat4, vec3, vec4 } from "wgpu-matrix"
+import { mat4, vec3, vec4 } from "wgpu-matrix"
 import type {
   ParticleSystemInterface} from "../Types";
 import {
@@ -40,7 +40,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       const planeNormal = vec4.create(0, 1, 0, 0);
       const planeOrigin = vec4.create(0, 0, 0, 1);
 
-      const sphereRadius = point.startSize / 2;
+      // TODO: consider all start size axis
+      const sphereRadius = point.startSize[0] / 2;
 
       // Are we traveling toward the plane or away?
       const d = vec4.dot(planeNormal, point.velocity);
@@ -241,14 +242,6 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
       vec3.copy(particle.position, particle.renderNode.translate);
 
-      let size = particle.startSize;
-
-      if (this.props.lifetimeSize.enabled.get()) {
-        size *= this.props.lifetimeSize.size.getValue(t);
-      }
-
-      vec3.set(size, size, size, particle.renderNode.scale)
-
       let lifetimeColor = [1, 1, 1, 1];
 
       if (this.props.lifetimeColor.enabled.get()) {
@@ -310,6 +303,19 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       }      
 
       mat4.multiply(particle.renderNode.transform, transform, particle.renderNode.transform);
+
+      // Scale using starting and lifetime size.
+      const scale = particle.startSize;
+
+      if (this.props.lifetimeSize.enabled.get()) {
+        const lifetimeSize = this.props.lifetimeSize.size.getValue(t);
+
+        scale[0] *= lifetimeSize
+        scale[1] *= lifetimeSize
+        scale[2] *= lifetimeSize
+      }
+
+      mat4.scale(particle.renderNode.transform, scale, particle.renderNode.transform)
     }
     else if (particle.renderNode !== null) {
       particle.renderNode.detachSelf();
