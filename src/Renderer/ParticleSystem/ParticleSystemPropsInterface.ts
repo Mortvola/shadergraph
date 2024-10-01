@@ -25,6 +25,8 @@ export interface ParticleSystemPropsInterface {
 
   startSize: PSValue3D;
 
+  startRotation: PSValue3D;
+
   startColor: PSColor;
 
   space: PSSpace;

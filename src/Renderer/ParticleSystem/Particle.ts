@@ -21,9 +21,19 @@ class Particle {
 
   startSize: [number, number, number];
 
+  startRotation: [number, number, number];
+
   startColor: Vec4;
 
-  constructor(position: Vec4, velocity: Vec4, startTime: number, lifetime: number, startSize: [number, number, number], startColor: Vec4) {
+  constructor(
+    position: Vec4,
+    velocity: Vec4,
+    startTime: number,
+    lifetime: number,
+    startSize: [number, number, number],
+    startRotation: [number, number,  number],
+    startColor: Vec4,
+  ) {
     this.id = id;
     id += 1;
 
@@ -32,6 +42,7 @@ class Particle {
     this.startTime = startTime;
     this.lifetime = lifetime;
     this.startSize = startSize;
+    this.startRotation = startRotation;
     this.startColor = startColor;
   }
 }

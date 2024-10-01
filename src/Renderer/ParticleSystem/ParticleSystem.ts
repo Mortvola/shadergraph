@@ -4,7 +4,7 @@ import type {
 import {
   ComponentType,
 } from "../Types";
-import { gravity, intersectionPlane } from "../Math";
+import { degToRad, gravity, intersectionPlane } from "../Math";
 import Particle from "./Particle";
 import RenderNode from "../Drawables/SceneNodes/RenderNode";
 import Component from "../Drawables/Component";
@@ -304,8 +304,15 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
       mat4.multiply(particle.renderNode.transform, transform, particle.renderNode.transform);
 
+      // Rotate using starting and liefeimte rotation.
+      const rotate = particle.startRotation.slice();
+
+      mat4.rotateX(particle.renderNode.transform, degToRad(rotate[0]), particle.renderNode.transform)
+      mat4.rotateY(particle.renderNode.transform, degToRad(rotate[1]), particle.renderNode.transform)
+      mat4.rotateZ(particle.renderNode.transform, degToRad(rotate[2]), particle.renderNode.transform)
+
       // Scale using starting and lifetime size.
-      const scale = particle.startSize;
+      const scale = particle.startSize.slice();
 
       if (this.props.lifetimeSize.enabled.get()) {
         const lifetimeSize = this.props.lifetimeSize.size.getValue(t);
@@ -342,6 +349,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       const lifetime = this.props.lifetime.getValue(t);
       const startSpeed = this.props.startSpeed.getValue(t);
       const startSize = this.props.startSize.getValue(t);
+      const startRotation = this.props.startRotation.getValue(t)
       const startColor = vec4.create(...this.props.startColor.getColor(t));
       const [position, direction] = this.props.shape.getPositionAndDirection();
 
@@ -351,6 +359,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         startTime,
         lifetime,
         startSize,
+        startRotation,
         startColor,
       )
 

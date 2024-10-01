@@ -61,6 +61,9 @@ const ParticleSystem: React.FC<PropsType> = observer(({
       <Property label="Start Size" property={particleSystemProps.startSize}>
         <PSValue3DInput value={particleSystemProps.startSize} />
       </Property>
+      <Property label="Start Rotation" property={particleSystemProps.startRotation}>
+        <PSValue3DInput value={particleSystemProps.startRotation} />
+      </Property>
       <Property label="Start Color" property={particleSystemProps.startColor}>
         <PSColorInput value={particleSystemProps.startColor} />
       </Property>

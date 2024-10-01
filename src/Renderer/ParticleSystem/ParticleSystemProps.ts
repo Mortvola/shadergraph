@@ -31,6 +31,8 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
 
   startSize: PSValue3D;
 
+  startRotation: PSValue3D;
+
   startColor: PSColor;
 
   space: PSSpace;
@@ -60,6 +62,7 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
     this.shape = new Shape(this, descriptor?.shape, { enabled: true, type: ShapeType.Cone, }, this.handleChange, previousProps?.shape);
     this.startSpeed = new PSValue('Start Speed', this, descriptor?.startVelocity, {}, this.handleChange, previousProps?.startSpeed);
     this.startSize = new PSValue3D('Start Size', this, descriptor?.startSize, undefined, this.handleChange, previousProps?.startSize);
+    this.startRotation = new PSValue3D('Start Rotation', this, descriptor?.startRotation, undefined, this.handleChange, previousProps?.startRotation);
     this.startColor = new PSColor('Start Color', this, descriptor?.startColor, this.handleChange, previousProps?.startColor);
     this.space = new PSSpace('Space', this, descriptor?.space, SpaceType.Local, this.handleChange, previousProps?.space);
     this.lifetimeSize = new LifetimeSize(this, descriptor?.lifetimeSize, this.handleChange, previousProps?.lifetimeSize);
@@ -100,6 +103,7 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
       lifetime: this.lifetime.toDescriptor(),
       startVelocity: this.startSpeed.toDescriptor(),
       startSize: this.startSize.toDescriptor(),
+      startRotation: this.startRotation.toDescriptor(),
       startColor: this.startColor.toDescriptor(),
       space: this.space.toDescriptor(),
       gravityModifier: this.gravityModifier.toDescriptor(),

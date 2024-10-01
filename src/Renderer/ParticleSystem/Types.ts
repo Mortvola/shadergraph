@@ -149,6 +149,8 @@ export type ParticleSystemPropsDescriptor = {
 
   startSize?: PSValue3DDescriptor,
 
+  startRotation?: PSValue3DDescriptor,
+
   space?: SpaceType,
 
   lifetimeSize?: LifetimeSizeDescriptor,
