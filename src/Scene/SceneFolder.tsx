@@ -72,9 +72,19 @@ const SceneFolder: React.FC<PropsType> = observer(({
       if (scene.draggingNode && event.dataTransfer.types[0] === 'application/scene-item') {
         const node = scene.draggingNode;
 
-        node.detachSelf();
+        (
+          async () => {
+            const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${node.id}`, {
+              parentNodeId: folder.treeId !== undefined ? folder.treeId : folder.id,
+              parentSubnodeId: folder.treeId !== undefined ? folder.id : undefined,
+            })
 
-        folder.addNode(node);    
+            if (response.ok) {
+              node.detachSelf();
+              folder.addNode(node);        
+            }
+          }
+        )()
       }
       else if (
         event.dataTransfer.types[0] === 'application/project-item'
