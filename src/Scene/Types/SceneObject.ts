@@ -25,6 +25,10 @@ class SceneObject extends ObjectBase implements SceneObjectInterface {
 
   derivedObjects: SceneObject[] = []
 
+  nodeId?: number;
+
+  treeId?: number;
+
   treeNode?: TreeNode;
 
   nextComponentId = 0;
@@ -40,7 +44,10 @@ class SceneObject extends ObjectBase implements SceneObjectInterface {
     object.autosave = false;
 
     if (descriptor) {
-      object.id = descriptor.id;
+      // object.id = descriptor.id;
+      object.nodeId = descriptor.nodeId;
+      object.treeId = descriptor.treeId;
+
       object.name = baseObject?.name ?? descriptor?.name ?? object.name;
 
       if (baseObject) {
@@ -152,7 +159,7 @@ class SceneObject extends ObjectBase implements SceneObjectInterface {
   }
 
   async save(): Promise<void> {
-    if (this.id < 0) {
+    if (this.nodeId === undefined) {
       await objectManager.add(this)
     }
     else {
@@ -240,9 +247,10 @@ class SceneObject extends ObjectBase implements SceneObjectInterface {
     return false;
   }
 
-  toDescriptor(): SceneObjectDescriptor | Omit<SceneObjectDescriptor, 'id'> {
+  toDescriptor(): SceneObjectDescriptor | Omit<SceneObjectDescriptor, 'nodeId'> {
     const descriptor = {
-      id: this.id < 0 ? undefined : this.id,
+      // id: this.id < 0 ? undefined : this.id,
+      nodeId: this.nodeId,
       name: this.name,
       object: {
         type: ObjectType.NodeObject,

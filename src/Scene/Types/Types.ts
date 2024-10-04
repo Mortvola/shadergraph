@@ -95,8 +95,8 @@ export const isGameObject = (r: unknown): r is SceneObjectInterface => (
 )
 
 export type SceneObjectDescriptor = {
-  id: number,
-  nodeId?: number,
+  // id: number,
+  nodeId: number,
   treeId?: number,
 
   name: string,

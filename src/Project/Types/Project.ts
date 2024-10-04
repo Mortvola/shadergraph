@@ -10,9 +10,9 @@ import SceneProjectItem from "./SceneProjectItem";
 import ShaderProjectItem from "./ShaderProjectItem";
 import MaterialProjectItem from "./MaterialProjectItem";
 import TextureProjectItem from "./TextureProjectItem";
-import SceneObjectProjectItem from "./SceneObjectProjectItem";
 import type { ProjectItemRecord } from "../../State/ProjectItemRecord";
 import type TreeNode from "../../Scene/Types/TreeNode";
+import SceneObjectProjectItem from "./SceneObjectProjectItem";
 
 class Project implements ProjectInterface {
   @observable
