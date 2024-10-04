@@ -30,12 +30,20 @@ export type PrefabNodeDescriptor = {
   nodes: PrefabNodeDescriptor[];
 };
 
+export type TreeId = number;
+
 export interface SceneInterface {
   root: TreeNode | undefined;
 
   selectedNode: TreeNode | null;
 
   draggingNode: TreeNode | null;
+
+  nodeMaps: Map<number, { treeNodes: Map<TreeId | undefined, TreeNode>, objects: Map<TreeId | undefined, SceneObjectInterface> }>
+
+  treeFromDescriptor(descriptor: NodesResponse): Promise<TreeNode | undefined>;
+
+  loadObjects(objects: SceneObjectDescriptor[]): Promise<void>;
 
   addNode(node: TreeNode, autosave: boolean): void;
 
@@ -59,6 +67,10 @@ export interface SceneObjectInterface extends EntityInterface {
   components: SceneObjectComponent[];
 
   transformProps: TransformPropsInterface;
+
+  treeNode?: TreeNode;
+
+  baseObject?: SceneObjectInterface;
 
   addComponent(component: NewSceneObjectComponent): void;
 
@@ -84,13 +96,17 @@ export const isGameObject = (r: unknown): r is SceneObjectInterface => (
 
 export type SceneObjectDescriptor = {
   id: number,
+  nodeId?: number,
+  treeId?: number,
+
   name: string,
   object: {
     type: ObjectType,
     components: ComponentDescriptor[],
     transformProps: TransformPropsDescriptor,
   },
-  baseObjectId?: number,
+
+  baseTreeId?: number,
 }
 
 export type ConnectedObject = { prefabNodeId: number, objectId: number }

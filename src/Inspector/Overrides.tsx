@@ -1,18 +1,20 @@
 import React from 'react';
 // import { isPrefabInstanceObject } from '../Scene/Types/PrefabNodeInstance';
-import { isPropertyOverride, type ObjectOverrides, type SceneObjectInterface } from '../Scene/Types/Types';
+import { isPropertyOverride, type ObjectOverrides } from '../Scene/Types/Types';
 import styles from './Overrides.module.scss';
 import PopupButton from './PopupButton';
 import OverrideComparison from './OverrideComparison';
 import { Position } from './PopupWrapper';
 import OverrideConnection from './OverrideConnection';
+import type TreeNode from '../Scene/Types/TreeNode';
+import { observer } from 'mobx-react-lite';
 
 type PropsType = {
-  sceneNode: SceneObjectInterface,
+  node: TreeNode,
 }
 
-const Overrides: React.FC<PropsType> = ({
-  sceneNode,
+const Overrides: React.FC<PropsType> = observer(({
+   node,
 }) => {
   const [overrides, setOverrides] = React.useState<ObjectOverrides[]>([])
 
@@ -24,7 +26,7 @@ const Overrides: React.FC<PropsType> = ({
 
   return (
     <div className={styles.layout}>
-      <div>{sceneNode.name}</div>
+      <div>{node.nodeObject.name}</div>
       <div className={styles.body}>
         {
           overrides.map((object) => (
@@ -45,19 +47,22 @@ const Overrides: React.FC<PropsType> = ({
                       )
                     }
 
-                    return (
-                      <PopupButton
-                        className={styles.overridesButton}
-                        label={override.connectedObject.name}
-                        position={Position.left}
-                      >
-                        <OverrideConnection connectedObject={override.connectedObject} />
-                      </PopupButton>
-                    )
+                    return null
                   })
                 }
               </div>
             </div>
+          ))
+        }
+        {
+          node.connectionOverrides.map((connection) => (
+            <PopupButton
+              className={styles.overridesButton}
+              label={connection.name}
+              position={Position.left}
+            >
+              <OverrideConnection connection={connection} />
+            </PopupButton>
           ))
         }
       </div>
@@ -67,6 +72,6 @@ const Overrides: React.FC<PropsType> = ({
       </div>
     </div>
   )
-}
+})
 
 export default Overrides;

@@ -1,5 +1,6 @@
 import React from 'react';
 import PopupWrapper, { Position } from './PopupWrapper';
+import { PopupContext } from './PopupContext';
 
 type PropsType = {
   label?: React.ReactNode,
@@ -18,6 +19,10 @@ const PopupButton: React.FC<PropsType> = ({
 }) => {
   const [showPopup, setShowPopup] = React.useState<DOMRect | null>(null);
   const buttonRef = React.useRef<HTMLButtonElement>(null);
+
+  const [popupContext] = React.useState({
+    hidePopup: () => setShowPopup(null),
+  });
 
   const handleClick = () => {
     const element = buttonRef.current;
@@ -41,15 +46,17 @@ const PopupButton: React.FC<PropsType> = ({
       <button ref={buttonRef} className={className} onClick={handleClick}>
         {label ?? 'Show Popup'}
       </button>
-      {
-        showPopup
-          ? (
-            <PopupWrapper rect={showPopup} onClose={handlePopupClose} position={position}>
-              { children }
-            </PopupWrapper>
-          )
-          : null
-      }
+      <PopupContext.Provider value={popupContext}>
+        {
+          showPopup
+            ? (
+              <PopupWrapper rect={showPopup} onClose={handlePopupClose} position={position}>
+                { children }
+              </PopupWrapper>
+            )
+            : null
+        }
+      </PopupContext.Provider>
     </>
   )
 }

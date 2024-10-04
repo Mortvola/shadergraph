@@ -12,7 +12,6 @@ import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps'
 import LightProps from '../Renderer/Properties/LightProps';
 import { ProjectItemType } from '../Project/Types/types';
 import Http from '../Http/src';
-import Scene from './Types/Scene';
 
 type PropsType = {
   scene: SceneInterface,
@@ -107,7 +106,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
           if (response.ok) {
             const body = await response.body()
 
-            const tree = await Scene.treeFromDescriptor(body);
+            const tree = await scene.treeFromDescriptor(body);
 
             if (tree) {
               folder.addNode(tree);
@@ -179,7 +178,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
       
               await object.save();
       
-              const node = new TreeNode();
+              const node = new TreeNode(scene);
       
               node.nodeObject = object;
       

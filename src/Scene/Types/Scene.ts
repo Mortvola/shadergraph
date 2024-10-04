@@ -2,7 +2,7 @@ import { observable, runInAction } from "mobx";
 import { store } from "../../State/store";
 import Http from "../../Http/src";
 import { type SceneDescriptor } from "./Types";
-import type { NodesResponse, SceneInterface, SceneItemType, TreeNodeDescriptor } from "./Types";
+import type { NodesResponse, SceneInterface, SceneItemType, SceneObjectDescriptor, TreeId, TreeNodeDescriptor } from "./Types";
 import TreeNode from "./TreeNode";
 import SceneObject from "./SceneObject";
 
@@ -19,6 +19,9 @@ class Scene implements SceneInterface {
 
   draggingNode: TreeNode | null = null;
 
+  // Map of nodes index by node id and then tree id
+  nodeMaps: Map<number, { treeNodes: Map<TreeId | undefined, TreeNode>, objects: Map<TreeId | undefined, SceneObject> }> = new Map()
+
   static async fromDescriptor(descriptor?: SceneDescriptor) {
     const scene = new Scene();
 
@@ -32,59 +35,72 @@ class Scene implements SceneInterface {
       if (response.ok) {
         const body = await response.body();
 
-        scene.root = await Scene.treeFromDescriptor(body);
+        scene.root = await scene.treeFromDescriptor(body);
       }
     }
 
     return scene;
   }
 
-  static async treeFromDescriptor(descriptor: NodesResponse) {
-    let root: TreeNode | undefined;
-  
-    const objectMap: Map<number, SceneObject> = new Map();
-
-    // Sort the objects so that the base objects are instantiated first
-    descriptor.objects.sort((a, b) => {
-      if (a.baseObjectId === undefined) {
-        if (b.baseObjectId === undefined) {
+  static sortObjectDescriptors(objects: SceneObjectDescriptor[]) {
+    objects.sort((a, b) => {
+      if (a.baseTreeId === undefined) {
+        if (b.baseTreeId === undefined) {
           return 0
         }
 
         return -1;
       }
 
-      if (b.baseObjectId === undefined) {
+      if (b.baseTreeId === undefined) {
         return 1;
       }
 
-      if (a.baseObjectId === b.id) {
+      if (a.baseTreeId === b.treeId) {
         return 1;
       }
       
-      if (b.baseObjectId === a.id) {
+      if (b.baseTreeId === a.treeId) {
         return -1;
       }
 
       return 0;
     })
+  }
 
-    // console.log(JSON.stringify(body.objects, undefined, 4))
+  async loadObjects(objects: SceneObjectDescriptor[]) {
+    for (const object of objects) {
+      if (object.nodeId !== undefined) {
+        let nodeInfo = this.nodeMaps.get(object.nodeId)
 
-    for (const object of descriptor.objects) {
-      let baseObject: SceneObject | undefined = undefined;
-
-      if (object.baseObjectId !== undefined) {
-        baseObject = objectMap.get(object.baseObjectId)
-
-        if (baseObject === undefined) {
-          console.log('base object not instantiated')
+        if (nodeInfo === undefined) {
+          nodeInfo = { treeNodes: new Map(), objects: new Map() }
+          this.nodeMaps.set(object.nodeId, nodeInfo)
         }
-      }
 
-      const sceneObject = await SceneObject.fromDescriptor(object, baseObject)
-      objectMap.set(object.id, sceneObject)
+        let baseObject: SceneObject | undefined = undefined;
+
+        if (object.treeId !== undefined) {
+          baseObject = nodeInfo.objects.get(object.baseTreeId)
+
+          if (baseObject === undefined) {
+            console.log('base object not instantiated')
+          }
+        }
+
+        const sceneObject = await SceneObject.fromDescriptor(object, baseObject)
+        nodeInfo.objects.set(object.treeId, sceneObject)
+      }
     }
+  }
+
+  async treeFromDescriptor(descriptor: NodesResponse): Promise<TreeNode | undefined> {
+    let root: TreeNode | undefined;
+  
+    // Sort the objects so that the base objects are instantiated first
+    Scene.sortObjectDescriptors(descriptor.objects)
+
+    await this.loadObjects(descriptor.objects)
 
     type StackEntry = { nodeDescriptor: TreeNodeDescriptor, parent: TreeNode | undefined }
     let stack: StackEntry[] = [{ nodeDescriptor: descriptor.root, parent: undefined }]
@@ -93,12 +109,18 @@ class Scene implements SceneInterface {
       const { nodeDescriptor, parent } = stack[0]
       stack = stack.slice(1)
 
-      const node = new TreeNode()
+      const node = new TreeNode(this)
 
       node.id = nodeDescriptor.id;
       node.treeId = nodeDescriptor.treeId;
 
-      const object = objectMap.get(nodeDescriptor.objectId)
+      const nodeInfo = this.nodeMaps.get(node.id)
+
+      if (nodeInfo === undefined) {
+        throw new Error('node info not found')
+      }
+
+      const object = nodeInfo.objects.get(node.treeId)
 
       if (object) {
         node.nodeObject = object;
@@ -115,6 +137,8 @@ class Scene implements SceneInterface {
       else {
         root = node;
       }
+
+      nodeInfo.treeNodes.set(node.treeId, node)
 
       stack = stack.concat(nodeDescriptor.children.map((child) => ({ nodeDescriptor: child, parent: node })))
     }

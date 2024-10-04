@@ -1,21 +1,74 @@
 import React from 'react';
 import styles from './Overrides.module.scss';
-import type { SceneObjectInterface } from '../Scene/Types/Types';
+import TreeNode from '../Scene/Types/TreeNode';
+import Http from '../Http/src';
+import { PopupContext } from './PopupContext';
+import { type NodesResponse } from '../Scene/Types/Types';
+import { runInAction } from 'mobx';
 
 type PropsType = {
-  connectedObject: SceneObjectInterface,
+  connection: TreeNode,
 }
 
 const OverrideConnection: React.FC<PropsType> = ({
-  connectedObject
+  connection,
 }) => {
+  const popupContext = React.useContext(PopupContext)
+
   const handleRevertClick = () => {
   }
 
   const handleApplyClick = () => {
-    // if (isPrefabInstanceObject(connectedObject.parent)) {
-    //   connectedObject.parent.prefabInstance.attachSceneNode(connectedObject);
-    // }
+    const parent = connection.parent;
+
+    if (parent) {
+      (
+        async () => {
+          const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${connection.id}`, {
+            parentNodeId: parent.id,
+            parentSubnodeId: null,
+          })
+
+          if (response.ok) {
+            const body = await response.body()
+
+            await parent.scene.loadObjects(body.objects)
+
+            runInAction(() => {
+              connection.treeId = parent.treeId
+            })
+            popupContext.hidePopup()
+
+            const parentNodeInfo = connection.scene.nodeMaps.get(parent.id)
+            const nodeInfo = connection.scene.nodeMaps.get(connection.id)
+
+            if (parentNodeInfo && nodeInfo) {              
+              for (const [treeId, treeNode] of parentNodeInfo.treeNodes) {
+                if (treeId !== parent.treeId) {
+                  const node = new TreeNode(parent.scene)
+
+                  node.id = connection.id;
+                  node.treeId = treeId;
+
+                  const object = nodeInfo.objects.get(node.treeId)
+
+                  if (object) {
+                    node.nodeObject = object;
+                    object.treeNode = node;
+                  }
+            
+                  node.name = 'Test'
+
+                  treeNode.autosave = false;
+                  treeNode.addNode(node)
+                  treeNode.autosave = true;
+                }
+              }
+            }
+          }
+        }
+      )()
+    }
   }
 
   return (

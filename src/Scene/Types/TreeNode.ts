@@ -1,7 +1,7 @@
-import { observable, runInAction } from "mobx";
+import { computed, observable, runInAction } from "mobx";
 import RenderNode from "../../Renderer/Drawables/SceneNodes/RenderNode";
 import Entity, { getNextObjectId } from "../../State/Entity";
-import { type SceneItemType } from "./Types";
+import { type SceneObjectInterface, type SceneInterface, type SceneItemType } from "./Types";
 import type ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import type LightProps from "../../Renderer/Properties/LightProps";
 import { ComponentType, type LightInterface, type ParticleSystemInterface } from "../../Renderer/Types";
@@ -24,13 +24,16 @@ class TreeNode extends Entity {
 
   parent?: TreeNode;
 
-  private _nodeObject = new SceneObject();
+  @observable
+  accessor treeId: number | undefined;
 
-  get nodeObject(): SceneObject {
+  private _nodeObject: SceneObjectInterface = new SceneObject();
+
+  get nodeObject(): SceneObjectInterface {
     return this._nodeObject
   }
 
-  set nodeObject(object: SceneObject) {
+  set nodeObject(object: SceneObjectInterface) {
     this._nodeObject = object
     this.getComponentProps()
     this.transformChanged()
@@ -38,15 +41,17 @@ class TreeNode extends Entity {
 
   renderNode = new RenderNode();
 
+  scene: SceneInterface;
+
   @observable
   accessor newItemType: SceneItemType | undefined = undefined;
 
-  treeId?: number;
-
   autosave = true;
 
-  constructor() {
+  constructor(scene: SceneInterface) {
     super(getNextObjectId(), '')
+
+    this.scene = scene;
   }
 
   isAncestor(node: TreeNode): boolean {
@@ -99,8 +104,8 @@ class TreeNode extends Entity {
   }
 
   private getComponentProps() {
-    const stack: SceneObject[] = [];
-    let nodeObject: SceneObject | undefined = this._nodeObject;
+    const stack: SceneObjectInterface[] = [];
+    let nodeObject: SceneObjectInterface | undefined = this._nodeObject;
 
     // Generate array of object derivations so that we can work
     // backwards from the base object to the most recent derivation.
@@ -203,6 +208,31 @@ class TreeNode extends Entity {
     runInAction(() => {
       this.newItemType = undefined;
     })
+  }
+
+  @computed
+  get connectionOverrides(): TreeNode[] {
+    const connections: TreeNode[] = [];
+
+    if (this.treeId !== undefined) {
+      let stack: TreeNode[] = [this];
+
+      while (stack.length > 0) {
+        const node = stack[0];
+        stack = stack.slice(1)
+  
+        for (const child of node.nodes) {
+          if (child.treeId === this.treeId) {
+            stack.push(child)
+          }
+          else {
+            connections.push(child)
+          }
+        }
+      }  
+    }
+
+    return connections;
   }
 }
 

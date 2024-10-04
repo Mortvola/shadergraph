@@ -233,6 +233,10 @@ class SceneObject extends ObjectBase implements SceneObjectInterface {
   }
 
   isPrefabInstanceRoot(): boolean {
+    if (this.treeNode?.treeId !== undefined && this.treeNode.treeId !== this.treeNode.parent?.treeId) {
+      return true;
+    }
+  
     return false;
   }
 

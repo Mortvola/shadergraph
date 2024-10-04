@@ -229,10 +229,10 @@ const SceneObject: React.FC<PropsType> = observer(({
         <div>
           <button ref={buttonRef} onClick={handleAddClick}>Add Component</button>
           {
-            sceneObject.isPrefabInstanceRoot()
+            sceneObject.isPrefabInstanceRoot() && sceneObject.treeNode
               ? (
                 <PopupButton label="Overrides" position={Position.top}>
-                  <Overrides sceneNode={sceneObject} />
+                  <Overrides node={sceneObject.treeNode} />
                 </PopupButton>
               )
               : null

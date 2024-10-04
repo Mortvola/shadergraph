@@ -59,7 +59,7 @@ class ObjectManager {
       object.id = body.id;
 
       if (parentNode) {
-        const node = new TreeNode()
+        const node = new TreeNode(parentNode.scene)
   
         node.id = body.nodeId
         node.nodeObject = object as SceneObject;
