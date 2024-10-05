@@ -63,7 +63,7 @@ export const isTreeNode = (r: unknown): r is TreeNode => (
   && (r as TreeNode)?.components !== undefined
 )
 
-export interface SceneObjectInterface extends EntityInterface {
+export interface SceneObjectInterface {
   components: SceneObjectComponent[];
 
   transformProps: TransformPropsInterface;
@@ -75,8 +75,6 @@ export interface SceneObjectInterface extends EntityInterface {
   addComponent(component: NewSceneObjectComponent): void;
 
   removeComponent(component: SceneObjectComponent): void;
-
-  changeName(name: string): void;
 
   detachSelf(): void;
 

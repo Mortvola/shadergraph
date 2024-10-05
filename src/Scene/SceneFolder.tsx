@@ -131,9 +131,9 @@ const SceneFolder: React.FC<PropsType> = observer(({
         async () => {
           switch (folder.newItemType) {
             case SceneItemType.SceneObject: {
-              const object = new SceneObject(undefined, name)
+              const object = new SceneObject()
   
-              const node = await objectManager.add(object, folder)
+              const node = await objectManager.add(object, name, folder)
   
               if (node) {
                 scene.setSelectedObject(node);
@@ -143,7 +143,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
             }
 
             case SceneItemType.ParticleSystem: {
-              const object = new SceneObject(undefined, name);
+              const object = new SceneObject();
               object.autosave = false;
 
               const props = new ParticleSystemProps();
@@ -153,7 +153,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
                 props: props,
               });
 
-              const node = await objectManager.add(object, folder);
+              const node = await objectManager.add(object, name, folder);
 
               object.autosave = true;
               

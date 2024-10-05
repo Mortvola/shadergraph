@@ -201,7 +201,7 @@ class TreeNode extends Entity {
   }
 
   changeName(name: string) {
-    this.nodeObject.changeName(name)
+    // this.nodeObject.changeName(name)
   }
 
   cancelNewItem() {

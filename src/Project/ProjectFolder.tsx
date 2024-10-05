@@ -8,7 +8,6 @@ import { isTreeNode, type ItemResponse } from "../Scene/Types/Types";
 import Http from '../Http/src';
 import ProjectItemData from './Types/ProjectItem';
 import type TreeNode from '../Scene/Types/TreeNode';
-import Scene from '../Scene/Types/Scene';
 import NewProjectItem from './NewProjectItem';
 
 type PropsType = {

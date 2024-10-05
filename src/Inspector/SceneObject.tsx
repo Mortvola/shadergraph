@@ -225,7 +225,7 @@ const SceneObject: React.FC<PropsType> = observer(({
   return (
     <div className={styles.gameObject} onDragOver={handleDragOver} onDrop={handleDrop}>
       <div className={styles.title}>
-        {`Name: ${sceneObject.name}`}
+        {`Name: ${sceneObject.treeNode?.name}`}
         <div>
           <button ref={buttonRef} onClick={handleAddClick}>Add Component</button>
           {

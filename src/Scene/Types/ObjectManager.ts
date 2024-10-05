@@ -2,7 +2,6 @@ import { runInAction } from "mobx";
 import Http from "../../Http/src";
 import type SceneObject from './SceneObject';
 import TreeNode from "./TreeNode";
-import type ObjectBase from "./ObjectBase";
 
 class ObjectManager {
   // async get(nodeId: number, treeId: number | undefined) {
@@ -40,27 +39,25 @@ class ObjectManager {
   //   throw new Error('object type mismatch')
   // }
 
-  async add(object: ObjectBase, parentNode?: TreeNode): Promise<TreeNode | undefined> {
+  async add(object: SceneObject, name: string, parentNode?: TreeNode): Promise<TreeNode | undefined> {
     const descriptor = object.toDescriptor();
 
     const response = await Http.post<Omit<unknown, 'id'>, { id: number, nodeId: number }>(`/api/scene-objects`, {
       parentNodeId: parentNode?.treeId ?? parentNode?.id,
       parentSubnodeId: parentNode?.treeId !== undefined ? parentNode?.id : undefined,
-      name: object.name,
+      name,
       ...descriptor,
     });
 
     if (response.ok) {
       const body = await response.body();
 
-      object.id = body.id;
-
       if (parentNode) {
         const node = new TreeNode(parentNode.scene)
   
         node.id = body.nodeId
-        node.name = object.name
-        node.nodeObject = object as SceneObject;
+        node.name = name
+        node.nodeObject = object;
 
         parentNode.addNode(node);
 

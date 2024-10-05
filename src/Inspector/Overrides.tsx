@@ -26,12 +26,12 @@ const Overrides: React.FC<PropsType> = observer(({
 
   return (
     <div className={styles.layout}>
-      <div>{node.nodeObject.name}</div>
+      <div>{node.nodeObject.treeNode?.name}</div>
       <div className={styles.body}>
         {
           overrides.map((object) => (
             <div>
-              <div key={object.object.id}>{object.object.name}</div>
+              <div key={object.object.treeNode?.id}>{object.object.treeNode?.name}</div>
               <div className={styles.overrides}>
                 {
                   object.overrides.map((override) => {

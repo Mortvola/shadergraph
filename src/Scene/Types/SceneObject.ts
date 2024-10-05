@@ -1,9 +1,8 @@
-import { observable, runInAction } from "mobx";
+import { observable } from "mobx";
 import {
   ComponentType, type LightPropsDescriptor, type NewSceneObjectComponent,
   type SceneObjectComponent, type TransformPropsInterface,
 } from "../../Renderer/Types";
-import ObjectBase from "./ObjectBase";
 import { ObjectType, type SceneObjectInterface, type SceneObjectDescriptor } from "./Types";
 import TransformProps from "../../Renderer/Properties/TransformProps";
 import type TreeNode from "./TreeNode";
@@ -13,7 +12,7 @@ import { type ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSyste
 import LightProps from "../../Renderer/Properties/LightProps";
 
   
-class SceneObject extends ObjectBase implements SceneObjectInterface {
+class SceneObject implements SceneObjectInterface {
   @observable
   accessor components: SceneObjectComponent[] = []
 
@@ -35,20 +34,13 @@ class SceneObject extends ObjectBase implements SceneObjectInterface {
 
   autosave = true;
 
-  constructor(id?: number, name?: string) {
-    super(id, name ?? `Scene Object ${Math.abs(id ?? 0)}`)
-  }
-
   static async fromDescriptor(descriptor?: SceneObjectDescriptor, baseObject?: SceneObject) {
     const object = new SceneObject();
     object.autosave = false;
 
     if (descriptor) {
-      // object.id = descriptor.id;
       object.nodeId = descriptor.nodeId;
       object.treeId = descriptor.treeId;
-
-      object.name = 'Unknown'; // baseObject?.name ?? descriptor?.name ?? object.name;
 
       if (baseObject) {
         object.components = baseObject.components.map((c) => {
@@ -154,13 +146,9 @@ class SceneObject extends ObjectBase implements SceneObjectInterface {
     return object;
   }
 
-  getObjectId(): number {
-    return this.id
-  }
-
   async save(): Promise<void> {
     if (this.nodeId === undefined) {
-      await objectManager.add(this)
+      await objectManager.add(this, this.treeNode?.name ?? 'Unnamed')
     }
     else {
       await objectManager.update(this)
@@ -217,13 +205,6 @@ class SceneObject extends ObjectBase implements SceneObjectInterface {
     //   this.parent.removeObject(this);
     //   this.parent = null;
     // }
-  }
-
-  changeName(name: string) {
-    runInAction(() => {
-      this.name = name;
-      this.onChange();
-    })
   }
 
   getNextComponentId(): number {

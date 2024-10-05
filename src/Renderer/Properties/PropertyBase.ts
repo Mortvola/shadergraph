@@ -37,7 +37,7 @@ export class PropertyBase implements PropertyBaseInterface {
 
     while (property) {
       const node = property.props.node;
-      lineage.push({ property, name: node?.name ?? 'unknown node', container: 'unknown prefab'})
+      lineage.push({ property, name: node?.treeNode?.name ?? 'unknown node', container: 'unknown prefab'})
 
       property = property.base
     }
