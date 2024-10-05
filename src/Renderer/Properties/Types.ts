@@ -5,6 +5,10 @@ export type PropertyType<T> = { value: T, override?: boolean }
 
 export class PropsBase {
   node?: SceneObjectInterface
+
+  toDescriptor(): object | undefined {
+    return undefined
+  }
 }
 
 export type LineageEntry = { property: PropertyBase, name: string, container: string };

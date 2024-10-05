@@ -75,7 +75,7 @@ const SceneItem: React.FC<PropsType> = observer(({
 
   const menuItems = React.useCallback((): MenuItemLike[] => {
     const items: MenuItemLike[] = [
-      { name: 'Delete', action: () => { item.delete(); scene.setSelectedObject(null) } },
+      { name: 'Delete', action: () => { item.delete(); scene.setSelected(null) } },
     ];
     
     return items;

@@ -131,62 +131,43 @@ const SceneFolder: React.FC<PropsType> = observer(({
         async () => {
           switch (folder.newItemType) {
             case SceneItemType.SceneObject: {
-              const object = new SceneObject()
-  
-              const node = await objectManager.add(object, name, folder)
+              const node = await objectManager.add(undefined, name, folder)
   
               if (node) {
-                scene.setSelectedObject(node);
+                scene.setSelected(node);
               }
     
               break;
             }
 
             case SceneItemType.ParticleSystem: {
-              const object = new SceneObject();
-              object.autosave = false;
-
               const props = new ParticleSystemProps();
 
-              object.addComponent({
-                type: ComponentType.ParticleSystem,
-                props: props,
-              });
+              const node = await objectManager.add(
+                { type: ComponentType.ParticleSystem, props }, 
+                name,
+                folder,
+              );
 
-              const node = await objectManager.add(object, name, folder);
-
-              object.autosave = true;
-              
               if (node) {
-                scene.setSelectedObject(node);
+                scene.setSelected(node);
               }
 
               break;
             }
 
             case SceneItemType.Light: {
-              const object = new SceneObject()
-
               const props = new LightProps();
+
+              const node = await objectManager.add(
+                { type: ComponentType.Light, props: props },
+                name,
+                folder,
+              );
       
-              const item: NewSceneObjectComponent = {
-                type: ComponentType.Light,
-                props: props,
+              if (node) {
+                scene.setSelected(node);
               }
-      
-              object.addComponent(item);
-      
-              await object.save();
-      
-              const node = new TreeNode(scene);
-      
-              node.nodeObject = object;
-      
-              // await objectManager.add(node);
-      
-              scene.addNode(node, false);
-      
-              scene.setSelectedObject(node);
       
               break;
             }

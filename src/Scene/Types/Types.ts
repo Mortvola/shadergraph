@@ -47,7 +47,7 @@ export interface SceneInterface {
 
   addNode(node: TreeNode, autosave: boolean): void;
 
-  setSelectedObject(node: TreeNode | null): void;
+  setSelected(node: TreeNode | null): void;
 
   renderScene(): void;
 

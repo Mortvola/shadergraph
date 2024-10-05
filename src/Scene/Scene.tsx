@@ -14,7 +14,7 @@ const Scene: React.FC<PropsType> = observer(({
   scene,
 }) => {
   const handleObjectClick = (node: TreeNode) => {    
-    scene?.setSelectedObject(node)
+    scene?.setSelected(node)
   }
 
   if (scene === undefined) {

@@ -27,7 +27,7 @@ class TreeNode extends Entity {
   @observable
   accessor treeId: number | undefined;
 
-  private _nodeObject: SceneObjectInterface = new SceneObject();
+  private _nodeObject: SceneObjectInterface;
 
   get nodeObject(): SceneObjectInterface {
     return this._nodeObject
@@ -51,6 +51,7 @@ class TreeNode extends Entity {
   constructor(scene: SceneInterface) {
     super(getNextObjectId(), '')
 
+    this._nodeObject = new SceneObject(this.id)
     this.scene = scene;
   }
 

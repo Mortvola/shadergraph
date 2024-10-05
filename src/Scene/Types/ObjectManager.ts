@@ -1,7 +1,10 @@
 import { runInAction } from "mobx";
 import Http from "../../Http/src";
-import type SceneObject from './SceneObject';
+import SceneObject from './SceneObject';
 import TreeNode from "./TreeNode";
+import { type ComponentType } from "../../Renderer/Types";
+import { type PropsBase } from "../../Renderer/Properties/Types";
+import { type SceneObjectDescriptor } from "./Types";
 
 class ObjectManager {
   // async get(nodeId: number, treeId: number | undefined) {
@@ -39,30 +42,35 @@ class ObjectManager {
   //   throw new Error('object type mismatch')
   // }
 
-  async add(object: SceneObject, name: string, parentNode?: TreeNode): Promise<TreeNode | undefined> {
-    const descriptor = object.toDescriptor();
+  async add(component: { type: ComponentType, props: PropsBase } | undefined, name: string, parentNode: TreeNode): Promise<TreeNode | undefined> {
+    let descriptor: object | undefined
 
-    const response = await Http.post<Omit<unknown, 'id'>, { id: number, nodeId: number }>(`/api/scene-objects`, {
+    if (component) {
+      descriptor = {
+        type: component.type,
+        props: component.props.toDescriptor(),
+      }
+    }
+
+    const response = await Http.post<unknown, SceneObjectDescriptor>(`/api/scene-objects`, {
       parentNodeId: parentNode?.treeId ?? parentNode?.id,
       parentSubnodeId: parentNode?.treeId !== undefined ? parentNode?.id : undefined,
       name,
-      ...descriptor,
+      component: descriptor,
     });
 
     if (response.ok) {
       const body = await response.body();
 
-      if (parentNode) {
-        const node = new TreeNode(parentNode.scene)
-  
-        node.id = body.nodeId
-        node.name = name
-        node.nodeObject = object;
+      const node = new TreeNode(parentNode.scene)
 
-        parentNode.addNode(node);
+      node.id = body.nodeId
+      node.name = name
+      node.nodeObject = await SceneObject.fromDescriptor(body);
 
-        return node
-      }
+      parentNode.addNode(node);
+
+      return node
     }  
   }
 

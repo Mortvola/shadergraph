@@ -154,7 +154,7 @@ class Scene implements SceneInterface {
     })
   }
 
-  setSelectedObject(node: TreeNode | null) {
+  setSelected(node: TreeNode | null) {
     runInAction(() => {
       this.selectedNode = node;
 
