@@ -12,15 +12,12 @@ export const getNextObjectId = () => {
 class Entity implements EntityInterface {
   id: number;
 
-  name: string;
+  @observable
+  accessor name: string;
 
   constructor(id = getNextObjectId(), name: string) {
     this.id = id;
     this.name = name;
-
-    makeObservable(this, {
-      name: observable,
-    })
   }
 }
 

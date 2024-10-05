@@ -1,7 +1,7 @@
 import { computed, observable, runInAction } from "mobx";
 import RenderNode from "../../Renderer/Drawables/SceneNodes/RenderNode";
 import Entity, { getNextObjectId } from "../../State/Entity";
-import { type SceneObjectInterface, type SceneInterface, type SceneItemType } from "./Types";
+import { type SceneObjectInterface, type SceneInterface, type SceneItemType, NodesResponse } from "./Types";
 import type ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import type LightProps from "../../Renderer/Properties/LightProps";
 import { ComponentType, type LightInterface, type ParticleSystemInterface } from "../../Renderer/Types";
@@ -202,7 +202,19 @@ class TreeNode extends Entity {
   }
 
   changeName(name: string) {
-    // this.nodeObject.changeName(name)
+    (
+      async () => {
+        const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${this.id}`, {
+          name,
+        })
+    
+        if (response.ok) {
+          runInAction(() => {
+            this.name = name
+          })
+        }    
+      }
+    )()
   }
 
   cancelNewItem() {
