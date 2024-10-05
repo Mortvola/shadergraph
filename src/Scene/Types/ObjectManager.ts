@@ -46,6 +46,7 @@ class ObjectManager {
     const response = await Http.post<Omit<unknown, 'id'>, { id: number, nodeId: number }>(`/api/scene-objects`, {
       parentNodeId: parentNode?.treeId ?? parentNode?.id,
       parentSubnodeId: parentNode?.treeId !== undefined ? parentNode?.id : undefined,
+      name: object.name,
       ...descriptor,
     });
 
@@ -58,6 +59,7 @@ class ObjectManager {
         const node = new TreeNode(parentNode.scene)
   
         node.id = body.nodeId
+        node.name = object.name
         node.nodeObject = object as SceneObject;
 
         parentNode.addNode(node);
