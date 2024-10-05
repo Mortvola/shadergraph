@@ -156,10 +156,6 @@ class SceneObject implements SceneObjectInterface {
     }
   }
 
-  async delete(): Promise<void> {
-    return objectManager.delete(this)
-  }
-
   addComponent(component: NewSceneObjectComponent) {
     this.components = [
       ...this.components,
@@ -223,7 +219,7 @@ class SceneObject implements SceneObjectInterface {
     return false;
   }
 
-  toDescriptor(): SceneObjectDescriptor | Omit<SceneObjectDescriptor, 'nodeId'> {
+  toDescriptor(): SceneObjectDescriptor {
     const descriptor = {
       nodeId: this.nodeId,
       object: {

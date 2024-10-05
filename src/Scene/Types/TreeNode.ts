@@ -1,7 +1,7 @@
 import { computed, observable, runInAction } from "mobx";
 import RenderNode from "../../Renderer/Drawables/SceneNodes/RenderNode";
 import Entity, { getNextObjectId } from "../../State/Entity";
-import { type SceneObjectInterface, type SceneInterface, type SceneItemType, NodesResponse } from "./Types";
+import { type SceneObjectInterface, type SceneInterface, type SceneItemType, type NodesResponse } from "./Types";
 import type ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
 import type LightProps from "../../Renderer/Properties/LightProps";
 import { ComponentType, type LightInterface, type ParticleSystemInterface } from "../../Renderer/Types";

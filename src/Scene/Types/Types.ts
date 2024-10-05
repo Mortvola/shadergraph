@@ -78,8 +78,6 @@ export interface SceneObjectInterface {
 
   detachSelf(): void;
 
-  delete(): Promise<void>;
-
   isPrefabInstanceRoot(): boolean;
 
   save(): Promise<void>;
