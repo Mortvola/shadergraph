@@ -95,11 +95,9 @@ export const isGameObject = (r: unknown): r is SceneObjectInterface => (
 )
 
 export type SceneObjectDescriptor = {
-  // id: number,
   nodeId: number,
   treeId?: number,
 
-  name: string,
   object: {
     type: ObjectType,
     components: ComponentDescriptor[],
@@ -168,6 +166,7 @@ export enum ObjectType {
 
 export type TreeNodeDescriptor = {
   id: number,
+  name?: string,
   treeId?: number,
   objectId: number,
   children: TreeNodeDescriptor[],

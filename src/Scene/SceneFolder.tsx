@@ -216,7 +216,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
       onDragLeave={handleDragLeave}
     >
       <SceneItem
-        key={folder.id}
+        key={`${folder.id}:${folder.treeId}`}
         scene={scene}
         item={folder}
         onSelect={onSelect}
@@ -243,7 +243,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
         {
           folder.nodes.map((i) => (
             <SceneFolder
-              key={`children:${i.id}`}
+              key={`${i.id}:${i.treeId}`}
               scene={scene}
               folder={i}
               onSelect={onSelect}

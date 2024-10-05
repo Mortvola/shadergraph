@@ -48,7 +48,7 @@ class SceneObject extends ObjectBase implements SceneObjectInterface {
       object.nodeId = descriptor.nodeId;
       object.treeId = descriptor.treeId;
 
-      object.name = baseObject?.name ?? descriptor?.name ?? object.name;
+      object.name = 'Unknown'; // baseObject?.name ?? descriptor?.name ?? object.name;
 
       if (baseObject) {
         object.components = baseObject.components.map((c) => {
@@ -249,9 +249,7 @@ class SceneObject extends ObjectBase implements SceneObjectInterface {
 
   toDescriptor(): SceneObjectDescriptor | Omit<SceneObjectDescriptor, 'nodeId'> {
     const descriptor = {
-      // id: this.id < 0 ? undefined : this.id,
       nodeId: this.nodeId,
-      name: this.name,
       object: {
         type: ObjectType.NodeObject,
         components: this.components.map((c) => ({

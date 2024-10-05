@@ -127,7 +127,7 @@ class Scene implements SceneInterface {
         object.treeNode = node;
       }
 
-      node.name = node.nodeObject.name;
+      node.name = nodeDescriptor.name ?? 'Unknown Node';
 
       if (parent) {
         parent.autosave = false;
