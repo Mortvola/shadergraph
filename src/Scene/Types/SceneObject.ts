@@ -24,7 +24,7 @@ class SceneObject implements SceneObjectInterface {
 
   derivedObjects: SceneObject[] = []
 
-  nodeId?: number;
+  nodeId: number;
 
   treeId?: number;
 
@@ -34,112 +34,112 @@ class SceneObject implements SceneObjectInterface {
 
   autosave = true;
 
-  static async fromDescriptor(descriptor?: SceneObjectDescriptor, baseObject?: SceneObject) {
-    const object = new SceneObject();
+  constructor(nodeId: number, treeId?: number) {
+    this.nodeId = nodeId
+    this.treeId = treeId
+  }
+
+  static async fromDescriptor(descriptor: SceneObjectDescriptor, baseObject?: SceneObject) {
+    const object = new SceneObject(descriptor.nodeId, descriptor.treeId);
     object.autosave = false;
 
-    if (descriptor) {
-      object.nodeId = descriptor.nodeId;
-      object.treeId = descriptor.treeId;
+    if (baseObject) {
+      object.components = baseObject.components.map((c) => {
+        const componentDescriptor = descriptor?.object.components.find((component) => (
+          component.id === c.id && component.type === c.type
+        ));
+  
+        switch (c.type) {
+          case ComponentType.ParticleSystem: {
+            const prefabProps = c.props as ParticleSystemProps;
+  
+            const props = new ParticleSystemProps(
+              componentDescriptor?.props as ParticleSystemPropsDescriptor,
+              prefabProps,
+            );
+  
+            props.onChange = object.onChange;
+            props.node = object;
+  
+            return {
+              id: c.id,
+              type: c.type,
+              props: props,
+            }
+          }
+  
+          case ComponentType.Light: {
+  
+            return {
+              id: c.id,
+              type: c.type,
+              props: c.props,
+            }
+          }
+        }    
+      })
+        .filter((c) => c !== undefined)
 
-      if (baseObject) {
-        object.components = baseObject.components.map((c) => {
-          const componentDescriptor = descriptor?.object.components.find((component) => (
-            component.id === c.id && component.type === c.type
-          ));
-    
+      object.baseObject = baseObject
+
+      object.transformProps = new TransformProps(
+        descriptor.object.transformProps,
+        object.transformChanged,
+        baseObject.transformProps,
+      );
+    }
+    else {
+      const components = descriptor.object.components;
+
+      if (components) {
+        object.components = components.map((c) => {
           switch (c.type) {
             case ComponentType.ParticleSystem: {
-              const prefabProps = c.props as ParticleSystemProps;
-    
-              const props = new ParticleSystemProps(
-                componentDescriptor?.props as ParticleSystemPropsDescriptor,
-                prefabProps,
-              );
-    
+              const propsDescriptor = c.props as ParticleSystemPropsDescriptor;
+
+              const props = new ParticleSystemProps(propsDescriptor);
               props.onChange = object.onChange;
               props.node = object;
-    
+
               return {
-                id: c.id,
+                id: c.id ?? object.getNextComponentId(),
                 type: c.type,
-                props: props,
+                props,
               }
             }
-    
+
             case ComponentType.Light: {
-    
+              const propsDescriptor = c.props as LightPropsDescriptor;
+
+              const props = new LightProps(propsDescriptor);
+              props.onChange = object.onChange;
+              props.node = object;
+
               return {
-                id: c.id,
+                id: c.id ?? object.getNextComponentId(),
                 type: c.type,
-                props: c.props,
+                props,
               }
             }
-          }    
+          }
+
+          return undefined
         })
-          .filter((c) => c !== undefined)
-
-        object.baseObject = baseObject
-
-        object.transformProps = new TransformProps(
-          descriptor.object.transformProps,
-          object.transformChanged,
-          baseObject.transformProps,
-        );
-      }
-      else {
-        const components = descriptor.object.components;
-
-        if (components) {
-          object.components = components.map((c) => {
-            switch (c.type) {
-              case ComponentType.ParticleSystem: {
-                const propsDescriptor = c.props as ParticleSystemPropsDescriptor;
-  
-                const props = new ParticleSystemProps(propsDescriptor);
-                props.onChange = object.onChange;
-                props.node = object;
-  
-                return {
-                  id: c.id ?? object.getNextComponentId(),
-                  type: c.type,
-                  props,
-                }
-              }
-  
-              case ComponentType.Light: {
-                const propsDescriptor = c.props as LightPropsDescriptor;
-  
-                const props = new LightProps(propsDescriptor);
-                props.onChange = object.onChange;
-                props.node = object;
-  
-                return {
-                  id: c.id ?? object.getNextComponentId(),
-                  type: c.type,
-                  props,
-                }
-              }
-            }
-  
-            return undefined
-          })
-            .filter((c) => c !== undefined)  
-        }
-
-        object.transformProps = new TransformProps(descriptor.object.transformProps, object.transformChanged);
+          .filter((c) => c !== undefined)  
       }
 
-      // Fix any scale values that are zero.
-      for (let i = 0; i < object.transformProps.scale.get().length; i += 1) {
-        if (object.transformProps.scale.get()[i] === 0) {
-          object.transformProps.scale.get()[i] = 1;
-        }  
-      }
-
-      // vec3.copy(object.transformProps.translate.get(), object.renderNode.translate)
-      // vec3.copy(object.transformProps.scale.get(), object.renderNode.scale)
+      object.transformProps = new TransformProps(descriptor.object.transformProps, object.transformChanged);
     }
+
+    // Fix any scale values that are zero.
+    for (let i = 0; i < object.transformProps.scale.get().length; i += 1) {
+      if (object.transformProps.scale.get()[i] === 0) {
+        object.transformProps.scale.get()[i] = 1;
+      }  
+    }
+
+    // vec3.copy(object.transformProps.translate.get(), object.renderNode.translate)
+    // vec3.copy(object.transformProps.scale.get(), object.renderNode.scale)
 
     object.autosave = true;
 
@@ -147,12 +147,7 @@ class SceneObject implements SceneObjectInterface {
   }
 
   async save(): Promise<void> {
-    if (this.nodeId === undefined) {
-      await objectManager.add(this, this.treeNode?.name ?? 'Unnamed')
-    }
-    else {
-      await objectManager.update(this)
-    }      
+    return objectManager.update(this)
   }
 
   onChange = () => {
