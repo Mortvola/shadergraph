@@ -158,33 +158,27 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         this.removeParticles()
       }
 
-      const elapsedDuration = (time - this.startTime) / 1000.0;
+      const elapsedDuration = (time - (this.startTime + this.props.startDelay.get() * 1000.0)) / 1000.0;
 
-      if (this.props.loop.get() || elapsedDuration <= this.props.duration.get()) {
+      if (elapsedDuration >= 0 && (this.props.loop.get() || elapsedDuration <= this.props.duration.get())) {
         const durationRemainder = elapsedDuration % this.props.duration.get();
         const durationT = durationRemainder / this.props.duration.get();
-        const delayT = this.props.startDelay.get() / this.props.duration.get();
 
-        if (durationT >= delayT) {
-          if (this.lastEmitTime === 0) {
-            this.lastEmitTime = time;
+        if (this.lastEmitTime === 0) {
+          this.lastEmitTime = time;
 
-            await this.emitSome(1, time, durationT, camera)
-          }
-          else {
-            // Update existing particles
-            await this.updateParticles(time, elapsedTime, camera);
-          
-            // Add new particles
-            await this.emit(time, durationT, camera)
-          }
-        } else {
+          await this.emitSome(1, time, durationT, camera)
+        }
+        else {
           // Update existing particles
           await this.updateParticles(time, elapsedTime, camera);
+        
+          // Add new particles
+          await this.emit(time, durationT, camera)
         }
       } else {
-          // Update existing particles
-          await this.updateParticles(time, elapsedTime, camera);
+        // Update existing particles
+        await this.updateParticles(time, elapsedTime, camera);
       }
     }
   }
