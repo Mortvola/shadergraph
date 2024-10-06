@@ -279,18 +279,30 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
       const transform = mat4.identity()
 
+      let lookAt = vec3.normalize(vec4.subtract(cameraPosition, position))
+
       if (this.props.renderer.mode.get() === RenderMode.Billboard) {
-        const lookAt = vec3.normalize(vec4.subtract(cameraPosition, position))
         let up = vec3.create(0, 1, 0);
-        const right = vec3.normalize(vec3.cross(up, lookAt));
-        up = vec3.normalize(vec3.cross(lookAt, right));
+        let right = vec3.create(1, 0, 0)
+
+        // const dot = vec3.dot(up, lookAt);
+
+        // console.log(dot);
+
+        // if (dot < 0.75) {
+          right = vec3.normalize(vec3.cross(up, lookAt));
+          up = vec3.normalize(vec3.cross(lookAt, right));
+        // }
+        // else {
+        //   up = vec3.normalize(vec3.cross(lookAt, right));
+        //   right = vec3.normalize(vec3.cross(up, lookAt));
+        // }
 
         mat4.setAxis(transform, right, 0, transform)
         mat4.setAxis(transform, up, 1, transform)
         mat4.setAxis(transform, lookAt, 2, transform)  
       }
       else if (this.props.renderer.mode.get() === RenderMode.StretchedBillboard) {
-        let lookAt = vec3.normalize(vec4.subtract(cameraPosition, position))
         const up = vec3.normalize(particle.velocity)
         const right = vec3.normalize(vec3.cross(up, lookAt));
         lookAt = vec3.normalize(vec3.cross(right, up));
@@ -301,6 +313,15 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
         mat4.scale(transform, vec3.create(1, vec3.length(particle.velocity), 1), transform)
       }      
+      else if (this.props.renderer.mode.get() === RenderMode.HorizontalBillboard) {
+        lookAt = vec3.create(0, 1, 0)
+        const up = vec3.create(0, 0, -1);
+        const right = vec3.create(1, 0, 0)
+
+        mat4.setAxis(transform, right, 0, transform)
+        mat4.setAxis(transform, up, 1, transform)
+        mat4.setAxis(transform, lookAt, 2, transform)
+      }
 
       mat4.multiply(particle.renderNode.transform, transform, particle.renderNode.transform);
 
