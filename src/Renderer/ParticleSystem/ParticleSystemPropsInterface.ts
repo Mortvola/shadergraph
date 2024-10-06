@@ -1,4 +1,4 @@
-import type { PSNumber, PSSpace } from "../Properties/Property";
+import type { PSBoolean, PSNumber, PSSpace } from "../Properties/Property";
 import type PSColor from "../Properties/PSColor";
 import type PSValue from "../Properties/PSValue";
 import type PSValue3D from "../Properties/PSValue3D";
@@ -12,6 +12,10 @@ import type { ParticleSystemPropsDescriptor } from "./Types";
 
 export interface ParticleSystemPropsInterface {
   duration: PSNumber;
+
+  startDelay: PSNumber;
+
+  loop: PSBoolean;
 
   maxPoints: PSNumber;
 

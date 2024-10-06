@@ -17,7 +17,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
   particles: Map<number, Particle> = new Map();
 
-  startTime = 0;
+  startTime: number | null = null;
 
   lastEmitTime = 0;
 
@@ -151,32 +151,49 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
       this.rootNode.computeTransform(this.rootNode.parentNode?.transform)
 
-      if (this.startTime === 0) {
+      if (this.startTime === null || this.startTime >= time) {
         this.startTime = time;
-      }
-
-      const elapsedTime2 = ((time - this.startTime) / 1000.0) % this.props.duration.get() / this.props.duration.get();
-
-      if (this.lastEmitTime === 0) {
         this.lastEmitTime = time;
 
-        await this.emitSome(1, time, elapsedTime2, camera)
+        this.removeParticles()
       }
-      else {
-        // Update existing particles
-        await this.updateParticles(time, elapsedTime, camera);
-      
-        // Add new particles
-        await this.emit(time, elapsedTime2, camera)
+
+      const elapsedDuration = (time - this.startTime) / 1000.0;
+
+      if (this.props.loop.get() || elapsedDuration <= this.props.duration.get()) {
+        const durationRemainder = elapsedDuration % this.props.duration.get();
+        const durationT = durationRemainder / this.props.duration.get();
+        const delayT = this.props.startDelay.get() / this.props.duration.get();
+
+        if (durationT >= delayT) {
+          if (this.lastEmitTime === 0) {
+            this.lastEmitTime = time;
+
+            await this.emitSome(1, time, durationT, camera)
+          }
+          else {
+            // Update existing particles
+            await this.updateParticles(time, elapsedTime, camera);
+          
+            // Add new particles
+            await this.emit(time, durationT, camera)
+          }
+        } else {
+          // Update existing particles
+          await this.updateParticles(time, elapsedTime, camera);
+        }
+      } else {
+          // Update existing particles
+          await this.updateParticles(time, elapsedTime, camera);
       }
     }
   }
 
   private async updateParticles(time: number, elapsedTime: number, camera: Camera) {
     for (const [, particle] of this.particles) {
-      const t = (time - particle.startTime) / (particle.lifetime * 1000);
+      const lifetimeT = (time - particle.startTime) / (particle.lifetime * 1000);
 
-      if (t > 1.0) {
+      if (lifetimeT > 1.0 || lifetimeT < 0.0) {
         // Particle's lifetime has expired. Remove the scene node from the graph
         // and delete the particle.
         if (particle.renderNode) {
@@ -202,12 +219,12 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         vec4.addScaled(
           particle.velocity,
           gravityVector,
-          this.props.gravityModifier.getValue(t) * gravity * elapsedTime,
+          this.props.gravityModifier.getValue(lifetimeT) * gravity * elapsedTime,
           particle.velocity,
         )
 
         if (this.props.lifetimeVelocity.enabled.get()) {
-          particle.velocity = vec4.scale(particle.velocity, this.props.lifetimeVelocity.speedModifier.getValue(t));
+          particle.velocity = vec4.scale(particle.velocity, this.props.lifetimeVelocity.speedModifier.getValue(lifetimeT));
         }
 
         if (!this.collided(particle,  elapsedTime)) {
@@ -224,12 +241,12 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         // Transform position back into local space.
         vec4.transformMat4(particle.position, this.rootNode.inverseTransform, particle.position)
 
-        await this.renderParticle(particle, t, camera);
+        await this.renderParticle(particle, lifetimeT, camera);
       }
     }
   }
 
-  async renderParticle(particle: Particle, t: number, camera: Camera) {
+  async renderParticle(particle: Particle, lifetimeT: number, camera: Camera) {
     if (this.props.renderer.enabled.get() && this.renderNode) {
       if (particle.renderNode === null) {
         particle.renderNode = new RenderNode();
@@ -245,7 +262,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       let lifetimeColor = [1, 1, 1, 1];
 
       if (this.props.lifetimeColor.enabled.get()) {
-        lifetimeColor = this.props.lifetimeColor.color.getColor(t);
+        lifetimeColor = this.props.lifetimeColor.color.getColor(lifetimeT);
       }
 
       particle.drawable.color[0] = lifetimeColor[0] * particle.startColor[0];
@@ -336,7 +353,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       const scale = particle.startSize.slice();
 
       if (this.props.lifetimeSize.enabled.get()) {
-        const lifetimeSize = this.props.lifetimeSize.size.getValue(t);
+        const lifetimeSize = this.props.lifetimeSize.size.getValue(lifetimeT);
 
         scale[0] *= lifetimeSize
         scale[1] *= lifetimeSize
@@ -351,7 +368,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     }
   }
 
-  private async emit(time: number, t: number, camera: Camera) {
+  private async emit(time: number, durationT: number, camera: Camera) {
     if (this.particles.size < this.props.maxPoints.get()) {
       const emitElapsedTime = time - this.lastEmitTime;
 
@@ -360,18 +377,18 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       if (numToEmit > 0) {
         this.lastEmitTime = time;
       
-        await this.emitSome(numToEmit, time, t, camera)
+        await this.emitSome(numToEmit, time, durationT, camera)
       }
     }
   }
 
-  async emitSome(numToEmit: number, startTime: number, t: number, camera: Camera) {
+  async emitSome(numToEmit: number, startTime: number, durationT: number, camera: Camera) {
     for (; numToEmit > 0; numToEmit -= 1) {
-      const lifetime = this.props.lifetime.getValue(t);
-      const startSpeed = this.props.startSpeed.getValue(t);
-      const startSize = this.props.startSize.getValue(t);
-      const startRotation = this.props.startRotation.getValue(t)
-      const startColor = vec4.create(...this.props.startColor.getColor(t));
+      const lifetime = this.props.lifetime.getValue(durationT);
+      const startSpeed = this.props.startSpeed.getValue(durationT);
+      const startSize = this.props.startSize.getValue(durationT);
+      const startRotation = this.props.startRotation.getValue(durationT)
+      const startColor = vec4.create(...this.props.startColor.getColor(durationT));
       const [position, direction] = this.props.shape.getPositionAndDirection();
 
       const particle = new Particle(

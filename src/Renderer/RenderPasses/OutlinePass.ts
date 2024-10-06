@@ -1,7 +1,7 @@
 import { bindGroups } from "../BindGroups";
 import type Mesh from "../Drawables/Mesh";
 import { gpu } from "../Gpu";
-import { outputFormat } from "../RenderSetings";
+import { outputFormat } from "../RenderSettings";
 import { outlineShader } from "../shaders/outline";
 import { outlineApplyShader } from "../shaders/outlineApply";
 import type { DrawableComponentInterface } from "../Types";

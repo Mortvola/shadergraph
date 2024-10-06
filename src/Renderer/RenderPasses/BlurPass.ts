@@ -1,5 +1,5 @@
 import { gpu } from "../Gpu";
-import { outputFormat } from "../RenderSetings";
+import { outputFormat } from "../RenderSettings";
 import { blurShader } from "../shaders/blur";
 
 const label = 'blur pass';

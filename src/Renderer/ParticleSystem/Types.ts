@@ -138,6 +138,8 @@ export type ShapeDescriptor = {
 
 export type ParticleSystemPropsDescriptor = {
   duration?: number,
+  startDelay?: number,
+  loop?: boolean,
   maxPoints?: number,
   rate?: number,
 

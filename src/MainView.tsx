@@ -13,6 +13,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Http from './Http/src';
 import OpenProjectDialog from './OpenProjectDialog';
 import { runInAction } from 'mobx';
+import { Button } from 'react-bootstrap';
 
 const MainView: React.FC = observer(() => {
   const store = useStores();
@@ -75,6 +76,14 @@ const MainView: React.FC = observer(() => {
     })
   }
 
+  const handlePlayClick = () => {
+    store.mainView.clock.togglePlay()
+  }
+
+  const handleRestartClick = () => {
+    store.mainView.clock.restart()
+  }
+
   return (
     <>
         {
@@ -89,6 +98,8 @@ const MainView: React.FC = observer(() => {
                       <NavDropdown.Item eventKey="New" onClick={handleNewClick}>New</NavDropdown.Item>
                       <NavDropdown.Item eventKey="Open" onClick={handleOpenClick}>Open</NavDropdown.Item>
                     </NavDropdown>
+                    <Button onClick={handleRestartClick}>Restart</Button>
+                    <Button onClick={handlePlayClick}>{store.mainView.clock.paused ? 'Play' : 'Pause'}</Button>
                   </Nav>
                 </Navbar>
                 <Canvas3d renderer={mainView} onWheel={handleWheel} />

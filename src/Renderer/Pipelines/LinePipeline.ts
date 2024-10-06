@@ -1,6 +1,6 @@
 import { bindGroups } from '../BindGroups';
 import { gpu } from '../Gpu';
-import { bloom, outputFormat } from '../RenderSetings';
+import { bloom, outputFormat } from '../RenderSettings';
 import { lineShader } from '../shaders/line';
 import Pipeline from "./Pipeline";
 

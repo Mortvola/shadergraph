@@ -1,7 +1,7 @@
 import { type CullMode } from "../../State/GraphInterface";
 import { DrawableType } from "../Drawables/DrawableInterface";
 import { gpu } from "../Gpu";
-import { bloom } from "../RenderSetings";
+import { bloom } from "../RenderSettings";
 import { blinnPhongFunction } from "../shaders/functions/blinnPhongFunction";
 import { common } from "../shaders/common";
 import { getFragmentStage } from "../shaders/fragmentStage";

@@ -1,5 +1,5 @@
 import { gpu } from "../Gpu";
-import { outputFormat } from "../RenderSetings";
+import { outputFormat } from "../RenderSettings";
 import { bloomShader } from "../shaders/bloom";
 import BlurPass from "./BlurPass";
 

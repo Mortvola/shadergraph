@@ -1,4 +1,4 @@
-import { bloom } from "../RenderSetings";
+import { bloom } from "../RenderSettings";
 import RenderPass from "./RenderPass";
 
 class ForwardRenderPass extends RenderPass {

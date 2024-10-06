@@ -7,7 +7,7 @@ import LinePipeline from "./LinePipeline";
 import Pipeline from "./Pipeline";
 // import ReticlePipeline from "./ReticlePipeline";
 import TrajectoryPipeline from "./TrajectoryPipeline";
-import { bloom, outputFormat } from "../RenderSetings";
+import { bloom, outputFormat } from "../RenderSettings";
 import DecalPipeline from "./DecalPipeline";
 import type ShaderGraph from "../ShaderBuilder/ShaderGraph";
 import { DrawableType } from "../Drawables/DrawableInterface";

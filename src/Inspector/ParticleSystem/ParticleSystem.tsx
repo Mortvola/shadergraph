@@ -13,6 +13,7 @@ import Property from '../Property';
 import { type SpaceType } from '../../Renderer/ParticleSystem/Types';
 import PSSpaceTypeSelector from './PSSpaceTypeSelector';
 import PSValue3DInput from './PSValue3DInput';
+import Checkbox from '../../ShaderEditor/Controls/Checkbox';
 
 type PropsType = {
   particleSystemProps: ParticleSystemProps,
@@ -27,6 +28,14 @@ const ParticleSystem: React.FC<PropsType> = observer(({
 
   const handleDurationChange = (value: number) => {
     particleSystemProps.duration.set(value, true);
+  }
+
+  const handleStartDelayChange = (value: number) => {
+    particleSystemProps.startDelay.set(value, true);
+  }
+
+  const handleLoopChange = (value: boolean) => {
+    particleSystemProps.loop.set(value, true);
   }
 
   const handleMaxPointsChange = (value: number) => {
@@ -46,6 +55,10 @@ const ParticleSystem: React.FC<PropsType> = observer(({
       <Property label="Duration" property={particleSystemProps.duration}>
         <NumberInput value={particleSystemProps.duration.get()} onChange={handleDurationChange} />
       </Property>
+      <Property label="Start Delay" property={particleSystemProps.startDelay}>
+        <NumberInput value={particleSystemProps.startDelay.get()} onChange={handleStartDelayChange} />
+      </Property>
+      <Checkbox label="Loop" value={particleSystemProps.loop.get()} onChange={handleLoopChange} />
       <Property label="Maximum Particles" property={particleSystemProps.maxPoints}>
         <NumberInput value={particleSystemProps.maxPoints.get()} onChange={handleMaxPointsChange} />
       </Property>

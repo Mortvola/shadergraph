@@ -20,7 +20,7 @@ import { bindGroups } from './BindGroups';
 import { pipelineManager } from './Pipelines/PipelineManager';
 import ForwardRenderPass from './RenderPasses/ForwardRenderPass';
 import BloomPass, { createTexture } from './RenderPasses/BloomPass';
-import { outputFormat } from './RenderSetings';
+import { outputFormat } from './RenderSettings';
 import RenderPass2D from './RenderPasses/RenderPass2D';
 import SceneGraph2D from './SceneGraph2d';
 import TransparentRenderPass2D from './RenderPasses/TransparentRenderPass2D';
@@ -34,6 +34,7 @@ import SceneGraph from './Drawables/SceneNodes/SceneGraph';
 import DecalPass from './RenderPasses/DecalPass';
 import CombinePass from './RenderPasses/CombinePass';
 import { runInAction } from 'mobx';
+import Clock from './Clock';
 
 const requestPostAnimationFrame = (task: (timestamp: number) => void) => {
   requestAnimationFrame((timestamp: number) => {
@@ -58,7 +59,7 @@ class Renderer implements RendererInterface {
 
   render = true;
 
-  previousTimestamp: number | null = null;
+  clock = new Clock();
 
   startFpsTime: number | null = null;
 
@@ -287,7 +288,7 @@ class Renderer implements RendererInterface {
 
   updateFrame = async (timestamp: number) => {
     if (this.render) {
-      if (timestamp !== this.previousTimestamp) {
+      if (timestamp !== this.clock.previousTimestamp) {
         if (this.startFpsTime === null) {
           this.startFpsTime = timestamp;
         }
@@ -307,19 +308,16 @@ class Renderer implements RendererInterface {
 
         this.scene.updateTransforms()
 
-        // Move the camera using the set velocity.
-        if (this.previousTimestamp !== null) {
-          // Get elapsed time in seconds.
-          const elapsedTime = (timestamp - this.previousTimestamp) * 0.001;
+        this.clock.update(timestamp)
 
-          this.camera.updatePosition(elapsedTime, timestamp);
+        this.camera.updatePosition(this.clock.elapsedTime, this.clock.timestamp);
 
-          await Promise.all(Array.from(this.scene.particleSystems).map((ps) => ps.update(timestamp, elapsedTime, this.camera)))
-        }
+        await Promise.all(Array.from(this.scene.particleSystems).map(
+          (ps) => ps.update(this.clock.timestamp, this.clock.elapsedTime, this.camera),
+        ))
 
         await this.drawScene(timestamp);
 
-        this.previousTimestamp = timestamp;
         this.framesRendered += 1;
       }
 

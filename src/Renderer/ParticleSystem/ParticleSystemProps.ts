@@ -1,4 +1,4 @@
-import { PSNumber, PSSpace } from "../Properties/Property";
+import { PSBoolean, PSNumber, PSSpace } from "../Properties/Property";
 import { PropsBase, removeUndefinedKeys } from "../Properties/Types";
 import Collision from "./Collision";
 import LifetimeColor from "./LifetimeColor";
@@ -18,6 +18,10 @@ import type { ParticleSystemPropsInterface } from "./ParticleSystemPropsInterfac
 
 class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterface {
   duration: PSNumber;
+
+  startDelay: PSNumber;
+
+  loop: PSBoolean;
 
   maxPoints: PSNumber
   
@@ -56,6 +60,8 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
     super();
 
     this.duration = new PSNumber('Duration', this, descriptor?.duration, 5, this.handleChange, previousProps?.duration);
+    this.startDelay = new PSNumber('Start Delay', this, descriptor?.startDelay, 0, this.handleChange, previousProps?.startDelay);
+    this.loop = new PSBoolean('Loop', this, descriptor?.loop, true, this.handleChange, previousProps?.loop);
     this.rate = new PSNumber('Rate', this, descriptor?.rate, 2, this.handleChange, previousProps?.rate);
     this.maxPoints = new PSNumber('Maximum Points', this, descriptor?.maxPoints, 50, this.handleChange, previousProps?.maxPoints);
     this.lifetime = new PSValue('Lifetime', this, descriptor?.lifetime, { type: PSValueType.Constant, value: [5, 5] }, this.handleChange, previousProps?.lifetime);
@@ -97,6 +103,8 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
   toDescriptor(): ParticleSystemPropsDescriptor | undefined {
     const descriptor = {
       duration: this.duration.toDescriptor(),
+      startDelay: this.startDelay.toDescriptor(),
+      loop: this.loop.toDescriptor(),
       maxPoints: this.maxPoints.toDescriptor(),
       rate: this.rate.toDescriptor(),
       shape: this.shape.toDescriptor(),

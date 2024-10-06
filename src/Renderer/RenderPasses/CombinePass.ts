@@ -1,6 +1,6 @@
 import { bindGroups } from "../BindGroups";
 import { gpu } from "../Gpu";
-import { outputFormat } from "../RenderSetings";
+import { outputFormat } from "../RenderSettings";
 import { deferredCombine } from "../shaders/deferredCombine";
 
 class CombinePass {

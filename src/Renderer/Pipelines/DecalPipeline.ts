@@ -1,6 +1,6 @@
 import { bindGroups } from '../BindGroups';
 import { gpu } from '../Gpu';
-import { outputFormat } from '../RenderSetings';
+import { outputFormat } from '../RenderSettings';
 import Property from '../ShaderBuilder/Property';
 import { decalShader } from '../shaders/decal';
 import Pipeline from "./Pipeline";
