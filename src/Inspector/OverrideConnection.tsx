@@ -26,7 +26,7 @@ const OverrideConnection: React.FC<PropsType> = ({
         async () => {
           const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${connection.id}`, {
             parentNodeId: parent.id,
-            parentSubnodeId: null,
+            parentTreeId: null,
           })
 
           if (response.ok) {

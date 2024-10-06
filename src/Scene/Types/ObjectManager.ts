@@ -17,8 +17,8 @@ class ObjectManager {
     }
 
     const response = await Http.post<unknown, SceneObjectDescriptor>(`/api/scene-objects`, {
-      parentNodeId: parentNode?.treeId ?? parentNode?.id,
-      parentSubnodeId: parentNode?.treeId !== undefined ? parentNode?.id : undefined,
+      parentNodeId: parentNode.id,
+      parentTreeId: parentNode.treeId,
       name,
       component: descriptor,
     });

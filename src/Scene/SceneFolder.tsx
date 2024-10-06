@@ -73,8 +73,8 @@ const SceneFolder: React.FC<PropsType> = observer(({
         (
           async () => {
             const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${node.id}`, {
-              parentNodeId: folder.treeId !== undefined ? folder.treeId : folder.id,
-              parentSubnodeId: folder.treeId !== undefined ? folder.id : undefined,
+              parentNodeId: folder.id,
+              parentTreeId: folder.treeId,
             })
 
             if (response.ok) {
