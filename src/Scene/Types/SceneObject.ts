@@ -28,7 +28,7 @@ class SceneObject implements SceneObjectInterface {
 
   treeId?: number;
 
-  treeNode?: TreeNode;
+  node?: TreeNode;
 
   nextComponentId = 0;
 
@@ -206,13 +206,13 @@ class SceneObject implements SceneObjectInterface {
   }
 
   transformChanged = () => {
-    this.treeNode?.transformChanged()
+    this.node?.transformChanged()
 
     this.onChange();
   }
 
   isPrefabInstanceRoot(): boolean {
-    if (this.treeNode?.treeId !== undefined && this.treeNode.treeId !== this.treeNode.parent?.treeId) {
+    if (this.node?.treeId !== undefined && this.node.treeId !== this.node.parent?.treeId) {
       return true;
     }
   

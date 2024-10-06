@@ -68,7 +68,7 @@ export interface SceneObjectInterface {
 
   transformProps: TransformPropsInterface;
 
-  treeNode?: TreeNode;
+  node?: TreeNode;
 
   baseObject?: SceneObjectInterface;
 

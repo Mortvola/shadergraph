@@ -124,7 +124,7 @@ class Scene implements SceneInterface {
 
       if (object) {
         node.nodeObject = object;
-        object.treeNode = node;
+        object.node = node;
       }
 
       node.name = nodeDescriptor.name ?? 'Unknown Node';

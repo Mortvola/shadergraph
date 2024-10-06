@@ -225,14 +225,14 @@ const SceneObject: React.FC<PropsType> = observer(({
   return (
     <div className={styles.gameObject} onDragOver={handleDragOver} onDrop={handleDrop}>
       <div className={styles.title}>
-        {`Name: ${sceneObject.treeNode?.name}`}
+        {`Name: ${sceneObject.node?.name}`}
         <div>
           <button ref={buttonRef} onClick={handleAddClick}>Add Component</button>
           {
-            sceneObject.isPrefabInstanceRoot() && sceneObject.treeNode
+            sceneObject.isPrefabInstanceRoot() && sceneObject.node
               ? (
                 <PopupButton label="Overrides" position={Position.top}>
-                  <Overrides node={sceneObject.treeNode} />
+                  <Overrides node={sceneObject.node} />
                 </PopupButton>
               )
               : null

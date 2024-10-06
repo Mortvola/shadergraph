@@ -54,7 +54,7 @@ const OverrideConnection: React.FC<PropsType> = ({
 
                   if (object) {
                     node.nodeObject = object;
-                    object.treeNode = node;
+                    object.node = node;
                   }
             
                   node.name = 'Test'
