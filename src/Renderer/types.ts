@@ -146,8 +146,6 @@ export interface PipelineManagerInterface {
 }
 
 export interface ParticleSystemInterface extends ComponentInterface {
-  props: ParticleSystemPropsInterface
-
   update(time: number, elapsedTime: number, camera: Camera): Promise<void>
 
   removeParticles(): void
