@@ -13,7 +13,8 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import Http from './Http/src';
 import OpenProjectDialog from './OpenProjectDialog';
 import { runInAction } from 'mobx';
-import { Button } from 'react-bootstrap';
+import { Button, Container } from 'react-bootstrap';
+import { PauseIcon, PlayIcon, SkipBack } from 'lucide-react';
 
 const MainView: React.FC = observer(() => {
   const store = useStores();
@@ -93,14 +94,30 @@ const MainView: React.FC = observer(() => {
             <>
               <div className={styles.main}>
                 <Navbar className={styles.menubar}>
-                  <Nav>
-                    <NavDropdown title="Project">
-                      <NavDropdown.Item eventKey="New" onClick={handleNewClick}>New</NavDropdown.Item>
-                      <NavDropdown.Item eventKey="Open" onClick={handleOpenClick}>Open</NavDropdown.Item>
-                    </NavDropdown>
-                    <Button onClick={handleRestartClick}>Restart</Button>
-                    <Button onClick={handlePlayClick}>{store.mainView.clock.paused ? 'Play' : 'Pause'}</Button>
-                  </Nav>
+                  <Container fluid>
+                    <Nav>
+                      <NavDropdown title="Project">
+                        <NavDropdown.Item eventKey="New" onClick={handleNewClick}>New</NavDropdown.Item>
+                        <NavDropdown.Item eventKey="Open" onClick={handleOpenClick}>Open</NavDropdown.Item>
+                      </NavDropdown>
+                    </Nav>
+                    <div>
+                      <Button
+                          className={styles.button}
+                          variant="secondary"
+                          onClick={handleRestartClick}
+                        >
+                        <SkipBack strokeWidth={1.25} />
+                      </Button>
+                      <Button
+                        className={styles.button}
+                        variant="secondary"
+                        onClick={handlePlayClick}
+                      >
+                        {store.mainView.clock.paused ? <PlayIcon strokeWidth={1.25} /> : <PauseIcon strokeWidth={1.25} />}
+                      </Button>
+                    </div>
+                  </Container>
                 </Navbar>
                 <Canvas3d renderer={mainView} onWheel={handleWheel} />
                 <Inspector selectedItem={project.selectedItem} selectedNode={scene?.selectedNode} />
