@@ -21,8 +21,8 @@ const PSValueInput: React.FC<PropsType> = observer(({
     value.value = { value: [value.value[0], max], override: true }
   }
 
-  const handleTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    value.style = { value: event.target.value as PSValueType, override: true }
+  const handleTypeChange = (newValue: PSValueType) => {
+    value.style = { value: newValue, override: true }
   }
 
   const handleRangeChange = (range: [number, number]) => {

@@ -33,8 +33,8 @@ const PSColorInput: React.FC<PropsType> = observer(({
     }
   }
 
-  const handleTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    value.style = { value: event.target.value as PSColorType, override: true }
+  const handleTypeChange = (newValue: PSColorType) => {
+    value.style = { value: newValue, override: true }
   }
 
   return (
@@ -56,12 +56,12 @@ const PSColorInput: React.FC<PropsType> = observer(({
               )
 
             case PSColorType.Gradient:
-            case PSColorType.RandomeGradient:
+            case PSColorType.RandomGradient:
               return (
                 <>
                   <GradientEditor value={value.gradients[0]} />
                   {
-                    value.style === PSColorType.RandomeGradient
+                    value.style === PSColorType.RandomGradient
                       ? <GradientEditor value={value.gradients[1]} />
                       : null
                   }

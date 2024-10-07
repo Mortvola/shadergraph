@@ -41,7 +41,7 @@ export enum PSColorType {
   Constant = 'Constant',
   Random = 'Random',
   Gradient = 'Gradient',
-  RandomeGradient = 'RandomGradient',
+  RandomGradient = 'RandomGradient',
 }
 
 export type PSColorDescriptor = {

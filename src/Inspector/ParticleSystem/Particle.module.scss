@@ -9,3 +9,14 @@
     align-items: center;
   }
 }
+
+.options {
+  position: unset;
+
+  > button {
+    padding: unset;
+    background-color: unset;
+    color: black;
+    border: none;
+  }
+}

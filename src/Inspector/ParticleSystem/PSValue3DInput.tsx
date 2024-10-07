@@ -27,8 +27,8 @@ const PSValue3DInput: React.FC<PropsType> = observer(({
     value.values[2].value = { value: [min, value.values[2].value[1]], override: true }
   }
 
-  const handleTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    value.style = { value: event.target.value as PSValueType, override: true }
+  const handleTypeChange = (newValue: PSValueType) => {
+    value.style = { value: newValue, override: true }
   }
 
   const handleRangeChange = (range: [number, number]) => {
