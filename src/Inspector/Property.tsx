@@ -32,6 +32,7 @@ const Property: React.FC<PropsType> = observer(({
 
   const handleOpenClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();
+    event.preventDefault();
 
     if (property.override) {
       const element = ref.current;
@@ -62,11 +63,17 @@ const Property: React.FC<PropsType> = observer(({
     }
   }
 
+  const handleLabelClick: React.MouseEventHandler<HTMLLabelElement> = (event) => {
+    event.stopPropagation()
+    event.preventDefault()
+  }
+
   return (
     <label
       className={`${styles.property} ${className ?? ''}`}
       onDragOver={onDragOver}
       onDrop={onDrop}
+      onClick={handleLabelClick}
     >
       <div
         ref={ref}
