@@ -17,9 +17,11 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
   particles: Map<number, Particle> = new Map();
 
-  startTime: number | null = null;
+  initializationTime: number | null = null;
 
-  lastEmitTime = 0;
+  startTime = 0;
+
+  nextEmitTime = 0;
 
   rootNode = new RenderNode();
 
@@ -27,12 +29,6 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     super(ComponentType.ParticleSystem)
   
     this.props = props;
-  }
-
-  reset() {
-    this.startTime = 0;
-    this.lastEmitTime = 0
-    this.particles.clear()
   }
 
   collided(point: Particle, elapsedTime: number): boolean {
@@ -151,92 +147,81 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
       this.rootNode.computeTransform(this.rootNode.parentNode?.transform)
 
-      if (this.startTime === null || this.startTime >= time) {
-        this.startTime = time;
-        this.lastEmitTime = time;
+      if (this.initializationTime === null || this.initializationTime >= time) {
+        this.initializationTime = time;
+        this.startTime = this.initializationTime + this.props.startDelay.get() * 1000.0;
+        this.nextEmitTime = this.startTime;
 
         this.removeParticles()
       }
 
-      const elapsedDuration = (time - (this.startTime + this.props.startDelay.get() * 1000.0)) / 1000.0;
+      // Update existing particles
+      for (const [, particle] of this.particles) {
+        await this.updateParticle(particle, time, camera);
+      }
 
-      if (elapsedDuration >= 0 && (this.props.loop.get() || elapsedDuration <= this.props.duration.get())) {
-        const durationRemainder = elapsedDuration % this.props.duration.get();
-        const durationT = durationRemainder / this.props.duration.get();
-
-        if (this.lastEmitTime === 0) {
-          this.lastEmitTime = time;
-
-          await this.emitSome(1, time, durationT, camera)
-        }
-        else {
-          // Update existing particles
-          await this.updateParticles(time, elapsedTime, camera);
-        
-          // Add new particles
-          await this.emit(time, durationT, camera)
-        }
-      } else {
-        // Update existing particles
-        await this.updateParticles(time, elapsedTime, camera);
+      if (time >= this.nextEmitTime && (this.props.loop.get() || this.nextEmitTime <= this.startTime + this.props.duration.get() * 1000)) {
+        await this.emit(time, camera)
       }
     }
   }
 
-  private async updateParticles(time: number, elapsedTime: number, camera: Camera) {
-    for (const [, particle] of this.particles) {
-      const lifetimeT = (time - particle.startTime) / (particle.lifetime * 1000);
+  private async updateParticle(particle: Particle, time: number, camera: Camera) {
+    const lifetimeT = (time - particle.startTime) / (particle.lifetime * 1000);
 
-      if (lifetimeT > 1.0 || lifetimeT < 0.0) {
-        // Particle's lifetime has expired. Remove the scene node from the graph
-        // and delete the particle.
-        if (particle.renderNode) {
-          particle.renderNode.detachSelf();
-          particle.renderNode = null;
-        }
-        
-        this.particles.delete(particle.id)    
+    if (lifetimeT > 1.0 || lifetimeT < 0.0) {
+      // Particle's lifetime has expired. Remove the scene node from the graph
+      // and delete the particle.
+      if (particle.renderNode) {
+        particle.renderNode.detachSelf();
+        particle.renderNode = null;
       }
-      else {
-        const gravityVector = vec4.create(0, 1, 0, 0)
+      
+      this.particles.delete(particle.id)    
+    }
+    else {
+      const elapsedSeconds = (time - particle.lastUpdateTime) / 1000.0;
 
-        if (!this.renderNode) {
-          throw new Error('renderNode is not set')
-        }
+      const gravityVector = vec4.create(0, 1, 0, 0)
 
-        // Transform the position into world space to allow for gravity effect
-        // and collision detection.
-        // Note that velocity is already in world space
-        vec4.transformMat4(particle.position, this.rootNode.transform, particle.position)
+      if (!this.renderNode) {
+        throw new Error('renderNode is not set')
+      }
 
-        // Adjust velocity with gravity
+      // Transform the position into world space to allow for gravity effect
+      // and collision detection.
+      // Note that velocity is already in world space
+      vec4.transformMat4(particle.position, this.rootNode.transform, particle.position)
+
+      // Adjust velocity with gravity
+      vec4.addScaled(
+        particle.velocity,
+        gravityVector,
+        this.props.gravityModifier.getValue(lifetimeT) * gravity * elapsedSeconds,
+        particle.velocity,
+      )
+
+      if (this.props.lifetimeVelocity.enabled.get()) {
+        particle.velocity = vec4.scale(particle.velocity, this.props.lifetimeVelocity.speedModifier.getValue(lifetimeT));
+      }
+
+      if (!this.collided(particle,  elapsedSeconds)) {
+        // No collision occured
+        // Find new position with current velocity
         vec4.addScaled(
+          particle.position,
           particle.velocity,
-          gravityVector,
-          this.props.gravityModifier.getValue(lifetimeT) * gravity * elapsedTime,
-          particle.velocity,
-        )
-
-        if (this.props.lifetimeVelocity.enabled.get()) {
-          particle.velocity = vec4.scale(particle.velocity, this.props.lifetimeVelocity.speedModifier.getValue(lifetimeT));
-        }
-
-        if (!this.collided(particle,  elapsedTime)) {
-          // No collision occured
-          // Find new position with current velocity
-          vec4.addScaled(
-            particle.position,
-            particle.velocity,
-            elapsedTime,
-            particle.position,
-          );
-        }
-
-        // Transform position back into local space.
-        vec4.transformMat4(particle.position, this.rootNode.inverseTransform, particle.position)
-
-        await this.renderParticle(particle, lifetimeT, camera);
+          elapsedSeconds,
+          particle.position,
+        );
       }
+
+      // Transform position back into local space.
+      vec4.transformMat4(particle.position, this.rootNode.inverseTransform, particle.position)
+
+      await this.renderParticle(particle, lifetimeT, camera);
+
+      particle.lastUpdateTime = time;
     }
   }
 
@@ -362,50 +347,50 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     }
   }
 
-  private async emit(time: number, durationT: number, camera: Camera) {
-    if (this.particles.size < this.props.maxPoints.get()) {
-      const emitElapsedTime = time - this.lastEmitTime;
+  private async emit(time: number, camera: Camera) {
+    const millisecondsPerEmission = 1000 / this.props.rate.get();
+    const maxParticles = this.props.maxPoints.get();
 
-      const numToEmit = Math.min(Math.trunc((this.props.rate.get() / 1000) * emitElapsedTime), this.props.maxPoints.get() - this.particles.size);
+    while (this.nextEmitTime  <= time) {
+      const startTime = this.nextEmitTime;
 
-      if (numToEmit > 0) {
-        this.lastEmitTime = time;
-      
-        await this.emitSome(numToEmit, time, durationT, camera)
+      if (this.particles.size < maxParticles) {
+        const elapsedSinceStart = (startTime - this.startTime) / 1000.0;
+        const durationRemainder = elapsedSinceStart % this.props.duration.get();
+        const durationT = durationRemainder / this.props.duration.get();
+  
+        const lifetime = this.props.lifetime.getValue(durationT);
+        const startSpeed = this.props.startSpeed.getValue(durationT);
+        const startSize = this.props.startSize.getValue(durationT);
+        const startRotation = this.props.startRotation.getValue(durationT)
+        const startColor = vec4.create(...this.props.startColor.getColor(durationT));
+        const [position, direction] = this.props.shape.getPositionAndDirection();
+
+        const particle = new Particle(
+          position,
+          vec4.scale(direction, startSpeed),
+          startTime,
+          lifetime,
+          startSize,
+          startRotation,
+          startColor,
+        )
+
+        if (this.props.space.get() === SpaceType.World) {
+          // Transform the position to world psace.
+          vec4.transformMat4(particle.position, this.renderNode!.transform, particle.position)
+        }
+
+        // Convert velocity to world space
+        vec4.transformMat4(particle.velocity, this.renderNode!.transform, particle.velocity)  
+
+        this.particles.set(particle.id, particle)
+
+        // await this.renderParticle(particle, 0, camera);
+        await this.updateParticle(particle, time, camera)
       }
-    }
-  }
 
-  async emitSome(numToEmit: number, startTime: number, durationT: number, camera: Camera) {
-    for (; numToEmit > 0; numToEmit -= 1) {
-      const lifetime = this.props.lifetime.getValue(durationT);
-      const startSpeed = this.props.startSpeed.getValue(durationT);
-      const startSize = this.props.startSize.getValue(durationT);
-      const startRotation = this.props.startRotation.getValue(durationT)
-      const startColor = vec4.create(...this.props.startColor.getColor(durationT));
-      const [position, direction] = this.props.shape.getPositionAndDirection();
-
-      const particle = new Particle(
-        position,
-        vec4.scale(direction, startSpeed),
-        startTime,
-        lifetime,
-        startSize,
-        startRotation,
-        startColor,
-      )
-
-      if (this.props.space.get() === SpaceType.World) {
-        // Transform the position to world psace.
-        vec4.transformMat4(particle.position, this.renderNode!.transform, particle.position)
-      }
-
-      // Convert velocity to world space
-      vec4.transformMat4(particle.velocity, this.renderNode!.transform, particle.velocity)  
-
-      this.particles.set(particle.id, particle)
-
-      await this.renderParticle(particle, 0, camera);
+      this.nextEmitTime += millisecondsPerEmission;
     }
   }
 

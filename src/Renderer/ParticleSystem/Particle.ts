@@ -13,6 +13,8 @@ class Particle {
 
   startTime: number;
 
+  lastUpdateTime: number;
+
   lifetime: number;
 
   renderNode: RenderNodeInterface | null = null;
@@ -40,6 +42,7 @@ class Particle {
     this.position = position;
     this.velocity = velocity;
     this.startTime = startTime;
+    this.lastUpdateTime = startTime;
     this.lifetime = lifetime;
     this.startSize = startSize;
     this.startRotation = startRotation;

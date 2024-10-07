@@ -151,8 +151,6 @@ export interface ParticleSystemInterface extends ComponentInterface {
   update(time: number, elapsedTime: number, camera: Camera): Promise<void>
 
   removeParticles(): void
-
-  reset(): void
 }
 
 export type MaterialRecordDescriptor = {
