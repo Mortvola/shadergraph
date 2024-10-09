@@ -4,11 +4,15 @@ import styles from './NumberInput.module.scss';
 type PropsType = {
   value: number,
   onChange?: (value: number) => void,
+  onFocus?: () => void,
+  onBlur?: () => void,
 }
 
 const NumberInput: React.FC<PropsType> = ({
   value,
   onChange,
+  onFocus,
+  onBlur,
 }) => {
   const [stringValue, setStringValue] = React.useState<string>(value.toString())
 
@@ -37,6 +41,8 @@ const NumberInput: React.FC<PropsType> = ({
       value={stringValue}
       onChange={handleChange}
       onKeyDown={handleKeyDown}
+      onFocus={onFocus}
+      onBlur={onBlur}
     />
   )
 }

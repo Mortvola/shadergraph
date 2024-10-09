@@ -15,6 +15,7 @@ import {
   SpaceType,
 } from "./Types";
 import type { ParticleSystemPropsInterface } from "./ParticleSystemPropsInterface";
+import Emissions from "./Emissions";
 
 class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterface {
   duration: PSNumber;
@@ -25,7 +26,7 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
 
   maxPoints: PSNumber
   
-  rate: PSNumber
+  emissions: Emissions
 
   shape: Shape;
 
@@ -62,10 +63,20 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
     this.duration = new PSNumber('Duration', this, descriptor?.duration, 5, this.handleChange, previousProps?.duration);
     this.startDelay = new PSNumber('Start Delay', this, descriptor?.startDelay, 0, this.handleChange, previousProps?.startDelay);
     this.loop = new PSBoolean('Loop', this, descriptor?.loop, true, this.handleChange, previousProps?.loop);
-    this.rate = new PSNumber('Rate', this, descriptor?.rate, 2, this.handleChange, previousProps?.rate);
+
+    // Handle retrieving the rate over time from the old location
+    // TODO: Remove when no longer needed.
+    const emissionsDescriptor = { ...descriptor?.emissions }
+
+    if (emissionsDescriptor.rate === undefined) {
+      emissionsDescriptor.rate = descriptor?.rate
+    }
+
+    this.emissions = new Emissions(this, emissionsDescriptor, this.handleChange, previousProps?.emissions)
+
     this.maxPoints = new PSNumber('Maximum Points', this, descriptor?.maxPoints, 50, this.handleChange, previousProps?.maxPoints);
     this.lifetime = new PSValue('Lifetime', this, descriptor?.lifetime, { type: PSValueType.Constant, value: [5, 5] }, this.handleChange, previousProps?.lifetime);
-    this.shape = new Shape(this, descriptor?.shape, { enabled: true, type: ShapeType.Cone, }, this.handleChange, previousProps?.shape);
+    this.shape = new Shape(this, descriptor?.shape, this.handleChange, previousProps?.shape);
     this.startSpeed = new PSValue('Start Speed', this, descriptor?.startVelocity, {}, this.handleChange, previousProps?.startSpeed);
     this.startSize = new PSValue3D('Start Size', this, descriptor?.startSize, undefined, this.handleChange, previousProps?.startSize);
     this.startRotation = new PSValue3D('Start Rotation', this, descriptor?.startRotation, undefined, this.handleChange, previousProps?.startRotation);
@@ -106,13 +117,13 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
       startDelay: this.startDelay.toDescriptor(),
       loop: this.loop.toDescriptor(),
       maxPoints: this.maxPoints.toDescriptor(),
-      rate: this.rate.toDescriptor(),
       shape: this.shape.toDescriptor(),
       lifetime: this.lifetime.toDescriptor(),
       startVelocity: this.startSpeed.toDescriptor(),
       startSize: this.startSize.toDescriptor(),
       startRotation: this.startRotation.toDescriptor(),
       startColor: this.startColor.toDescriptor(),
+      emissions: this.emissions.toDescriptor(),
       space: this.space.toDescriptor(),
       gravityModifier: this.gravityModifier.toDescriptor(),
       lifetimeSize: this.lifetimeSize.toDescriptor(),

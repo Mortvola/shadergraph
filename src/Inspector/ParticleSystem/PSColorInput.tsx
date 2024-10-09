@@ -38,7 +38,7 @@ const PSColorInput: React.FC<PropsType> = observer(({
   }
 
   return (
-    <>
+    <div style={{ display: 'flex', columnGap: '0.25rem' }}>
       {
         (() => {
           switch (value.style) {
@@ -71,7 +71,7 @@ const PSColorInput: React.FC<PropsType> = observer(({
         })()
       }
       <PSColorTypeSelector value={value.style} onChange={handleTypeChange} />
-    </>
+    </div>
   )
 })
 

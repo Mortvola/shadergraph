@@ -1,0 +1,33 @@
+.bursts {
+  margin-top: 0.5rem;
+}
+
+.table {
+  display: grid;
+  grid-template-columns: repeat(4, max-content);
+  grid-template-rows: max-content;
+  width: max-content;
+  height: max-content;
+  border-top: thin black solid;
+  border-left: thin black solid;
+
+  >div {
+    border-right: thin black solid;
+    border-bottom: thin black solid;
+    padding: 0.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+    width: 100%;
+  }
+
+  > .title {
+    text-align: right;
+    background-color: #9b9b9b
+  }
+}
+
+.iconButton {
+  padding: 4px;
+  line-height: 0;
+}

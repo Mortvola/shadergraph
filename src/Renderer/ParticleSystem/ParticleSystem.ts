@@ -23,6 +23,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
   private nextEmitTime = 0;
 
+  private lastBurstTime: number | null = null;
+
   private rootNode = new RenderNode();
 
   constructor(props: ParticleSystemPropsInterface) {
@@ -151,6 +153,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         this.initializationTime = time;
         this.startTime = this.initializationTime + this.props.startDelay.get() * 1000.0;
         this.nextEmitTime = this.startTime;
+        this.lastBurstTime = null;
 
         this.removeParticles()
       }
@@ -162,58 +165,87 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
       if (time >= this.nextEmitTime && (this.props.loop.get() || this.nextEmitTime <= this.startTime + this.props.duration.get() * 1000)) {
         await this.emit(time, camera)
+
+        await this.burst(time, camera);
       }
     }
   }
 
+  private async burst(time: number, camera: Camera) {
+    // const elapsedSinceStart = (time - this.startTime) / 1000.0;
+    // const durationRemainder = elapsedSinceStart % this.props.duration.get();
+
+    const durationMilliseconds = (this.props.duration.get() * 1000)
+    const period = Math.trunc((this.lastBurstTime ?? this.startTime) / durationMilliseconds)
+    const currentPeriod = Math.trunc(time / durationMilliseconds)
+
+    for (let p = period; p <= currentPeriod; p += 1) {
+      for (const burst of this.props.emissions.bursts.get()) {
+        const burstTime = p * durationMilliseconds + burst.time * 1000;
+
+        if ((this.lastBurstTime === null || burstTime > this.lastBurstTime) && burstTime <= time) {
+          for (let i = 0; i < burst.count.getValue(0); i += 1) {
+            this.emitOne(burstTime, time, camera)
+          }
+
+          this.lastBurstTime = burstTime;
+        }
+      }      
+    }
+  }
+
   private async emit(time: number, camera: Camera) {
-    const millisecondsPerEmission = 1000 / this.props.rate.get();
+    const millisecondsPerEmission = 1000 / this.props.emissions.rate.get();
     const maxParticles = this.props.maxPoints.get();
 
     while (this.nextEmitTime  <= time) {
       const startTime = this.nextEmitTime;
 
       if (this.particles.size < maxParticles) {
-        const elapsedSinceStart = (startTime - this.startTime) / 1000.0;
-        const durationRemainder = elapsedSinceStart % this.props.duration.get();
-        const durationT = durationRemainder / this.props.duration.get();
-  
-        const lifetime = this.props.lifetime.getValue(durationT);
-
-        // Make sure that the particle will still exist at the end of this time slice...
-        if (startTime + lifetime * 1000 >= time) {
-          const startSpeed = this.props.startSpeed.getValue(durationT);
-          const startSize = this.props.startSize.getValue(durationT);
-          const startRotation = this.props.startRotation.getValue(durationT)
-          const startColor = vec4.create(...this.props.startColor.getColor(durationT));
-          const [position, direction] = this.props.shape.getPositionAndDirection();
-
-          const particle = new Particle(
-            position,
-            vec4.scale(direction, startSpeed),
-            startTime,
-            lifetime,
-            startSize,
-            startRotation,
-            startColor,
-          )
-
-          if (this.props.space.get() === SpaceType.World) {
-            // Transform the position to world psace.
-            vec4.transformMat4(particle.position, this.renderNode!.transform, particle.position)
-          }
-
-          // Convert velocity to world space
-          vec4.transformMat4(particle.velocity, this.renderNode!.transform, particle.velocity)  
-
-          this.particles.set(particle.id, particle)
-
-          // await this.renderParticle(particle, 0, camera);
-          await this.updateParticle(particle, time, camera)
-        }
+        await this.emitOne(startTime, time, camera)
       }
 
       this.nextEmitTime += millisecondsPerEmission;
+    }
+  }
+
+  private async emitOne(startTime: number, time: number, camera: Camera) {
+    const elapsedSinceStart = (startTime - this.startTime) / 1000.0;
+    const durationRemainder = elapsedSinceStart % this.props.duration.get();
+    const durationT = durationRemainder / this.props.duration.get();
+
+    const lifetime = this.props.lifetime.getValue(durationT);
+
+    // Make sure that the particle will still exist at the end of this time slice...
+    if (startTime + lifetime * 1000 >= time) {
+      const startSpeed = this.props.startSpeed.getValue(durationT);
+      const startSize = this.props.startSize.getValue(durationT);
+      const startRotation = this.props.startRotation.getValue(durationT)
+      const startColor = vec4.create(...this.props.startColor.getColor(durationT));
+      const [position, direction] = this.props.shape.getPositionAndDirection();
+
+      const particle = new Particle(
+        position,
+        vec4.scale(direction, startSpeed),
+        startTime,
+        lifetime,
+        startSize,
+        startRotation,
+        startColor,
+      )
+
+      if (this.props.space.get() === SpaceType.World) {
+        // Transform the position to world psace.
+        vec4.transformMat4(particle.position, this.renderNode!.transform, particle.position)
+      }
+
+      // Convert velocity to world space
+      vec4.transformMat4(particle.velocity, this.renderNode!.transform, particle.velocity)  
+
+      this.particles.set(particle.id, particle)
+
+      // await this.renderParticle(particle, 0, camera);
+      await this.updateParticle(particle, time, camera)
     }
   }
 

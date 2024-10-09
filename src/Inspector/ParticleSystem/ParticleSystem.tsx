@@ -14,6 +14,7 @@ import { type SpaceType } from '../../Renderer/ParticleSystem/Types';
 import PSSpaceTypeSelector from './PSSpaceTypeSelector';
 import PSValue3DInput from './PSValue3DInput';
 import Checkbox from '../../ShaderEditor/Controls/Checkbox';
+import PSEmissions from './PSEmissions';
 
 type PropsType = {
   particleSystemProps: ParticleSystemProps,
@@ -42,10 +43,6 @@ const ParticleSystem: React.FC<PropsType> = observer(({
     particleSystemProps.maxPoints.set(value, true);
   }
 
-  const handleRateChange = (value: number) => {
-    particleSystemProps.rate.set(value, true);
-  }
-
   const handleSpaceChange = (value: SpaceType) => {
     particleSystemProps.space.set(value, true);
   }
@@ -61,9 +58,6 @@ const ParticleSystem: React.FC<PropsType> = observer(({
       <Checkbox label="Loop" value={particleSystemProps.loop.get()} onChange={handleLoopChange} />
       <Property label="Maximum Particles" property={particleSystemProps.maxPoints}>
         <NumberInput value={particleSystemProps.maxPoints.get()} onChange={handleMaxPointsChange} />
-      </Property>
-      <Property label="Emission Rate" property={particleSystemProps.rate}>
-        <NumberInput value={particleSystemProps.rate.get()} onChange={handleRateChange} />
       </Property>
       <Property label="Lifetime" property={particleSystemProps.lifetime}>
         <PSValueInput value={particleSystemProps.lifetime} />
@@ -86,6 +80,9 @@ const ParticleSystem: React.FC<PropsType> = observer(({
       <Property label="Gravity Modifier" property={particleSystemProps.gravityModifier}>
         <PSValueInput value={particleSystemProps.gravityModifier} />
       </Property>
+      <PSModule title="Emissions" module={particleSystemProps.emissions}>
+        <PSEmissions emissions={particleSystemProps.emissions} />
+      </PSModule>
       <PSModule title="Shape" module={particleSystemProps.shape}>
         <ShapeModule shape={particleSystemProps.shape} />
       </PSModule>

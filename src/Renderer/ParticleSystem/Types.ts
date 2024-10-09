@@ -106,6 +106,13 @@ export type CollisionDescriptor = PSModuleDescriptor & {
   dampen?: number,
 }
 
+export type BurstsDescriptor = { time: number, count: PSValueDescriptor, cycles: number, probability: number }[];
+
+export type EmissionsDescriptor = PSModuleDescriptor & {
+  rate?: number,
+  bursts?: BurstsDescriptor,
+}
+
 export enum SpaceType {
   Local = 'Local',
   World = 'World',
@@ -142,6 +149,8 @@ export type ParticleSystemPropsDescriptor = {
   loop?: boolean,
   maxPoints?: number,
   rate?: number,
+
+  emissions?: EmissionsDescriptor,
 
   lifetime?: PSValueDescriptor,
 

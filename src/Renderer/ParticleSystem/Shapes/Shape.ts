@@ -21,10 +21,11 @@ class Shape extends PSModule {
   constructor(
     props: PropsBase,
     descriptor?: ShapeDescriptor,
-    defaultDescriptor: ShapeDescriptor = {},
     onChange?: () => void,
     previousProps?: Shape,
   ) {
+    const defaultDescriptor: ShapeDescriptor = { enabled: true, type: ShapeType.Cone, };
+    
     super(props, descriptor?.enabled, defaultDescriptor.enabled, onChange, previousProps?.enabled);
   
     this.type = new PSShapeType('Shape', props, descriptor?.type, defaultDescriptor?.type, onChange, previousProps?.type)

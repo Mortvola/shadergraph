@@ -3,6 +3,7 @@ import type PSColor from "../Properties/PSColor";
 import type PSValue from "../Properties/PSValue";
 import type PSValue3D from "../Properties/PSValue3D";
 import type Collision from "./Collision";
+import type Emissions from "./Emissions";
 import type LifetimeColor from "./LifetimeColor";
 import type LifetimeSize from "./LIfetimeSize";
 import type LifetimeVelocity from "./LifetimeVelocity";
@@ -19,7 +20,7 @@ export interface ParticleSystemPropsInterface {
 
   maxPoints: PSNumber;
 
-  rate: PSNumber;
+  emissions: Emissions;
 
   shape: Shape;
 

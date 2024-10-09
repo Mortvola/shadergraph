@@ -8,10 +8,14 @@ import CurveEditor from '../../Color/CurveEditor';
 
 type PropsType = {
   value: PSValue,
+  onFocus?: () => void,
+  onBlur?: () => void,
 }
 
 const PSValueInput: React.FC<PropsType> = observer(({
   value,
+  onFocus,
+  onBlur,
 }) => {
   const handleMinChange = (min: number) => {
     value.value = { value: [min, value.value[1]], override: true }
@@ -30,7 +34,7 @@ const PSValueInput: React.FC<PropsType> = observer(({
   }
 
   return (
-    <>
+    <div style={{ display: 'flex', columnGap: '0.25rem' }}>
       {
         (
           () => {
@@ -41,6 +45,8 @@ const PSValueInput: React.FC<PropsType> = observer(({
                   <NumberInput
                     value={value.value[0]}
                     onChange={handleMinChange}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
                   />        
                 )
 
@@ -63,6 +69,8 @@ const PSValueInput: React.FC<PropsType> = observer(({
                   <NumberInput
                     value={value.value[1]}
                     onChange={handleMaxChange}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
                   />    
                 )
             }
@@ -72,7 +80,7 @@ const PSValueInput: React.FC<PropsType> = observer(({
         )()
       }
       <PSValueTypeSelector value={value.style} onChange={handleTypeChange} />
-    </>
+    </div>
   )
 })
 
