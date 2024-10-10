@@ -12,7 +12,6 @@ import type ParticleSystemProps from './ParticleSystem/ParticleSystemProps';
 import type LightProps from './Properties/LightProps';
 import type { PSVec3Type } from './Properties/Property';
 import type { ValueType } from './ShaderBuilder/GraphDescriptor';
-import type { ParticleSystemPropsInterface } from './ParticleSystem/ParticleSystemPropsInterface';
 import type { TransformPropsDescriptor } from '../Scene/Types/Types';
 import type Camera from './Camera';
 

@@ -25,7 +25,7 @@ import RenderPass2D from './RenderPasses/RenderPass2D';
 import SceneGraph2D from './SceneGraph2d';
 import TransparentRenderPass2D from './RenderPasses/TransparentRenderPass2D';
 import OutlinePass from './RenderPasses/OutlinePass';
-import { isDrawableNode } from './Drawables/SceneNodes/utils';
+import { isDrawableComponent } from './Drawables/SceneNodes/utils';
 import Mesh from './Drawables/Mesh';
 import { plane } from './Drawables/Shapes/plane';
 import { circles } from './shaders/circles';
@@ -544,7 +544,7 @@ class Renderer implements RendererInterface {
     }
     else {
       for (const node of sceneNode.nodes) {
-        if (isDrawableNode(node)) {
+        if (isDrawableComponent(node)) {
           this.outlineMesh = node
           return true;
         }

@@ -4,7 +4,7 @@ import { useStores } from '../../State/store';
 import type { RenderNodeInterface, DrawableComponentInterface, ModelItem} from '../../Renderer/Types';
 import { ComponentType } from '../../Renderer/Types';
 import { isRenderNode } from '../../Renderer/Drawables/SceneNodes/RenderNode';
-import { isDrawableNode } from '../../Renderer/Drawables/SceneNodes/utils';
+import { isDrawableComponent } from '../../Renderer/Drawables/SceneNodes/utils';
 import MeshNode from './MeshNode';
 
 type PropsType = {
@@ -52,7 +52,7 @@ const ModelTree: React.FC<PropsType> = observer(({
         const node = stack[0];
         stack = stack.slice(1);
 
-        if (isDrawableNode(node.node)) {
+        if (isDrawableComponent(node.node)) {
           elements.push(
             <MeshNode key={key} node={node.node} level={node.level} onMaterialAssignment={handleMaterialAssignment} />
           )  

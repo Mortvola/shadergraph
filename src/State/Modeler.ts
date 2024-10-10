@@ -2,9 +2,9 @@ import { makeObservable, observable, runInAction } from "mobx";
 import Mesh from "../Renderer/Drawables/Mesh";
 import RenderNode, { isRenderNode } from "../Renderer/Drawables/SceneNodes/RenderNode";
 import DrawableComponent from "../Renderer/Drawables/DrawableComponent";
-import { isDrawableNode } from "../Renderer/Drawables/SceneNodes/utils";
+import { isDrawableComponent } from "../Renderer/Drawables/SceneNodes/utils";
 import type Renderer from "../Renderer/Renderer";
-import type { RenderNodeInterface, DrawableComponentInterface, MaterialInterface } from "../Renderer/Types";
+import { type RenderNodeInterface, type DrawableComponentInterface, type MaterialInterface, ComponentType } from "../Renderer/Types";
 import type { ModelerInterface, NodeMaterials } from "./types";
 import { downloadFbx } from "../Fbx/LoadFbx";
 import type { FbxNodeInterface} from "../Fbx/types";
@@ -88,7 +88,7 @@ class Modeler implements ModelerInterface {
       const node = stack[0];
       stack = stack.slice(1);
 
-      if (isDrawableNode(node)) {
+      if (isDrawableComponent(node)) {
         const id = materials[node.name];
 
         if (id !== undefined) {
@@ -107,16 +107,19 @@ class Modeler implements ModelerInterface {
 
   getDrawableNode(node: RenderNodeInterface): DrawableComponentInterface | null {
     if (isRenderNode(node)) {
-      for (const child of node.nodes) {
-        const n = this.getDrawableNode(child);
-
-        if (isDrawableNode(n)) {
-          return n;
+      for (const component of node.components) {
+        if (isDrawableComponent(component)) {
+          return component
         }
       }
-    }
-    else if (isDrawableNode(node)) {
-      return node;
+
+      for (const child of node.nodes) {
+        const result = this.getDrawableNode(child);
+
+        if (result !== null) {
+          return result;
+        }
+      }
     }
 
     return null;

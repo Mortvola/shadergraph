@@ -2,7 +2,7 @@ import type { Mat4, Quat, RotationOrder, Vec4} from 'wgpu-matrix';
 import { mat4, quat, vec3 } from 'wgpu-matrix';
 import type DrawableInterface from "../DrawableInterface";
 import type { RenderNodeInterface, SceneGraphInterface} from '../../Types';
-import { isDrawableNode } from './utils';
+import { isDrawableComponent } from './utils';
 import type Component from '../Component';
 import { getEulerAngles } from '../../Math';
 
@@ -138,7 +138,7 @@ class RenderNode implements RenderNodeInterface {
 
     for (const node of this.nodes) {
       let result;
-      if (isDrawableNode(node)) {
+      if (isDrawableComponent(node)) {
         if (!filter || filter(node.drawable)) {
           result = node.hitTest(origin, ray)    
         }
@@ -163,7 +163,7 @@ class RenderNode implements RenderNodeInterface {
 }
 
 export const isRenderNode = (r: unknown): r is RenderNode => (
-  (r as RenderNode).nodes !== undefined
+  (r as RenderNode)?.nodes !== undefined
 )
 
 export default RenderNode;
