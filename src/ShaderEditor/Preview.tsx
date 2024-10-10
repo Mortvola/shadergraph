@@ -3,16 +3,11 @@ import Canvas3d from '../Canvas3d';
 import styles from './Preview.module.scss';
 import Draggable from './Draggable';
 import { useStores } from '../State/store';
-// import Mesh from '../Renderer/Drawables/Mesh';
-// import { plane as planeShape } from '../Renderer/Drawables/Shapes/plane';
-// import DrawableComponent from '../Renderer/Drawables/DrawableComponent';
+import Mesh from '../Renderer/Drawables/Mesh';
+import { plane as planeShape } from '../Renderer/Drawables/Shapes/plane';
+import DrawableComponent from '../Renderer/Drawables/DrawableComponent';
 import RenderNode from '../Renderer/Drawables/SceneNodes/RenderNode';
 import { isModelItem } from '../Project/Types/types';
-
-const plane = new RenderNode();
-// const component = await DrawableComponent.create(await Mesh.create(planeShape(1, 1), 1));
-// plane.addComponent(component);
-plane.name = 'Plane';
 
 const Preview: React.FC = () => {
   const store = useStores();
@@ -50,13 +45,18 @@ const Preview: React.FC = () => {
     }
   }, [position]);
 
-  const handleModelChange: React.ChangeEventHandler<HTMLSelectElement> = async (event) => {
-    if (event.target.value === '-1') {
+  const loadModel = async (value: string) => {
+    if (value === '-1') {
+      const plane = new RenderNode();
+      const component = await DrawableComponent.create(await Mesh.create(planeShape(1, 1), 1));
+      plane.addComponent(component);
+      plane.name = 'Plane';
+
       await previewModeler.assignModel(plane);
       store.graph?.applyMaterial()
     }
     else {
-      const modelItem = store.project.getItemByItemId(parseInt(event.target.value, 10), 'model')
+      const modelItem = store.project.getItemByItemId(parseInt(value, 10), 'model')
 
       if (isModelItem(modelItem)) {
         const model = await store.getModel(modelItem)
@@ -67,6 +67,10 @@ const Preview: React.FC = () => {
         }
       }
     }
+  }
+
+  const handleModelChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
+    loadModel(event.target.value)
   }
 
   const handleWheel: React.WheelEventHandler<HTMLDivElement> = (event) => {
@@ -82,7 +86,7 @@ const Preview: React.FC = () => {
 
   React.useEffect(() => {
     if (previewModeler.model === null) {
-      previewModeler.assignModel(plane);
+      loadModel('-1');
     }
   }, [previewModeler]);
 
