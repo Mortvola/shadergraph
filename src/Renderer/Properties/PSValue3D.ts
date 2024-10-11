@@ -75,6 +75,7 @@ class PSValue3D extends PropertyBase {
 
     this.reactOnChange(() => ({
       override: this.override,
+      separateAces: this._separateAxes,
       style: this._style,
       values: this.values.map((v) => v.observables()),
     }))
