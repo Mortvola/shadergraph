@@ -11,11 +11,12 @@ import Renderer from "./Renderer";
 import Shape from "./Shapes/Shape";
 import {
   type ParticleSystemPropsDescriptor,
-  PSValueType, RenderMode, ShapeType,
+  PSValueType, RenderMode,
   SpaceType,
 } from "./Types";
 import type { ParticleSystemPropsInterface } from "./ParticleSystemPropsInterface";
 import Emissions from "./Emissions";
+import LifetimeRotation from "./LifetimeRotation";
 
 class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterface {
   duration: PSNumber;
@@ -45,6 +46,8 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
   lifetimeColor: LifetimeColor;
 
   lifetimeSize: LifetimeSize;
+
+  lifetimeRotation: LifetimeRotation;
 
   lifetimeVelocity: LifetimeVelocity;
 
@@ -83,6 +86,7 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
     this.startColor = new PSColor('Start Color', this, descriptor?.startColor, this.handleChange, previousProps?.startColor);
     this.space = new PSSpace('Space', this, descriptor?.space, SpaceType.Local, this.handleChange, previousProps?.space);
     this.lifetimeSize = new LifetimeSize(this, descriptor?.lifetimeSize, this.handleChange, previousProps?.lifetimeSize);
+    this.lifetimeRotation = new LifetimeRotation(this, descriptor?.lifetimeRotation, this.handleChange, previousProps?.lifetimeRotation)
     this.lifetimeVelocity = new LifetimeVelocity(this, descriptor?.lifetimeVelocity, this.handleChange, previousProps?.lifetimeVelocity);
     this.lifetimeColor = new LifetimeColor(this, descriptor?.lifetimeColor, this.handleChange, previousProps?.lifetimeColor);
     this.gravityModifier = new PSValue(
@@ -127,6 +131,7 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
       space: this.space.toDescriptor(),
       gravityModifier: this.gravityModifier.toDescriptor(),
       lifetimeSize: this.lifetimeSize.toDescriptor(),
+      lifetimeRotation: this.lifetimeRotation.toDescriptor(),
       lifetimeVelocity: this.lifetimeVelocity.toDescriptor(),
       lifetimeColor: this.lifetimeColor.toDescriptor(),
       collision: this.collision.toDescriptor(),

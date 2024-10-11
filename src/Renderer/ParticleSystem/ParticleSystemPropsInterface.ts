@@ -5,6 +5,7 @@ import type PSValue3D from "../Properties/PSValue3D";
 import type Collision from "./Collision";
 import type Emissions from "./Emissions";
 import type LifetimeColor from "./LifetimeColor";
+import LifetimeRotation from "./LifetimeRotation";
 import type LifetimeSize from "./LIfetimeSize";
 import type LifetimeVelocity from "./LifetimeVelocity";
 import type Renderer from "./Renderer";
@@ -39,6 +40,8 @@ export interface ParticleSystemPropsInterface {
   lifetimeColor: LifetimeColor;
 
   lifetimeSize: LifetimeSize;
+
+  lifetimeRotation: LifetimeRotation;
 
   lifetimeVelocity: LifetimeVelocity;
 

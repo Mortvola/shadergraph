@@ -23,7 +23,7 @@ class Particle {
 
   startSize: [number, number, number];
 
-  startRotation: [number, number, number];
+  rotation: [number, number, number];
 
   startColor: Vec4;
 
@@ -45,7 +45,7 @@ class Particle {
     this.lastUpdateTime = startTime;
     this.lifetime = lifetime;
     this.startSize = startSize;
-    this.startRotation = startRotation;
+    this.rotation = startRotation;
     this.startColor = startColor;
   }
 }

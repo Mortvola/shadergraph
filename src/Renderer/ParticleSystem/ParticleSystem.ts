@@ -265,11 +265,15 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
     else {
       const elapsedSeconds = (time - particle.lastUpdateTime) / 1000.0;
 
-      const gravityVector = vec4.create(0, 1, 0, 0)
+      if (this.props.lifetimeRotation.enabled.get()) {
+        const angularVelocity = this.props.lifetimeRotation.angularVelocity.getValue(lifetimeT)
 
-      if (!this.renderNode) {
-        throw new Error('renderNode is not set')
+        particle.rotation[0] += angularVelocity[0] * elapsedSeconds
+        particle.rotation[1] += angularVelocity[1] * elapsedSeconds
+        particle.rotation[2] += angularVelocity[2] * elapsedSeconds
       }
+
+      const gravityVector = vec4.create(0, 1, 0, 0)
 
       // Transform the position into world space to allow for gravity effect
       // and collision detection.
@@ -413,8 +417,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
       mat4.multiply(particle.renderNode.transform, transform, particle.renderNode.transform);
 
-      // Rotate using starting and liefeimte rotation.
-      const rotate = particle.startRotation.slice();
+      // Rotate using starting and lifeimte rotation.
+      const rotate = particle.rotation;
 
       mat4.rotateX(particle.renderNode.transform, degToRad(rotate[0]), particle.renderNode.transform)
       mat4.rotateY(particle.renderNode.transform, degToRad(rotate[1]), particle.renderNode.transform)

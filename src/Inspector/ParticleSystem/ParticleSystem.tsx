@@ -91,6 +91,11 @@ const ParticleSystem: React.FC<PropsType> = observer(({
           <PSValue3DInput value={particleSystemProps.lifetimeSize.size} />
         </Property>
       </PSModule>
+      <PSModule title="Rotation over lifetime" module={particleSystemProps.lifetimeRotation}>
+        <Property label="Angular Velocity" property={particleSystemProps.lifetimeRotation.angularVelocity}>
+          <PSValue3DInput value={particleSystemProps.lifetimeRotation.angularVelocity} />
+        </Property>
+      </PSModule>
       <PSModule title="Color over lifetime" module={particleSystemProps.lifetimeColor}>
         <Property label="Color" property={particleSystemProps.lifetimeColor.color}>
           <PSColorInput value={particleSystemProps.lifetimeColor.color} />

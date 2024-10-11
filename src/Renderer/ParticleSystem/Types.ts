@@ -108,6 +108,10 @@ export type LifetimeSizeDescriptor = PSModuleDescriptor & {
   size?: PSValueDescriptor | PSValue3DDescriptor,
 }
 
+export type LifetimeRotationDescriptor = PSModuleDescriptor & {
+  angularVelocity?: PSValue3DDescriptor,
+}
+
 export type LifetimeVelocityDescriptor = PSModuleDescriptor & {
   speedModifier?: PSValueDescriptor,
 }
@@ -176,6 +180,8 @@ export type ParticleSystemPropsDescriptor = {
   space?: SpaceType,
 
   lifetimeSize?: LifetimeSizeDescriptor,
+
+  lifetimeRotation?: LifetimeRotationDescriptor,
 
   lifetimeVelocity?: LifetimeVelocityDescriptor,
 

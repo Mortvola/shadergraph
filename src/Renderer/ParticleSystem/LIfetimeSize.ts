@@ -1,4 +1,3 @@
-import { makeObservable, observable } from "mobx";
 import PSModule from "./PSModule";
 import {
   isPSValue3DDescriptor,
@@ -30,10 +29,6 @@ class LifetimeSize extends PSModule {
 
       this.size = new PSValue3D('Size', props, tmpDescriptor, undefined, onChange, previousProps?.size);
     }
-
-    makeObservable(this, {
-      size: observable,
-    })
   }
 
   toDescriptor(): LifetimeSizeDescriptor | undefined {
