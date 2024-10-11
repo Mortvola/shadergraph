@@ -91,7 +91,7 @@ class PSValue3D extends PropertyBase {
     })
   }
 
-  applyDescriptor(descriptor: PSValue3DDescriptor) {
+  applyDescriptor(descriptor: PSValue3DDescriptor & { value?: [number, number] }) {
     this.separateAxes = { value: descriptor.separateAxes };
     this.style = { value: descriptor.type ?? PSValueType.Constant };
 
@@ -103,6 +103,7 @@ class PSValue3D extends PropertyBase {
       ]  
     }
     else if (descriptor.value !== undefined) {
+      // TODO: This is here to support older descriptors. Remove when no longer needed
       this.values[0].value = { value: [...descriptor.value] }
       this.values[1].value = { value: [...descriptor.value] }
       this.values[2].value = { value: [...descriptor.value] }
@@ -134,15 +135,15 @@ class PSValue3D extends PropertyBase {
         separateAxes: this.separateAxes,
         type: this.style,
         values: [
-          this.toValuDescriptor(this.values[0]),
-          this.toValuDescriptor(this.values[1]),
-          this.toValuDescriptor(this.values[2]),
+          this.toValueDescriptor(this.values[0]),
+          this.toValueDescriptor(this.values[1]),
+          this.toValueDescriptor(this.values[2]),
         ]
       })  
     }
   }
 
-  toValuDescriptor(value: PSValue2): PSValueDescriptor {
+  toValueDescriptor(value: PSValue2): PSValueDescriptor {
     return ({
       value: value.value,
       curve: [value.curve[0].toDescriptor(), value.curve[1].toDescriptor()],
