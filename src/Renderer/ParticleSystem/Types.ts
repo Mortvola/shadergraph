@@ -92,6 +92,10 @@ export type PSValue3DDescriptor = {
   value?: [number, number],
 }
 
+export const isPSValue3DDescriptor = (r: unknown): r is PSValue3DDescriptor => (
+  (r as PSValue3DDescriptor)?.separateAxes !== undefined
+)
+
 export const isPSValue = (r: unknown): r is PSValueDescriptor => (
   (r as PSValueDescriptor).type !== undefined
   && (r as PSValueDescriptor).value !== undefined
@@ -103,7 +107,7 @@ export type LifetimeColorDescriptor = PSModuleDescriptor & {
 }
 
 export type LifetimeSizeDescriptor = PSModuleDescriptor & {
-  size?: PSValueDescriptor,
+  size?: PSValueDescriptor | PSValue3DDescriptor,
 }
 
 export type LifetimeVelocityDescriptor = PSModuleDescriptor & {

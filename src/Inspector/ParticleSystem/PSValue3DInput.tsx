@@ -31,8 +31,16 @@ const PSValue3DInput: React.FC<PropsType> = observer(({
     value.style = { value: newValue, override: true }
   }
 
-  const handleRangeChange = (range: [number, number]) => {
+  const handleRangeXChange = (range: [number, number]) => {
     value.values[0].curveRange = { value: range, override: true };
+  }
+
+  const handleRangeYChange = (range: [number, number]) => {
+    value.values[1].curveRange = { value: range, override: true };
+  }
+
+  const handleRangeZChange = (range: [number, number]) => {
+    value.values[2].curveRange = { value: range, override: true };
   }
 
   const handleAxesChange = (separateAxes: boolean) => {
@@ -91,7 +99,19 @@ const PSValue3DInput: React.FC<PropsType> = observer(({
 
               case PSValueType.Curve:
                 return (
-                  <CurveEditor value={value.values[0].curve[0]} range={value.values[0].curveRange} onRangeChange={handleRangeChange} />
+                  <>
+                    <CurveEditor value={value.values[0].curve[0]} range={value.values[0].curveRange} onRangeChange={handleRangeXChange} />
+                    {
+                      value.separateAxes
+                        ? (
+                          <>
+                            <CurveEditor value={value.values[1].curve[0]} range={value.values[1].curveRange} onRangeChange={handleRangeYChange} />
+                            <CurveEditor value={value.values[2].curve[0]} range={value.values[2].curveRange} onRangeChange={handleRangeZChange} />
+                            </>
+                        )
+                        : null
+                    }
+                  </>
                 )
             }
 

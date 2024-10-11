@@ -88,7 +88,7 @@ const ParticleSystem: React.FC<PropsType> = observer(({
       </PSModule>
       <PSModule title="Size over lifetime" module={particleSystemProps.lifetimeSize}>
         <Property label="Size" property={particleSystemProps.lifetimeSize.size}>
-          <PSValueInput value={particleSystemProps.lifetimeSize.size} />
+          <PSValue3DInput value={particleSystemProps.lifetimeSize.size} />
         </Property>
       </PSModule>
       <PSModule title="Color over lifetime" module={particleSystemProps.lifetimeColor}>

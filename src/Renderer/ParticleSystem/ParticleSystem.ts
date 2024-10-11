@@ -426,9 +426,9 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       if (this.props.lifetimeSize.enabled.get()) {
         const lifetimeSize = this.props.lifetimeSize.size.getValue(lifetimeT);
 
-        scale[0] *= lifetimeSize
-        scale[1] *= lifetimeSize
-        scale[2] *= lifetimeSize
+        scale[0] *= lifetimeSize[0]
+        scale[1] *= lifetimeSize[1]
+        scale[2] *= lifetimeSize[2]
       }
 
       mat4.scale(particle.renderNode.transform, scale, particle.renderNode.transform)
