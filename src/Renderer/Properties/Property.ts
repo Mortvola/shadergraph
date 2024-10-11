@@ -1,5 +1,5 @@
 import { observable, runInAction } from "mobx";
-import { RenderMode, ShapeType, SpaceType } from "../ParticleSystem/Types";
+import { RenderAlignment, RenderMode, ShapeType, SpaceType } from "../ParticleSystem/Types";
 import { type PropsBase } from "./Types";
 import PropertyBase from "./PropertyBase";
 import { vec3n, type Vec3n } from "wgpu-matrix";
@@ -96,6 +96,12 @@ export class PSRenderMode extends Property<RenderMode> {
   }
 }
 
+export class PSRenderAlignment extends Property<RenderAlignment> {
+  constructor(name: string, props: PropsBase, value?: RenderAlignment, defaultValue = RenderAlignment.View, onChange?: () => void, previousProp?: PSRenderAlignment) {
+    super(name, props, value, defaultValue, onChange, previousProp)
+  }
+}
+
 export class PSShapeType extends Property<ShapeType> {
   constructor(name: string, props: PropsBase, value?: ShapeType, defaultValue = ShapeType.Cone, onChange?: () => void, previousProp?: PSShapeType) {
     super(name, props, value, defaultValue, onChange, previousProp)
@@ -104,6 +110,12 @@ export class PSShapeType extends Property<ShapeType> {
 
 export class PSMaterialItem extends Property<number | undefined> {
   constructor(name: string, props: PropsBase, value: number | undefined, onChange?: () => void, previousProp?: PSMaterialItem) {
+    super(name, props, value, undefined, onChange, previousProp)
+  }
+}
+
+export class PSMeshItem extends Property<number | undefined> {
+  constructor(name: string, props: PropsBase, value: number | undefined, onChange?: () => void, previousProp?: PSMeshItem) {
     super(name, props, value, undefined, onChange, previousProp)
   }
 }

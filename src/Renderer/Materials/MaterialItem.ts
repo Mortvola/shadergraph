@@ -1,16 +1,13 @@
 import { runInAction } from "mobx";
-import type { MaterialItemInterface } from "../State/types";
-import type { PropertyInterface } from "./ShaderBuilder/Types";
-import type { MaterialManagerInterface, MaterialRecordDescriptor } from "./Types";
-import type { ShaderDescriptor } from "./shaders/ShaderDescriptor";
-import { shaderManager } from "./shaders/ShaderManager";
-import Value from "./ShaderBuilder/Value";
+import type { MaterialItemInterface } from "../../State/types";
+import type { PropertyInterface } from "../ShaderBuilder/Types";
+import type { MaterialManagerInterface, MaterialRecordDescriptor } from "../Types";
+import type { ShaderDescriptor } from "../shaders/ShaderDescriptor";
+import { shaderManager } from "../shaders/ShaderManager";
+import Value from "../ShaderBuilder/Value";
+import Entity from "../../State/Entity";
 
-class MaterialItem implements MaterialItemInterface {
-  id = -1;
-
-  name = '';
-
+class MaterialItem extends Entity implements MaterialItemInterface {
   shaderId = -1;
 
   shaderDescriptor?: ShaderDescriptor;
@@ -22,6 +19,8 @@ class MaterialItem implements MaterialItemInterface {
   materialManager: MaterialManagerInterface;
 
   constructor(materailManager: MaterialManagerInterface, descriptor?: MaterialRecordDescriptor, onChange: (() => void) | null = null) {
+    super(-1, '')
+
     this.materialManager = materailManager;
 
     if (descriptor) {

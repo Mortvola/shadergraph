@@ -1,15 +1,17 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { useStores } from '../../State/store';
-import type { RenderNodeInterface, DrawableComponentInterface, ModelItem} from '../../Renderer/Types';
+import type { RenderNodeInterface, DrawableComponentInterface} from '../../Renderer/Types';
 import { ComponentType } from '../../Renderer/Types';
 import { isRenderNode } from '../../Renderer/Drawables/SceneNodes/RenderNode';
 import { isDrawableComponent } from '../../Renderer/Drawables/SceneNodes/utils';
 import MeshNode from './MeshNode';
+import { modelManager } from '../../Renderer/Models/ModelManager';
+import type ModelProjectItem from '../../Project/Types/ModelProjectItem';
 
 type PropsType = {
-  modelItem: ModelItem,
-  onChange: (model: ModelItem) => void,
+  modelItem: ModelProjectItem,
+  onChange: (model: ModelProjectItem) => void,
 }
 
 const ModelTree: React.FC<PropsType> = observer(({
@@ -23,7 +25,7 @@ const ModelTree: React.FC<PropsType> = observer(({
 
   React.useEffect(() => {
     (async () => {
-      const m = await store.previewModeler.getModel(modelItem.id)
+      const m = await modelManager.getModel(modelItem.id)
 
       if (m) {
         setModel(m)
@@ -36,7 +38,7 @@ const ModelTree: React.FC<PropsType> = observer(({
 
     materials[node.name] = materialId;
 
-    onChange({ id: modelItem.id, materials, toDescriptor: () => { return { id: -1, type: ComponentType.Mesh, props: {} } } })
+    // onChange({ id: modelItem.id, materials, toDescriptor: () => { return { id: -1, type: ComponentType.Mesh, props: {} } } })
   }
 
   const renderTree = () => {

@@ -163,21 +163,13 @@ export type ShaderRecord = {
   descriptor: ShaderDescriptor,
 }
 
-export type ModelItemDescriptor = object
-
-export type ModelItem = {
-  id: number,
-  materials: Record<string, number>,
-  onChange?: () => void,
-
-  toDescriptor: () => ComponentDescriptor,
-}
+export type ModelPropsDescriptor = object;
 
 export type ParticleItem = {
   id: number,
 }
 
-export type DecalItemDescriptor = object
+export type DecalPropsDescriptor = object
 
 export type DecalItem = {
   materialId?: number,
@@ -211,7 +203,7 @@ export interface ComponentInterface {
 export type ComponentDescriptor = {
   id: number,
   type: ComponentType,
-  props?: LightPropsDescriptor | ParticleSystemPropsDescriptor | DecalItemDescriptor | ModelItemDescriptor,
+  props?: LightPropsDescriptor | ParticleSystemPropsDescriptor | DecalPropsDescriptor | ModelPropsDescriptor,
 }
 
 export type LightPropsDescriptor = {

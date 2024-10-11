@@ -6,11 +6,20 @@ export enum RenderMode {
   Billboard = 'Billboard',
   HorizontalBillboard = 'Horizontal Billboard',
   StretchedBillboard = 'Streteched Billboard',
+  Mesh = 'Mesh',
+}
+
+export enum RenderAlignment {
+  View = 'View',
+  Local = 'Local',
+  World = 'World,'
 }
 
 export type RendererDescriptor = PSModuleDescriptor & {
   mode?: RenderMode,
   materialId?: number,
+  meshId?: number,
+  renderAlignment?: RenderAlignment,
 }
 
 export type AlphaGradientKey = {

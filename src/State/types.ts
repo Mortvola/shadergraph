@@ -3,6 +3,7 @@ import type {
 } from "../Renderer/ShaderBuilder/Types";
 import type {
   MaterialInterface,
+  RenderNodeInterface,
 } from "../Renderer/Types";
 
 export interface ModelerInterface {
@@ -57,10 +58,6 @@ export const isGameObject2D = (r: unknown): r is GameObject2DInterface => (
 export type ShaderInterface = EntityInterface
 
 export interface MaterialItemInterface extends EntityInterface {
-  id: number,
-
-  name: string,
-
   shaderId: number;
 
   properties: PropertyInterface[];
@@ -68,7 +65,9 @@ export interface MaterialItemInterface extends EntityInterface {
   setShaderId(id: number): void;
 }
 
-export type ModelInterface = EntityInterface
+export interface ModelItemInterface extends EntityInterface {
+  model: RenderNodeInterface
+}
 
 export interface TextureInterface extends EntityInterface {
   flipY: boolean,

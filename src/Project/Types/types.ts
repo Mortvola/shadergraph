@@ -2,6 +2,7 @@ import type { RenderNodeInterface, ParticleSystemInterface, ShaderRecord } from 
 import type { GraphInterface } from "../../State/GraphInterface";
 import type {
   GameObject2DInterface, MaterialItemInterface,
+  ModelItemInterface,
   TextureInterface,
 } from "../../State/types";
 import type { SceneObjectInterface } from "../../Scene/Types/Types";
@@ -14,7 +15,7 @@ export type ProjectItemLike =
   ProjectItemInterface<MaterialItemInterface> |
   ProjectItemInterface<TextureInterface> |
   ProjectItemInterface<GraphInterface> |
-  ProjectItemInterface<RenderNodeInterface> |
+  ProjectItemInterface<ModelItemInterface> |
   ProjectItemInterface<ParticleSystemInterface> |
   ProjectItemInterface<ShaderRecord> |
   ProjectItemInterface<SceneInterface> |
@@ -83,7 +84,7 @@ export const isShaderItem = (r: ProjectItemLike | null | undefined): r is Projec
   && (r.type === ProjectItemType.Shader)
 )
 
-export const isModelItem = (r: ProjectItemLike | null | undefined): r is ProjectItemInterface<RenderNodeInterface> => (
+export const isModelItem = (r: ProjectItemLike | null | undefined): r is ProjectItemInterface<ModelItemInterface> => (
   r !== null && r !== undefined
   && (r.type === ProjectItemType.Model)
 )

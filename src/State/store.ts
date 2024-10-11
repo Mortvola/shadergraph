@@ -1,7 +1,7 @@
 import React from "react";
 import Modeler from "./Modeler";
 import type {
-  ModelInterface} from "./types";
+  ModelItemInterface} from "./types";
 import type { SceneInterface } from "../Scene/Types/Types";
 import { isGameObject } from "../Scene/Types/Types";
 import { observable, reaction, runInAction } from "mobx";
@@ -17,6 +17,8 @@ import { shaderGraphRenderer } from "../Main";
 import Project from "../Project/Types/Project";
 import type { StoreInterface } from "./StoreInterface";
 import { type GraphInterface } from "./GraphInterface";
+import { modelManager } from "../Renderer/Models/ModelManager";
+import ModelItem from "../Renderer/Models/ModelItem";
 
 class Store implements StoreInterface {
   @observable
@@ -29,7 +31,7 @@ class Store implements StoreInterface {
   mainViewModeler: Modeler;
 
   @observable
-  accessor models: ModelInterface[] = [];
+  accessor models: ModelItemInterface[] = [];
 
   mainView: Renderer;
 
@@ -53,8 +55,8 @@ class Store implements StoreInterface {
     this.mainView = mainRenderer;
     this.shaderPreview = previewRenderer;
 
-    this.mainViewModeler = new Modeler(this.mainView, this);
-    this.previewModeler = new Modeler(previewRenderer, this);
+    this.mainViewModeler = new Modeler(this.mainView);
+    this.previewModeler = new Modeler(previewRenderer);
 
     // Restore camera settings from local storage
     const cameraSettings = localStorage.getItem('camera');
@@ -170,14 +172,20 @@ class Store implements StoreInterface {
     }
   }
 
-  async getModel(item: ProjectItemInterface<RenderNodeInterface>) {
-    let model: RenderNodeInterface | null = await item.getItem();
+  async getModel(item: ProjectItemInterface<ModelItemInterface>) {
+    let model: ModelItemInterface | null = await item.getItem();
 
     if (!model && item.itemId) {
-      model = await this.previewModeler.getModel(item.itemId) ?? null;
+      const m = await modelManager.getModel(item.itemId) ?? null;
+
+      if (m) {
+        item.item = new ModelItem(m)
+
+        model = item.item
+      }
     }
 
-    return model ?? undefined
+    return model?.model
   }  
 }
 

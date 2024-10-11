@@ -1,6 +1,6 @@
 import Http from "../../Http/src";
 import type { DrawableType } from "../Drawables/DrawableInterface";
-import MaterialItem from "../MaterialItem";
+import MaterialItem from "./MaterialItem";
 import type { PropertyInterface } from "../ShaderBuilder/Types";
 import { shaderManager } from "../shaders/ShaderManager";
 import type { MaterialManagerInterface, MaterialRecordDescriptor } from "../Types";
@@ -102,10 +102,6 @@ class MaterialManager implements MaterialManagerInterface {
     Http.patch(`/api/materials/${id}`, {
       properties
     })
-  }
-
-  setMaterialDescriptor(id: number, descriptor: MaterialDescriptor) {
-
   }
 
   async saveItem(materialItem: MaterialItem): Promise<void> {

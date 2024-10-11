@@ -13,6 +13,7 @@ import TextureProjectItem from "./TextureProjectItem";
 import type { ProjectItemRecord } from "../../State/ProjectItemRecord";
 import type TreeNode from "../../Scene/Types/TreeNode";
 import SceneObjectProjectItem from "./SceneObjectProjectItem";
+import ModelProjectItem from "./ModelProjectItem";
 
 class Project implements ProjectInterface {
   @observable
@@ -314,7 +315,7 @@ class Project implements ProjectInterface {
         return new SceneProjectItem(rec.id, rec.name, folder, rec.itemId)
 
       case ProjectItemType.Model:
-        return new ProjectItem<RenderNodeInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+        return new ModelProjectItem(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
 
       case ProjectItemType.Texture:
         return new TextureProjectItem(rec.id, rec.name, folder, rec.itemId)

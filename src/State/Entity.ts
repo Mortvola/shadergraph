@@ -1,4 +1,4 @@
-import { makeObservable, observable } from "mobx";
+import { observable } from "mobx";
 import type { EntityInterface } from "./types";
 
 let nextObjectId = 0;
