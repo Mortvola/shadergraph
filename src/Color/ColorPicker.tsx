@@ -32,7 +32,10 @@ const ColorPicker: React.FC<PropsType> = observer(({
     setOpen(null);
   }
 
-  const handleOpenClick = () => {
+  const handleOpenClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
+    event.stopPropagation()
+    event.preventDefault()
+    
     const element = ref.current;
 
     if (element) {
