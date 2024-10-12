@@ -11,6 +11,7 @@ import Modal from '../Widgets/Modal';
 import SampleTextureSettings from './SampleTextureSettings';
 import type SampleTexture from '../Renderer/ShaderBuilder/Nodes/SampleTexture';
 import type { GraphInterface } from '../State/GraphInterface';
+import { SettingsIcon } from 'lucide-react';
 
 type PropsType = {
   graph: GraphInterface,
@@ -56,7 +57,7 @@ const Node: React.FC<PropsType> = observer(({
   }
 
   const [showSettings, setShowSettings] = React.useState<{ right: number, top: number } | null>(null);
-  const buttonRef = React.useRef<HTMLButtonElement>(null)
+  const buttonRef = React.useRef<HTMLDivElement>(null)
 
   const handleSettingsClick = () => {
     const element = buttonRef.current
@@ -125,7 +126,7 @@ const Node: React.FC<PropsType> = observer(({
           <div  onPointerDown={handlePointerDown2}>
             {
               node.settings
-                ? <button ref={buttonRef} type="button" onClick={handleSettingsClick}>*</button>
+                ? <div ref={buttonRef} onClick={handleSettingsClick}><SettingsIcon /></div>
                 : null
             }
           </div>
