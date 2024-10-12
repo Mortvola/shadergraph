@@ -14,6 +14,19 @@ import type { DataType, GraphDescriptor } from "./GraphDescriptor";
 import Property from "./Property";
 import StageGraph from "./StageGraph";
 import type { GraphNodeInterface, PropertyInterface } from "./Types";
+import { BlendMode } from "./Nodes/Display";
+
+export type ShaderModuleSettings = {
+  blendMode: BlendMode,
+}
+
+export type ShaderModule = {
+  module: GPUShaderModule,
+  vertProperties: PropertyInterface[],
+  fragProperties: PropertyInterface[],
+  code: string,
+  settings: ShaderModuleSettings,
+}
 
 class ShaderGraph {
   type?: ShaderType;
@@ -92,7 +105,7 @@ class ShaderGraph {
     drawableType: DrawableType,
     vertProperties: PropertyInterface[],
     root?: GraphNodeInterface,
-  ): [string, PropertyInterface[], PropertyInterface[]] {
+  ): [string, PropertyInterface[], PropertyInterface[], ShaderModuleSettings ] {
     const bindingType = (dataType: DataType) => {  
       if (dataType === 'texture2D') {
         return 'texture_2d<f32>';
@@ -124,6 +137,9 @@ class ShaderGraph {
     let vertUniforms = '';
     let fragUniforms = '';
     let fragProperties: PropertyInterface[] = [];
+    let settings: ShaderModuleSettings = {
+      blendMode: BlendMode.Alpha,
+    }
   
     let numVertBindings = 0;
     let numFragBindings = 0;
@@ -145,7 +161,7 @@ class ShaderGraph {
       vertUniforms = `struct VertProperties { ${vertUniforms} }\n`
     }
   
-    [fragmentBody, fragProperties] = this.fragment.generateStageShaderCode(this.editMode, root);
+    [fragmentBody, fragProperties, settings] = this.fragment.generateStageShaderCode(this.editMode, root);
   
     console.log(fragmentBody);
   
@@ -204,6 +220,7 @@ class ShaderGraph {
       `,
       vertProperties,
       fragProperties,
+      settings,
     ]
   }
 
@@ -211,8 +228,8 @@ class ShaderGraph {
     drawableType: DrawableType,
     vertexProperties: PropertyInterface[],
     root?: GraphNodeInterface,
-  ): [GPUShaderModule, PropertyInterface[], PropertyInterface[], string] {
-    const [code, vertProperties, fragProperties] = this.generateShaderCode(drawableType, vertexProperties, root);
+  ): ShaderModule {
+    const [code, vertProperties, fragProperties, settings] = this.generateShaderCode(drawableType, vertexProperties, root);
   
     let shaderModule: GPUShaderModule
     try {
@@ -227,7 +244,13 @@ class ShaderGraph {
       throw error;
     }
   
-    return [shaderModule, vertProperties, fragProperties, code];
+    return {
+      module: shaderModule,
+      vertProperties,
+      fragProperties,
+      code,
+      settings,
+    };
   }
 }
 

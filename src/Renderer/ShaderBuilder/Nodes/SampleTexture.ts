@@ -20,7 +20,8 @@ export type SampleTextureSettings = {
 class SampleTexture extends OperationNode {
   samplerName: string | null = null;
 
-  settings: SampleTextureSettings = {
+  @observable
+  accessor settings: SampleTextureSettings = {
     addressModeU: 'clamp-to-edge',
     addressModeV: 'clamp-to-edge',
     minFilter: 'nearest',
@@ -51,10 +52,6 @@ class SampleTexture extends OperationNode {
       new BluePort(this, 'float', 'b'),
       new AlphaPort(this, 'float', 'a'),
     ];
-
-    makeObservable(this, {
-      settings: observable,
-    })
   }
 
   getDataType(): DataType {

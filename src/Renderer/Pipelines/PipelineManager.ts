@@ -11,6 +11,7 @@ import { bloom, outputFormat } from "../RenderSettings";
 import DecalPipeline from "./DecalPipeline";
 import type ShaderGraph from "../ShaderBuilder/ShaderGraph";
 import { DrawableType } from "../Drawables/DrawableInterface";
+import { BlendMode } from "../ShaderBuilder/Nodes/Display";
 
 export type PipelineType =
   'Line'| 'reticle' | 'Trajectory' | 'Decal';
@@ -114,16 +115,9 @@ class PipelineManager implements PipelineManagerInterface {
       this.pipelineMap.set(key, { pipeline });
     }
     else {
-      let vertProperties: PropertyInterface[] = [];
-      let fragProperties: PropertyInterface[] = [];
-  
       let vertexBufferLayout: GPUVertexBufferLayout[] | undefined = undefined;
 
-      let shaderModule: GPUShaderModule;
-      let code: string;
-    
-      // eslint-disable-next-line prefer-const
-      [shaderModule, vertProperties, fragProperties, code] = graph.generateShaderModule(drawableType, vertexProperties, root);
+      const shaderModule = graph.generateShaderModule(drawableType, vertexProperties, root);
 
       if (drawableType === DrawableType.Mesh) {
         vertexBufferLayout = [
@@ -194,16 +188,27 @@ class PipelineManager implements PipelineManagerInterface {
       if (graph.transparent) {
         targets.push({
           format: outputFormat,
-          blend: {
-            color: {
-              srcFactor: 'src-alpha' as GPUBlendFactor,
-              dstFactor: 'one-minus-src-alpha' as GPUBlendFactor,
-            },
-            alpha: {
-              srcFactor: 'src-alpha' as GPUBlendFactor,
-              dstFactor: 'one-minus-src-alpha' as GPUBlendFactor,
-            },
-          },
+          blend: shaderModule.settings.blendMode === BlendMode.Alpha
+            ? ({
+              color: {
+                srcFactor: 'src-alpha' as GPUBlendFactor,
+                dstFactor: 'one-minus-src-alpha' as GPUBlendFactor,
+              },
+              alpha: {
+                srcFactor: 'zero' as GPUBlendFactor,
+                dstFactor: 'one' as GPUBlendFactor,
+              },
+            })
+            : ({
+              color: {
+                srcFactor: 'one' as GPUBlendFactor,
+                dstFactor: 'one' as GPUBlendFactor,
+              },
+              alpha: {
+                srcFactor: 'zero' as GPUBlendFactor,
+                dstFactor: 'one' as GPUBlendFactor,
+              },
+            }),
         });  
       }
       else {
@@ -236,12 +241,12 @@ class PipelineManager implements PipelineManagerInterface {
         bindGroups.getBindGroupLayout1(),
       ]
 
-      const defs = makeShaderDataDefinitions(code);
+      const defs = makeShaderDataDefinitions(shaderModule.code);
       
       let binding = 2;
 
-      if (vertProperties.length > 0) {
-        const layout = PipelineManager.layoutBindGroup(vertProperties, GPUShaderStage.VERTEX, 'vert group');
+      if (shaderModule.vertProperties.length > 0) {
+        const layout = PipelineManager.layoutBindGroup(shaderModule.vertProperties, GPUShaderStage.VERTEX, 'vert group');
 
         if (layout) {
           bindGroupLayouts.push(layout)
@@ -249,7 +254,7 @@ class PipelineManager implements PipelineManagerInterface {
           vertStageBindings = {
             binding,
             layout,
-            properties: vertProperties,
+            properties: shaderModule.vertProperties,
             structuredView: defs.structs.VertProperties ? makeStructuredView(defs.structs.VertProperties) : null,
           }
 
@@ -257,8 +262,8 @@ class PipelineManager implements PipelineManagerInterface {
         }  
       }
 
-      if (fragProperties.length > 0) {
-        const layout = PipelineManager.layoutBindGroup(fragProperties, GPUShaderStage.FRAGMENT, 'frag group')
+      if (shaderModule.fragProperties.length > 0) {
+        const layout = PipelineManager.layoutBindGroup(shaderModule.fragProperties, GPUShaderStage.FRAGMENT, 'frag group')
 
         if (layout) {
           bindGroupLayouts.push(layout)
@@ -266,7 +271,7 @@ class PipelineManager implements PipelineManagerInterface {
           fragStageBindings = {
             binding,
             layout,
-            properties: fragProperties,
+            properties: shaderModule.fragProperties,
             structuredView: defs.structs.FragProperties ? makeStructuredView(defs.structs.FragProperties) : null,
           }
 
@@ -281,12 +286,12 @@ class PipelineManager implements PipelineManagerInterface {
       const pipelineDescriptor: GPURenderPipelineDescriptor = {
         label: `${drawableType}${graph.transparent ? ' transparent' : ''}${bloom ? ' bloom' : ''} pipeline`,
         vertex: {
-          module: shaderModule,
+          module: shaderModule.module,
           entryPoint: "vs",
           buffers: vertexBufferLayout,
         },
         fragment: {
-          module: shaderModule,
+          module: shaderModule.module,
           entryPoint: "fs",
           targets,
         },

@@ -6,7 +6,7 @@ import { runInAction } from 'mobx';
 
 type PropsType = {
   node: SampleTexture,
-  style: React.CSSProperties,
+  style?: React.CSSProperties,
 }
 
 const SampleTextureSettings: React.FC<PropsType> = observer(({

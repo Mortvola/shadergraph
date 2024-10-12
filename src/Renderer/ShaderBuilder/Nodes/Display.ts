@@ -1,15 +1,49 @@
+import { observable } from "mobx";
 import type { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 
+export enum BlendMode {
+  Alpha = 'Alpha',
+  Addititve = 'Additive',
+}
+
+export type DisplaySettings = {
+  blendMode: BlendMode,
+}
+
+export const isDisplaySettings = (r: unknown): r is DisplaySettings => (
+  (r as DisplaySettings)?.blendMode !== undefined
+)
+
 class Display extends OperationNode {
+  @observable
+  accessor settings: DisplaySettings = {
+    blendMode: BlendMode.Alpha,
+  };
+
   constructor(nodeDescriptor?: GraphNodeDescriptor) {
     super('Display', 'Display', nodeDescriptor?.id)
+
+    if (nodeDescriptor?.settings) {
+      this.settings = {
+        ...this.settings,
+        ...nodeDescriptor.settings,
+      }
+    }
 
     this.inputPorts = [
       new InputPort(this, 'vec4f', 'rgb'),
       new InputPort(this, 'float', 'a'),
     ]
+  }
+
+  createDescriptor(): GraphNodeDescriptor {
+    const descriptor = super.createDescriptor()
+
+    descriptor.settings = this.settings;
+  
+    return descriptor
   }
 
   getExpression(editMode: boolean): [string, DataType] {

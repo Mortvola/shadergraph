@@ -4,7 +4,7 @@ import { setNextVarid } from "./GraphNode";
 import Add from "./Nodes/Add";
 import Clamp from "./Nodes/Clamp";
 import Combine from "./Nodes/Combine";
-import Display from "./Nodes/Display";
+import Display, { BlendMode } from "./Nodes/Display";
 import Distance from "./Nodes/Distance";
 import Divide from "./Nodes/Divide";
 import Fraction from "./Nodes/Fraction";
@@ -32,6 +32,7 @@ import Voronoi from "./Nodes/Voronoi";
 import { resetConstantNames } from "./Ports/InputPort";
 import Property from "./Property";
 import PropertyNode from "./PropertyNode";
+import { type ShaderModuleSettings } from "./ShaderGraph";
 import type { GraphEdgeInterface, GraphNodeInterface, PropertyInterface } from "./Types";
 import { getLength, isPropertyNode } from "./Types";
 import Value from "./Value";
@@ -219,7 +220,11 @@ class StageGraph {
     }
   }
 
-  generateStageShaderCode(editMode: boolean, root?: GraphNodeInterface): [string, PropertyInterface[]] {
+  generateStageShaderCode(editMode: boolean, root?: GraphNodeInterface): [string, PropertyInterface[], ShaderModuleSettings] {
+    const settings: ShaderModuleSettings = {
+      blendMode: BlendMode.Alpha,
+    }
+
     // Clear the node priorities
     for (const node of this.nodes) {
       node.priority = null;
@@ -236,6 +241,10 @@ class StageGraph {
     }
 
     if (outputNode) {
+      if ((outputNode as Display).settings?.blendMode) {
+        settings.blendMode = (outputNode as Display).settings?.blendMode;        
+      }
+
       setNextVarid(0);
       let nextSamplerId = 0;
   
@@ -320,7 +329,7 @@ class StageGraph {
       body = text.concat(body);
     }
   
-    return [body, properties];
+    return [body, properties, settings];
   }
 }
 

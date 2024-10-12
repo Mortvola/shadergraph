@@ -12,6 +12,9 @@ import SampleTextureSettings from './SampleTextureSettings';
 import type SampleTexture from '../Renderer/ShaderBuilder/Nodes/SampleTexture';
 import type { GraphInterface } from '../State/GraphInterface';
 import { SettingsIcon } from 'lucide-react';
+import type Display from '../Renderer/ShaderBuilder/Nodes/Display';
+import { isDisplaySettings } from '../Renderer/ShaderBuilder/Nodes/Display';
+import DisplaySettings from './DisplaySettings';
 
 type PropsType = {
   graph: GraphInterface,
@@ -184,14 +187,29 @@ const Node: React.FC<PropsType> = observer(({
           renderNode()
         }
         <Modal show={showSettings !== null} onHide={handleSettingsHide}>
-          <SampleTextureSettings
-            node={node as SampleTexture}
-            style={{
-              left: showSettings?.right,
-              top: showSettings?.top,
-              transform: `translate(calc(-100% + ${translate.x}px), ${translate.y}px)`,
-            }}
-          />
+          {
+            isDisplaySettings(node.settings)
+              ? (
+                <DisplaySettings
+                  node={node as Display}
+                  style={{
+                    left: showSettings?.right,
+                    top: showSettings?.top,
+                    transform: `translate(calc(-100% + ${translate.x}px), ${translate.y}px)`,
+                  }}
+                />
+              )
+              : (
+                <SampleTextureSettings
+                  node={node as SampleTexture}
+                  style={{
+                    left: showSettings?.right,
+                    top: showSettings?.top,
+                    transform: `translate(calc(-100% + ${translate.x}px), ${translate.y}px)`,
+                  }}
+                />    
+              )
+          }
         </Modal>
       </div>
     </Draggable>
