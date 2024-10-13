@@ -5,8 +5,6 @@ import type {
   PropertyInterface,
 } from "../Renderer/ShaderBuilder/Types";
 
-export type CullMode = 'back' | 'none' | 'front';
-
 export interface GraphInterface {
   id: number | null;
   

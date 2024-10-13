@@ -1,4 +1,3 @@
-import { type CullMode } from "../../State/GraphInterface";
 import { DrawableType } from "../Drawables/DrawableInterface";
 import { gpu } from "../Gpu";
 import { bloom } from "../RenderSettings";
@@ -17,6 +16,7 @@ import type { GraphNodeInterface, PropertyInterface } from "./Types";
 import type Display from './Nodes/Display'
 import { BlendMode } from "./Nodes/Display";
 import { runInAction } from "mobx";
+import { CullMode } from "./Types";
 
 export type ShaderModuleSettings = {
   blendMode: BlendMode,
@@ -71,7 +71,7 @@ class ShaderGraph {
     if (displayNode) {
       if (shaderDescriptor?.cullMode !== undefined) {
         runInAction(() => {
-          displayNode.settings.cullMode = shaderDescriptor?.cullMode ?? 'none'
+          displayNode.settings.cullMode = shaderDescriptor?.cullMode ?? CullMode.None
         })
       }
     }
@@ -152,7 +152,7 @@ class ShaderGraph {
     let fragProperties: PropertyInterface[] = [];
     let settings: ShaderModuleSettings = {
       blendMode: BlendMode.Alpha,
-      cullMode: 'none',
+      cullMode: CullMode.None,
     }
   
     let numVertBindings = 0;

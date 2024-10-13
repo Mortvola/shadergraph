@@ -1,3 +1,4 @@
+import { CullMode } from "./Types";
 import type { GraphNodeDescriptor, GraphStageDescriptor, PropertyDescriptor, ValueDescriptor } from "./GraphDescriptor";
 import GraphEdge from "./GraphEdge";
 import { setNextVarid } from "./GraphNode";
@@ -227,7 +228,7 @@ class StageGraph {
   generateCode(editMode: boolean, root?: GraphNodeInterface): [string, PropertyInterface[], ShaderModuleSettings] {
     const settings: ShaderModuleSettings = {
       blendMode: BlendMode.Alpha,
-      cullMode: 'none',
+      cullMode: CullMode.None,
     }
 
     // Clear the node priorities

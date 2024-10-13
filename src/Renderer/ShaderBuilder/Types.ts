@@ -175,3 +175,10 @@ export const convertType = (type: string) => {
       return type;
   }
 }
+
+export enum CullMode {
+  Back = 'back',
+  None = 'none',
+  Front = 'front'
+}
+

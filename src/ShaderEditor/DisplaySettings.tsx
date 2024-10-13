@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { BlendMode } from '../Renderer/ShaderBuilder/Nodes/Display';
 import styles from './DisplaySettings.module.scss';
 import { runInAction } from 'mobx';
-import { type CullMode } from '../State/GraphInterface';
+import { type CullMode } from "../Renderer/ShaderBuilder/Types";
 
 type PropsType = {
   node: Display,

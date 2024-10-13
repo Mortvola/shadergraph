@@ -1,3 +1,4 @@
+import { type CullMode } from "../ShaderBuilder/Types";
 import type { DataType, GraphDescriptor, ValueType } from "../ShaderBuilder/GraphDescriptor";
 
 export type ShaderType = 'Line' | 'Trajectory' | 'Decal';
@@ -5,7 +6,7 @@ export type ShaderType = 'Line' | 'Trajectory' | 'Decal';
 export type ShaderDescriptor = {
   type?: ShaderType;
 
-  cullMode?: 'back' | 'none',
+  cullMode?: CullMode,
 
   color?: number[],
 
