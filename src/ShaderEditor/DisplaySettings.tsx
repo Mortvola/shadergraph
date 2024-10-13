@@ -42,6 +42,12 @@ const DisplaySettings: React.FC<PropsType> = observer(({
     })
   }
 
+  const handleDepthWriteChange = (value: boolean) => {
+    runInAction(() => {
+      node.settings.depthWriteEnabled = value;
+    })
+  }
+
   return (
     <div className={styles.settings} style={style} onPointerDown={handlePointerDown} onClick={handleClick}>
       <Checkbox value={node.settings.transparent} label="Transparent" onChange={handleTransparencyChange} />
@@ -60,6 +66,7 @@ const DisplaySettings: React.FC<PropsType> = observer(({
           <option value="front">Front</option>
         </select>
       </label>
+      <Checkbox value={node.settings.depthWriteEnabled} label="Depth Write Enabled" onChange={handleDepthWriteChange} />
     </div>
   )
 })

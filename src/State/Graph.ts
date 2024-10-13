@@ -66,7 +66,6 @@ class Graph implements GraphInterface {
 
     makeObservable(this.graph, {
       lit: observable,
-      depthWriteEnabled: observable,
       properties: observable,
     })
 
@@ -197,14 +196,6 @@ class Graph implements GraphInterface {
         this.changed = true;
       })
     }
-  }
-
-  setDepthWriteEnabled(depthWriteEnabled: boolean): void {
-    runInAction(() => {
-      this.graph.depthWriteEnabled = depthWriteEnabled;
-      this.changed = true;
-      this.applyMaterial()
-    })
   }
 
   setLit(lit: boolean): void {

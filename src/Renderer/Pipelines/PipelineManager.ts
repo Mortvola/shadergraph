@@ -301,7 +301,7 @@ class PipelineManager implements PipelineManagerInterface {
           frontFace: "ccw",
         },
         depthStencil: {
-          depthWriteEnabled: graph.depthWriteEnabled ?? true,
+          depthWriteEnabled: shaderModule.settings.depthWriteEnabled ?? true,
           depthCompare: (shaderModule.settings.transparent ?? false) ? 'less-equal' : 'less',
           format: "depth24plus"
         },

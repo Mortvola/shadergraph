@@ -231,6 +231,7 @@ class StageGraph {
       transparent: false,
       blendMode: BlendMode.Alpha,
       cullMode: CullMode.None,
+      depthWriteEnabled: true,
     }
 
     // Clear the node priorities
@@ -251,6 +252,7 @@ class StageGraph {
         settings.transparent = display.settings.transparent;
         settings.blendMode = display.settings.blendMode;
         settings.cullMode = display.settings.cullMode;
+        settings.depthWriteEnabled = display.settings.depthWriteEnabled;
       }
 
       outputNode = display;

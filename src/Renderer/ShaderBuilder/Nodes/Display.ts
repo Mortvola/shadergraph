@@ -9,6 +9,7 @@ export type DisplaySettings = {
   transparent: boolean,
   blendMode: BlendMode,
   cullMode: CullMode,
+  depthWriteEnabled: boolean,
 }
 
 export const isDisplaySettings = (r: unknown): r is DisplaySettings => (
@@ -21,6 +22,7 @@ class Display extends OperationNode {
     transparent: false,
     blendMode: BlendMode.Alpha,
     cullMode: CullMode.None,
+    depthWriteEnabled: true,
   };
 
   onChange?: () => void;

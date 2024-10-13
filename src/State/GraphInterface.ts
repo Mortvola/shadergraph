@@ -40,8 +40,6 @@ export interface GraphInterface {
 
   applyMaterial(): Promise<void>;
 
-  setDepthWriteEnabled: (depthWriteEnabled: boolean) => void;
-
   setLit: (lit: boolean) => void;
 
   addNode(node: GraphNodeInterface): void;

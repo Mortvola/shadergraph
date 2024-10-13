@@ -22,6 +22,7 @@ export type ShaderModuleSettings = {
   transparent: boolean,
   blendMode: BlendMode,
   cullMode: CullMode,
+  depthWriteEnabled: boolean,
 }
 
 export type ShaderModule = {
@@ -36,8 +37,6 @@ class ShaderGraph {
   type?: ShaderType;
 
   lit = false;
-
-  depthWriteEnabled = true;
 
   fragment: StageGraph;
 
@@ -62,7 +61,6 @@ class ShaderGraph {
   
     this.type = shaderDescriptor?.type;
     this.lit = shaderDescriptor?.lit ?? false;
-    this.depthWriteEnabled = shaderDescriptor?.depthWriteEnabled ?? true;
 
     const displayNode = this.getDisplayNode();
 
@@ -74,6 +72,10 @@ class ShaderGraph {
 
         if (shaderDescriptor?.cullMode !== undefined) {
           displayNode.settings.cullMode = shaderDescriptor?.cullMode
+        }
+
+        if (shaderDescriptor?.depthWriteEnabled !== undefined) {
+          displayNode.settings.depthWriteEnabled = shaderDescriptor?.depthWriteEnabled
         }
       })
     }
@@ -87,7 +89,6 @@ class ShaderGraph {
 
   createShaderDescriptor(): ShaderDescriptor {
     const shaderDescriptor: ShaderDescriptor = {
-      depthWriteEnabled: this.depthWriteEnabled,
       lit: this.lit,
       
       properties: this.properties.map((p) => ({
@@ -155,6 +156,7 @@ class ShaderGraph {
       transparent: false,
       blendMode: BlendMode.Alpha,
       cullMode: CullMode.None,
+      depthWriteEnabled: true,
     }
   
     let numVertBindings = 0;
