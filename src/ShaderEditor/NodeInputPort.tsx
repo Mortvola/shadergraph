@@ -9,6 +9,7 @@ import SimpleVector from './SimpleValues/SimpleVector';
 import SimpleUV from './SimpleValues/SimpleUV';
 import SimpleFloat from './SimpleValues/SimpleFloat';
 import type { GraphInterface } from '../State/GraphInterface';
+import PortConnector from './PortConnector';
 
 type PropsType = {
   graph: GraphInterface,
@@ -190,12 +191,12 @@ const NodeInputPort: React.FC<PropsType> = observer(({
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <div
-        className={`${styles.connector} ${port.edge ? styles.connected : ''}`}
+      <PortConnector
+        port={port}
+        draggable={port.connected()}
         onDragStart={handleDragStart}
-        onDrag={handleDrag}
         onDragEnd={handleDragEnd}
-        draggable={port.edge !== null}
+        onDrag={handleDrag}
       />
       <div>{ `${port.name} (${convertType(port.getDataType())})` }</div>
       {

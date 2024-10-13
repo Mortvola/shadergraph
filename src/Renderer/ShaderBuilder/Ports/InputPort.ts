@@ -82,6 +82,10 @@ class InputPort extends Port implements InputPortInterface {
 
     return ['', this.dataType];
   }
+
+  connected() {
+    return this.edge !== null;
+  }
 }
 
 export default InputPort;

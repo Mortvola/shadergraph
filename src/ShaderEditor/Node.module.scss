@@ -43,7 +43,7 @@ $selected-border-width: 3px;
     display: grid;
     grid-template-columns: max-content max-content;
     grid-template-rows: minmax(0, 1fr);
-    column-gap: 1rem;
+    column-gap: 2rem;
 
     .inputports {
       display: flex;
@@ -75,19 +75,15 @@ $selected-border-width: 3px;
   .port {
     display: flex;
     flex-direction: row;
-    justify-content: center;
     overflow: hidden;
     min-width: 2rem;
     align-items: center;
-    column-gap: 0.5rem;
 
     &.output {
-      padding-right: 0.5rem;
       justify-content: flex-end;
     }  
 
     &.input {
-      padding-left: 0.5rem;
       justify-content: flex-start;
     }  
   }
@@ -102,17 +98,6 @@ $selected-border-width: 3px;
     padding-bottom: 0.5rem;
     padding-left: 0.5rem;
     overflow: hidden;  
-  }
-}
-
-.connector {
-  width: 8px;
-  height: 8px;
-  border-radius: 4px;
-  border: black thin solid;
-
-  &.connected {
-    background-color: black;
   }
 }
 

@@ -1,0 +1,27 @@
+.connectorWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+
+  .connector {
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
+    border: black 1px solid;
+    margin: 4px;
+  
+    &:hover {
+      width: 12px;
+      height: 12px;
+      border-radius: 6px;  
+      border: black 3px solid;
+      margin: 1px;  
+    }
+
+    &.connected {
+      background-color: black;
+    }
+  }
+}

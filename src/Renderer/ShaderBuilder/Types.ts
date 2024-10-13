@@ -24,6 +24,8 @@ export interface InputPortInterface extends PortInterface {
   getValue(editMode: boolean): [string, DataType];
 
   getDataType(): DataType;
+
+  connected(): boolean;
 };
 
 export const isInputPort = (r: unknown): r is InputPortInterface => (
@@ -38,6 +40,8 @@ export interface OutputPortInterface extends PortInterface {
   getValue(editMode: boolean): [string, DataType];
 
   getDataType(): DataType;
+
+  connected(): boolean;
 };
 
 export interface GraphNodeInterface {
