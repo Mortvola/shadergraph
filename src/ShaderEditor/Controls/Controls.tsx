@@ -45,10 +45,6 @@ const Controls: React.FC = observer(() => {
     event.stopPropagation();
   }
 
-  const handleCullChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    graph?.setCullMode(event.target.value as CullMode)
-  }
-
   return (
     <Draggable onPositionChange={handlePositionChange} position={position} >
       <div className={styles.wrapper}  onClick={handleClick}>
@@ -57,14 +53,6 @@ const Controls: React.FC = observer(() => {
           <Checkbox value={graph.graph.transparent} label="Transparent" onChange={graph.setTransparency} />
           <Checkbox value={graph.graph.depthWriteEnabled} label="Depth Write Enabled" onChange={graph.setDepthWriteEnabled} />
           <Checkbox value={graph.graph.lit} label="Lit" onChange={graph.setLit} />
-          <label>
-            Cull Mode
-            <select value={graph.graph.cullMode} onChange={handleCullChange}>
-              <option value="none">None</option>
-              <option value="back">Back</option>
-              <option value="front">Front</option>
-            </select>
-          </label>
         </div>
       </div>
     </Draggable>

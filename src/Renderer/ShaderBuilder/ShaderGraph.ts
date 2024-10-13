@@ -16,9 +16,11 @@ import StageGraph from "./StageGraph";
 import type { GraphNodeInterface, PropertyInterface } from "./Types";
 import type Display from './Nodes/Display'
 import { BlendMode } from "./Nodes/Display";
+import { runInAction } from "mobx";
 
 export type ShaderModuleSettings = {
   blendMode: BlendMode,
+  cullMode: CullMode,
 }
 
 export type ShaderModule = {
@@ -33,8 +35,6 @@ class ShaderGraph {
   type?: ShaderType;
 
   lit = false;
-
-  cullMode: CullMode = 'none';
 
   transparent = false;
 
@@ -63,10 +63,19 @@ class ShaderGraph {
   
     this.type = shaderDescriptor?.type;
     this.lit = shaderDescriptor?.lit ?? false;
-    this.cullMode = shaderDescriptor?.cullMode ?? 'none';
     this.transparent = shaderDescriptor?.transparent ?? false;
     this.depthWriteEnabled = shaderDescriptor?.depthWriteEnabled ?? true;
 
+    const displayNode = this.getDisplayNode();
+
+    if (displayNode) {
+      if (shaderDescriptor?.cullMode !== undefined) {
+        runInAction(() => {
+          displayNode.settings.cullMode = shaderDescriptor?.cullMode ?? 'none'
+        })
+      }
+    }
+  
     this.editMode = editMode;
   }
 
@@ -76,7 +85,6 @@ class ShaderGraph {
 
   createShaderDescriptor(): ShaderDescriptor {
     const shaderDescriptor: ShaderDescriptor = {
-      cullMode: this.cullMode === 'front' ? undefined : this.cullMode,
       transparent: this.transparent,
       depthWriteEnabled: this.depthWriteEnabled,
       lit: this.lit,
@@ -144,6 +152,7 @@ class ShaderGraph {
     let fragProperties: PropertyInterface[] = [];
     let settings: ShaderModuleSettings = {
       blendMode: BlendMode.Alpha,
+      cullMode: 'none',
     }
   
     let numVertBindings = 0;
@@ -166,7 +175,7 @@ class ShaderGraph {
       vertUniforms = `struct VertProperties { ${vertUniforms} }\n`
     }
   
-    [fragmentBody, fragProperties, settings] = this.fragment.generateStageShaderCode(this.editMode, root);
+    [fragmentBody, fragProperties, settings] = this.fragment.generateCode(this.editMode, root);
   
     console.log(fragmentBody);
   

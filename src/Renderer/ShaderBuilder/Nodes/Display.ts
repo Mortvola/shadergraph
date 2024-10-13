@@ -3,6 +3,7 @@ import type { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import type GraphNotification from "../GraphNotification";
+import { type CullMode } from "../../../State/GraphInterface";
 
 export enum BlendMode {
   Alpha = 'Alpha',
@@ -11,6 +12,7 @@ export enum BlendMode {
 
 export type DisplaySettings = {
   blendMode: BlendMode,
+  cullMode: CullMode,
 }
 
 export const isDisplaySettings = (r: unknown): r is DisplaySettings => (
@@ -21,6 +23,7 @@ class Display extends OperationNode {
   @observable
   accessor settings: DisplaySettings = {
     blendMode: BlendMode.Alpha,
+    cullMode: 'none',
   };
 
   onChange?: () => void;

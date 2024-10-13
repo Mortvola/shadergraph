@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { BlendMode } from '../Renderer/ShaderBuilder/Nodes/Display';
 import styles from './DisplaySettings.module.scss';
 import { runInAction } from 'mobx';
+import { type CullMode } from '../State/GraphInterface';
 
 type PropsType = {
   node: Display,
@@ -28,6 +29,12 @@ const DisplaySettings: React.FC<PropsType> = observer(({
     event.stopPropagation()
   }
 
+  const handleCullChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
+    runInAction(() => {
+      node.settings.cullMode = event.target.value as CullMode
+    })
+  }
+
   return (
     <div className={styles.settings} style={style} onPointerDown={handlePointerDown} onClick={handleClick}>
       <label>
@@ -35,6 +42,14 @@ const DisplaySettings: React.FC<PropsType> = observer(({
         <select value={node.settings.blendMode} onChange={handleBlendModeChange}>
           <option value={BlendMode.Alpha}>Alpha</option>
           <option value={BlendMode.Addititve}>Addititve</option>
+        </select>
+      </label>
+      <label>
+        Cull Mode
+        <select value={node.settings.cullMode} onChange={handleCullChange}>
+          <option value="none">None</option>
+          <option value="back">Back</option>
+          <option value="front">Front</option>
         </select>
       </label>
     </div>

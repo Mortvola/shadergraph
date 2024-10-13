@@ -42,8 +42,6 @@ export interface GraphInterface {
 
   applyMaterial(): Promise<void>;
 
-  setCullMode(mode: CullMode): void;
-
   setTransparency: (transparent: boolean) => void;
 
   setDepthWriteEnabled: (depthWriteEnabled: boolean) => void;

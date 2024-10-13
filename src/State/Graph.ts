@@ -7,7 +7,7 @@ import type { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
 import Material from "../Renderer/Materials/Material";
 import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
 import type { StoreInterface } from "./StoreInterface";
-import type { CullMode, GraphInterface } from "./GraphInterface";
+import type { GraphInterface } from "./GraphInterface";
 import { DrawableType } from "../Renderer/Drawables/DrawableInterface";
 
 let nextShaderName = 0;
@@ -66,7 +66,6 @@ class Graph implements GraphInterface {
 
     makeObservable(this.graph, {
       lit: observable,
-      cullMode: observable,
       transparent: observable,
       depthWriteEnabled: observable,
       properties: observable,
@@ -220,14 +219,6 @@ class Graph implements GraphInterface {
   setLit(lit: boolean): void {
     runInAction(() => {
       this.graph.lit = lit;
-      this.changed = true;
-      this.applyMaterial()
-    })
-  }
-
-  setCullMode(mode: CullMode): void {
-    runInAction(() => {
-      this.graph.cullMode = mode;
       this.changed = true;
       this.applyMaterial()
     })

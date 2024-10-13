@@ -297,7 +297,7 @@ class PipelineManager implements PipelineManagerInterface {
         },
         primitive: {
           topology: "triangle-list",
-          cullMode: graph.cullMode ?? 'none',
+          cullMode: shaderModule.settings.cullMode,
           frontFace: "ccw",
         },
         depthStencil: {

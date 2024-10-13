@@ -224,9 +224,10 @@ class StageGraph {
     return this.nodes.find((n) => n.type === 'Display') as Display;
   }
 
-  generateStageShaderCode(editMode: boolean, root?: GraphNodeInterface): [string, PropertyInterface[], ShaderModuleSettings] {
+  generateCode(editMode: boolean, root?: GraphNodeInterface): [string, PropertyInterface[], ShaderModuleSettings] {
     const settings: ShaderModuleSettings = {
       blendMode: BlendMode.Alpha,
+      cullMode: 'none',
     }
 
     // Clear the node priorities
@@ -243,8 +244,9 @@ class StageGraph {
     if (outputNode === undefined) {
       const display = this.getDisplayNode()
 
-      if (display?.settings?.blendMode) {
-        settings.blendMode = display.settings.blendMode;        
+      if (display?.settings) {
+        settings.blendMode = display.settings.blendMode;
+        settings.cullMode = display.settings.cullMode;
       }
 
       outputNode = display;
