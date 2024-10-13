@@ -1,4 +1,4 @@
-import { observable, runInAction } from "mobx";
+import { action, computed, observable, runInAction } from "mobx";
 
 class Clock {
   previousTimestamp: number | null = null;
@@ -16,6 +16,26 @@ class Clock {
   accumulatedTime = 0;
 
   @observable
+  private accessor _rate = 1.0;
+
+  @computed
+  get rate(): number {
+    return this._rate
+  }
+
+  @action
+  set rate(rate: number) {
+    if (rate !== this._rate) {
+      if (this.systemTime !== null && this.systemStartTime !== null) {
+        this.accumulatedTime += (this.systemTime - this.systemStartTime) * this._rate;
+      }
+      this.systemStartTime = null;  
+    }
+
+    this._rate = rate;
+  }
+
+  @observable
   accessor paused = false;
 
   update(timestamp: number) {
@@ -26,7 +46,7 @@ class Clock {
   
       this.systemTime = timestamp;
 
-      this.timestamp = this.systemTime - this.systemStartTime + this.accumulatedTime;
+      this.timestamp = (this.systemTime - this.systemStartTime) * this._rate + this.accumulatedTime;
 
       this.elapsedTime = (this.timestamp - (this.previousTimestamp ?? this.timestamp)) / 1000.0;
   
@@ -49,7 +69,7 @@ class Clock {
     runInAction(() => {
       this.paused = false;
       if (this.systemTime !== null && this.systemStartTime !== null) {
-        this.accumulatedTime += this.systemTime - this.systemStartTime;
+        this.accumulatedTime += (this.systemTime - this.systemStartTime) * this._rate;
       }
       this.systemStartTime = null;  
     })

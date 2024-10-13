@@ -85,6 +85,10 @@ const MainView: React.FC = observer(() => {
     store.mainView.clock.restart()
   }
 
+  const handleRateChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
+    store.mainView.clock.rate = parseFloat(event.target.value)
+  }
+
   return (
     <>
         {
@@ -116,6 +120,14 @@ const MainView: React.FC = observer(() => {
                       >
                         {store.mainView.clock.paused ? <PlayIcon strokeWidth={1.25} /> : <PauseIcon strokeWidth={1.25} />}
                       </Button>
+                      <select value={store.mainView.clock.rate} onChange={handleRateChange}>
+                        <option value="1.25">1.25</option>
+                        <option value="1">1.0</option>
+                        <option value="0.75">0.75</option>
+                        <option value="0.5">0.5</option>
+                        <option value="0.25">0.25</option>
+                        <option value="0.125">0.125</option>
+                      </select>
                     </div>
                   </Container>
                 </Navbar>
