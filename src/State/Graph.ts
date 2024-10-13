@@ -1,5 +1,5 @@
 import { makeObservable, observable, runInAction } from "mobx";
-import type { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
+import type { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
 import GraphEdge from "../Renderer/ShaderBuilder/GraphEdge";
 import Display from "../Renderer/ShaderBuilder/Nodes/Display";
 import type { MaterialInterface } from "../Renderer/Types";
@@ -26,7 +26,7 @@ class Graph implements GraphInterface {
   
   graph: ShaderGraph;
 
-  dragConnector: [number, number][] | null = null;
+  dragConnector: { port: PortInterface, point: [number, number] } | null = null;
 
   changed = false;
 
@@ -73,8 +73,8 @@ class Graph implements GraphInterface {
     })
   }
 
-  setDragConnector(points: [number, number][] | null): void {
-    this.dragConnector = points;
+  setDragConnector(connector: { port: PortInterface, point: [number, number] } | null): void {
+    this.dragConnector = connector;
   }
 
   addProperty(property: PropertyInterface): void {

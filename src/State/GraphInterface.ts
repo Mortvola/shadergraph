@@ -1,5 +1,9 @@
 import type ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
-import type { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
+import type {
+  GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface,
+  PortInterface,
+  PropertyInterface,
+} from "../Renderer/ShaderBuilder/Types";
 
 export type CullMode = 'back' | 'none' | 'front';
 
@@ -14,7 +18,7 @@ export interface GraphInterface {
 
   selectedNode: GraphNodeInterface | null;
 
-  dragConnector: [number, number][] | null;
+  dragConnector: { port: PortInterface, point: [number, number] } | null;
   
   setName(name: string): void;
 
@@ -30,7 +34,7 @@ export interface GraphInterface {
 
   link(outputPort: OutputPortInterface, inputPort: InputPortInterface): void;
 
-  setDragConnector(points: [number, number][] | null): void;
+  setDragConnector(connector: { port: PortInterface, point: [number, number] } | null): void;
 
   addProperty(property: PropertyInterface): void;
 

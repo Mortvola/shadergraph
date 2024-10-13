@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './Node.module.scss';
-import type { InputPortInterface, OutputPortInterface} from '../Renderer/ShaderBuilder/Types';
+import type { InputPortInterface, OutputPortInterface, PortInterface} from '../Renderer/ShaderBuilder/Types';
 import { convertType, getLength } from '../Renderer/ShaderBuilder/Types';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
@@ -68,7 +68,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
     graph.setDragConnector(null)
   }
 
-  const [startPoint, setStartPoint] = React.useState<[number, number] | null>(null);
+  const [startPoint, setStartPoint] = React.useState<PortInterface | null>(null);
   const [dragKey, setDragKey] = React.useState<string | null>(null);
 
   const handleDragStart: React.DragEventHandler = (event) => {
@@ -80,12 +80,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
       store.setDragObject(outputPort);
       event.dataTransfer.setData("application/output-port", port.name);
 
-      const outputNode = outputPort.node;
-      
-      const startX = outputNode.position!.x + outputPort.offsetX;
-      const startY = outputNode.position!.y + outputPort.offsetY;
-
-      setStartPoint([startX, startY]);
+      setStartPoint(outputPort);
 
       graph.deleteEdge(port.edge);
     }
@@ -96,7 +91,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
 
   const handleDrag: React.DragEventHandler = (event) => {
     if (startPoint && event.clientX !== 0 && event.clientY !== 0) {
-      graph.setDragConnector([startPoint, [event.clientX, event.clientY]])
+      graph.setDragConnector({ port: startPoint, point: [event.clientX, event.clientY] })
     }
     else {
       graph.setDragConnector(null)
@@ -108,7 +103,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
     }
   }
 
-  const handleDragEnd: React.DragEventHandler = (event) => {
+  const handleDragEnd: React.DragEventHandler = () => {
     graph.setDragConnector(null)
     setStartPoint(null);
     setDragKey(null);

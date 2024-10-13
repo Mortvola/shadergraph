@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './Node.module.scss';
 import { useStores } from '../State/store';
-import type { OutputPortInterface} from '../Renderer/ShaderBuilder/Types';
+import type { OutputPortInterface, PortInterface} from '../Renderer/ShaderBuilder/Types';
 import { convertType } from '../Renderer/ShaderBuilder/Types';
 import { observer } from 'mobx-react-lite';
 import PortConnector from './PortConnector';
@@ -28,7 +28,7 @@ const NodeOutputPort: React.FC<PropsType> = observer(({
     return null;
   }
   
-  const [startPoint, setStartPoint] = React.useState<[number, number] | null>(null);
+  const [startPoint, setStartPoint] = React.useState<PortInterface | null>(null);
   const [dragKey, setDragKey] = React.useState<string | null>(null);
   const portRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -53,14 +53,13 @@ const NodeOutputPort: React.FC<PropsType> = observer(({
     const element = portRef.current;
 
     if (element) {
-      const rect = element.getBoundingClientRect();
-      setStartPoint([rect.right, rect.top + rect.height / 2]);
+      setStartPoint(port);
     }  
   }
 
   const handleDrag: React.DragEventHandler = (event) => {
     if (startPoint && event.clientX !== 0 && event.clientY !== 0) {
-      graph.setDragConnector([startPoint, [event.clientX, event.clientY]])
+      graph.setDragConnector({ port: startPoint, point: [event.clientX, event.clientY] })
     }
     else {
       graph.setDragConnector(null)
@@ -72,7 +71,7 @@ const NodeOutputPort: React.FC<PropsType> = observer(({
     }
   }
 
-  const handleDragEnd: React.DragEventHandler = (event) => {
+  const handleDragEnd: React.DragEventHandler = () => {
     graph.setDragConnector(null)
     setStartPoint(null);
     setDragKey(null);

@@ -1,10 +1,18 @@
 import { vec2 } from "wgpu-matrix";
 import { store } from "./State/store";
 import Renderer2d from "./Renderer2d";
+import { type PortInterface } from "./Renderer/ShaderBuilder/Types";
 
 class ShaderGraphRenderer extends Renderer2d {
   constructor(interactive = true) {
     super(interactive)
+  }
+
+  connectionPoint(port: PortInterface): [number, number] {
+    return [
+      (port.node.position!.x + this.translate[0]) * this.scale + (this.origin.x - this.origin.x * this.scale) + port.offsetX,
+      (port.node.position!.y + this.translate[1]) * this.scale + (this.origin.y - this.origin.y * this.scale) + port.offsetY,
+    ]
   }
 
   drawFrame = () => {
@@ -12,11 +20,8 @@ class ShaderGraphRenderer extends Renderer2d {
       this.ctx.clearRect(0, 0, this.element?.width ?? 0, this.element?.height ?? 0);
 
       for (const edge of store.graph.graph.fragment.edges) {
-        const startX = (edge.output.node.position!.x + this.translate[0]) * this.scale + (this.origin.x - this.origin.x * this.scale) + edge.output.offsetX;
-        const startY = (edge.output.node.position!.y + this.translate[1]) * this.scale + (this.origin.y - this.origin.y * this.scale) + edge.output.offsetY;
-
-        const endX = (edge.input.node.position!.x + this.translate[0]) * this.scale + (this.origin.x - this.origin.x * this.scale) + edge.input.offsetX;
-        const endY = (edge.input.node.position!.y + this.translate[1]) * this.scale + (this.origin.y - this.origin.y * this.scale) + edge.input.offsetY;
+        const [startX, startY] = this.connectionPoint(edge.output)
+        const [endX, endY] = this.connectionPoint(edge.input)
 
         const curveRadius = 20;
 
@@ -45,8 +50,8 @@ class ShaderGraphRenderer extends Renderer2d {
       }
 
       if (store.graph && store.graph.dragConnector !== null) {
-        const point1 = store.graph.dragConnector[0];
-        const point2 = store.graph.dragConnector[1];
+        const point1 = this.connectionPoint(store.graph.dragConnector.port)
+        const point2 = store.graph.dragConnector.point;
 
         this.ctx.beginPath();
         this.ctx.moveTo(point1[0], point1[1]);
