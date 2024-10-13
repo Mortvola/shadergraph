@@ -11,6 +11,7 @@ export enum BlendMode {
 }
 
 export type DisplaySettings = {
+  transparent: boolean,
   blendMode: BlendMode,
   cullMode: CullMode,
 }
@@ -22,6 +23,7 @@ export const isDisplaySettings = (r: unknown): r is DisplaySettings => (
 class Display extends OperationNode {
   @observable
   accessor settings: DisplaySettings = {
+    transparent: false,
     blendMode: BlendMode.Alpha,
     cullMode: CullMode.None,
   };

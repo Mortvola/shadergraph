@@ -5,6 +5,7 @@ import { BlendMode } from '../Renderer/ShaderBuilder/Nodes/Display';
 import styles from './DisplaySettings.module.scss';
 import { runInAction } from 'mobx';
 import { type CullMode } from "../Renderer/ShaderBuilder/Types";
+import Checkbox from './Controls/Checkbox';
 
 type PropsType = {
   node: Display,
@@ -29,6 +30,12 @@ const DisplaySettings: React.FC<PropsType> = observer(({
     event.stopPropagation()
   }
 
+  const handleTransparencyChange = (value: boolean) => {
+    runInAction(() => {
+      node.settings.transparent = value;
+    })
+  }
+
   const handleCullChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     runInAction(() => {
       node.settings.cullMode = event.target.value as CullMode
@@ -37,6 +44,7 @@ const DisplaySettings: React.FC<PropsType> = observer(({
 
   return (
     <div className={styles.settings} style={style} onPointerDown={handlePointerDown} onClick={handleClick}>
+      <Checkbox value={node.settings.transparent} label="Transparent" onChange={handleTransparencyChange} />
       <label>
         Blend Mode:
         <select value={node.settings.blendMode} onChange={handleBlendModeChange}>

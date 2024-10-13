@@ -66,7 +66,6 @@ class Graph implements GraphInterface {
 
     makeObservable(this.graph, {
       lit: observable,
-      transparent: observable,
       depthWriteEnabled: observable,
       properties: observable,
     })
@@ -198,14 +197,6 @@ class Graph implements GraphInterface {
         this.changed = true;
       })
     }
-  }
-
-  setTransparency(transparent: boolean): void {
-    runInAction(() => {
-      this.graph.transparent = transparent;
-      this.changed = true;
-      this.applyMaterial()
-    })
   }
 
   setDepthWriteEnabled(depthWriteEnabled: boolean): void {

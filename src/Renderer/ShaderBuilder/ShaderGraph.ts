@@ -19,6 +19,7 @@ import { runInAction } from "mobx";
 import { CullMode } from "./Types";
 
 export type ShaderModuleSettings = {
+  transparent: boolean,
   blendMode: BlendMode,
   cullMode: CullMode,
 }
@@ -35,8 +36,6 @@ class ShaderGraph {
   type?: ShaderType;
 
   lit = false;
-
-  transparent = false;
 
   depthWriteEnabled = true;
 
@@ -63,17 +62,20 @@ class ShaderGraph {
   
     this.type = shaderDescriptor?.type;
     this.lit = shaderDescriptor?.lit ?? false;
-    this.transparent = shaderDescriptor?.transparent ?? false;
     this.depthWriteEnabled = shaderDescriptor?.depthWriteEnabled ?? true;
 
     const displayNode = this.getDisplayNode();
 
     if (displayNode) {
-      if (shaderDescriptor?.cullMode !== undefined) {
-        runInAction(() => {
-          displayNode.settings.cullMode = shaderDescriptor?.cullMode ?? CullMode.None
-        })
-      }
+      runInAction(() => {
+        if (shaderDescriptor?.transparent !== undefined) {
+          displayNode.settings.transparent = shaderDescriptor?.transparent
+        }
+
+        if (shaderDescriptor?.cullMode !== undefined) {
+          displayNode.settings.cullMode = shaderDescriptor?.cullMode
+        }
+      })
     }
   
     this.editMode = editMode;
@@ -85,7 +87,6 @@ class ShaderGraph {
 
   createShaderDescriptor(): ShaderDescriptor {
     const shaderDescriptor: ShaderDescriptor = {
-      transparent: this.transparent,
       depthWriteEnabled: this.depthWriteEnabled,
       lit: this.lit,
       
@@ -151,6 +152,7 @@ class ShaderGraph {
     let fragUniforms = '';
     let fragProperties: PropertyInterface[] = [];
     let settings: ShaderModuleSettings = {
+      transparent: false,
       blendMode: BlendMode.Alpha,
       cullMode: CullMode.None,
     }

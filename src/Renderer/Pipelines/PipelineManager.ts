@@ -185,7 +185,7 @@ class PipelineManager implements PipelineManagerInterface {
 
       const targets: GPUColorTargetState[] = [];
 
-      if (graph.transparent) {
+      if (shaderModule.settings.transparent) {
         targets.push({
           format: outputFormat,
           blend: shaderModule.settings.blendMode === BlendMode.Alpha
@@ -284,7 +284,7 @@ class PipelineManager implements PipelineManagerInterface {
       });
 
       const pipelineDescriptor: GPURenderPipelineDescriptor = {
-        label: `${drawableType}${graph.transparent ? ' transparent' : ''}${bloom ? ' bloom' : ''} pipeline`,
+        label: `${drawableType}${shaderModule.settings.transparent ? ' transparent' : ''}${bloom ? ' bloom' : ''} pipeline`,
         vertex: {
           module: shaderModule.module,
           entryPoint: "vs",
@@ -302,7 +302,7 @@ class PipelineManager implements PipelineManagerInterface {
         },
         depthStencil: {
           depthWriteEnabled: graph.depthWriteEnabled ?? true,
-          depthCompare: (graph.transparent ?? false) ? 'less-equal' : 'less',
+          depthCompare: (shaderModule.settings.transparent ?? false) ? 'less-equal' : 'less',
           format: "depth24plus"
         },
         layout: pipelineLayout,

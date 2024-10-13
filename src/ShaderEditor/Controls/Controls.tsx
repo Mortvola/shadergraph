@@ -49,7 +49,6 @@ const Controls: React.FC = observer(() => {
       <div className={styles.wrapper}  onClick={handleClick}>
         <div>Controls</div>
         <div className={styles.controls}>
-          <Checkbox value={graph.graph.transparent} label="Transparent" onChange={graph.setTransparency} />
           <Checkbox value={graph.graph.depthWriteEnabled} label="Depth Write Enabled" onChange={graph.setDepthWriteEnabled} />
           <Checkbox value={graph.graph.lit} label="Lit" onChange={graph.setLit} />
         </div>

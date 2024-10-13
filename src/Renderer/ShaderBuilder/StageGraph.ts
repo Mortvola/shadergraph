@@ -227,6 +227,7 @@ class StageGraph {
 
   generateCode(editMode: boolean, root?: GraphNodeInterface): [string, PropertyInterface[], ShaderModuleSettings] {
     const settings: ShaderModuleSettings = {
+      transparent: false,
       blendMode: BlendMode.Alpha,
       cullMode: CullMode.None,
     }
@@ -246,6 +247,7 @@ class StageGraph {
       const display = this.getDisplayNode()
 
       if (display?.settings) {
+        settings.transparent = display.settings.transparent;
         settings.blendMode = display.settings.blendMode;
         settings.cullMode = display.settings.cullMode;
       }
