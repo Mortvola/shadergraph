@@ -125,10 +125,10 @@ class SceneGraph implements SceneGraphInterface {
           if (c.material.decal && renderer.decalPass) {
             renderer.decalPass.addDrawable(c);
           }
-          else if (c.material.transparent && renderer.transparentPass) {
+          else if (c.material.pipeline.settings.transparent && renderer.transparentPass) {
             renderer.transparentPass.addDrawable(c);
           }
-          else if (c.material.lit && renderer.deferredRenderPass) {
+          else if (c.material.pipeline.settings.lit && renderer.deferredRenderPass) {
             renderer.deferredRenderPass.addDrawable(c);
           }
           else if (renderer.unlitRenderPass) {

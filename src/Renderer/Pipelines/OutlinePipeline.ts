@@ -1,5 +1,6 @@
 import { bindGroups } from '../BindGroups';
 import { gpu } from '../Gpu';
+import { BlendMode, CullMode } from '../ShaderBuilder/Types';
 import { outlineShader } from '../shaders/outline';
 import Pipeline from "./Pipeline";
 
@@ -73,7 +74,18 @@ class OutlinePipeline extends Pipeline {
       }),
     };
     
-    super(gpu.device.createRenderPipeline(pipelineDescriptor), null, null);
+    super(
+      gpu.device.createRenderPipeline(pipelineDescriptor),
+      null,
+      null,
+      {
+        transparent: false,
+        blendMode: BlendMode.Addititve,
+        cullMode: CullMode.None,
+        depthWriteEnabled: true,
+        lit: false,
+      }
+    );
   }
 }
 

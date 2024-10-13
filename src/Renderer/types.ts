@@ -88,13 +88,9 @@ export interface RendererInterface {
 }
 
 export interface MaterialInterface {
-  pipeline: PipelineInterface | null;
+  pipeline: PipelineInterface;
 
   color: Float32Array;
-
-  lit: boolean;
-  
-  transparent: boolean;
 
   decal: boolean;
 
@@ -126,7 +122,7 @@ export interface PipelineInterface {
 
   fragmentStageBindings: StageBindings | null
 
-  settings?: ShaderModuleSettings
+  settings: ShaderModuleSettings
 }
 
 export type PipelineAttributes = object;

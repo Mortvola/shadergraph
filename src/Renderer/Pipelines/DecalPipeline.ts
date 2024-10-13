@@ -2,6 +2,7 @@ import { bindGroups } from '../BindGroups';
 import { gpu } from '../Gpu';
 import { outputFormat } from '../RenderSettings';
 import Property from '../ShaderBuilder/Property';
+import { BlendMode, CullMode } from '../ShaderBuilder/Types';
 import { decalShader } from '../shaders/decal';
 import Pipeline from "./Pipeline";
 
@@ -91,7 +92,18 @@ class DecalPipeline extends Pipeline {
       }),
     };
     
-    super(gpu.device.createRenderPipeline(pipelineDescriptor), null,  null);
+    super(
+      gpu.device.createRenderPipeline(pipelineDescriptor),
+      null,
+      null,
+      {
+        transparent: false,
+        blendMode: BlendMode.Addititve,
+        cullMode: CullMode.None,
+        depthWriteEnabled: true,
+        lit: false,
+      }
+    );
 
     this.fragmentStageBindings = {
       binding: 2,

@@ -1,6 +1,7 @@
 import { bindGroups } from '../BindGroups';
 import { gpu } from '../Gpu';
 import { bloom, outputFormat } from '../RenderSettings';
+import { BlendMode, CullMode } from '../ShaderBuilder/Types';
 import { lineShader } from '../shaders/line';
 import Pipeline from "./Pipeline";
 
@@ -69,7 +70,18 @@ class LinePipeline extends Pipeline {
       }),
     };
     
-    super(gpu.device.createRenderPipeline(pipelineDescriptor), null, null);
+    super(
+      gpu.device.createRenderPipeline(pipelineDescriptor),
+      null,
+      null,
+      {
+        transparent: false,
+        blendMode: BlendMode.Addititve,
+        cullMode: CullMode.None,
+        depthWriteEnabled: true,
+        lit: false,
+      }
+    );
   }
 }
 

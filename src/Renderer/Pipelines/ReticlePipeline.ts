@@ -1,5 +1,6 @@
 import { bindGroups } from '../BindGroups';
 import { gpu } from '../Gpu';
+import { BlendMode, CullMode } from '../ShaderBuilder/Types';
 import { reticleShader } from '../shaders/reticle';
 import Pipeline from "./Pipeline";
 
@@ -58,7 +59,18 @@ class ReticlePipeline extends Pipeline {
       }),
     };
     
-    super(gpu.device.createRenderPipeline(pipelineDescriptor), null,  null);
+    super(
+      gpu.device.createRenderPipeline(pipelineDescriptor),
+      null, 
+      null,
+      {
+        transparent: false,
+        blendMode: BlendMode.Addititve,
+        cullMode: CullMode.None,
+        depthWriteEnabled: true,
+        lit: false,
+      }
+    );
   }
 }
 

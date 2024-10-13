@@ -310,9 +310,7 @@ class PipelineManager implements PipelineManagerInterface {
       
       const gpuPipeline = gpu.device.createRenderPipeline(pipelineDescriptor);
 
-      pipeline = new Pipeline(gpuPipeline, vertStageBindings, fragStageBindings);
-
-      pipeline.settings = shaderModule.settings;
+      pipeline = new Pipeline(gpuPipeline, vertStageBindings, fragStageBindings, shaderModule.settings);
 
       this.pipelineMap.set(key, { pipeline });
     }

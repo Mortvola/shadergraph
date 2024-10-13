@@ -20,17 +20,13 @@ type MaterialBindings = {
 }
 
 class Material implements MaterialInterface {
-  pipeline: PipelineInterface | null = null;
+  pipeline: PipelineInterface;
 
   color = new Float32Array(4);
 
   vertBindings: MaterialBindings | null = null;
 
   fragBindings: MaterialBindings | null = null;
-
-  lit: boolean;
-
-  transparent: boolean;
 
   decal: boolean;
 
@@ -49,8 +45,6 @@ class Material implements MaterialInterface {
     this.color[3] = shaderDescriptor?.color ? shaderDescriptor.color[3] : 1;
     
     this.decal = shaderDescriptor?.type === 'Decal';
-    this.lit = pipeline.settings?.lit ?? false;
-    this.transparent = pipeline.settings?.transparent ?? false;
 
     if (pipeline.vertexStageBindings) {
       const [uniformsBuffer, bindGroup] = this.createBindGroup(pipeline.vertexStageBindings, [])

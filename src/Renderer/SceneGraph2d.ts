@@ -561,7 +561,7 @@ class SceneGraph2D {
         if (instance.material.pipeline) {
           let pipelineEntry: PipelineEntry | null = null
 
-          if (instance.material.transparent) {
+          if (instance.material.pipeline.settings.transparent) {
             pipelineEntry = this.transparentPipelines.find((p) => p.pipeline === instance.material.pipeline) ?? null;
 
             if (!pipelineEntry) {
