@@ -1,4 +1,5 @@
 import type { DataType, GraphNodeDescriptor, NodeType, ValueType } from "./GraphDescriptor";
+import type GraphNotification from "./GraphNotification";
 
 export interface PortInterface {
   node: GraphNodeInterface;
@@ -26,6 +27,8 @@ export interface InputPortInterface extends PortInterface {
   getDataType(): DataType;
 
   connected(): boolean;
+
+  unlink(): void;
 };
 
 export const isInputPort = (r: unknown): r is InputPortInterface => (
@@ -42,6 +45,8 @@ export interface OutputPortInterface extends PortInterface {
   getDataType(): DataType;
 
   connected(): boolean;
+
+  unlink(edge: GraphEdgeInterface): void;
 };
 
 export interface GraphNodeInterface {
@@ -74,6 +79,8 @@ export interface GraphNodeInterface {
   output(editMode: boolean): string;
 
   setPosition(x: number, y: number): void;
+
+  notify(notification?: GraphNotification): void;
 }
 
 export interface PropertyNodeInterface extends GraphNodeInterface {
@@ -107,6 +114,8 @@ export interface GraphEdgeInterface {
   getValue(editMode: boolean): [string, DataType];
 
   getDataType(): DataType;
+
+  unlink(): void;
 }
 
 export interface ValueInterface {

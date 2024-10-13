@@ -1,4 +1,4 @@
-import { makeObservable, observable } from "mobx";
+import { observable, reaction } from "mobx";
 import OperationNode from "../OperationNode";
 import AlphaPort from "../Ports/AlphaPort";
 import BluePort from "../Ports/BluePort";
@@ -52,6 +52,15 @@ class SampleTexture extends OperationNode {
       new BluePort(this, 'float', 'b'),
       new AlphaPort(this, 'float', 'a'),
     ];
+
+    reaction(
+      () => ({
+        ...this.settings,
+      }),
+      () => {
+        this.notify()
+      }
+    )
   }
 
   getDataType(): DataType {

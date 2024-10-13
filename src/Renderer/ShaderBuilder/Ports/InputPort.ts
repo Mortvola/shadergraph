@@ -86,6 +86,11 @@ class InputPort extends Port implements InputPortInterface {
   connected() {
     return this.edge !== null;
   }
+
+  unlink() {
+    this.edge = null;
+    this.node.notify()
+  }
 }
 
 export default InputPort;

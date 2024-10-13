@@ -3,6 +3,7 @@ import type { GraphNodeInterface } from "./Types";
 import type InputPort from "./Ports/InputPort";
 import type OutputPort from "./Ports/OutputPort";
 import type { DataType, GraphNodeDescriptor, NodeType } from "./GraphDescriptor";
+import GraphNotification from "./GraphNotification";
 
 export let nextVarId = 0;
 
@@ -123,6 +124,26 @@ class GraphNode implements GraphNodeInterface {
     runInAction(() => {
       this.position = { x, y }
     })
+  }
+
+  notify(notification?: GraphNotification) {
+    let n = notification;
+    if (n === undefined) {
+      n = new GraphNotification()
+    }
+
+    if (!n.visited.has(this.id)) {
+      n.visited.add(this.id)
+      this.notifyOutputs(n)
+    }
+  }
+
+  private notifyOutputs(notification: GraphNotification) {
+    for (const output of this.outputPort) {
+      for (const edge of output.edges) {
+        edge.input.node.notify(notification);
+      }
+    }
   }
 }
 

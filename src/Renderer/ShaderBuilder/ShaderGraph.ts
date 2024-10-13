@@ -14,6 +14,7 @@ import type { DataType, GraphDescriptor } from "./GraphDescriptor";
 import Property from "./Property";
 import StageGraph from "./StageGraph";
 import type { GraphNodeInterface, PropertyInterface } from "./Types";
+import type Display from './Nodes/Display'
 import { BlendMode } from "./Nodes/Display";
 
 export type ShaderModuleSettings = {
@@ -67,6 +68,10 @@ class ShaderGraph {
     this.depthWriteEnabled = shaderDescriptor?.depthWriteEnabled ?? true;
 
     this.editMode = editMode;
+  }
+
+  getDisplayNode(): Display | undefined {
+    return this.fragment.getDisplayNode()
   }
 
   createShaderDescriptor(): ShaderDescriptor {

@@ -16,6 +16,8 @@ class GraphEdge implements GraphEdgeInterface {
       outputPort.edges.push(this);
       inputPort.edge = this;
     })
+
+    inputPort.node.notify()
   }
 
   getDataType(): DataType {
@@ -28,6 +30,12 @@ class GraphEdge implements GraphEdgeInterface {
 
   getValue(editMode: boolean): [string, DataType] {
     return this.output.getValue(editMode) ?? ['', 'float'];
+  }
+
+  unlink() {
+    this.output.unlink(this)
+
+    this.input.unlink()
   }
 }
 

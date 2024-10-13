@@ -1,7 +1,8 @@
-import { observable } from "mobx";
+import { observable, reaction } from "mobx";
 import type { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
+import type GraphNotification from "../GraphNotification";
 
 export enum BlendMode {
   Alpha = 'Alpha',
@@ -22,6 +23,8 @@ class Display extends OperationNode {
     blendMode: BlendMode.Alpha,
   };
 
+  onChange?: () => void;
+
   constructor(nodeDescriptor?: GraphNodeDescriptor) {
     super('Display', 'Display', nodeDescriptor?.id)
 
@@ -36,6 +39,15 @@ class Display extends OperationNode {
       new InputPort(this, 'vec4f', 'rgb'),
       new InputPort(this, 'float', 'a'),
     ]
+
+    reaction(
+      () => ({
+        ...this.settings,
+      }),
+      () => {
+        this.notify()
+      }
+    )
   }
 
   createDescriptor(): GraphNodeDescriptor {
@@ -76,6 +88,13 @@ class Display extends OperationNode {
     const [value] = this.getExpression(editMode)
 
     return `var fragOut = ${value};`;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  notify(notification?: GraphNotification) {
+    if (this.onChange) {
+      this.onChange()
+    }
   }
 }
 

@@ -49,6 +49,16 @@ class Graph implements GraphInterface {
       ];
     }
 
+    // If there is a display node then hook up the change
+    // handler
+    const displayNode = this.graph.getDisplayNode()
+
+    if (displayNode) {
+      displayNode.onChange = () => {
+        this.applyMaterial()
+      }
+    }
+
     makeObservable(this, {
       name: observable,
       selectedNode: observable,
@@ -105,8 +115,6 @@ class Graph implements GraphInterface {
     this.graph.fragment.edges.push(edge);
 
     this.changed = true;
-
-    this.applyMaterial()
   }
 
   addNode(node: GraphNodeInterface): void {
@@ -139,19 +147,10 @@ class Graph implements GraphInterface {
   }
 
   private delEdge(edge: GraphEdgeInterface) {
-    let index = edge.output.edges.findIndex((e) => e === edge);
+    edge.unlink()
 
-    if (index !== -1) {
-      edge.output.edges = [
-        ...edge.output.edges.slice(0, index),
-        ...edge.output.edges.slice(index + 1),
-      ];
-    }
-
-    edge.input.edge = null;
-
-    // Find the edge in the edge list and remove eit
-    index = this.graph.fragment.edges.findIndex((e) => e === edge);
+    // Find the edge in the edge list and remove it
+    const index = this.graph.fragment.edges.findIndex((e) => e === edge);
     
     if (index !== -1) {
       this.graph.fragment.edges = [
@@ -198,12 +197,11 @@ class Graph implements GraphInterface {
         ];
 
         this.changed = true;
-        this.applyMaterial()
       })
     }
   }
 
-  setTransparency = (transparent: boolean): void => {
+  setTransparency(transparent: boolean): void {
     runInAction(() => {
       this.graph.transparent = transparent;
       this.changed = true;
@@ -211,7 +209,7 @@ class Graph implements GraphInterface {
     })
   }
 
-  setDepthWriteEnabled = (depthWriteEnabled: boolean): void => {
+  setDepthWriteEnabled(depthWriteEnabled: boolean): void {
     runInAction(() => {
       this.graph.depthWriteEnabled = depthWriteEnabled;
       this.changed = true;
@@ -219,7 +217,7 @@ class Graph implements GraphInterface {
     })
   }
 
-  setLit = (lit: boolean): void => {
+  setLit(lit: boolean): void {
     runInAction(() => {
       this.graph.lit = lit;
       this.changed = true;

@@ -29,6 +29,17 @@ class OutputPort extends Port implements OutputPortInterface {
   connected() {
     return this.edges.length > 0;
   }
+
+  unlink(edge: GraphEdgeInterface): void {
+    const index = edge.output.edges.findIndex((e) => e === edge);
+
+    if (index !== -1) {
+      edge.output.edges = [
+        ...edge.output.edges.slice(0, index),
+        ...edge.output.edges.slice(index + 1),
+      ];
+    }
+  }
 }
 
 export default OutputPort;
