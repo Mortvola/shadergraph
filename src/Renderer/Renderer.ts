@@ -13,7 +13,6 @@ import type Light from './Drawables/Light';
 import CartesianAxes from './Drawables/CartesianAxes';
 import DrawableComponent from './Drawables/DrawableComponent';
 import type { RendererInterface, RenderNodeInterface, DrawableComponentInterface } from './Types';
-import { lineMaterial } from './Materials/Line';
 import { lights } from "./shaders/lights";
 import { gpu } from './Gpu';
 import { bindGroups } from './BindGroups';
@@ -35,7 +34,8 @@ import DecalPass from './RenderPasses/DecalPass';
 import CombinePass from './RenderPasses/CombinePass';
 import { runInAction } from 'mobx';
 import Clock from './Clock';
-import { litDescriptor } from './shaders/LitDescriptor';
+import { litDescriptor } from './shaders/descriptors/LitDescriptor';
+import { lineDescriptor } from './shaders/descriptors/Line';
 
 const requestPostAnimationFrame = (task: (timestamp: number) => void) => {
   requestAnimationFrame((timestamp: number) => {
@@ -160,7 +160,7 @@ class Renderer implements RendererInterface {
     await gpu.ready();
     await pipelineManager.ready();
 
-    const cartesianAxes = await DrawableComponent.create(new CartesianAxes(), { shaderDescriptor: lineMaterial })
+    const cartesianAxes = await DrawableComponent.create(new CartesianAxes(), { shaderDescriptor: lineDescriptor })
     
     let floor: RenderNode | undefined = undefined;
 

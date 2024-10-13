@@ -1,6 +1,6 @@
-import { type NodeType } from "../ShaderBuilder/GraphDescriptor";
-import { BlendMode, CullMode } from "../ShaderBuilder/Types";
-import { type ShaderDescriptor } from "./ShaderDescriptor";
+import { type NodeType } from "../../ShaderBuilder/GraphDescriptor";
+import { BlendMode, CullMode } from "../../ShaderBuilder/Types";
+import { type ShaderDescriptor } from "../ShaderDescriptor";
 
 export const litDescriptor: ShaderDescriptor = {
   properties: [],
