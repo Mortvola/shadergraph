@@ -34,7 +34,7 @@ import Voronoi from "./Nodes/Voronoi";
 import { resetConstantNames } from "./Ports/InputPort";
 import Property from "./Property";
 import PropertyNode from "./PropertyNode";
-import { type ShaderModuleSettings } from "./ShaderGraph";
+import { type ShaderModuleSettings } from "./Types";
 import type { GraphEdgeInterface, GraphNodeInterface, PropertyInterface } from "./Types";
 import { getLength, isPropertyNode } from "./Types";
 import Value from "./Value";
@@ -232,6 +232,7 @@ class StageGraph {
       blendMode: BlendMode.Alpha,
       cullMode: CullMode.None,
       depthWriteEnabled: true,
+      lit: false,
     }
 
     // Clear the node priorities
@@ -249,7 +250,11 @@ class StageGraph {
       const display = this.getDisplayNode()
 
       if (display?.settings) {
-        settings.transparent = display.settings.transparent;
+        settings.lit = display.settings.lit;
+
+        // Transparency must be disabled if lit is enabled.
+        settings.transparent = settings.lit ? false : display.settings.transparent;
+        
         settings.blendMode = display.settings.blendMode;
         settings.cullMode = display.settings.cullMode;
         settings.depthWriteEnabled = display.settings.depthWriteEnabled;

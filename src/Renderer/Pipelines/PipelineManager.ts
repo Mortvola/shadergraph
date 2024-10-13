@@ -218,7 +218,7 @@ class PipelineManager implements PipelineManagerInterface {
           },
         )
 
-        if (graph.lit) {
+        if (shaderModule.settings.lit) {
           targets.push(
             {
               format: outputFormat,
@@ -230,7 +230,7 @@ class PipelineManager implements PipelineManagerInterface {
         }
       }
 
-      if (!graph.lit && bloom && drawableType !== DrawableType.Mesh2D) {
+      if (!shaderModule.settings.lit && bloom && drawableType !== DrawableType.Mesh2D) {
         targets.push({
           format: outputFormat,
         })
@@ -311,6 +311,8 @@ class PipelineManager implements PipelineManagerInterface {
       const gpuPipeline = gpu.device.createRenderPipeline(pipelineDescriptor);
 
       pipeline = new Pipeline(gpuPipeline, vertStageBindings, fragStageBindings);
+
+      pipeline.settings = shaderModule.settings;
 
       this.pipelineMap.set(key, { pipeline });
     }

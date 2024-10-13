@@ -12,31 +12,14 @@ import { voronoiFunction } from "../shaders/functions/voronoiFunction";
 import type { DataType, GraphDescriptor } from "./GraphDescriptor";
 import Property from "./Property";
 import StageGraph from "./StageGraph";
-import type { GraphNodeInterface, PropertyInterface } from "./Types";
+import type { GraphNodeInterface, PropertyInterface, ShaderModule, ShaderModuleSettings } from "./Types";
 import type Display from './Nodes/Display'
 import { BlendMode } from "./Types";
 import { runInAction } from "mobx";
 import { CullMode } from "./Types";
 
-export type ShaderModuleSettings = {
-  transparent: boolean,
-  blendMode: BlendMode,
-  cullMode: CullMode,
-  depthWriteEnabled: boolean,
-}
-
-export type ShaderModule = {
-  module: GPUShaderModule,
-  vertProperties: PropertyInterface[],
-  fragProperties: PropertyInterface[],
-  code: string,
-  settings: ShaderModuleSettings,
-}
-
 class ShaderGraph {
   type?: ShaderType;
-
-  lit = false;
 
   fragment: StageGraph;
 
@@ -60,22 +43,26 @@ class ShaderGraph {
     );
   
     this.type = shaderDescriptor?.type;
-    this.lit = shaderDescriptor?.lit ?? false;
 
     const displayNode = this.getDisplayNode();
 
     if (displayNode) {
+      // If this is an older shader descriptor, extract the settings from the descriptor.
       runInAction(() => {
-        if (shaderDescriptor?.transparent !== undefined) {
-          displayNode.settings.transparent = shaderDescriptor?.transparent
+        if ((shaderDescriptor as { transparent: boolean })?.transparent !== undefined) {
+          displayNode.settings.transparent = (shaderDescriptor as { transparent: boolean }).transparent
         }
 
-        if (shaderDescriptor?.cullMode !== undefined) {
-          displayNode.settings.cullMode = shaderDescriptor?.cullMode
+        if ((shaderDescriptor as { cullMode: CullMode })?.cullMode !== undefined) {
+          displayNode.settings.cullMode = (shaderDescriptor as { cullMode: CullMode }).cullMode
         }
 
-        if (shaderDescriptor?.depthWriteEnabled !== undefined) {
-          displayNode.settings.depthWriteEnabled = shaderDescriptor?.depthWriteEnabled
+        if ((shaderDescriptor as { depthWriteEnabled: boolean })?.depthWriteEnabled !== undefined) {
+          displayNode.settings.depthWriteEnabled = (shaderDescriptor as { depthWriteEnabled: boolean }).depthWriteEnabled
+        }
+
+        if ((shaderDescriptor as { lit: boolean })?.lit !== undefined) {
+          displayNode.settings.lit = (shaderDescriptor as { lit: boolean }).lit
         }
       })
     }
@@ -89,8 +76,6 @@ class ShaderGraph {
 
   createShaderDescriptor(): ShaderDescriptor {
     const shaderDescriptor: ShaderDescriptor = {
-      lit: this.lit,
-      
       properties: this.properties.map((p) => ({
         name: p.name,
         dataType: p.value.dataType,
@@ -157,6 +142,7 @@ class ShaderGraph {
       blendMode: BlendMode.Alpha,
       cullMode: CullMode.None,
       depthWriteEnabled: true,
+      lit: false,
     }
   
     let numVertBindings = 0;
@@ -226,15 +212,15 @@ class ShaderGraph {
   
       ${fragBindings}
       
-      ${getVertexStage(drawableType, this.lit)}
+      ${getVertexStage(drawableType, settings.lit)}
   
-      ${(this.lit) ? blinnPhongFunction : ''}
+      ${(settings.lit) ? blinnPhongFunction : ''}
   
       ${twirlFunction}
   
       ${voronoiFunction}
   
-      ${getFragmentStage(fragmentBody, this.lit, bloom)}
+      ${getFragmentStage(fragmentBody, settings.lit, bloom)}
       `,
       vertProperties,
       fragProperties,

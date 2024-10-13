@@ -35,6 +35,7 @@ import DecalPass from './RenderPasses/DecalPass';
 import CombinePass from './RenderPasses/CombinePass';
 import { runInAction } from 'mobx';
 import Clock from './Clock';
+import { litDescriptor } from './shaders/LitDescriptor';
 
 const requestPostAnimationFrame = (task: (timestamp: number) => void) => {
   requestAnimationFrame((timestamp: number) => {
@@ -166,9 +167,9 @@ class Renderer implements RendererInterface {
     if (withFloor) {
       const quad = await Mesh.create(plane(50, 50, vec4.create(1, 1, 1, 1)), 0)
       floor = new RenderNode();
-      const component = await DrawableComponent.create(quad, { shaderDescriptor: { lit: true }})
+      const component = await DrawableComponent.create(quad, { shaderDescriptor: litDescriptor })
       floor.addComponent(component)
-      floor.postTransforms.push(mat4.fromQuat(quat.fromEuler(degToRad(270), 0, 0, "xyz")))  
+      floor.postTransforms.push(mat4.fromQuat(quat.fromEuler(degToRad(270), 0, 0, 'xyz')))  
     }
 
     return new Renderer(bindGroups.getBindGroupLayout0(), cartesianAxes, floor);

@@ -2,7 +2,7 @@ import type { Vec3, Vec4, Mat4, Quat } from 'wgpu-matrix';
 import type { StructuredView } from 'webgpu-utils';
 import type { DrawableType } from './Drawables/DrawableInterface';
 import type DrawableInterface from './Drawables/DrawableInterface';
-import type { PropertyInterface } from './ShaderBuilder/Types';
+import type { PropertyInterface, ShaderModuleSettings } from './ShaderBuilder/Types';
 import type { ShaderDescriptor } from './shaders/ShaderDescriptor';
 import type SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
 import type ShaderGraph from './ShaderBuilder/ShaderGraph';
@@ -125,6 +125,8 @@ export interface PipelineInterface {
   vertexStageBindings: StageBindings | null
 
   fragmentStageBindings: StageBindings | null
+
+  settings?: ShaderModuleSettings
 }
 
 export type PipelineAttributes = object;

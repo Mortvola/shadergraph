@@ -48,9 +48,9 @@ class Material implements MaterialInterface {
     this.color[2] = shaderDescriptor?.color ? shaderDescriptor.color[2] : 0.5;
     this.color[3] = shaderDescriptor?.color ? shaderDescriptor.color[3] : 1;
     
-    this.decal = shaderDescriptor?.type === 'Decal'
-    this.lit = shaderDescriptor?.lit ?? false;
-    this.transparent = shaderDescriptor?.transparent ?? false;
+    this.decal = shaderDescriptor?.type === 'Decal';
+    this.lit = pipeline.settings?.lit ?? false;
+    this.transparent = pipeline.settings?.transparent ?? false;
 
     if (pipeline.vertexStageBindings) {
       const [uniformsBuffer, bindGroup] = this.createBindGroup(pipeline.vertexStageBindings, [])

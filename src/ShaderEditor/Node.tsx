@@ -4,7 +4,7 @@ import styles from './Node.module.scss';
 import NodeInputPort from './NodeInputPort';
 import NodeOutputPort from './NodeOutputPort';
 import type { GraphNodeInterface} from '../Renderer/ShaderBuilder/Types';
-import { isPropertyNode, isValueNode } from '../Renderer/ShaderBuilder/Types';
+import { isDisplaySettings, isPropertyNode, isValueNode } from '../Renderer/ShaderBuilder/Types';
 import Draggable from './Draggable';
 import ValueInput from './Properties/ValueInput';
 import Modal from '../Widgets/Modal';
@@ -13,7 +13,6 @@ import type SampleTexture from '../Renderer/ShaderBuilder/Nodes/SampleTexture';
 import type { GraphInterface } from '../State/GraphInterface';
 import { SettingsIcon } from 'lucide-react';
 import type Display from '../Renderer/ShaderBuilder/Nodes/Display';
-import { isDisplaySettings } from '../Renderer/ShaderBuilder/Nodes/Display';
 import DisplaySettings from './DisplaySettings';
 
 type PropsType = {

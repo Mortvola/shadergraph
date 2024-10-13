@@ -186,3 +186,31 @@ export enum BlendMode {
   Alpha = 'Alpha',
   Addititve = 'Additive'
 }
+
+export type DisplaySettings = {
+  transparent: boolean;
+  blendMode: BlendMode;
+  cullMode: CullMode;
+  depthWriteEnabled: boolean;
+  lit: boolean;
+};
+
+export const isDisplaySettings = (r: unknown): r is DisplaySettings => (
+  (r as DisplaySettings)?.blendMode !== undefined
+)
+export type ShaderModuleSettings = {
+  transparent: boolean;
+  blendMode: BlendMode;
+  cullMode: CullMode;
+  depthWriteEnabled: boolean;
+  lit: boolean;
+};
+
+export type ShaderModule = {
+  module: GPUShaderModule;
+  vertProperties: PropertyInterface[];
+  fragProperties: PropertyInterface[];
+  code: string;
+  settings: ShaderModuleSettings;
+};
+

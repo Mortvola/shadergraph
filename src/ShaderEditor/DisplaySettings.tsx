@@ -48,8 +48,15 @@ const DisplaySettings: React.FC<PropsType> = observer(({
     })
   }
 
+  const handleLitChange = (value: boolean) => {
+    runInAction(() => {
+      node.settings.lit = value;
+    })
+  }
+  
   return (
     <div className={styles.settings} style={style} onPointerDown={handlePointerDown} onClick={handleClick}>
+      <Checkbox value={node.settings.lit} label="Lit" onChange={handleLitChange} />
       <Checkbox value={node.settings.transparent} label="Transparent" onChange={handleTransparencyChange} />
       <label>
         Blend Mode:

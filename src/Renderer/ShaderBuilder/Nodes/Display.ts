@@ -3,18 +3,7 @@ import type { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import type GraphNotification from "../GraphNotification";
-import { BlendMode, CullMode } from "../Types";
-
-export type DisplaySettings = {
-  transparent: boolean,
-  blendMode: BlendMode,
-  cullMode: CullMode,
-  depthWriteEnabled: boolean,
-}
-
-export const isDisplaySettings = (r: unknown): r is DisplaySettings => (
-  (r as DisplaySettings)?.blendMode !== undefined
-)
+import { BlendMode, CullMode, type DisplaySettings } from "../Types";
 
 class Display extends OperationNode {
   @observable
@@ -23,6 +12,7 @@ class Display extends OperationNode {
     blendMode: BlendMode.Alpha,
     cullMode: CullMode.None,
     depthWriteEnabled: true,
+    lit: false,
   };
 
   onChange?: () => void;

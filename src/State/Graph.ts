@@ -65,7 +65,6 @@ class Graph implements GraphInterface {
     });
 
     makeObservable(this.graph, {
-      lit: observable,
       properties: observable,
     })
 
@@ -196,14 +195,6 @@ class Graph implements GraphInterface {
         this.changed = true;
       })
     }
-  }
-
-  setLit(lit: boolean): void {
-    runInAction(() => {
-      this.graph.lit = lit;
-      this.changed = true;
-      this.applyMaterial()
-    })
   }
 
   async applyMaterial(): Promise<void> {

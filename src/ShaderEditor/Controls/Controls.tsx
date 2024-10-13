@@ -49,7 +49,6 @@ const Controls: React.FC = observer(() => {
       <div className={styles.wrapper}  onClick={handleClick}>
         <div>Controls</div>
         <div className={styles.controls}>
-          <Checkbox value={graph.graph.lit} label="Lit" onChange={graph.setLit} />
         </div>
       </div>
     </Draggable>
