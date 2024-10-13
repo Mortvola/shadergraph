@@ -14,7 +14,7 @@ import Property from "./Property";
 import StageGraph from "./StageGraph";
 import type { GraphNodeInterface, PropertyInterface } from "./Types";
 import type Display from './Nodes/Display'
-import { BlendMode } from "./Nodes/Display";
+import { BlendMode } from "./Types";
 import { runInAction } from "mobx";
 import { CullMode } from "./Types";
 

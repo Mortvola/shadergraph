@@ -182,3 +182,7 @@ export enum CullMode {
   Front = 'front'
 }
 
+export enum BlendMode {
+  Alpha = 'Alpha',
+  Addititve = 'Additive'
+}

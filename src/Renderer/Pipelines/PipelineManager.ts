@@ -11,7 +11,7 @@ import { bloom, outputFormat } from "../RenderSettings";
 import DecalPipeline from "./DecalPipeline";
 import type ShaderGraph from "../ShaderBuilder/ShaderGraph";
 import { DrawableType } from "../Drawables/DrawableInterface";
-import { BlendMode } from "../ShaderBuilder/Nodes/Display";
+import { BlendMode } from "../ShaderBuilder/Types";
 
 export type PipelineType =
   'Line'| 'reticle' | 'Trajectory' | 'Decal';

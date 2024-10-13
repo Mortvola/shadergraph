@@ -3,12 +3,7 @@ import type { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
 import OperationNode from "../OperationNode";
 import InputPort from "../Ports/InputPort";
 import type GraphNotification from "../GraphNotification";
-import { CullMode } from "../Types";
-
-export enum BlendMode {
-  Alpha = 'Alpha',
-  Addititve = 'Additive',
-}
+import { BlendMode, CullMode } from "../Types";
 
 export type DisplaySettings = {
   transparent: boolean,
