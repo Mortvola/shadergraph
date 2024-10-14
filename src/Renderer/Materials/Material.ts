@@ -39,9 +39,9 @@ class Material implements MaterialInterface {
   ) {
     this.pipeline = pipeline;
     
-    this.color[0] = shaderDescriptor?.color ? shaderDescriptor.color[0] : 0.5;
-    this.color[1] = shaderDescriptor?.color ? shaderDescriptor.color[1] : 0.5;
-    this.color[2] = shaderDescriptor?.color ? shaderDescriptor.color[2] : 0.5;
+    this.color[0] = shaderDescriptor?.color ? shaderDescriptor.color[0] : 1.0;
+    this.color[1] = shaderDescriptor?.color ? shaderDescriptor.color[1] : 1.0;
+    this.color[2] = shaderDescriptor?.color ? shaderDescriptor.color[2] : 1.0;
     this.color[3] = shaderDescriptor?.color ? shaderDescriptor.color[3] : 1;
     
     this.decal = shaderDescriptor?.type === 'Decal';

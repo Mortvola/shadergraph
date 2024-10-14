@@ -18,9 +18,9 @@ export const litDescriptor: ShaderDescriptor = {
             {
               port: 'rgb',
               value: [
-                0.5,
-                0.5,
-                0.5,
+                1.0,
+                1.0,
+                1.0,
                 1
               ]
             },
