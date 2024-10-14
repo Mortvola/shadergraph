@@ -30,13 +30,16 @@ class SceneObject implements SceneObjectInterface {
 
   node?: TreeNode;
 
+  tree?: { id: number, name: string };
+
   nextComponentId = 0;
 
   autosave = true;
 
-  constructor(nodeId: number, treeId?: number) {
+  constructor(nodeId: number, treeId?: number, treeNode?: TreeNode) {
     this.nodeId = nodeId
     this.treeId = treeId
+    this.node = treeNode
   }
 
   static async fromDescriptor(descriptor: SceneObjectDescriptor, baseObject?: SceneObject) {
@@ -59,7 +62,7 @@ class SceneObject implements SceneObjectInterface {
             );
   
             props.onChange = object.onChange;
-            props.node = object;
+            props.nodeObject = object;
   
             return {
               id: c.id,
@@ -99,7 +102,7 @@ class SceneObject implements SceneObjectInterface {
 
               const props = new ParticleSystemProps(propsDescriptor);
               props.onChange = object.onChange;
-              props.node = object;
+              props.nodeObject = object;
 
               return {
                 id: c.id ?? object.getNextComponentId(),
@@ -113,7 +116,7 @@ class SceneObject implements SceneObjectInterface {
 
               const props = new LightProps(propsDescriptor);
               props.onChange = object.onChange;
-              props.node = object;
+              props.nodeObject = object;
 
               return {
                 id: c.id ?? object.getNextComponentId(),

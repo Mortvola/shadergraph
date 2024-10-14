@@ -31,13 +31,17 @@ export class PropertyBase implements PropertyBaseInterface {
     throw new Error('not implemented')
   }
 
-  getLineage(): LineageEntry[] {
+  lineage(): LineageEntry[] {
     const lineage: LineageEntry[] = [];
     let property: PropertyBase | undefined = this.base;
 
     while (property) {
-      const node = property.props.node;
-      lineage.push({ property, name: node?.node?.name ?? 'unknown node', container: 'unknown prefab'})
+      const nodeObject = property.props.nodeObject;
+      lineage.push({
+        property,
+        name: this.props.nodeObject?.node?.name ?? 'unknown node',
+        container: nodeObject?.tree?.name ?? 'unknown prefab',
+      })
 
       property = property.base
     }

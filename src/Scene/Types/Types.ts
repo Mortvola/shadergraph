@@ -43,7 +43,7 @@ export interface SceneInterface {
 
   treeFromDescriptor(descriptor: NodesResponse): Promise<TreeNode | undefined>;
 
-  loadObjects(objects: SceneObjectDescriptor[]): Promise<void>;
+  loadObjects(objects: SceneObjectDescriptor[], trees?: { id: number, name: string }[]): Promise<void>;
 
   addNode(node: TreeNode, autosave: boolean): void;
 
@@ -71,6 +71,8 @@ export interface SceneObjectInterface {
   node?: TreeNode;
 
   baseObject?: SceneObjectInterface;
+
+  tree?: { id: number, name: string };
 
   addComponent(component: NewSceneObjectComponent): void;
 
@@ -101,6 +103,8 @@ export type SceneObjectDescriptor = {
   },
 
   baseTreeId?: number,
+
+  rootId?: number,
 }
 
 export type ConnectedObject = { prefabNodeId: number, objectId: number }
@@ -162,7 +166,7 @@ export enum ObjectType {
 
 export type TreeNodeDescriptor = {
   id: number,
-  name?: string,
+  name: string,
   treeId?: number,
   objectId: number,
   children: TreeNodeDescriptor[],
@@ -172,7 +176,11 @@ export const isSceneObjectDescriptor = (r: unknown): r is SceneObjectDescriptor 
   (r as SceneObjectDescriptor)?.object?.type === ObjectType.NodeObject
 )
 
-export type NodesResponse = { root: TreeNodeDescriptor, objects: SceneObjectDescriptor[] }
+export type NodesResponse = {
+  root: TreeNodeDescriptor,
+  objects: SceneObjectDescriptor[],
+  trees: { id: number, name: string}[],
+}
 
 export type ItemResponse = {
   item: {

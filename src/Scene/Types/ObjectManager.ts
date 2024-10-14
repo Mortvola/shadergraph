@@ -26,10 +26,9 @@ class ObjectManager {
     if (response.ok) {
       const body = await response.body();
 
-      const node = new TreeNode(parentNode.scene)
+      const node = new TreeNode(parentNode.scene, name)
 
       node.id = body.nodeId
-      node.name = name
       node.nodeObject = await SceneObject.fromDescriptor(body);
 
       parentNode.addNode(node);

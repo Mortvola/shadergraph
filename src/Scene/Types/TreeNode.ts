@@ -48,10 +48,10 @@ class TreeNode extends Entity {
 
   autosave = true;
 
-  constructor(scene: SceneInterface) {
-    super(getNextObjectId(), '')
+  constructor(scene: SceneInterface, name: string) {
+    super(getNextObjectId(), name)
 
-    this._nodeObject = new SceneObject(this.id)
+    this._nodeObject = new SceneObject(this.id, undefined, this)
     this.scene = scene;
   }
 

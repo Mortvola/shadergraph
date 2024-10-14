@@ -68,7 +68,7 @@ class Scene implements SceneInterface {
     })
   }
 
-  async loadObjects(objects: SceneObjectDescriptor[]) {
+  async loadObjects(objects: SceneObjectDescriptor[], trees?: { id: number, name: string }[]) {
     for (const object of objects) {
       if (object.nodeId !== undefined) {
         let nodeInfo = this.nodeMaps.get(object.nodeId)
@@ -89,6 +89,7 @@ class Scene implements SceneInterface {
         }
 
         const sceneObject = await SceneObject.fromDescriptor(object, baseObject)
+        sceneObject.tree = trees?.find((tree) => tree.id === object.rootId)
         nodeInfo.objects.set(object.treeId, sceneObject)
       }
     }
@@ -100,7 +101,7 @@ class Scene implements SceneInterface {
     // Sort the objects so that the base objects are instantiated first
     Scene.sortObjectDescriptors(descriptor.objects)
 
-    await this.loadObjects(descriptor.objects)
+    await this.loadObjects(descriptor.objects, descriptor.trees)
 
     type StackEntry = { nodeDescriptor: TreeNodeDescriptor, parent: TreeNode | undefined }
     let stack: StackEntry[] = [{ nodeDescriptor: descriptor.root, parent: undefined }]
@@ -109,7 +110,7 @@ class Scene implements SceneInterface {
       const { nodeDescriptor, parent } = stack[0]
       stack = stack.slice(1)
 
-      const node = new TreeNode(this)
+      const node = new TreeNode(this, nodeDescriptor.name)
 
       node.id = nodeDescriptor.id;
       node.treeId = nodeDescriptor.treeId;
@@ -126,8 +127,6 @@ class Scene implements SceneInterface {
         node.nodeObject = object;
         object.node = node;
       }
-
-      node.name = nodeDescriptor.name ?? 'Unknown Node';
 
       if (parent) {
         parent.autosave = false;

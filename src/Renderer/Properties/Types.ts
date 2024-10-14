@@ -4,7 +4,7 @@ import type PropertyBase from "./PropertyBase";
 export type PropertyType<T> = { value: T, override?: boolean }
 
 export class PropsBase {
-  node?: SceneObjectInterface
+  nodeObject?: SceneObjectInterface
 
   toDescriptor(): object | undefined {
     return undefined
@@ -26,7 +26,7 @@ export interface PropertyBaseInterface {
 
   applyOverride(property: PropertyBase): void
 
-  getLineage(): LineageEntry[]
+  lineage(): LineageEntry[]
 }
 
 export const removeUndefinedKeys = <T extends Record<string, unknown>>(obj: T): T | undefined => {

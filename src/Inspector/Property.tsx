@@ -24,7 +24,6 @@ const Property: React.FC<PropsType> = observer(({
 }) => {
   const [open, setOpen] = React.useState<DOMRect | null>(null);
   const ref = React.useRef<HTMLDivElement>(null);
-  const [lineage, setLineage] = React.useState<{ value: PropertyBase | undefined, label: string }[]>([])
 
   const options = [
     { value: undefined, label: 'Revert Override' },
@@ -39,11 +38,6 @@ const Property: React.FC<PropsType> = observer(({
 
       if (element) {
         const rect = element.getBoundingClientRect();
-  
-        setLineage(property.getLineage().map((l) => ({
-          value: l.property,
-          label: `Apply to ${l.name} in ${l.container}`,
-        })))
   
         setOpen(rect);
       }  
@@ -85,7 +79,20 @@ const Property: React.FC<PropsType> = observer(({
       {children}
       {
         open
-          ? <Select onSelect={onSelect} onClose={handleClose} rect={open} options={[...lineage, ...options]} />
+          ? (
+            <Select
+              onSelect={onSelect}
+              onClose={handleClose}
+              rect={open}
+              options={[
+                ...property.lineage().map((l) => ({
+                  value: l.property,
+                  label: `Apply to ${l.name} in ${l.container}`,
+                })),
+                ...options,
+              ]}
+            />
+          )
           : null
       }
     </label>
