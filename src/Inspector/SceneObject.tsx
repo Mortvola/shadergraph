@@ -17,6 +17,7 @@ import PopupButton from './PopupButton';
 import Overrides from './Overrides';
 import { Position } from './PopupWrapper';
 import { type SceneObjectInterface } from '../Scene/Types/Types';
+import { Trash2Icon } from 'lucide-react';
 
 type PropsType = {
   sceneObject: SceneObjectInterface
@@ -250,7 +251,7 @@ const SceneObject: React.FC<PropsType> = observer(({
                 <div className={styles.item} key={component.id ?? 0} >
                   <div className={styles.componentTitle}>
                     { componentTypeName(component) }
-                    <button type="button" onClick={() => handleDelete(component)}>X</button>
+                    <Trash2Icon onClick={() => handleDelete(component)} />
                   </div>
                   {
                     renderItem(component)

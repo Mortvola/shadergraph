@@ -2,7 +2,7 @@ import React from 'react';
 
 type PropsType = {
   value: boolean,
-  label: string,
+  label: React.ReactNode,
   onChange?: (value: boolean) => void,
 }
 

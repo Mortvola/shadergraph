@@ -100,7 +100,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
                 folder.addItem(projectItem)
 
                 if (body.root && body.objects) {
-                  const root = await sceneNode.scene.treeFromDescriptor({ root: body.root, objects: body.objects });
+                  const root = await sceneNode.scene.treeFromDescriptor({ root: body.root, objects: body.objects, trees: [] });
 
                   if (root) {
                     sceneNode.parent?.addNode(root);

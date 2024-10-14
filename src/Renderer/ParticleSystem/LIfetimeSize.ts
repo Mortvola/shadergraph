@@ -16,7 +16,7 @@ class LifetimeSize extends PSModule {
   constructor(props: PropsBase, descriptor?: LifetimeSizeDescriptor, onChange?: () => void, previousProps?: LifetimeSize) {
     super(props, descriptor?.enabled, undefined, onChange, previousProps?.enabled);
 
-    if (isPSValue3DDescriptor(descriptor?.size)) {
+    if ( descriptor?.size === undefined || isPSValue3DDescriptor(descriptor?.size)) {
       this.size = new PSValue3D('Size', props, descriptor?.size, undefined, onChange, previousProps?.size);
     }
     else {

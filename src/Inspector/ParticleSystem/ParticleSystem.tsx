@@ -22,11 +22,7 @@ type PropsType = {
 
 const ParticleSystem: React.FC<PropsType> = observer(({
   particleSystemProps,
-}) => {  
-  if (particleSystemProps === null) {
-    return null
-  }
-
+}) => {
   const handleDurationChange = (value: number) => {
     particleSystemProps.duration.set(value, true);
   }
@@ -55,7 +51,11 @@ const ParticleSystem: React.FC<PropsType> = observer(({
       <Property label="Start Delay" property={particleSystemProps.startDelay}>
         <NumberInput value={particleSystemProps.startDelay.get()} onChange={handleStartDelayChange} />
       </Property>
-      <Checkbox label="Loop" value={particleSystemProps.loop.get()} onChange={handleLoopChange} />
+      <Checkbox
+        label={<Property label="Loop" property={particleSystemProps.loop} />}
+        value={particleSystemProps.loop.get()}
+        onChange={handleLoopChange}
+      />
       <Property label="Maximum Particles" property={particleSystemProps.maxPoints}>
         <NumberInput value={particleSystemProps.maxPoints.get()} onChange={handleMaxPointsChange} />
       </Property>

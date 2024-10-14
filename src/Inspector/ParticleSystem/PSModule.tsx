@@ -3,6 +3,7 @@ import React from 'react';
 import Checkbox from '../../ShaderEditor/Controls/Checkbox';
 import styles from './PSModule.module.scss';
 import type PSModuleData from '../../Renderer/ParticleSystem/PSModule';
+import Property from '../Property';
 
 type PropsType = {
   module: PSModuleData,
@@ -22,13 +23,17 @@ const PSModule: React.FC<PropsType> = observer(({
   }
 
   const handleEnableChange = (value: boolean) => {
-    module.enabled.set(value)
+    module.enabled.set(value, true)
   }
 
   return (
     <div className={styles.layout}>
       <div onClick={handleOpenClick}>
-        <Checkbox label={title} value={module.enabled.get()} onChange={handleEnableChange} />
+        <Checkbox
+          label={<Property label={title} property={module.enabled} />}
+          value={module.enabled.get()}
+          onChange={handleEnableChange}
+        />
       </div>
         {
           open

@@ -72,7 +72,7 @@ const PSEmissions: React.FC<PropsType> = observer(({
         <NumberInput value={emissions.rate.get()} onChange={handleRateChange} />
       </Property>
       <div className={styles.bursts}>
-        Bursts:
+        <Property label="Bursts" property={emissions.bursts} />
         <div className={styles.table}>
           <div className={styles.title}>Time</div>
           <div className={styles.title}>Count</div>
