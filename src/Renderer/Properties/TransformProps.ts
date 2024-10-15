@@ -1,7 +1,8 @@
 import { vec3n } from "wgpu-matrix";
 import type { TransformPropsInterface } from "../Types";
 import type { TransformPropsDescriptor } from "../../Scene/Types/Types";
-import { PropsBase, removeUndefinedKeys } from "./Types";
+import { removeUndefinedKeys } from "./Types";
+import PropsBase from "./PropsBase";
 import { PSVec3Type } from "./Property";
 
 class TransformProps extends PropsBase implements TransformPropsInterface {

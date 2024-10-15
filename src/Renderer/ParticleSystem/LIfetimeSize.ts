@@ -1,4 +1,4 @@
-import PSModule from "./PSModule";
+import PSModule from "../Properties/PSModule";
 import {
   isPSValue3DDescriptor,
   type PSValue3DDescriptor,
@@ -6,7 +6,7 @@ import {
   PSValueType,
   type LifetimeSizeDescriptor,
 } from "./Types";
-import type { PropsBase} from "../Properties/Types";
+import type PropsBase from "../Properties/PropsBase";
 import { removeUndefinedKeys } from "../Properties/Types";
 import PSValue3D from "../Properties/PSValue3D";
 

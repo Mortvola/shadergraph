@@ -5,7 +5,6 @@ import type {
   ComponentDescriptor, LightPropsDescriptor, NewSceneObjectComponent,
   SceneObjectComponent as SceneObjectComponent, TransformPropsInterface,
 } from "../../Renderer/Types";
-import type { EntityInterface } from "../../State/types";
 import type TreeNode from "./TreeNode";
 
 export enum SceneItemType {
@@ -85,6 +84,8 @@ export interface SceneObjectInterface {
   save(): Promise<void>;
 
   getNextComponentId(): number;
+
+  get hasOverrides(): boolean;
 }
 
 export const isGameObject = (r: unknown): r is SceneObjectInterface => (

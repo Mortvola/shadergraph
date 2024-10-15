@@ -1,6 +1,6 @@
-import PSModule from "./PSModule";
+import PSModule from "../Properties/PSModule";
 import type { CollisionDescriptor } from "./Types";
-import type { PropsBase} from "../Properties/Types";
+import type PropsBase from "../Properties/PropsBase";
 import { removeUndefinedKeys } from "../Properties/Types";
 import { PSNumber } from "../Properties/Property";
 

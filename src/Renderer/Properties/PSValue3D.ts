@@ -4,7 +4,8 @@ import { PSValueType, type PSValueDescriptor, type PSValue3DDescriptor } from ".
 import PropertyBase from "./PropertyBase";
 import PSCurve from "./PSCurve";
 import PSValue2 from "./PSValue2"
-import { type PropertyType, type PropsBase } from "./Types";
+import { type PropertyType } from "./Types";
+import type PropsBase from "./PropsBase";
 
 class PSValue3D extends PropertyBase {
   @observable

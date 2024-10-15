@@ -14,6 +14,7 @@ import type { PSVec3Type } from './Properties/Property';
 import type { ValueType } from './ShaderBuilder/GraphDescriptor';
 import type { TransformPropsDescriptor } from '../Scene/Types/Types';
 import type Camera from './Camera';
+import { type PropsBaseInterface } from './Properties/Types';
 
 export interface RenderNodeInterface {
   nodes: RenderNodeInterface[];
@@ -232,7 +233,7 @@ export type SceneObjectComponent = {
 
 export type NewSceneObjectComponent = Omit<SceneObjectComponent, 'id'>
 
-export interface TransformPropsInterface {
+export interface TransformPropsInterface extends PropsBaseInterface {
   translate: PSVec3Type;
   rotate: PSVec3Type;
   scale: PSVec3Type;

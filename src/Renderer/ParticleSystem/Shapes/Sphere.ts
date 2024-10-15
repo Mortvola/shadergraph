@@ -1,4 +1,4 @@
-import type { PropsBase} from "../../Properties/Types";
+import type PropsBase from "../../Properties/PropsBase";
 import { removeUndefinedKeys } from "../../Properties/Types";
 import type { Vec4} from "wgpu-matrix";
 import { vec4 } from "wgpu-matrix";

@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite';
 import React from 'react';
 import Checkbox from '../../ShaderEditor/Controls/Checkbox';
 import styles from './PSModule.module.scss';
-import type PSModuleData from '../../Renderer/ParticleSystem/PSModule';
+import type PSModuleData from '../../Renderer/Properties/PSModule';
 import Property from '../Property';
 
 type PropsType = {

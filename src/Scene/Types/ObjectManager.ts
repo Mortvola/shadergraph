@@ -2,7 +2,7 @@ import Http from "../../Http/src";
 import SceneObject from './SceneObject';
 import TreeNode from "./TreeNode";
 import { type ComponentType } from "../../Renderer/Types";
-import { type PropsBase } from "../../Renderer/Properties/Types";
+import type PropsBase from "../../Renderer/Properties/PropsBase";
 import { type SceneObjectDescriptor } from "./Types";
 
 class ObjectManager {

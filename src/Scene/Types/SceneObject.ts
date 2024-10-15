@@ -16,13 +16,9 @@ class SceneObject implements SceneObjectInterface {
   @observable
   accessor components: SceneObjectComponent[] = []
 
-  componentOverrides: SceneObjectComponent[] = []
-
   transformProps: TransformPropsInterface = new TransformProps();
 
   baseObject?: SceneObject
-
-  derivedObjects: SceneObject[] = []
 
   nodeId: number;
 
@@ -35,6 +31,16 @@ class SceneObject implements SceneObjectInterface {
   nextComponentId = 0;
 
   autosave = true;
+
+  get hasOverrides(): boolean {
+    for (const component of this.components) {
+      if (component.props.hasOverrides) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 
   constructor(nodeId: number, treeId?: number, treeNode?: TreeNode) {
     this.nodeId = nodeId

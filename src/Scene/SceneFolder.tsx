@@ -198,40 +198,37 @@ const SceneFolder: React.FC<PropsType> = observer(({
       <SceneItem
         key={`${folder.id}:${folder.treeId}`}
         scene={scene}
-        item={folder}
+        treeNode={folder}
         onSelect={onSelect}
         selected={folder === scene.selectedNode}
         draggable
+        level={level}
       />
-      <div
-        style={{ paddingLeft: level > 0 ? 16 : 0 }}
-      >
-        {
-          folder.newItemType
-            ? (
-              <input
-                type="text"
-                value={name}
-                onChange={handleChange}
-                onKeyDown={handleKeyDown}
-                onBlur={handleBlur}
-                autoFocus
-              />
-            )
-            : null
-        }
-        {
-          folder.nodes.map((i) => (
-            <SceneFolder
-              key={`${i.id}:${i.treeId}`}
-              scene={scene}
-              folder={i}
-              onSelect={onSelect}
-              level={level + 1}
+      {
+        folder.newItemType
+          ? (
+            <input
+              type="text"
+              value={name}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+              onBlur={handleBlur}
+              autoFocus
             />
-          ))
-        }
-      </div>
+          )
+          : null
+      }
+      {
+        folder.nodes.map((i) => (
+          <SceneFolder
+            key={`${i.id}:${i.treeId}`}
+            scene={scene}
+            folder={i}
+            onSelect={onSelect}
+            level={level + 1}
+          />
+        ))
+      }
     </div>
   )
 })

@@ -9,32 +9,32 @@ import { Box, Plus } from 'lucide-react';
 
 type PropsType = {
   scene: SceneInterface,
-  item: TreeNode,
+  treeNode: TreeNode,
   onSelect?: (item: TreeNode) => void,
   selected: boolean,
   draggable?: boolean,
+  level: number,
 }
 
 const SceneItem: React.FC<PropsType> = observer(({
   scene,
-  item,
+  treeNode,
   onSelect,
   selected,
   draggable = false,
+  level,
 }) => {
-  // const store = useStores();
-
   const handleClick = () => {
     if (onSelect) {
-      onSelect(item)
+      onSelect(treeNode)
     }
   }
 
   const handleDragStart: React.DragEventHandler = (event) => {
     event.dataTransfer.clearData();
-    event.dataTransfer.setData("application/scene-item", item.id.toString());
+    event.dataTransfer.setData("application/scene-item", treeNode.id.toString());
 
-    scene.draggingNode = item;
+    scene.draggingNode = treeNode;
   }
 
   const handleDrag = () => {
@@ -46,13 +46,13 @@ const SceneItem: React.FC<PropsType> = observer(({
   }
 
   const [editing, setEditing] = React.useState<boolean>(false);
-  const [name, setName] = React.useState<string>(item.name);
+  const [name, setName] = React.useState<string>(treeNode.name);
 
   const handleKeyDown: React.KeyboardEventHandler = (event) => {
     if (event.code === 'Enter') {
       setEditing((prev) => {
         if (prev) {
-          item.changeName(name)
+          treeNode.changeName(name)
         }
 
         return !prev
@@ -75,11 +75,11 @@ const SceneItem: React.FC<PropsType> = observer(({
 
   const menuItems = React.useCallback((): MenuItemLike[] => {
     const items: MenuItemLike[] = [
-      { name: 'Delete', action: () => { item.delete(); scene.setSelected(null) } },
+      { name: 'Delete', action: () => { treeNode.delete(); scene.setSelected(null) } },
     ];
     
     return items;
-  }, [item]);
+  }, [treeNode]);
   
   const handleContextMenu: React.MouseEventHandler = (event) => {
     event.stopPropagation();
@@ -97,7 +97,7 @@ const SceneItem: React.FC<PropsType> = observer(({
   }
 
   const renderIcon = () => {
-    if (item.parent?.treeId !== undefined && item.treeId !== item.parent.treeId) {
+    if (treeNode.parent?.treeId !== undefined && treeNode.treeId !== treeNode.parent.treeId) {
       return (
         <div>
           <Plus size="10" fill="#FFF" strokeWidth={4} />
@@ -107,13 +107,13 @@ const SceneItem: React.FC<PropsType> = observer(({
     }
 
     return (
-      <Box fill={item.treeId === undefined || item.treeId === item.parent?.treeId ? '#FFF' : '#07F'} size="14" />
+      <Box fill={treeNode.treeId === undefined || treeNode.treeId === treeNode.parent?.treeId ? '#FFF' : '#07F'} size="14" />
     )
   }
 
   return (
     <div
-      className={`${styles.item} ${selected ? styles.selected : ''} ${(item.treeId !== undefined) ? styles.prefab : ''}`}
+      className={`${styles.item} ${selected ? styles.selected : ''} ${(treeNode.treeId !== undefined) ? styles.prefab : ''}`}
       onClick={handleClick}
       draggable={draggable}
       onDragStart={handleDragStart}
@@ -123,19 +123,26 @@ const SceneItem: React.FC<PropsType> = observer(({
       tabIndex={0}
       onContextMenu={handleContextMenu}
     >
-      {
-        renderIcon()
-      }
-      {
-        editing
-          ? <input type="text" value={name} onBlur={handleBlur} onChange={handleChange} autoFocus onFocus={handleFocus} />
-          : `${item.name}`
-      }
-      {
-        showMenu
-          ? <ContextMenu menuItems={menuItems} x={showMenu.x} y={showMenu.y} onClose={handleMenuClose} />
-          : null
-      }
+      <div
+        style={{
+          backgroundColor: treeNode.nodeObject?.hasOverrides ? 'blue' : undefined
+        }}
+      />
+      <div style={{ paddingLeft: (level - 1) * 16 }}>
+        {
+          renderIcon()
+        }
+        {
+          editing
+            ? <input type="text" value={name} onBlur={handleBlur} onChange={handleChange} autoFocus onFocus={handleFocus} />
+            : `${treeNode.name}`
+        }
+        {
+          showMenu
+            ? <ContextMenu menuItems={menuItems} x={showMenu.x} y={showMenu.y} onClose={handleMenuClose} />
+            : null
+        }
+      </div>
     </div>
   )
 })

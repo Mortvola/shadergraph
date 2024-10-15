@@ -1,5 +1,6 @@
-import { PSBoolean } from "../Properties/Property"
-import type { PropsBase } from "../Properties/Types";
+import { PSBoolean } from "./Property"
+import type PropsBase from "./PropsBase";
+import { isProperty } from "./Types";
 
 class PSModule {
   enabled: PSBoolean;
@@ -20,6 +21,16 @@ class PSModule {
     if (this.enabled !== undefined) {
       this.enabled.onChange = onChange;
     }
+  }
+
+  get hasOverrides(): boolean {
+    for (const property in this) {
+      if (isProperty(this[property]) && this[property].override) {
+        return true;
+      }
+    }
+
+    return false;
   }
 }
 

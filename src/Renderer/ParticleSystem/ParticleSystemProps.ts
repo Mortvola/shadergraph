@@ -1,5 +1,6 @@
 import { PSBoolean, PSNumber, PSSpace } from "../Properties/Property";
-import { PropsBase, removeUndefinedKeys } from "../Properties/Types";
+import { removeUndefinedKeys } from "../Properties/Types";
+import PropsBase from "../Properties/PropsBase";
 import Collision from "./Collision";
 import LifetimeColor from "./LifetimeColor";
 import LifetimeSize from "./LIfetimeSize";

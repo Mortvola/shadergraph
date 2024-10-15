@@ -4,8 +4,8 @@ import Cone from "./Cone";
 import type { Vec4 } from "wgpu-matrix";
 import { vec4 } from "wgpu-matrix";
 import Sphere from "./Sphere";
-import PSModule from "../PSModule";
-import type { PropsBase} from "../../Properties/Types";
+import PSModule from "../../Properties/PSModule";
+import type PropsBase from "../../Properties/PropsBase";
 import { removeUndefinedKeys } from "../../Properties/Types";
 import { PSShapeType } from "../../Properties/Property";
 
