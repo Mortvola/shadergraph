@@ -1,10 +1,9 @@
 import { runInAction } from "mobx";
-import Http from "../../Http/src";
-import Texture from "../../State/Texture";
-import type { TextureInterface, TextureRecord } from "../../State/types";
+import type { TextureInterface } from "../../State/types";
 import ProjectItem from "./ProjectItem";
 import type { FolderInterface} from "./types";
 import { ProjectItemType } from "./types";
+import { textureManager } from "../../Renderer/Textures/TextureManager";
 
 class TextureProjectItem extends ProjectItem<TextureInterface> {
   constructor(id: number, name: string, parent: FolderInterface | null, itemId: number | null) {
@@ -16,18 +15,17 @@ class TextureProjectItem extends ProjectItem<TextureInterface> {
       return this.item;
     }
 
-    const response = await Http.get<TextureRecord>(`/api/textures/${this.itemId}`);
+    if (this.itemId !== null) {
+      const texture = await textureManager.get(this.itemId)
+
+      if (texture) {
   
-    if (response.ok) {
-      const record = await response.body();
-
-      const texture = new Texture(record.id, record.name, record.flipY);
-
-      runInAction(() => {
-        this.item = texture;
-      })
-
-      return texture;
+        runInAction(() => {
+          this.item = texture;
+        })
+  
+        return texture
+      }  
     }
 
     return null;

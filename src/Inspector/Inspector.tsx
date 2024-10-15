@@ -4,7 +4,7 @@ import Material from './Material';
 import { observer } from 'mobx-react-lite';
 import { runInAction } from 'mobx';
 import Http from '../Http/src';
-import type Texture from '../State/Texture';
+import type Texture from '../Renderer/Textures/Texture';
 import SceneObject from './SceneObject';
 import type { MaterialItemInterface } from '../State/types';
 import type { SceneObjectInterface } from "../Scene/Types/Types";
@@ -27,25 +27,29 @@ const Inspector: React.FC<PropsType> = observer(({
       const checked = event.target.checked;
 
       if (selectedTexture) {
-        await Http.patch(`/api/textures/${selectedTexture.id}`, {
+        const response = await Http.patch(`/api/textures/${selectedTexture.id}`, {
           flipY: checked
-        })  
-      }
+        })
 
-      runInAction(() => {
-        if (selectedTexture) {
-          selectedTexture.flipY = checked
+        if (response.ok) {
+          runInAction(() => {
+            if (selectedTexture) {
+              selectedTexture.flipY = checked
+            }
+          })    
         }
-      })
+      }
     }
 
     return (
       <div className={styles.inspector}>
-        <div>{selectedItem.name}</div>
-        <label>
-          <input type="checkbox" checked={selectedTexture.flipY} onChange={handleFlipYChange} />
-          Flip Y
-        </label>
+        <div>
+          <div>{selectedItem.name}</div>
+          <label>
+            <input type="checkbox" checked={selectedTexture.flipY} onChange={handleFlipYChange} />
+            Flip Y
+          </label>
+        </div>
       </div>
     )
   }

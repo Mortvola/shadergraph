@@ -183,15 +183,15 @@ class Renderer extends PSModule {
     })
   }
 
-  async getMaterialName(): Promise<string | undefined> {
-    const materialId = this.materialId?.get();
+  // async getMaterialName(): Promise<string | undefined> {
+  //   const materialId = this.materialId?.get();
 
-    if (materialId !== undefined && this.material === undefined) {
-      this.material = await materialManager.getItem(materialId)
-    }
+  //   if (materialId !== undefined && this.material === undefined) {
+  //     this.material = await materialManager.getItem(materialId)
+  //   }
 
-    return this.material?.name
-  }
+  //   return this.material?.name
+  // }
 }
 
 export default Renderer;

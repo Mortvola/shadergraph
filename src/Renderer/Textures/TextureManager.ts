@@ -1,15 +1,10 @@
 import Http from "../../Http/src";
 import { gpu } from "../Gpu";
+import Texture from "./Texture";
 
 type TextureMeta = {
   name: string,
   flipY: boolean,
-}
-
-type Texture = {
-  name: string,
-  flipY: boolean,
-  texture: GPUTexture,
 }
 
 class TextureManager {
@@ -44,7 +39,7 @@ class TextureManager {
             return undefined
           }
 
-          const texture = { ...body, texture: gpuTexture }
+          const texture = new Texture(id, body.name, body.flipY, gpuTexture)
 
           this.textures.set(id, texture)
 
