@@ -1,10 +1,10 @@
-import { bindGroups } from "../BindGroups";
-import type Mesh from "../Drawables/Mesh";
-import { gpu } from "../Gpu";
-import { outputFormat } from "../RenderSettings";
-import { outlineShader } from "../shaders/outline";
-import { outlineApplyShader } from "../shaders/outlineApply";
-import type { DrawableComponentInterface } from "../Types";
+import { bindGroups } from '../BindGroups';
+import type Mesh from '../Drawables/Mesh';
+import { gpu } from '../Gpu';
+import { outputFormat } from '../RenderSettings';
+import { outlineShader } from '../shaders/outline';
+import { outlineApplyShader } from '../shaders/outlineApply';
+import type { DrawableComponentInterface } from '../Types';
 
 const label = 'outline pass';
 
@@ -73,24 +73,24 @@ class OutlinePass {
       label,
       vertex: {
         module: shaderModule,
-        entryPoint: "vs",
+        entryPoint: 'vs',
         buffers: [
           {
             attributes: [
               {
                 shaderLocation: 0, // position
                 offset: 0,
-                format: "float32x4",
+                format: 'float32x4',
               },
             ],
             arrayStride: 16,
-            stepMode: "vertex",
+            stepMode: 'vertex',
           },
         ],
       },
       fragment: {
         module: shaderModule,
-        entryPoint: "fs",
+        entryPoint: 'fs',
         targets: [
           {
             format: outputFormat,
@@ -98,9 +98,9 @@ class OutlinePass {
         ],
       },
       primitive: {
-        topology: "triangle-list",
-        cullMode: "none",
-        frontFace: "ccw",
+        topology: 'triangle-list',
+        cullMode: 'none',
+        frontFace: 'ccw',
       },
       layout: gpu.device.createPipelineLayout({
         label,
@@ -119,11 +119,11 @@ class OutlinePass {
       label: 'Apply Outline',
       vertex: {
         module: shaderModule,
-        entryPoint: "vs",
+        entryPoint: 'vs',
       },
       fragment: {
         module: shaderModule,
-        entryPoint: "fs",
+        entryPoint: 'fs',
         targets: [
           {
             format: outputFormat,
@@ -141,9 +141,9 @@ class OutlinePass {
         ],
       },
       primitive: {
-        topology: "triangle-list",
-        cullMode: "none",
-        frontFace: "ccw",
+        topology: 'triangle-list',
+        cullMode: 'none',
+        frontFace: 'ccw',
       },
       layout: gpu.device.createPipelineLayout({
         label: 'Apply Outline',
@@ -168,8 +168,8 @@ class OutlinePass {
         {
           view: this.scratchTextureView,
           clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
-          loadOp: "clear" as GPULoadOp,
-          storeOp: "store" as GPUStoreOp,
+          loadOp: 'clear' as GPULoadOp,
+          storeOp: 'store' as GPUStoreOp,
         },
       ],
     });
@@ -197,8 +197,8 @@ class OutlinePass {
         {
           view: destinationView,
           clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
-          loadOp: "load" as GPULoadOp,
-          storeOp: "store" as GPUStoreOp,
+          loadOp: 'load' as GPULoadOp,
+          storeOp: 'store' as GPUStoreOp,
         },
       ],
     });

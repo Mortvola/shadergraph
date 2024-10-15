@@ -1,8 +1,8 @@
-import type { DataType, NodeType } from "../GraphDescriptor";
-import OperationNode from "../OperationNode";
-import InputPort from "../Ports/InputPort";
-import OutputPort from "../Ports/OutputPort";
-import { convertType } from "../Types";
+import type { DataType, NodeType } from '../GraphDescriptor';
+import OperationNode from '../OperationNode';
+import InputPort from '../Ports/InputPort';
+import OutputPort from '../Ports/OutputPort';
+import { convertType } from '../Types';
 
 class BinaryOp extends OperationNode {
   operator: string

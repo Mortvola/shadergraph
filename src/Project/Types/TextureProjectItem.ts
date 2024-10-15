@@ -1,9 +1,9 @@
-import { runInAction } from "mobx";
-import type { TextureInterface } from "../../State/types";
-import ProjectItem from "./ProjectItem";
-import type { FolderInterface} from "./types";
-import { ProjectItemType } from "./types";
-import { textureManager } from "../../Renderer/Textures/TextureManager";
+import { runInAction } from 'mobx';
+import type { TextureInterface } from '../../State/types';
+import ProjectItem from './ProjectItem';
+import type { FolderInterface} from './types';
+import { ProjectItemType } from './types';
+import { textureManager } from '../../Renderer/Textures/TextureManager';
 
 class TextureProjectItem extends ProjectItem<TextureInterface> {
   constructor(id: number, name: string, parent: FolderInterface | null, itemId: number | null) {

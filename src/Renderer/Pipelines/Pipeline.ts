@@ -1,5 +1,5 @@
-import { type ShaderModuleSettings } from "../ShaderBuilder/Types";
-import type { PipelineInterface, StageBindings } from "../Types";
+import { type ShaderModuleSettings } from '../ShaderBuilder/Types';
+import type { PipelineInterface, StageBindings } from '../Types';
 
 class Pipeline implements PipelineInterface {
   pipeline: GPURenderPipeline;

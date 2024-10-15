@@ -1,6 +1,6 @@
-import { store } from "../../State/store";
-import Property from "../../Renderer/ShaderBuilder/Property";
-import type { MenuItemLike } from "../../ContextMenu/types";
+import { store } from '../../State/store';
+import Property from '../../Renderer/ShaderBuilder/Property';
+import type { MenuItemLike } from '../../ContextMenu/types';
 
 export type MenuItemRecord<T> = {
   name: string,

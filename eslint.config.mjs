@@ -22,5 +22,6 @@ export default tseslint.config({
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-empty-object-type': 'warn',
     '@stylistic/no-trailing-spaces': 'warn',
+    '@stylistic/quotes': ['warn', 'single'],
   }
 });

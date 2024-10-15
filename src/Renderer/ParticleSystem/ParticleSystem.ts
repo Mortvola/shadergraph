@@ -1,16 +1,16 @@
-import { mat4, vec3, vec4 } from "wgpu-matrix"
+import { mat4, vec3, vec4 } from 'wgpu-matrix'
 import type {
-  ParticleSystemInterface} from "../Types";
+  ParticleSystemInterface} from '../Types';
 import {
   ComponentType,
-} from "../Types";
-import { degToRad, gravity, intersectionPlane } from "../Math";
-import Particle from "./Particle";
-import RenderNode from "../Drawables/SceneNodes/RenderNode";
-import Component from "../Drawables/Component";
-import type { ParticleSystemPropsInterface } from "./ParticleSystemPropsInterface";
-import { RenderAlignment, RenderMode, SpaceType } from "./Types";
-import type Camera from "../Camera";
+} from '../Types';
+import { degToRad, gravity, intersectionPlane } from '../Math';
+import Particle from './Particle';
+import RenderNode from '../Drawables/SceneNodes/RenderNode';
+import Component from '../Drawables/Component';
+import type { ParticleSystemPropsInterface } from './ParticleSystemPropsInterface';
+import { RenderAlignment, RenderMode, SpaceType } from './Types';
+import type Camera from '../Camera';
 
 class ParticleSystem extends Component implements ParticleSystemInterface {
   private props: ParticleSystemPropsInterface

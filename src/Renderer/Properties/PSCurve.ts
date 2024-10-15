@@ -1,5 +1,5 @@
-import { observable, runInAction } from "mobx";
-import type { PSCurveDescriptor, PSCurvePoint } from "../ParticleSystem/Types";
+import { observable, runInAction } from 'mobx';
+import type { PSCurveDescriptor, PSCurvePoint } from '../ParticleSystem/Types';
 
 class PSCurve {
   @observable

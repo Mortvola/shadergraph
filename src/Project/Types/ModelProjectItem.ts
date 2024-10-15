@@ -1,8 +1,8 @@
-import { runInAction } from "mobx";
-import { modelManager } from "../../Renderer/Models/ModelManager";
-import ProjectItem from "./ProjectItem";
-import { type ModelItemInterface } from "../../State/types";
-import ModelItem from "../../Renderer/Models/ModelItem";
+import { runInAction } from 'mobx';
+import { modelManager } from '../../Renderer/Models/ModelManager';
+import ProjectItem from './ProjectItem';
+import { type ModelItemInterface } from '../../State/types';
+import ModelItem from '../../Renderer/Models/ModelItem';
 
 class ModelProjectItem extends ProjectItem<ModelItemInterface> {
   materials: Record<string, number> = {};

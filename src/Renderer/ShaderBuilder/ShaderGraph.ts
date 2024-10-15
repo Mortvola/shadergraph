@@ -1,22 +1,22 @@
-import { DrawableType } from "../Drawables/DrawableInterface";
-import { gpu } from "../Gpu";
-import { bloom } from "../RenderSettings";
-import { blinnPhongFunction } from "../shaders/functions/blinnPhongFunction";
-import { common } from "../shaders/common";
-import { getFragmentStage } from "../shaders/fragmentStage";
-import { meshInstances } from "../shaders/meshInstances";
-import type { ShaderDescriptor, ShaderType } from "../shaders/ShaderDescriptor";
-import { twirlFunction } from "../shaders/functions/twirlFunction";
-import { getVertexStage } from "../shaders/vertex/vertexStage";
-import { voronoiFunction } from "../shaders/functions/voronoiFunction";
-import type { DataType, GraphDescriptor } from "./GraphDescriptor";
-import Property from "./Property";
-import StageGraph from "./StageGraph";
-import type { GraphNodeInterface, PropertyInterface, ShaderModule, ShaderModuleSettings } from "./Types";
+import { DrawableType } from '../Drawables/DrawableInterface';
+import { gpu } from '../Gpu';
+import { bloom } from '../RenderSettings';
+import { blinnPhongFunction } from '../shaders/functions/blinnPhongFunction';
+import { common } from '../shaders/common';
+import { getFragmentStage } from '../shaders/fragmentStage';
+import { meshInstances } from '../shaders/meshInstances';
+import type { ShaderDescriptor, ShaderType } from '../shaders/ShaderDescriptor';
+import { twirlFunction } from '../shaders/functions/twirlFunction';
+import { getVertexStage } from '../shaders/vertex/vertexStage';
+import { voronoiFunction } from '../shaders/functions/voronoiFunction';
+import type { DataType, GraphDescriptor } from './GraphDescriptor';
+import Property from './Property';
+import StageGraph from './StageGraph';
+import type { GraphNodeInterface, PropertyInterface, ShaderModule, ShaderModuleSettings } from './Types';
 import type Display from './Nodes/Display'
-import { BlendMode } from "./Types";
-import { runInAction } from "mobx";
-import { CullMode } from "./Types";
+import { BlendMode } from './Types';
+import { runInAction } from 'mobx';
+import { CullMode } from './Types';
 
 class ShaderGraph {
   type?: ShaderType;

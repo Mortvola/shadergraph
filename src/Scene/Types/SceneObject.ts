@@ -1,15 +1,15 @@
-import { observable } from "mobx";
+import { observable } from 'mobx';
 import {
   ComponentType, type LightPropsDescriptor, type NewSceneObjectComponent,
   type SceneObjectComponent, type TransformPropsInterface,
-} from "../../Renderer/Types";
-import { ObjectType, type SceneObjectInterface, type SceneObjectDescriptor } from "./Types";
-import TransformProps from "../../Renderer/Properties/TransformProps";
-import type TreeNode from "./TreeNode";
-import { objectManager } from "./ObjectManager";
-import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
-import { type ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
-import LightProps from "../../Renderer/Properties/LightProps";
+} from '../../Renderer/Types';
+import { ObjectType, type SceneObjectInterface, type SceneObjectDescriptor } from './Types';
+import TransformProps from '../../Renderer/Properties/TransformProps';
+import type TreeNode from './TreeNode';
+import { objectManager } from './ObjectManager';
+import ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemProps';
+import { type ParticleSystemPropsDescriptor } from '../../Renderer/ParticleSystem/Types';
+import LightProps from '../../Renderer/Properties/LightProps';
 
 
 class SceneObject implements SceneObjectInterface {

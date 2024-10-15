@@ -1,5 +1,5 @@
-import type { Quat, Vec3 } from "wgpu-matrix";
-import type SurfaceMesh from "../Renderer/Drawables/SurfaceMesh";
+import type { Quat, Vec3 } from 'wgpu-matrix';
+import type SurfaceMesh from '../Renderer/Drawables/SurfaceMesh';
 
 export interface FbxNodeInterface {
   name: string;

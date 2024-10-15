@@ -1,5 +1,5 @@
-import type { GraphNodeDescriptor } from "../GraphDescriptor";
-import BinaryOp from "./BinaryOp";
+import type { GraphNodeDescriptor } from '../GraphDescriptor';
+import BinaryOp from './BinaryOp';
 
 class Add extends BinaryOp {
   constructor(nodeDescriptor?: GraphNodeDescriptor) {

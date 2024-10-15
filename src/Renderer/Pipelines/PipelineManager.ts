@@ -1,17 +1,17 @@
-import { makeShaderDataDefinitions, makeStructuredView } from "webgpu-utils";
-import { bindGroups } from "../BindGroups";
-import { gpu } from "../Gpu";
-import type { GraphNodeInterface, PropertyInterface } from "../ShaderBuilder/Types";
-import type { PipelineInterface, PipelineManagerInterface, StageBindings } from "../Types";
-import LinePipeline from "./LinePipeline";
-import Pipeline from "./Pipeline";
+import { makeShaderDataDefinitions, makeStructuredView } from 'webgpu-utils';
+import { bindGroups } from '../BindGroups';
+import { gpu } from '../Gpu';
+import type { GraphNodeInterface, PropertyInterface } from '../ShaderBuilder/Types';
+import type { PipelineInterface, PipelineManagerInterface, StageBindings } from '../Types';
+import LinePipeline from './LinePipeline';
+import Pipeline from './Pipeline';
 // import ReticlePipeline from "./ReticlePipeline";
-import TrajectoryPipeline from "./TrajectoryPipeline";
-import { bloom, outputFormat } from "../RenderSettings";
-import DecalPipeline from "./DecalPipeline";
-import type ShaderGraph from "../ShaderBuilder/ShaderGraph";
-import { DrawableType } from "../Drawables/DrawableInterface";
-import { BlendMode } from "../ShaderBuilder/Types";
+import TrajectoryPipeline from './TrajectoryPipeline';
+import { bloom, outputFormat } from '../RenderSettings';
+import DecalPipeline from './DecalPipeline';
+import type ShaderGraph from '../ShaderBuilder/ShaderGraph';
+import { DrawableType } from '../Drawables/DrawableInterface';
+import { BlendMode } from '../ShaderBuilder/Types';
 
 export type PipelineType =
   'Line'| 'reticle' | 'Trajectory' | 'Decal';
@@ -126,33 +126,33 @@ class PipelineManager implements PipelineManagerInterface {
               {
                 shaderLocation: 0, // position
                 offset: 0,
-                format: "float32x4",
+                format: 'float32x4',
               },
             ],
             arrayStride: 16,
-            stepMode: "vertex",
+            stepMode: 'vertex',
           },
           {
             attributes: [
               {
                 shaderLocation: 1, // normal
                 offset: 0,
-                format: "float32x4",
+                format: 'float32x4',
               }
             ],
             arrayStride: 16,
-            stepMode: "vertex",
+            stepMode: 'vertex',
           },
           {
             attributes: [
               {
                 shaderLocation: 2, // texcoord
                 offset: 0,
-                format: "float32x2",
+                format: 'float32x2',
               }
             ],
             arrayStride: 8,
-            stepMode: "vertex",
+            stepMode: 'vertex',
           }
         ];
       }
@@ -163,22 +163,22 @@ class PipelineManager implements PipelineManagerInterface {
               {
                 shaderLocation: 0, // position
                 offset: 0,
-                format: "float32x2",
+                format: 'float32x2',
               },
             ],
             arrayStride: 8,
-            stepMode: "vertex",
+            stepMode: 'vertex',
           },
           {
             attributes: [
               {
                 shaderLocation: 1, // texcoord
                 offset: 0,
-                format: "float32x2",
+                format: 'float32x2',
               }
             ],
             arrayStride: 8,
-            stepMode: "vertex",
+            stepMode: 'vertex',
           }
         ];
       }
@@ -287,23 +287,23 @@ class PipelineManager implements PipelineManagerInterface {
         label: `${drawableType}${shaderModule.settings.transparent ? ' transparent' : ''}${bloom ? ' bloom' : ''} pipeline`,
         vertex: {
           module: shaderModule.module,
-          entryPoint: "vs",
+          entryPoint: 'vs',
           buffers: vertexBufferLayout,
         },
         fragment: {
           module: shaderModule.module,
-          entryPoint: "fs",
+          entryPoint: 'fs',
           targets,
         },
         primitive: {
-          topology: "triangle-list",
+          topology: 'triangle-list',
           cullMode: shaderModule.settings.cullMode,
-          frontFace: "ccw",
+          frontFace: 'ccw',
         },
         depthStencil: {
           depthWriteEnabled: shaderModule.settings.depthWriteEnabled ?? true,
           depthCompare: (shaderModule.settings.transparent ?? false) ? 'less-equal' : 'less',
-          format: "depth24plus"
+          format: 'depth24plus'
         },
         layout: pipelineLayout,
       };

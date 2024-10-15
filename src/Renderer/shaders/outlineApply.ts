@@ -1,4 +1,4 @@
-import { fullscreen } from "./vertex/fullscreen";
+import { fullscreen } from './vertex/fullscreen';
 
 export const outlineApplyShader = /*wgsl*/`
 ${fullscreen}

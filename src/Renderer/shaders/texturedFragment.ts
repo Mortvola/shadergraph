@@ -1,4 +1,4 @@
-import { textureAttributes } from "./textureAttributes";
+import { textureAttributes } from './textureAttributes';
 
 export const texturedFragment = /*wgsl*/`
 ${textureAttributes}

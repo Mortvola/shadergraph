@@ -1,4 +1,4 @@
-import { gpu } from "./Gpu";
+import { gpu } from './Gpu';
 
 class BindGroups {
   private bindGroupLayout0: GPUBindGroupLayout | null = null;

@@ -1,9 +1,9 @@
-import { runInAction } from "mobx";
-import { materialManager } from "../../Renderer/Materials/MaterialManager";
-import type { MaterialItemInterface } from "../../State/types";
-import ProjectItem from "./ProjectItem";
-import type { FolderInterface} from "./types";
-import { ProjectItemType } from "./types";
+import { runInAction } from 'mobx';
+import { materialManager } from '../../Renderer/Materials/MaterialManager';
+import type { MaterialItemInterface } from '../../State/types';
+import ProjectItem from './ProjectItem';
+import type { FolderInterface} from './types';
+import { ProjectItemType } from './types';
 
 class MaterialProjectItem extends ProjectItem<MaterialItemInterface> {
   constructor(id: number, name: string, parent: FolderInterface | null, itemId: number | null) {

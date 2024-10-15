@@ -1,6 +1,6 @@
-import { observable, runInAction } from "mobx";
-import Http from "../../Http/src";
-import type { FolderInterface, ProjectItemInterface, ProjectItemLike, ProjectItemType } from "./types";
+import { observable, runInAction } from 'mobx';
+import Http from '../../Http/src';
+import type { FolderInterface, ProjectItemInterface, ProjectItemLike, ProjectItemType } from './types';
 
 class ProjectItem<T> implements ProjectItemInterface<T> {
   id: number

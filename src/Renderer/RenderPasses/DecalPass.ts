@@ -1,5 +1,5 @@
-import { gpu } from "../Gpu";
-import RenderPass from "./RenderPass";
+import { gpu } from '../Gpu';
+import RenderPass from './RenderPass';
 
 class DecalPass extends RenderPass {
   // decalPipeline: GPURenderPipeline
@@ -55,15 +55,15 @@ class DecalPass extends RenderPass {
         {
           view: destination,
           clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 0.0 },
-          loadOp: "clear" as GPULoadOp,
-          storeOp: "store" as GPUStoreOp,
+          loadOp: 'clear' as GPULoadOp,
+          storeOp: 'store' as GPUStoreOp,
         },
       ],
       depthStencilAttachment: {
         view: depthView,
         depthClearValue: 1.0,
-        depthLoadOp: "load" as GPULoadOp,
-        depthStoreOp: "store" as GPUStoreOp,
+        depthLoadOp: 'load' as GPULoadOp,
+        depthStoreOp: 'store' as GPUStoreOp,
       }
     });
 

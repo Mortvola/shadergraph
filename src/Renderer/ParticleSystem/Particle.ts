@@ -1,6 +1,6 @@
-import type { Vec4 } from "wgpu-matrix"
-import type DrawableComponent from "../Drawables/DrawableComponent";
-import { type RenderNodeInterface } from "../Types";
+import type { Vec4 } from 'wgpu-matrix'
+import type DrawableComponent from '../Drawables/DrawableComponent';
+import { type RenderNodeInterface } from '../Types';
 
 let id = 0;
 

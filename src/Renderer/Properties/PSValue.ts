@@ -1,11 +1,11 @@
-import { observable, runInAction } from "mobx";
-import { lerp } from "../Math";
-import type { PSValueDescriptor} from "../ParticleSystem/Types";
-import { PSValueType } from "../ParticleSystem/Types";
-import PSCurve from "./PSCurve";
-import type { PropertyType } from "./Types";
-import type PropsBase from "./PropsBase";
-import PropertyBase from "./PropertyBase";
+import { observable, runInAction } from 'mobx';
+import { lerp } from '../Math';
+import type { PSValueDescriptor} from '../ParticleSystem/Types';
+import { PSValueType } from '../ParticleSystem/Types';
+import PSCurve from './PSCurve';
+import type { PropertyType } from './Types';
+import type PropsBase from './PropsBase';
+import PropertyBase from './PropertyBase';
 
 class PSValue extends PropertyBase {
   // Methods for type

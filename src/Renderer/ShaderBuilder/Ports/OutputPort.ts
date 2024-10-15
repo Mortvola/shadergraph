@@ -1,7 +1,7 @@
-import { makeObservable, observable } from "mobx";
-import type { GraphEdgeInterface, GraphNodeInterface, OutputPortInterface } from "../Types"
-import Port from "./Port";
-import type { DataType } from "../GraphDescriptor";
+import { makeObservable, observable } from 'mobx';
+import type { GraphEdgeInterface, GraphNodeInterface, OutputPortInterface } from '../Types'
+import Port from './Port';
+import type { DataType } from '../GraphDescriptor';
 
 class OutputPort extends Port implements OutputPortInterface {
   edges: GraphEdgeInterface[] = [];

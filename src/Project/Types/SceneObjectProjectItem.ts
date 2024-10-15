@@ -1,11 +1,11 @@
-import { runInAction } from "mobx";
-import type SceneObject from "../../Scene/Types/SceneObject";
-import type { SceneObjectInterface } from "../../Scene/Types/Types";
-import ProjectItem from "./ProjectItem";
-import { ComponentType } from "../../Renderer/Types";
-import type { FolderInterface} from "./types";
-import { ProjectItemType } from "./types";
-import { objectManager } from "../../Scene/Types/ObjectManager";
+import { runInAction } from 'mobx';
+import type SceneObject from '../../Scene/Types/SceneObject';
+import type { SceneObjectInterface } from '../../Scene/Types/Types';
+import ProjectItem from './ProjectItem';
+import { ComponentType } from '../../Renderer/Types';
+import type { FolderInterface} from './types';
+import { ProjectItemType } from './types';
+import { objectManager } from '../../Scene/Types/ObjectManager';
 
 class SceneObjectProjectItem extends ProjectItem<SceneObjectInterface> {
   constructor(id: number, name: string, parent: FolderInterface | null, itemId: number | null) {

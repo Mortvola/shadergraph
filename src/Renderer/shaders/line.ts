@@ -1,5 +1,5 @@
-import { common } from "./common";
-import { meshInstances } from "./meshInstances";
+import { common } from './common';
+import { meshInstances } from './meshInstances';
 
 export const lineShader = /*wgsl*/`
 struct Vertex {

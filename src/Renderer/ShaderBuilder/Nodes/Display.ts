@@ -1,9 +1,9 @@
-import { observable, reaction } from "mobx";
-import type { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
-import OperationNode from "../OperationNode";
-import InputPort from "../Ports/InputPort";
-import type GraphNotification from "../GraphNotification";
-import { BlendMode, CullMode, type DisplaySettings } from "../Types";
+import { observable, reaction } from 'mobx';
+import type { DataType, GraphNodeDescriptor } from '../GraphDescriptor';
+import OperationNode from '../OperationNode';
+import InputPort from '../Ports/InputPort';
+import type GraphNotification from '../GraphNotification';
+import { BlendMode, CullMode, type DisplaySettings } from '../Types';
 
 class Display extends OperationNode {
   @observable

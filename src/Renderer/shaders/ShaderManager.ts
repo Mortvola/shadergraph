@@ -1,6 +1,6 @@
-import Http from "../../Http/src";
-import type { ShaderRecord } from "../Types";
-import type { ShaderDescriptor } from "./ShaderDescriptor";
+import Http from '../../Http/src';
+import type { ShaderRecord } from '../Types';
+import type { ShaderDescriptor } from './ShaderDescriptor';
 
 class ShaderManager {
   shaders: Map<number, ShaderRecord> = new Map()

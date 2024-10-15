@@ -1,8 +1,8 @@
-import type { DataType } from "../GraphDescriptor";
-import InputPort from "../Ports/InputPort";
-import type { ValueInterface } from "../Types";
-import Value from "../Value";
-import ValueNode from "../ValueNode";
+import type { DataType } from '../GraphDescriptor';
+import InputPort from '../Ports/InputPort';
+import type { ValueInterface } from '../Types';
+import Value from '../Value';
+import ValueNode from '../ValueNode';
 
 class Vector extends ValueNode {
   constructor(value: ValueInterface, id?: number) {

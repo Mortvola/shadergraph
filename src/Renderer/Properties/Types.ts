@@ -1,4 +1,4 @@
-import type { SceneObjectInterface } from "../../Scene/Types/Types";
+import type { SceneObjectInterface } from '../../Scene/Types/Types';
 
 export type PropertyType<T> = { value: T, override?: boolean }
 

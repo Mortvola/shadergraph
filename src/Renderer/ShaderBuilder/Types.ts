@@ -1,5 +1,5 @@
-import type { DataType, GraphNodeDescriptor, NodeType, ValueType } from "./GraphDescriptor";
-import type GraphNotification from "./GraphNotification";
+import type { DataType, GraphNodeDescriptor, NodeType, ValueType } from './GraphDescriptor';
+import type GraphNotification from './GraphNotification';
 
 export interface PortInterface {
   node: GraphNodeInterface;

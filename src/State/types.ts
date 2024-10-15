@@ -1,10 +1,10 @@
 import type {
   PropertyInterface,
-} from "../Renderer/ShaderBuilder/Types";
+} from '../Renderer/ShaderBuilder/Types';
 import type {
   MaterialInterface,
   RenderNodeInterface,
-} from "../Renderer/Types";
+} from '../Renderer/Types';
 
 export interface ModelerInterface {
   applyMaterial(material: MaterialInterface): void

@@ -1,5 +1,5 @@
-import type { NodeType } from "./GraphDescriptor";
-import GraphNode from "./GraphNode";
+import type { NodeType } from './GraphDescriptor';
+import GraphNode from './GraphNode';
 
 class OperationNode extends GraphNode {
   name: string;

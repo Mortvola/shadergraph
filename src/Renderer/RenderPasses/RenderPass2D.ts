@@ -1,5 +1,5 @@
-import type SceneGraph2D from "../SceneGraph2d";
-import type { RenderPass2DInterface } from "../Types";
+import type SceneGraph2D from '../SceneGraph2d';
+import type { RenderPass2DInterface } from '../Types';
 
 class RenderPass2D implements RenderPass2DInterface {
   getDescriptor(
@@ -9,8 +9,8 @@ class RenderPass2D implements RenderPass2DInterface {
     const colorAttachments: GPURenderPassColorAttachment[] = [{
       view,
       clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
-      loadOp: "load",
-      storeOp: "store",
+      loadOp: 'load',
+      storeOp: 'store',
     }]
 
     const descriptor: GPURenderPassDescriptor = {
@@ -22,8 +22,8 @@ class RenderPass2D implements RenderPass2DInterface {
       descriptor.depthStencilAttachment = {
         view: depthView,
         depthClearValue: 1.0,
-        depthLoadOp: "clear" as GPULoadOp,
-        depthStoreOp: "store" as GPUStoreOp,
+        depthLoadOp: 'clear' as GPULoadOp,
+        depthStoreOp: 'store' as GPUStoreOp,
       };
     }
 

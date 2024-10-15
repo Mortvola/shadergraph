@@ -1,6 +1,6 @@
-import { quat, vec3, type RotationOrder } from "wgpu-matrix";
-import { getEulerAngles } from "../Renderer/Math";
-import type { FbxNodeInterface } from "./types";
+import { quat, vec3, type RotationOrder } from 'wgpu-matrix';
+import { getEulerAngles } from '../Renderer/Math';
+import type { FbxNodeInterface } from './types';
 
 export const rotationOrder: RotationOrder = 'xyz';
 

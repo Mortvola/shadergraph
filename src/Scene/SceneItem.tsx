@@ -3,7 +3,7 @@ import styles from './SceneItem.module.scss';
 import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import type { MenuItemLike } from '../ContextMenu/types';
-import type { SceneInterface } from "./Types/Types";
+import type { SceneInterface } from './Types/Types';
 import type TreeNode from './Types/TreeNode';
 import { Box, Plus } from 'lucide-react';
 
@@ -32,7 +32,7 @@ const SceneItem: React.FC<PropsType> = observer(({
 
   const handleDragStart: React.DragEventHandler = (event) => {
     event.dataTransfer.clearData();
-    event.dataTransfer.setData("application/scene-item", treeNode.id.toString());
+    event.dataTransfer.setData('application/scene-item', treeNode.id.toString());
 
     scene.draggingNode = treeNode;
   }

@@ -1,6 +1,6 @@
-import Http from "../../Http/src";
-import { gpu } from "../Gpu";
-import Texture from "./Texture";
+import Http from '../../Http/src';
+import { gpu } from '../Gpu';
+import Texture from './Texture';
 
 type TextureMeta = {
   name: string,

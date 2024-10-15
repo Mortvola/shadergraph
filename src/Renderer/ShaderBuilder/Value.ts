@@ -1,6 +1,6 @@
-import { makeObservable, observable } from "mobx";
-import type { ValueInterface } from "./Types";
-import type { DataType, ValueType } from "./GraphDescriptor";
+import { makeObservable, observable } from 'mobx';
+import type { ValueInterface } from './Types';
+import type { DataType, ValueType } from './GraphDescriptor';
 
 class Value implements ValueInterface {
   dataType: DataType;

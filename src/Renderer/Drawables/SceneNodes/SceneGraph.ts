@@ -1,12 +1,12 @@
-import { type Mat4, mat4 } from "wgpu-matrix";
-import type ParticleSystem from "../../ParticleSystem/ParticleSystem";
-import type { RenderNodeInterface, RendererInterface, SceneGraphInterface} from "../../Types";
-import { ComponentType } from "../../Types";
-import type Component from "../Component";
-import type Light from "../Light";
-import type RangeCircle from "../RangeCircle";
-import RenderNode, { isRenderNode } from "./RenderNode";
-import type DrawableComponent from "../DrawableComponent";
+import { type Mat4, mat4 } from 'wgpu-matrix';
+import type ParticleSystem from '../../ParticleSystem/ParticleSystem';
+import type { RenderNodeInterface, RendererInterface, SceneGraphInterface} from '../../Types';
+import { ComponentType } from '../../Types';
+import type Component from '../Component';
+import type Light from '../Light';
+import type RangeCircle from '../RangeCircle';
+import RenderNode, { isRenderNode } from './RenderNode';
+import type DrawableComponent from '../DrawableComponent';
 
 class SceneGraph implements SceneGraphInterface {
   rootRenderNode = new RenderNode()

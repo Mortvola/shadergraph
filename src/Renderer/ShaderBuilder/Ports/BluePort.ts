@@ -1,5 +1,5 @@
-import type { DataType } from "../GraphDescriptor";
-import OutputPort from "./OutputPort";
+import type { DataType } from '../GraphDescriptor';
+import OutputPort from './OutputPort';
 
 class BluePort extends OutputPort {
   getVarName(): [string, DataType] {

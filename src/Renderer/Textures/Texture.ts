@@ -1,6 +1,6 @@
-import { observable } from "mobx";
-import Entity from "../../State/Entity";
-import type { TextureInterface } from "../../State/types";
+import { observable } from 'mobx';
+import Entity from '../../State/Entity';
+import type { TextureInterface } from '../../State/types';
 
 class Texture extends Entity implements TextureInterface {
   @observable

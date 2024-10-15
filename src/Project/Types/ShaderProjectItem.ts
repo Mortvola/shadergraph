@@ -1,13 +1,13 @@
-import { runInAction } from "mobx";
-import Http from "../../Http/src";
-import type { ShaderRecord } from "../../Renderer/Types";
-import Graph from "../../State/Graph";
-import { store } from "../../State/store";
-import ProjectItem from "./ProjectItem";
-import type { FolderInterface} from "./types";
-import { ProjectItemType } from "./types";
-import type { GraphInterface } from "../../State/GraphInterface";
-import { shaderManager } from "../../Renderer/shaders/ShaderManager";
+import { runInAction } from 'mobx';
+import Http from '../../Http/src';
+import type { ShaderRecord } from '../../Renderer/Types';
+import Graph from '../../State/Graph';
+import { store } from '../../State/store';
+import ProjectItem from './ProjectItem';
+import type { FolderInterface} from './types';
+import { ProjectItemType } from './types';
+import type { GraphInterface } from '../../State/GraphInterface';
+import { shaderManager } from '../../Renderer/shaders/ShaderManager';
 
 class ShaderProjectItem extends ProjectItem<GraphInterface> {
   constructor(id: number, name: string, parent: FolderInterface | null, itemId: number | null) {

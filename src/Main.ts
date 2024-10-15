@@ -1,2 +1,2 @@
-import ShaderGraphRenderer from "./ShaderGraphRenderer";
+import ShaderGraphRenderer from './ShaderGraphRenderer';
 export const shaderGraphRenderer = new ShaderGraphRenderer();

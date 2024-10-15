@@ -1,5 +1,5 @@
-import { observable } from "mobx";
-import type { EntityInterface } from "./types";
+import { observable } from 'mobx';
+import type { EntityInterface } from './types';
 
 let nextObjectId = 0;
 

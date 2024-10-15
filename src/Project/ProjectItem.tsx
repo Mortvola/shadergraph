@@ -9,7 +9,7 @@ import type { MenuItemLike } from '../ContextMenu/types';
 import Http from '../Http/src';
 import type { MaterialItemInterface } from '../State/types';
 import { runInAction } from 'mobx';
-import ProjectItemObject from "../Project/Types/ProjectItem";
+import ProjectItemObject from '../Project/Types/ProjectItem';
 import type { ProjectItemRecord } from '../State/ProjectItemRecord';
 import { Box, Boxes } from 'lucide-react';
 
@@ -42,7 +42,7 @@ const ProjectItem: React.FC<PropsType> = observer(({
 
   const handleDragStart: React.DragEventHandler = (event) => {
     event.dataTransfer.clearData();
-    event.dataTransfer.setData("application/project-item", item.id.toString());
+    event.dataTransfer.setData('application/project-item', item.id.toString());
 
     store.draggingItem = item;
   }

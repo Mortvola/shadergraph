@@ -50,7 +50,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
   const handleDrop: React.DragEventHandler = (event) => {
     event.preventDefault();
 
-    const data = event.dataTransfer.getData("application/output-port");
+    const data = event.dataTransfer.getData('application/output-port');
 
     if (data) {
       const outputPort = store.getDragObject() as OutputPortInterface;
@@ -78,7 +78,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
       const outputPort = port.edge.output;
 
       store.setDragObject(outputPort);
-      event.dataTransfer.setData("application/output-port", port.name);
+      event.dataTransfer.setData('application/output-port', port.name);
 
       setStartPoint(outputPort);
 

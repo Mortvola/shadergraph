@@ -1,7 +1,7 @@
-import { observable, runInAction } from "mobx";
-import type PropertyBase from "./PropertyBase";
-import PSCurve from "./PSCurve";
-import { type PropertyType } from "./Types";
+import { observable, runInAction } from 'mobx';
+import type PropertyBase from './PropertyBase';
+import PSCurve from './PSCurve';
+import { type PropertyType } from './Types';
 
 class PSValue2 {
   @observable

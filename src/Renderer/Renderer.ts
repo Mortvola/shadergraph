@@ -13,7 +13,7 @@ import type Light from './Drawables/Light';
 import CartesianAxes from './Drawables/CartesianAxes';
 import DrawableComponent from './Drawables/DrawableComponent';
 import type { RendererInterface, RenderNodeInterface, DrawableComponentInterface } from './Types';
-import { lights } from "./shaders/lights";
+import { lights } from './shaders/lights';
 import { gpu } from './Gpu';
 import { bindGroups } from './BindGroups';
 import { pipelineManager } from './Pipelines/PipelineManager';

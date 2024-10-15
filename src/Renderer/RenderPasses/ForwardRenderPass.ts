@@ -1,5 +1,5 @@
-import { bloom } from "../RenderSettings";
-import RenderPass from "./RenderPass";
+import { bloom } from '../RenderSettings';
+import RenderPass from './RenderPass';
 
 class ForwardRenderPass extends RenderPass {
   label: string
@@ -19,8 +19,8 @@ class ForwardRenderPass extends RenderPass {
       {
         view,
         clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
-        loadOp: "load",
-        storeOp: "store",
+        loadOp: 'load',
+        storeOp: 'store',
       },
     ]
 
@@ -28,8 +28,8 @@ class ForwardRenderPass extends RenderPass {
       colorAttachments.push({
         view: bloom,
         clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
-        loadOp: loadBloom ? "load" : "clear",
-        storeOp: "store",
+        loadOp: loadBloom ? 'load' : 'clear',
+        storeOp: 'store',
       })
     }
 
@@ -42,8 +42,8 @@ class ForwardRenderPass extends RenderPass {
       descriptor.depthStencilAttachment = {
         view: depthView,
         depthClearValue: 1.0,
-        depthLoadOp: "load",
-        depthStoreOp: "store",
+        depthLoadOp: 'load',
+        depthStoreOp: 'store',
       };
     }
 

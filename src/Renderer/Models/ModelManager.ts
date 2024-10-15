@@ -1,11 +1,11 @@
-import { vec3 } from "wgpu-matrix";
-import { downloadFbx } from "../../Fbx/LoadFbx";
-import { type FbxNodeInterface, isFbxContainerNode, isFbxGeometryNode } from "../../Fbx/types";
-import { type NodeMaterials } from "../../State/types";
-import RenderNode from "../Drawables/SceneNodes/RenderNode";
-import { type RenderNodeInterface } from "../Types";
-import Mesh from "../Drawables/Mesh";
-import DrawableComponent from "../Drawables/DrawableComponent";
+import { vec3 } from 'wgpu-matrix';
+import { downloadFbx } from '../../Fbx/LoadFbx';
+import { type FbxNodeInterface, isFbxContainerNode, isFbxGeometryNode } from '../../Fbx/types';
+import { type NodeMaterials } from '../../State/types';
+import RenderNode from '../Drawables/SceneNodes/RenderNode';
+import { type RenderNodeInterface } from '../Types';
+import Mesh from '../Drawables/Mesh';
+import DrawableComponent from '../Drawables/DrawableComponent';
 
 class ModelManager {
   loading: Record<number, Promise<RenderNodeInterface | undefined>> = {}

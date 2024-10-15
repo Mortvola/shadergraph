@@ -1,14 +1,14 @@
-import PSModule from "../Properties/PSModule";
+import PSModule from '../Properties/PSModule';
 import {
   isPSValue3DDescriptor,
   type PSValue3DDescriptor,
   type PSValueDescriptor,
   PSValueType,
   type LifetimeSizeDescriptor,
-} from "./Types";
-import type PropsBase from "../Properties/PropsBase";
-import { removeUndefinedKeys } from "../Properties/Types";
-import PSValue3D from "../Properties/PSValue3D";
+} from './Types';
+import type PropsBase from '../Properties/PropsBase';
+import { removeUndefinedKeys } from '../Properties/Types';
+import PSValue3D from '../Properties/PSValue3D';
 
 class LifetimeSize extends PSModule {
   size: PSValue3D;

@@ -1,6 +1,6 @@
-import { common } from "./common";
-import { fullscreen } from "./vertex/fullscreen";
-import { blinnPhongFunction } from "./functions/blinnPhongFunction";
+import { common } from './common';
+import { fullscreen } from './vertex/fullscreen';
+import { blinnPhongFunction } from './functions/blinnPhongFunction';
 
 export const deferredCombine = /*wgsl*/`
 ${common}

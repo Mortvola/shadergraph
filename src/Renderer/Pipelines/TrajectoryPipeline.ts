@@ -3,7 +3,7 @@ import { gpu } from '../Gpu';
 import { bloom, outputFormat } from '../RenderSettings';
 import { BlendMode, CullMode } from '../ShaderBuilder/Types';
 import { trajectoryShader } from '../shaders/trajectory';
-import Pipeline from "./Pipeline";
+import Pipeline from './Pipeline';
 
 const label = 'trajectory'
 class TrajectoryPipeline extends Pipeline {
@@ -27,21 +27,21 @@ class TrajectoryPipeline extends Pipeline {
       label,
       vertex: {
         module: shaderModule,
-        entryPoint: "vs",
+        entryPoint: 'vs',
       },
       fragment: {
         module: shaderModule,
-        entryPoint: "fs",
+        entryPoint: 'fs',
         targets,
       },
       primitive: {
-        topology: "line-list",
-        cullMode: "none",
+        topology: 'line-list',
+        cullMode: 'none',
       },
       depthStencil: {
         depthWriteEnabled: true,
-        depthCompare: "less",
-        format: "depth24plus"
+        depthCompare: 'less',
+        format: 'depth24plus'
       },
       layout: gpu.device.createPipelineLayout({
         label,

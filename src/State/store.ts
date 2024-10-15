@@ -1,24 +1,24 @@
-import React from "react";
-import Modeler from "./Modeler";
+import React from 'react';
+import Modeler from './Modeler';
 import type {
-  ModelItemInterface} from "./types";
-import type { SceneInterface } from "../Scene/Types/Types";
-import { isGameObject } from "../Scene/Types/Types";
-import { observable, reaction, runInAction } from "mobx";
-import Renderer from "../Renderer/Renderer";
-import type { ProjectItemInterface, ProjectItemLike } from "../Project/Types/types";
-import { isSceneItem, isShaderItem, ProjectItemType } from "../Project/Types/types";
+  ModelItemInterface} from './types';
+import type { SceneInterface } from '../Scene/Types/Types';
+import { isGameObject } from '../Scene/Types/Types';
+import { observable, reaction, runInAction } from 'mobx';
+import Renderer from '../Renderer/Renderer';
+import type { ProjectItemInterface, ProjectItemLike } from '../Project/Types/types';
+import { isSceneItem, isShaderItem, ProjectItemType } from '../Project/Types/types';
 import type {
-  RenderNodeInterface} from "../Renderer/Types";
+  RenderNodeInterface} from '../Renderer/Types';
 import {
   ComponentType,
-} from "../Renderer/Types";
-import { shaderGraphRenderer } from "../Main";
-import Project from "../Project/Types/Project";
-import type { StoreInterface } from "./StoreInterface";
-import { type GraphInterface } from "./GraphInterface";
-import { modelManager } from "../Renderer/Models/ModelManager";
-import ModelItem from "../Renderer/Models/ModelItem";
+} from '../Renderer/Types';
+import { shaderGraphRenderer } from '../Main';
+import Project from '../Project/Types/Project';
+import type { StoreInterface } from './StoreInterface';
+import { type GraphInterface } from './GraphInterface';
+import { modelManager } from '../Renderer/Models/ModelManager';
+import ModelItem from '../Renderer/Models/ModelItem';
 
 class Store implements StoreInterface {
   @observable

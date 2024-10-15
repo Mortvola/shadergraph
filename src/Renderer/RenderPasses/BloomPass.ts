@@ -1,7 +1,7 @@
-import { gpu } from "../Gpu";
-import { outputFormat } from "../RenderSettings";
-import { bloomShader } from "../shaders/bloom";
-import BlurPass from "./BlurPass";
+import { gpu } from '../Gpu';
+import { outputFormat } from '../RenderSettings';
+import { bloomShader } from '../shaders/bloom';
+import BlurPass from './BlurPass';
 
 export const createTexture = (context: GPUCanvasContext) => {
   return gpu.device.createTexture({
@@ -93,11 +93,11 @@ class BloomPass {
       label,
       vertex: {
         module: shaderModule,
-        entryPoint: "vs",
+        entryPoint: 'vs',
       },
       fragment: {
         module: shaderModule,
-        entryPoint: "fs",
+        entryPoint: 'fs',
         targets: [
           {
             format: outputFormat,
@@ -105,9 +105,9 @@ class BloomPass {
         ],
       },
       primitive: {
-        topology: "triangle-list",
-        cullMode: "none",
-        frontFace: "ccw",
+        topology: 'triangle-list',
+        cullMode: 'none',
+        frontFace: 'ccw',
       },
       layout: gpu.device.createPipelineLayout({
         label,
@@ -134,8 +134,8 @@ class BloomPass {
         {
           view,
           clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
-          loadOp: "clear" as GPULoadOp,
-          storeOp: "store" as GPUStoreOp,
+          loadOp: 'clear' as GPULoadOp,
+          storeOp: 'store' as GPUStoreOp,
         },
       ],
     });

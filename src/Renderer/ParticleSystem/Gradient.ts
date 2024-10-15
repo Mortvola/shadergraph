@@ -1,6 +1,6 @@
-import { observable, runInAction } from "mobx";
-import { lerp } from "../Math";
-import type { AlphaGradientKey, ColorGradientKey, GradientDescriptor } from "./Types";
+import { observable, runInAction } from 'mobx';
+import { lerp } from '../Math';
+import type { AlphaGradientKey, ColorGradientKey, GradientDescriptor } from './Types';
 
 class Gradient {
   @observable

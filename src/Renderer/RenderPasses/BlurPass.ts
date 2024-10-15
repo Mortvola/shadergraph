@@ -1,6 +1,6 @@
-import { gpu } from "../Gpu";
-import { outputFormat } from "../RenderSettings";
-import { blurShader } from "../shaders/blur";
+import { gpu } from '../Gpu';
+import { outputFormat } from '../RenderSettings';
+import { blurShader } from '../shaders/blur';
 
 const label = 'blur pass';
 
@@ -62,11 +62,11 @@ class BlurPass {
       label,
       vertex: {
         module: shaderModule,
-        entryPoint: "vs",
+        entryPoint: 'vs',
       },
       fragment: {
         module: shaderModule,
-        entryPoint: horizontal ? "horizontalPass" : "verticalPass",
+        entryPoint: horizontal ? 'horizontalPass' : 'verticalPass',
         targets: [
           {
             format: outputFormat,
@@ -74,9 +74,9 @@ class BlurPass {
         ],
       },
       primitive: {
-        topology: "triangle-list",
-        cullMode: "none",
-        frontFace: "ccw",
+        topology: 'triangle-list',
+        cullMode: 'none',
+        frontFace: 'ccw',
       },
       layout: gpu.device.createPipelineLayout({
         label,
@@ -96,8 +96,8 @@ class BlurPass {
         {
           view: this.scratchTextureView,
           clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
-          loadOp: "clear" as GPULoadOp,
-          storeOp: "store" as GPUStoreOp,
+          loadOp: 'clear' as GPULoadOp,
+          storeOp: 'store' as GPUStoreOp,
         },
       ],
     });
@@ -114,8 +114,8 @@ class BlurPass {
         {
           view: destinationView,
           clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
-          loadOp: "clear" as GPULoadOp,
-          storeOp: "store" as GPUStoreOp,
+          loadOp: 'clear' as GPULoadOp,
+          storeOp: 'store' as GPUStoreOp,
         },
       ],
     });

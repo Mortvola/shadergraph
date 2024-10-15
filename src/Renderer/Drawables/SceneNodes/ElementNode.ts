@@ -1,5 +1,5 @@
-import type { MaterialInterface } from "../../Types";
-import SceneNode2d from "./SceneNode2d";
+import type { MaterialInterface } from '../../Types';
+import SceneNode2d from './SceneNode2d';
 
 export type Style = {
   position?: 'absolute'

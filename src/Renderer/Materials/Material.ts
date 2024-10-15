@@ -1,14 +1,14 @@
-import { gpu } from "../Gpu";
-import { pipelineManager } from "../Pipelines/PipelineManager";
-import type { MaterialInterface, PipelineInterface, StageBindings } from "../Types";
-import type { PropertyInterface } from "../ShaderBuilder/Types";
-import type { MaterialDescriptor } from "./MaterialDescriptor";
-import { shaderManager } from "../shaders/ShaderManager";
-import type { ShaderDescriptor } from "../shaders/ShaderDescriptor";
-import ShaderGraph from "../ShaderBuilder/ShaderGraph";
-import type { ValueType } from "../ShaderBuilder/GraphDescriptor";
-import type { DrawableType } from "../Drawables/DrawableInterface";
-import { textureManager } from "../Textures/TextureManager";
+import { gpu } from '../Gpu';
+import { pipelineManager } from '../Pipelines/PipelineManager';
+import type { MaterialInterface, PipelineInterface, StageBindings } from '../Types';
+import type { PropertyInterface } from '../ShaderBuilder/Types';
+import type { MaterialDescriptor } from './MaterialDescriptor';
+import { shaderManager } from '../shaders/ShaderManager';
+import type { ShaderDescriptor } from '../shaders/ShaderDescriptor';
+import ShaderGraph from '../ShaderBuilder/ShaderGraph';
+import type { ValueType } from '../ShaderBuilder/GraphDescriptor';
+import type { DrawableType } from '../Drawables/DrawableInterface';
+import { textureManager } from '../Textures/TextureManager';
 
 type MaterialBindings = {
   uniformsBuffer: GPUBuffer | null,

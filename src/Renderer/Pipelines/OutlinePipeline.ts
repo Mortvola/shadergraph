@@ -2,7 +2,7 @@ import { bindGroups } from '../BindGroups';
 import { gpu } from '../Gpu';
 import { BlendMode, CullMode } from '../ShaderBuilder/Types';
 import { outlineShader } from '../shaders/outline';
-import Pipeline from "./Pipeline";
+import Pipeline from './Pipeline';
 
 const label = 'outline';
 
@@ -19,22 +19,22 @@ class OutlinePipeline extends Pipeline {
           {
             shaderLocation: 0, // position
             offset: 0,
-            format: "float32x4",
+            format: 'float32x4',
           },
         ],
         arrayStride: 16,
-        stepMode: "vertex",
+        stepMode: 'vertex',
       },
       {
         attributes: [
           {
             shaderLocation: 1, // normal
             offset: 0,
-            format: "float32x4",
+            format: 'float32x4',
           }
         ],
         arrayStride: 16,
-        stepMode: "vertex",
+        stepMode: 'vertex',
       }
     ];
 
@@ -42,12 +42,12 @@ class OutlinePipeline extends Pipeline {
       label,
       vertex: {
         module: shaderModule,
-        entryPoint: "vs",
+        entryPoint: 'vs',
         buffers: vertexBufferLayout,
       },
       fragment: {
         module: shaderModule,
-        entryPoint: "fs",
+        entryPoint: 'fs',
         targets: [
           {
             format: navigator.gpu.getPreferredCanvasFormat(),
@@ -55,14 +55,14 @@ class OutlinePipeline extends Pipeline {
         ],
       },
       primitive: {
-        topology: "triangle-list",
-        cullMode: "front",
-        frontFace: "ccw",
+        topology: 'triangle-list',
+        cullMode: 'front',
+        frontFace: 'ccw',
       },
       depthStencil: {
         depthWriteEnabled: true,
-        depthCompare: "less",
-        format: "depth24plus"
+        depthCompare: 'less',
+        format: 'depth24plus'
       },
       layout: gpu.device.createPipelineLayout({
         bindGroupLayouts: [

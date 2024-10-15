@@ -3,7 +3,7 @@ import type { MenuItemLike } from '../ContextMenu/types';
 import { useStores } from '../State/store';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import styles from '../Project/Project.module.scss'
-import { SceneItemType, type SceneInterface } from "./Types/Types";
+import { SceneItemType, type SceneInterface } from './Types/Types';
 
 type PropsType = {
   scene?: SceneInterface,

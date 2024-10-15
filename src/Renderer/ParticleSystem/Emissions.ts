@@ -1,10 +1,10 @@
-import { PSNumber } from "../Properties/Property";
-import { removeUndefinedKeys } from "../Properties/Types";
-import type PropsBase from "../Properties/PropsBase";
-import PSModule from "../Properties/PSModule";
-import { type EmissionsDescriptor } from "./Types";
-import { PSBursts } from "../Properties/PSBursts";
-import PSValue from "../Properties/PSValue";
+import { PSNumber } from '../Properties/Property';
+import { removeUndefinedKeys } from '../Properties/Types';
+import type PropsBase from '../Properties/PropsBase';
+import PSModule from '../Properties/PSModule';
+import { type EmissionsDescriptor } from './Types';
+import { PSBursts } from '../Properties/PSBursts';
+import PSValue from '../Properties/PSValue';
 
 class Emissions extends PSModule {
   rate: PSNumber

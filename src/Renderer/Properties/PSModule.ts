@@ -1,6 +1,6 @@
-import { PSBoolean } from "./Property"
-import type PropsBase from "./PropsBase";
-import { isProperty } from "./Types";
+import { PSBoolean } from './Property'
+import type PropsBase from './PropsBase';
+import { isProperty } from './Types';
 
 class PSModule {
   enabled: PSBoolean;

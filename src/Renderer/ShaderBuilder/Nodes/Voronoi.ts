@@ -1,7 +1,7 @@
-import type { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
-import OperationNode from "../OperationNode";
-import InputPort from "../Ports/InputPort";
-import OutputPort from "../Ports/OutputPort";
+import type { DataType, GraphNodeDescriptor } from '../GraphDescriptor';
+import OperationNode from '../OperationNode';
+import InputPort from '../Ports/InputPort';
+import OutputPort from '../Ports/OutputPort';
 
 class Voronoi extends OperationNode {
   constructor(nodeDescriptor?: GraphNodeDescriptor) {

@@ -1,7 +1,7 @@
-import { vec2 } from "wgpu-matrix";
-import { store } from "./State/store";
-import Renderer2d from "./Renderer2d";
-import { type PortInterface } from "./Renderer/ShaderBuilder/Types";
+import { vec2 } from 'wgpu-matrix';
+import { store } from './State/store';
+import Renderer2d from './Renderer2d';
+import { type PortInterface } from './Renderer/ShaderBuilder/Types';
 
 class ShaderGraphRenderer extends Renderer2d {
   constructor(interactive = true) {
@@ -45,7 +45,7 @@ class ShaderGraphRenderer extends Renderer2d {
         this.ctx.lineTo(p2[0], p2[1]);
         this.ctx.bezierCurveTo(turn2[0], turn2[1], turn2[0], turn2[1], end[0], end[1])
 
-        this.ctx.strokeStyle = "white";
+        this.ctx.strokeStyle = 'white';
         this.ctx.stroke();
       }
 
@@ -57,7 +57,7 @@ class ShaderGraphRenderer extends Renderer2d {
         this.ctx.moveTo(point1[0], point1[1]);
         this.ctx.lineTo(point1[0] + 10, point1[1])
         this.ctx.lineTo(point2[0], point2[1]);
-        this.ctx.strokeStyle = "white";
+        this.ctx.strokeStyle = 'white';
         this.ctx.stroke();
       }
     }

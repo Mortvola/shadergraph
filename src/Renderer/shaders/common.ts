@@ -1,5 +1,5 @@
-import { circles } from "./circles";
-import { lights } from "./lights";
+import { circles } from './circles';
+import { lights } from './lights';
 
 export const common = /*wgsl*/`
 ${lights}

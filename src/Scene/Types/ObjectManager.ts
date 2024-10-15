@@ -1,9 +1,9 @@
-import Http from "../../Http/src";
+import Http from '../../Http/src';
 import SceneObject from './SceneObject';
-import TreeNode from "./TreeNode";
-import { type ComponentType } from "../../Renderer/Types";
-import type PropsBase from "../../Renderer/Properties/PropsBase";
-import { type SceneObjectDescriptor } from "./Types";
+import TreeNode from './TreeNode';
+import { type ComponentType } from '../../Renderer/Types';
+import type PropsBase from '../../Renderer/Properties/PropsBase';
+import { type SceneObjectDescriptor } from './Types';
 
 class ObjectManager {
   async add(component: { type: ComponentType, props: PropsBase } | undefined, name: string, parentNode: TreeNode): Promise<TreeNode | undefined> {
@@ -16,7 +16,7 @@ class ObjectManager {
       }
     }
 
-    const response = await Http.post<unknown, SceneObjectDescriptor>(`/api/scene-objects`, {
+    const response = await Http.post<unknown, SceneObjectDescriptor>('/api/scene-objects', {
       parentNodeId: parentNode.id,
       parentTreeId: parentNode.treeId,
       name,

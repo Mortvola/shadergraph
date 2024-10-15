@@ -1,8 +1,8 @@
-import { observable, runInAction } from "mobx";
-import { RenderAlignment, RenderMode, ShapeType, SpaceType } from "../ParticleSystem/Types";
-import type PropsBase from "./PropsBase";
-import PropertyBase from "./PropertyBase";
-import { vec3n, type Vec3n } from "wgpu-matrix";
+import { observable, runInAction } from 'mobx';
+import { RenderAlignment, RenderMode, ShapeType, SpaceType } from '../ParticleSystem/Types';
+import type PropsBase from './PropsBase';
+import PropertyBase from './PropertyBase';
+import { vec3n, type Vec3n } from 'wgpu-matrix';
 
 export class Property<T extends { toString(): string } | undefined> extends PropertyBase {
   @observable protected accessor value: T;

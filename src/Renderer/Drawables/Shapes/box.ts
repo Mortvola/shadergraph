@@ -1,5 +1,5 @@
 import type { Vec4 } from 'wgpu-matrix';
-import SurfaceMesh from "../SurfaceMesh";
+import SurfaceMesh from '../SurfaceMesh';
 
 export const box = (width = 2, height = 2, depth = 2, color?: Vec4) => {
   const mesh = new SurfaceMesh(color);

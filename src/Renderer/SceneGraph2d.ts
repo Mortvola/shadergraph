@@ -1,15 +1,15 @@
-import type { Mat3} from "wgpu-matrix";
-import { mat3, vec2 } from "wgpu-matrix";
-import Mesh2D from "./Drawables/Mesh2D";
-import type SceneNode2d from "./Drawables/SceneNodes/SceneNode2d";
-import Material from "./Materials/Material";
-import type { MaterialInterface, PipelineInterface } from "./Types";
-import { gpu } from "./Gpu";
-import type TextBox from "./Drawables/SceneNodes/TextBox";
-import { isTextBox } from "./Drawables/SceneNodes/TextBox";
-import ElementNode, { isElementNode } from "./Drawables/SceneNodes/ElementNode";
-import { maxInstances } from "./Constants";
-import { DrawableType } from "./Drawables/DrawableInterface";
+import type { Mat3} from 'wgpu-matrix';
+import { mat3, vec2 } from 'wgpu-matrix';
+import Mesh2D from './Drawables/Mesh2D';
+import type SceneNode2d from './Drawables/SceneNodes/SceneNode2d';
+import Material from './Materials/Material';
+import type { MaterialInterface, PipelineInterface } from './Types';
+import { gpu } from './Gpu';
+import type TextBox from './Drawables/SceneNodes/TextBox';
+import { isTextBox } from './Drawables/SceneNodes/TextBox';
+import ElementNode, { isElementNode } from './Drawables/SceneNodes/ElementNode';
+import { maxInstances } from './Constants';
+import { DrawableType } from './Drawables/DrawableInterface';
 
 const defaultMaterial = await Material.create(DrawableType.Mesh2D, [])
 
@@ -67,7 +67,7 @@ class SceneGraph2D {
 
   indexBuffer: GPUBuffer | null = null;
 
-  indexFormat: GPUIndexFormat = "uint16";
+  indexFormat: GPUIndexFormat = 'uint16';
 
   instanceTransform: Float32Array = new Float32Array(4 * maxInstances);
 
@@ -692,7 +692,7 @@ class SceneGraph2D {
     }
 
     if (indicesLength > 0xFFFF) {
-      this.indexFormat = "uint32";
+      this.indexFormat = 'uint32';
 
       this.indexBuffer = gpu.device.createBuffer({
         size: (indicesLength * Uint32Array.BYTES_PER_ELEMENT + 3) & ~3, // Make sure it is a multiple of four
@@ -714,7 +714,7 @@ class SceneGraph2D {
       }
     }
     else {
-      this.indexFormat = "uint16";
+      this.indexFormat = 'uint16';
 
       this.indexBuffer = gpu.device.createBuffer({
         size: (indicesLength * Uint16Array.BYTES_PER_ELEMENT + 3) & ~3, // Make sure it is a multiple of four

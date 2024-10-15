@@ -1,4 +1,4 @@
-import type SceneNode2d from "./SceneNode2d";
+import type SceneNode2d from './SceneNode2d';
 
 class ContainerNode2d {
   nodes: SceneNode2d[] = []

@@ -1,5 +1,5 @@
 import type { Vec4 } from 'wgpu-matrix';
-import type SurfaceMesh from "./SurfaceMesh";
+import type SurfaceMesh from './SurfaceMesh';
 import Drawable from './Drawable';
 import type DrawableInterface from './DrawableInterface';
 import { gpu } from '../Gpu';
@@ -16,7 +16,7 @@ class Mesh extends Drawable {
 
   indexBuffer: GPUBuffer;
 
-  indexFormat: GPUIndexFormat = "uint16";
+  indexFormat: GPUIndexFormat = 'uint16';
 
   constructor(mesh: SurfaceMesh, vertices: number[], normals: number[], texcoord: number[], indices: number[], id: number) {
     super(DrawableType.Mesh, id)
@@ -62,7 +62,7 @@ class Mesh extends Drawable {
     }
 
     if (indices.length > 0xFFFF) {
-      this.indexFormat = "uint32";
+      this.indexFormat = 'uint32';
 
       this.indexBuffer = gpu.device.createBuffer({
         size: (indices.length * Uint32Array.BYTES_PER_ELEMENT + 3) & ~3, // Make sure it is a multiple of four
@@ -77,7 +77,7 @@ class Mesh extends Drawable {
       }
     }
     else {
-      this.indexFormat = "uint16";
+      this.indexFormat = 'uint16';
 
       this.indexBuffer = gpu.device.createBuffer({
         size: (indices.length * Uint16Array.BYTES_PER_ELEMENT + 3) & ~3, // Make sure it is a multiple of four

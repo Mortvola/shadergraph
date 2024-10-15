@@ -3,7 +3,7 @@ import { gpu } from '../Gpu';
 import { bloom, outputFormat } from '../RenderSettings';
 import { BlendMode, CullMode } from '../ShaderBuilder/Types';
 import { lineShader } from '../shaders/line';
-import Pipeline from "./Pipeline";
+import Pipeline from './Pipeline';
 
 class LinePipeline extends Pipeline {
   constructor() {
@@ -18,16 +18,16 @@ class LinePipeline extends Pipeline {
           {
             shaderLocation: 0, // position
             offset: 0,
-            format: "float32x4" as GPUVertexFormat,
+            format: 'float32x4' as GPUVertexFormat,
           },
           {
             shaderLocation: 1, // color
             offset: 16,
-            format: "float32x4" as GPUVertexFormat,
+            format: 'float32x4' as GPUVertexFormat,
           },
         ],
         arrayStride: 32,
-        stepMode: "vertex",
+        stepMode: 'vertex',
       },
     ];
 
@@ -45,22 +45,22 @@ class LinePipeline extends Pipeline {
       label: 'line',
       vertex: {
         module: shaderModule,
-        entryPoint: "vertex_line",
+        entryPoint: 'vertex_line',
         buffers: vertexBufferLayout,
       },
       fragment: {
         module: shaderModule,
-        entryPoint: "fragment_line",
+        entryPoint: 'fragment_line',
         targets,
       },
       primitive: {
-        topology: "line-list",
-        cullMode: "none",
+        topology: 'line-list',
+        cullMode: 'none',
       },
       depthStencil: {
         depthWriteEnabled: true,
-        depthCompare: "less",
-        format: "depth24plus"
+        depthCompare: 'less',
+        format: 'depth24plus'
       },
       layout: gpu.device.createPipelineLayout({
         label: 'line',

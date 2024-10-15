@@ -75,9 +75,9 @@ const Canvas2d = React.forwardRef<HTMLCanvasElement, PropsType>(({
         (instance) => {
           canvasRef.current = instance;
 
-          if (typeof forwardedRef === "function") {
+          if (typeof forwardedRef === 'function') {
             forwardedRef(instance);
-          } else if (typeof forwardedRef === "object" && forwardedRef !== null) {
+          } else if (typeof forwardedRef === 'object' && forwardedRef !== null) {
             forwardedRef.current = instance;
           }
         }

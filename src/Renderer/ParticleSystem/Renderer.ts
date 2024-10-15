@@ -1,20 +1,20 @@
-import PSModule from "../Properties/PSModule";
-import { RenderMode, type RendererDescriptor} from "./Types";
-import { materialManager } from "../Materials/MaterialManager";
-import type DrawableInterface from "../Drawables/DrawableInterface";
-import Billboard from "../Drawables/Billboard";
-import DrawableComponent from "../Drawables/DrawableComponent";
-import type PropsBase from "../Properties/PropsBase";
-import { removeUndefinedKeys } from "../Properties/Types";
-import { PSMaterialItem, PSMeshItem, PSRenderAlignment, PSRenderMode } from "../Properties/Property";
-import type MaterialItem from "../Materials/MaterialItem";
-import { observable, runInAction } from "mobx";
-import { DrawableType } from "../Drawables/DrawableInterface";
-import type ModelItem from "../Models/ModelItem";
-import { modelManager } from "../Models/ModelManager";
-import { type DrawableComponentInterface, type RenderNodeInterface } from "../Types";
-import { isRenderNode } from "../Drawables/SceneNodes/RenderNode";
-import { isDrawableComponent } from "../Drawables/SceneNodes/utils";
+import PSModule from '../Properties/PSModule';
+import { RenderMode, type RendererDescriptor} from './Types';
+import { materialManager } from '../Materials/MaterialManager';
+import type DrawableInterface from '../Drawables/DrawableInterface';
+import Billboard from '../Drawables/Billboard';
+import DrawableComponent from '../Drawables/DrawableComponent';
+import type PropsBase from '../Properties/PropsBase';
+import { removeUndefinedKeys } from '../Properties/Types';
+import { PSMaterialItem, PSMeshItem, PSRenderAlignment, PSRenderMode } from '../Properties/Property';
+import type MaterialItem from '../Materials/MaterialItem';
+import { observable, runInAction } from 'mobx';
+import { DrawableType } from '../Drawables/DrawableInterface';
+import type ModelItem from '../Models/ModelItem';
+import { modelManager } from '../Models/ModelManager';
+import { type DrawableComponentInterface, type RenderNodeInterface } from '../Types';
+import { isRenderNode } from '../Drawables/SceneNodes/RenderNode';
+import { isDrawableComponent } from '../Drawables/SceneNodes/utils';
 
 class Renderer extends PSModule {
   mode: PSRenderMode;

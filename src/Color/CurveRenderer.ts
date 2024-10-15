@@ -1,6 +1,6 @@
-import { vec2 } from "wgpu-matrix";
-import type { PSCurvePoint } from "../Renderer/ParticleSystem/Types";
-import Renderer2d from "../Renderer2d";
+import { vec2 } from 'wgpu-matrix';
+import type { PSCurvePoint } from '../Renderer/ParticleSystem/Types';
+import Renderer2d from '../Renderer2d';
 
 export enum Subpoint {
   LeftCtrl,
@@ -25,7 +25,7 @@ class CurveRenderer extends Renderer2d {
       this.ctx.beginPath()
       this.ctx.ellipse(x, y, this.radius / this.canvasScale[0], this.radius / this.canvasScale[1], 0, 0, 2 * Math.PI);
       this.ctx.fill()
-      this.ctx.strokeStyle = "black";
+      this.ctx.strokeStyle = 'black';
       this.ctx.stroke()
     }
   }
@@ -51,7 +51,7 @@ class CurveRenderer extends Renderer2d {
 
         // Draw the curve
 
-        this.ctx.strokeStyle = "black";
+        this.ctx.strokeStyle = 'black';
 
         this.ctx.beginPath();
         this.ctx.moveTo(x, y);

@@ -1,10 +1,10 @@
 import React from 'react';
 import type Display from '../Renderer/ShaderBuilder/Nodes/Display';
 import { observer } from 'mobx-react-lite';
-import { BlendMode } from "../Renderer/ShaderBuilder/Types";
+import { BlendMode } from '../Renderer/ShaderBuilder/Types';
 import styles from './DisplaySettings.module.scss';
 import { runInAction } from 'mobx';
-import { type CullMode } from "../Renderer/ShaderBuilder/Types";
+import { type CullMode } from '../Renderer/ShaderBuilder/Types';
 import Checkbox from './Controls/Checkbox';
 
 type PropsType = {

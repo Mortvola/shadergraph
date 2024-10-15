@@ -1,6 +1,6 @@
 import type { Mat4, Quat, RotationOrder, Vec4} from 'wgpu-matrix';
 import { mat4, quat, vec3 } from 'wgpu-matrix';
-import type DrawableInterface from "../DrawableInterface";
+import type DrawableInterface from '../DrawableInterface';
 import type { RenderNodeInterface, SceneGraphInterface} from '../../Types';
 import { isDrawableComponent } from './utils';
 import type Component from '../Component';

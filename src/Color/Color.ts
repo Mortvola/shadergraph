@@ -1,5 +1,5 @@
-import { lerp } from "../Renderer/Math";
-import type { AlphaGradientKey, ColorGradientKey } from "../Renderer/ParticleSystem/Types";
+import { lerp } from '../Renderer/Math';
+import type { AlphaGradientKey, ColorGradientKey } from '../Renderer/ParticleSystem/Types';
 
 export class Color {
   r = 0;

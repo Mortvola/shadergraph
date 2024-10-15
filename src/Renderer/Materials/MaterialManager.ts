@@ -1,11 +1,11 @@
-import Http from "../../Http/src";
-import type { DrawableType } from "../Drawables/DrawableInterface";
-import MaterialItem from "./MaterialItem";
-import type { PropertyInterface } from "../ShaderBuilder/Types";
-import { shaderManager } from "../shaders/ShaderManager";
-import type { MaterialManagerInterface, MaterialRecordDescriptor } from "../Types";
-import Material from "./Material";
-import type { MaterialDescriptor } from "./MaterialDescriptor";
+import Http from '../../Http/src';
+import type { DrawableType } from '../Drawables/DrawableInterface';
+import MaterialItem from './MaterialItem';
+import type { PropertyInterface } from '../ShaderBuilder/Types';
+import { shaderManager } from '../shaders/ShaderManager';
+import type { MaterialManagerInterface, MaterialRecordDescriptor } from '../Types';
+import Material from './Material';
+import type { MaterialDescriptor } from './MaterialDescriptor';
 
 class MaterialManager implements MaterialManagerInterface {
   pendingMaterialItems: Map<number, Promise<MaterialItem | undefined>> = new Map();

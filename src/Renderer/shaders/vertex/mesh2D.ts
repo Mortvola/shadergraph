@@ -1,4 +1,4 @@
-import { vertexOut } from "./vertexOut";
+import { vertexOut } from './vertexOut';
 
 export const mesh2D = /*wgsl*/`
   @group(1) @binding(0) var<uniform> transform: array<mat3x3f, 1000>;

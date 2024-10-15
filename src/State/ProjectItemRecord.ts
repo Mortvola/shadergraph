@@ -1,4 +1,4 @@
-import type { ProjectItemType } from "../Project/Types/types";
+import type { ProjectItemType } from '../Project/Types/types';
 
 export type ProjectItemRecord = {
   id: number,

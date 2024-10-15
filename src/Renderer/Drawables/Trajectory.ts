@@ -1,11 +1,11 @@
-import type { Vec2, Vec4 } from "wgpu-matrix";
+import type { Vec2, Vec4 } from 'wgpu-matrix';
 import { bindGroups } from '../BindGroups';
-import Drawable from "./Drawable";
-import { makeShaderDataDefinitions, makeStructuredView } from "webgpu-utils";
-import { trajectoryShader } from "../shaders/trajectory";
-import { gravity } from "../Math";
-import { gpu } from "../Gpu";
-import { DrawableType } from "./DrawableInterface";
+import Drawable from './Drawable';
+import { makeShaderDataDefinitions, makeStructuredView } from 'webgpu-utils';
+import { trajectoryShader } from '../shaders/trajectory';
+import { gravity } from '../Math';
+import { gpu } from '../Gpu';
+import { DrawableType } from './DrawableInterface';
 
 const defs = makeShaderDataDefinitions(trajectoryShader);
 

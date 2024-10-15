@@ -1,4 +1,4 @@
-import { makeObservable, observable, runInAction } from "mobx";
+import { makeObservable, observable, runInAction } from 'mobx';
 
 const requestPostAnimationFrame = (task: (timestamp: number) => void) => {
   requestAnimationFrame((timestamp: number) => {
@@ -36,7 +36,7 @@ class Renderer2d {
 
   setCanvas(canvas: HTMLCanvasElement) {
     this.element = canvas;
-    this.ctx = canvas.getContext("2d");
+    this.ctx = canvas.getContext('2d');
 
     if (this.interactive) {
       this.start();

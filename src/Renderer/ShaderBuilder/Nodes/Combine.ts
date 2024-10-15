@@ -1,8 +1,8 @@
-import type { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
-import OperationNode from "../OperationNode";
-import InputPort from "../Ports/InputPort";
-import OutputPort from "../Ports/OutputPort";
-import RGBPort from "../Ports/RGBPort";
+import type { DataType, GraphNodeDescriptor } from '../GraphDescriptor';
+import OperationNode from '../OperationNode';
+import InputPort from '../Ports/InputPort';
+import OutputPort from '../Ports/OutputPort';
+import RGBPort from '../Ports/RGBPort';
 
 class Combine extends OperationNode {
   constructor(nodeDescriptor?: GraphNodeDescriptor) {

@@ -57,7 +57,7 @@ class Camera {
       this.moveCameraStartTime = timestamp;
     }
 
-    const cameraQuat = quat.fromEuler(degToRad(0), degToRad(this.rotateY), degToRad(0), "yxz");
+    const cameraQuat = quat.fromEuler(degToRad(0), degToRad(this.rotateY), degToRad(0), 'yxz');
     const rotationMatrix = mat4.fromQuat(cameraQuat);
 
     const deltaVector = vec4.subtract(vec4.mulScalar(this.moveDirection, this.maxVelocity), this.currentVelocity);

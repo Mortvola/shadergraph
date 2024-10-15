@@ -1,11 +1,11 @@
-import { type ProjectItemType } from "../../Project/Types/types";
-import type { ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
-import type { PropertyBaseInterface } from "../../Renderer/Properties/Types";
+import { type ProjectItemType } from '../../Project/Types/types';
+import type { ParticleSystemPropsDescriptor } from '../../Renderer/ParticleSystem/Types';
+import type { PropertyBaseInterface } from '../../Renderer/Properties/Types';
 import type {
   ComponentDescriptor, LightPropsDescriptor, NewSceneObjectComponent,
   SceneObjectComponent as SceneObjectComponent, TransformPropsInterface,
-} from "../../Renderer/Types";
-import type TreeNode from "./TreeNode";
+} from '../../Renderer/Types';
+import type TreeNode from './TreeNode';
 
 export enum SceneItemType {
   SceneObject = 'SceneObject',

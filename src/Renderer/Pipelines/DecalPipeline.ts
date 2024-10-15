@@ -4,7 +4,7 @@ import { outputFormat } from '../RenderSettings';
 import Property from '../ShaderBuilder/Property';
 import { BlendMode, CullMode } from '../ShaderBuilder/Types';
 import { decalShader } from '../shaders/decal';
-import Pipeline from "./Pipeline";
+import Pipeline from './Pipeline';
 
 const label = 'decal';
 
@@ -21,11 +21,11 @@ class DecalPipeline extends Pipeline {
           {
             shaderLocation: 0, // position
             offset: 0,
-            format: "float32x4" as GPUVertexFormat,
+            format: 'float32x4' as GPUVertexFormat,
           },
         ],
         arrayStride: 16,
-        stepMode: "vertex",
+        stepMode: 'vertex',
       },
     ];
 
@@ -49,12 +49,12 @@ class DecalPipeline extends Pipeline {
       label,
       vertex: {
         module: shaderModule,
-        entryPoint: "vs",
+        entryPoint: 'vs',
         buffers: vertexBufferLayout,
       },
       fragment: {
         module: shaderModule,
-        entryPoint: "fs",
+        entryPoint: 'fs',
         targets: [
           {
             format: outputFormat,
@@ -72,14 +72,14 @@ class DecalPipeline extends Pipeline {
         ],
       },
       primitive: {
-        topology: "triangle-list",
-        cullMode: "back",
-        frontFace: "ccw",
+        topology: 'triangle-list',
+        cullMode: 'back',
+        frontFace: 'ccw',
       },
       depthStencil: {
         depthWriteEnabled: false,
         depthCompare: 'less',
-        format: "depth24plus"
+        format: 'depth24plus'
       },
       layout: gpu.device.createPipelineLayout({
         label,

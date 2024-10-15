@@ -1,7 +1,7 @@
 import React from 'react';
 import SceneToolbar from './SceneToolbar';
 import { observer } from 'mobx-react-lite';
-import type { SceneInterface } from "./Types/Types";
+import type { SceneInterface } from './Types/Types';
 import SceneFolder from './SceneFolder';
 import styles from './Scene.module.scss'
 import type TreeNode from './Types/TreeNode';

@@ -1,10 +1,10 @@
-import type { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
-import OperationNode from "../OperationNode";
-import AlphaPort from "../Ports/AlphaPort";
-import BluePort from "../Ports/BluePort";
-import GreenPort from "../Ports/GreenPort";
-import InputPort from "../Ports/InputPort";
-import RedPort from "../Ports/RedPort";
+import type { DataType, GraphNodeDescriptor } from '../GraphDescriptor';
+import OperationNode from '../OperationNode';
+import AlphaPort from '../Ports/AlphaPort';
+import BluePort from '../Ports/BluePort';
+import GreenPort from '../Ports/GreenPort';
+import InputPort from '../Ports/InputPort';
+import RedPort from '../Ports/RedPort';
 
 class Split extends OperationNode {
   constructor(nodeDescriptor?: GraphNodeDescriptor) {

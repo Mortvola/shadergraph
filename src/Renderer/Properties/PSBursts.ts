@@ -1,7 +1,7 @@
-import { runInAction } from "mobx";
-import { Property } from "./Property";
-import type PSValue from "./PSValue";
-import type PropsBase from "./PropsBase";
+import { runInAction } from 'mobx';
+import { Property } from './Property';
+import type PSValue from './PSValue';
+import type PropsBase from './PropsBase';
 
 type BurstsType = { time: number, count: PSValue, cycles: number, probability: number }[];
 

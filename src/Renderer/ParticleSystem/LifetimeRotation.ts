@@ -1,10 +1,10 @@
-import PSModule from "../Properties/PSModule";
+import PSModule from '../Properties/PSModule';
 import {
   type LifetimeRotationDescriptor,
-} from "./Types";
-import type PropsBase from "../Properties/PropsBase";
-import { removeUndefinedKeys } from "../Properties/Types";
-import PSValue3D from "../Properties/PSValue3D";
+} from './Types';
+import type PropsBase from '../Properties/PropsBase';
+import { removeUndefinedKeys } from '../Properties/Types';
+import PSValue3D from '../Properties/PSValue3D';
 
 class LifetimeRotation extends PSModule {
   angularVelocity: PSValue3D;

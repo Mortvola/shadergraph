@@ -1,6 +1,6 @@
-import type { SceneObjectInterface } from "../../Scene/Types/Types";
+import type { SceneObjectInterface } from '../../Scene/Types/Types';
 import type { PropsBaseInterface } from './Types';
-import { isModule, isProperty } from "./Types";
+import { isModule, isProperty } from './Types';
 
 
 class PropsBase implements PropsBaseInterface {

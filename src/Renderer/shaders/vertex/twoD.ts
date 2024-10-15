@@ -1,4 +1,4 @@
-import { vertexOut } from "./vertexOut";
+import { vertexOut } from './vertexOut';
 
 export const twoD = /*wgsl*/`
   struct Dimensions {

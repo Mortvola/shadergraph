@@ -1,7 +1,7 @@
-import { bindGroups } from "../BindGroups";
-import { gpu } from "../Gpu";
-import { outputFormat } from "../RenderSettings";
-import { deferredCombine } from "../shaders/deferredCombine";
+import { bindGroups } from '../BindGroups';
+import { gpu } from '../Gpu';
+import { outputFormat } from '../RenderSettings';
+import { deferredCombine } from '../shaders/deferredCombine';
 
 class CombinePass {
   deferredCombinePipeline: GPURenderPipeline
@@ -82,11 +82,11 @@ class CombinePass {
       label: 'Deferred Combine Pass',
       vertex: {
         module: shaderModule,
-        entryPoint: "vs",
+        entryPoint: 'vs',
       },
       fragment: {
         module: shaderModule,
-        entryPoint: "fs",
+        entryPoint: 'fs',
         targets: [
           {
             format: outputFormat,
@@ -94,9 +94,9 @@ class CombinePass {
         ],
       },
       primitive: {
-        topology: "triangle-list",
-        cullMode: "none",
-        frontFace: "ccw",
+        topology: 'triangle-list',
+        cullMode: 'none',
+        frontFace: 'ccw',
       },
       layout: gpu.device.createPipelineLayout({
         label: 'Deferred Combine',
@@ -121,8 +121,8 @@ class CombinePass {
         {
           view: destination,
           clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
-          loadOp: "clear" as GPULoadOp,
-          storeOp: "store" as GPUStoreOp,
+          loadOp: 'clear' as GPULoadOp,
+          storeOp: 'store' as GPUStoreOp,
         },
       ],
     });

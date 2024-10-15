@@ -1,6 +1,6 @@
-import { gpu } from "../Gpu";
-import Drawable from "./Drawable";
-import { DrawableType } from "./DrawableInterface";
+import { gpu } from '../Gpu';
+import Drawable from './Drawable';
+import { DrawableType } from './DrawableInterface';
 
 class Line extends Drawable {
   vertices: number[];

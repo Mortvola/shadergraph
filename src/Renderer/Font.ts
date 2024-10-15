@@ -1,5 +1,5 @@
-import Http from "../Http/src"
-import Mesh2D from "./Drawables/Mesh2D";
+import Http from '../Http/src'
+import Mesh2D from './Drawables/Mesh2D';
 
 type Character = {
   id: number,

@@ -1,6 +1,6 @@
-import type DrawableInterface from "../Drawables/DrawableInterface";
-import { gpu } from "../Gpu";
-import type { DrawableComponentInterface, MaterialInterface, PipelineInterface, RenderPassInterface } from "../Types";
+import type DrawableInterface from '../Drawables/DrawableInterface';
+import { gpu } from '../Gpu';
+import type { DrawableComponentInterface, MaterialInterface, PipelineInterface, RenderPassInterface } from '../Types';
 
 type PipelineEntry = {
   pipeline: PipelineInterface,

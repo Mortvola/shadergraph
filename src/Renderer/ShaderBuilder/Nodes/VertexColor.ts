@@ -1,6 +1,6 @@
-import BuiltIn from "../BuiltInNode";
-import type { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
-import OutputPort from "../Ports/OutputPort";
+import BuiltIn from '../BuiltInNode';
+import type { DataType, GraphNodeDescriptor } from '../GraphDescriptor';
+import OutputPort from '../Ports/OutputPort';
 
 class VertexColor extends BuiltIn {
   constructor(nodeDescriptor?: GraphNodeDescriptor) {

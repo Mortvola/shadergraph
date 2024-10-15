@@ -1,6 +1,6 @@
-import { runInAction } from "mobx";
-import type { GraphEdgeInterface, InputPortInterface, OutputPortInterface } from "./Types";
-import type { DataType } from "./GraphDescriptor";
+import { runInAction } from 'mobx';
+import type { GraphEdgeInterface, InputPortInterface, OutputPortInterface } from './Types';
+import type { DataType } from './GraphDescriptor';
 
 class GraphEdge implements GraphEdgeInterface {
   output: OutputPortInterface;

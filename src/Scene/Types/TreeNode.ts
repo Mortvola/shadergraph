@@ -1,14 +1,14 @@
-import { computed, observable, runInAction } from "mobx";
-import RenderNode from "../../Renderer/Drawables/SceneNodes/RenderNode";
-import Entity, { getNextObjectId } from "../../State/Entity";
-import { type SceneObjectInterface, type SceneInterface, type SceneItemType, type NodesResponse } from "./Types";
-import type ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemProps";
-import type LightProps from "../../Renderer/Properties/LightProps";
-import { ComponentType, type LightInterface, type ParticleSystemInterface } from "../../Renderer/Types";
-import ParticleSystem from "../../Renderer/ParticleSystem/ParticleSystem";
-import { vec3 } from "wgpu-matrix";
-import Http from "../../Http/src";
-import SceneObject from "./SceneObject";
+import { computed, observable, runInAction } from 'mobx';
+import RenderNode from '../../Renderer/Drawables/SceneNodes/RenderNode';
+import Entity, { getNextObjectId } from '../../State/Entity';
+import { type SceneObjectInterface, type SceneInterface, type SceneItemType, type NodesResponse } from './Types';
+import type ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemProps';
+import type LightProps from '../../Renderer/Properties/LightProps';
+import { ComponentType, type LightInterface, type ParticleSystemInterface } from '../../Renderer/Types';
+import ParticleSystem from '../../Renderer/ParticleSystem/ParticleSystem';
+import { vec3 } from 'wgpu-matrix';
+import Http from '../../Http/src';
+import SceneObject from './SceneObject';
 
 type NodeComponent = {
   type: ComponentType,

@@ -1,6 +1,6 @@
-import { type IReactionDisposer, observable, reaction, runInAction } from "mobx";
-import type { LineageEntry, PropertyBaseInterface } from "./Types";
-import type PropsBase from "./PropsBase";
+import { type IReactionDisposer, observable, reaction, runInAction } from 'mobx';
+import type { LineageEntry, PropertyBaseInterface } from './Types';
+import type PropsBase from './PropsBase';
 
 export class PropertyBase implements PropertyBaseInterface {
   @observable

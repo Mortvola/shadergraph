@@ -1,7 +1,7 @@
-import Entity from "./Entity";
-import type { GameObject2DRecord } from "../Renderer/Types";
-import type { GameObject2DInterface } from "./types";
-import Http from "../Http/src";
+import Entity from './Entity';
+import type { GameObject2DRecord } from '../Renderer/Types';
+import type { GameObject2DInterface } from './types';
+import Http from '../Http/src';
 
 class GameObject2D extends Entity implements GameObject2DInterface {
   width = 1

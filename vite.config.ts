@@ -9,7 +9,7 @@ export default defineConfig({
     react({
       babel: {
         plugins: [
-          ["@babel/plugin-proposal-decorators", { "version": "2023-11" }]
+          ['@babel/plugin-proposal-decorators', { 'version': '2023-11' }]
         ]
       }
     }),

@@ -1,13 +1,13 @@
-import type { RenderNodeInterface, ParticleSystemInterface, ShaderRecord } from "../../Renderer/Types";
-import type { GraphInterface } from "../../State/GraphInterface";
+import type { RenderNodeInterface, ParticleSystemInterface, ShaderRecord } from '../../Renderer/Types';
+import type { GraphInterface } from '../../State/GraphInterface';
 import type {
   GameObject2DInterface, MaterialItemInterface,
   ModelItemInterface,
   TextureInterface,
-} from "../../State/types";
-import type { SceneObjectInterface } from "../../Scene/Types/Types";
-import type { SceneInterface } from "../../Scene/Types/Types";
-import type TreeNode from "../../Scene/Types/TreeNode";
+} from '../../State/types';
+import type { SceneObjectInterface } from '../../Scene/Types/Types';
+import type { SceneInterface } from '../../Scene/Types/Types';
+import type TreeNode from '../../Scene/Types/TreeNode';
 
 export type ProjectItemLike =
   ProjectItemInterface<SceneObjectInterface> |

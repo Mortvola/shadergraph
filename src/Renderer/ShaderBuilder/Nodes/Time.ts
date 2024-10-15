@@ -1,6 +1,6 @@
-import BuiltIn from "../BuiltInNode";
-import type { GraphNodeDescriptor } from "../GraphDescriptor";
-import OutputPort from "../Ports/OutputPort";
+import BuiltIn from '../BuiltInNode';
+import type { GraphNodeDescriptor } from '../GraphDescriptor';
+import OutputPort from '../Ports/OutputPort';
 
 class Time extends BuiltIn {
   constructor(nodeDescriptor?: GraphNodeDescriptor) {

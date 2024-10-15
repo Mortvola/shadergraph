@@ -1,6 +1,6 @@
-import Entity from "../../State/Entity"
-import { type ModelItemInterface } from "../../State/types"
-import { type RenderNodeInterface } from "../Types";
+import Entity from '../../State/Entity'
+import { type ModelItemInterface } from '../../State/types'
+import { type RenderNodeInterface } from '../Types';
 
 export type ModelItemDescriptor = object
 

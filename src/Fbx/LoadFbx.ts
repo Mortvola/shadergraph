@@ -119,9 +119,9 @@ const loadGeometry = async (
 }
 
 const addTransformProperties = (sceneNode: FbxNode, node: FBXParser.FBXReaderNode) => {
-  const [scaling] = node.node('Properties70')?.nodes({ 0: "Lcl Scaling" }) ?? [];
-  const [trans] = node.node('Properties70')?.nodes({ 0: "Lcl Translation"}) ?? [];
-  const [rot] = node.node('Properties70')?.nodes({ 0: "Lcl Rotation"}) ?? [];
+  const [scaling] = node.node('Properties70')?.nodes({ 0: 'Lcl Scaling' }) ?? [];
+  const [trans] = node.node('Properties70')?.nodes({ 0: 'Lcl Translation'}) ?? [];
+  const [rot] = node.node('Properties70')?.nodes({ 0: 'Lcl Rotation'}) ?? [];
 
   const scaleFactor = 1 / 10;
 
@@ -258,7 +258,7 @@ const traverseTree = async (
             if (result2.sceneNodes) {
               for (const sceneNode of result2.sceneNodes) {
                 if (sceneNode.name === '') {
-                  sceneNode.name = "Unknown";
+                  sceneNode.name = 'Unknown';
                 }
 
                 model.addNode(sceneNode);

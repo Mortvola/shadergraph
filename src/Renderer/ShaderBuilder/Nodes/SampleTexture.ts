@@ -1,13 +1,13 @@
-import { observable, reaction } from "mobx";
-import OperationNode from "../OperationNode";
-import AlphaPort from "../Ports/AlphaPort";
-import BluePort from "../Ports/BluePort";
-import GreenPort from "../Ports/GreenPort";
-import InputPort from "../Ports/InputPort";
-import OutputPort from "../Ports/OutputPort";
-import RedPort from "../Ports/RedPort";
-import type { DataType, GraphNodeDescriptor } from "../GraphDescriptor";
-import RGBPort from "../Ports/RGBPort";
+import { observable, reaction } from 'mobx';
+import OperationNode from '../OperationNode';
+import AlphaPort from '../Ports/AlphaPort';
+import BluePort from '../Ports/BluePort';
+import GreenPort from '../Ports/GreenPort';
+import InputPort from '../Ports/InputPort';
+import OutputPort from '../Ports/OutputPort';
+import RedPort from '../Ports/RedPort';
+import type { DataType, GraphNodeDescriptor } from '../GraphDescriptor';
+import RGBPort from '../Ports/RGBPort';
 
 export type SampleTextureSettings = {
   addressModeU: string,

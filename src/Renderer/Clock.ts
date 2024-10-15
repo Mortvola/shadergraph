@@ -1,4 +1,4 @@
-import { action, computed, observable, runInAction } from "mobx";
+import { action, computed, observable, runInAction } from 'mobx';
 
 class Clock {
   previousTimestamp: number | null = null;

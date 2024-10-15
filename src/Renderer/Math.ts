@@ -1,5 +1,5 @@
-import type { Quat, Vec2, Vec3, Vec4} from "wgpu-matrix";
-import { mat4, vec2, vec3, vec4 } from "wgpu-matrix";
+import type { Quat, Vec2, Vec3, Vec4} from 'wgpu-matrix';
+import { mat4, vec2, vec3, vec4 } from 'wgpu-matrix';
 
 export const degToRad = (d: number) => d * Math.PI / 180;
 export const radToDeg = (r: number) => (r /  Math.PI) * 180;

@@ -1,14 +1,14 @@
-import { makeObservable, observable, runInAction } from "mobx";
-import type { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PortInterface, PropertyInterface } from "../Renderer/ShaderBuilder/Types";
-import GraphEdge from "../Renderer/ShaderBuilder/GraphEdge";
-import Display from "../Renderer/ShaderBuilder/Nodes/Display";
-import type { MaterialInterface } from "../Renderer/Types";
-import type { ShaderDescriptor } from "../Renderer/shaders/ShaderDescriptor";
-import Material from "../Renderer/Materials/Material";
-import ShaderGraph from "../Renderer/ShaderBuilder/ShaderGraph";
-import type { StoreInterface } from "./StoreInterface";
-import type { GraphInterface } from "./GraphInterface";
-import { DrawableType } from "../Renderer/Drawables/DrawableInterface";
+import { makeObservable, observable, runInAction } from 'mobx';
+import type { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PortInterface, PropertyInterface } from '../Renderer/ShaderBuilder/Types';
+import GraphEdge from '../Renderer/ShaderBuilder/GraphEdge';
+import Display from '../Renderer/ShaderBuilder/Nodes/Display';
+import type { MaterialInterface } from '../Renderer/Types';
+import type { ShaderDescriptor } from '../Renderer/shaders/ShaderDescriptor';
+import Material from '../Renderer/Materials/Material';
+import ShaderGraph from '../Renderer/ShaderBuilder/ShaderGraph';
+import type { StoreInterface } from './StoreInterface';
+import type { GraphInterface } from './GraphInterface';
+import { DrawableType } from '../Renderer/Drawables/DrawableInterface';
 
 let nextShaderName = 0;
 

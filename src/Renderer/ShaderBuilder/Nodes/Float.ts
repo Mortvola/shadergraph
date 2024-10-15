@@ -1,6 +1,6 @@
-import OutputPort from "../Ports/OutputPort";
-import Value from "../Value";
-import ValueNode from "../ValueNode";
+import OutputPort from '../Ports/OutputPort';
+import Value from '../Value';
+import ValueNode from '../ValueNode';
 
 class Float extends ValueNode {
   constructor(id?: number) {

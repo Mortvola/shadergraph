@@ -1,9 +1,9 @@
-import type PropsBase from "../../Properties/PropsBase";
-import { removeUndefinedKeys } from "../../Properties/Types";
-import type { Vec4} from "wgpu-matrix";
-import { vec4 } from "wgpu-matrix";
-import type { SphereDescriptor } from "../Types";
-import { PSNumber } from "../../Properties/Property";
+import type PropsBase from '../../Properties/PropsBase';
+import { removeUndefinedKeys } from '../../Properties/Types';
+import type { Vec4} from 'wgpu-matrix';
+import { vec4 } from 'wgpu-matrix';
+import type { SphereDescriptor } from '../Types';
+import { PSNumber } from '../../Properties/Property';
 
 class Sphere {
   radius: PSNumber;

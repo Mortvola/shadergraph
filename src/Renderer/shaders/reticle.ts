@@ -1,5 +1,5 @@
-import { common } from "./common";
-import { texturedFragment } from "./texturedFragment";
+import { common } from './common';
+import { texturedFragment } from './texturedFragment';
 
 export const reticleShader = /*wgsl*/`
 struct VertexOut {

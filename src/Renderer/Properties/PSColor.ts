@@ -1,11 +1,11 @@
-import { observable, runInAction } from "mobx";
-import { lerp } from "../Math";
-import type { PSColorDescriptor} from "../ParticleSystem/Types";
-import { PSColorType } from "../ParticleSystem/Types";
+import { observable, runInAction } from 'mobx';
+import { lerp } from '../Math';
+import type { PSColorDescriptor} from '../ParticleSystem/Types';
+import { PSColorType } from '../ParticleSystem/Types';
 import Gradient from '../ParticleSystem/Gradient';
-import type { PropertyType } from "./Types";
-import type PropsBase from "./PropsBase";
-import PropertyBase from "./PropertyBase";
+import type { PropertyType } from './Types';
+import type PropsBase from './PropsBase';
+import PropertyBase from './PropertyBase';
 
 type ColorPair = [number[], number[]];
 

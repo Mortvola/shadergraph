@@ -1,10 +1,10 @@
-import type { ConeDescriptor } from "../Types";
-import type { Vec4} from "wgpu-matrix";
-import { mat4, vec4 } from "wgpu-matrix";
-import { degToRad } from "../../Math";
-import type PropsBase from "../../Properties/PropsBase";
-import { removeUndefinedKeys } from "../../Properties/Types";
-import { PSNumber } from "../../Properties/Property";
+import type { ConeDescriptor } from '../Types';
+import type { Vec4} from 'wgpu-matrix';
+import { mat4, vec4 } from 'wgpu-matrix';
+import { degToRad } from '../../Math';
+import type PropsBase from '../../Properties/PropsBase';
+import { removeUndefinedKeys } from '../../Properties/Types';
+import { PSNumber } from '../../Properties/Property';
 
 class Cone {
   angle: PSNumber;

@@ -1,19 +1,19 @@
-import { observable, runInAction } from "mobx";
-import Http from "../../Http/src";
-import type { GameObject2DInterface } from "../../State/types";
-import Folder from "./Folder";
-import ProjectItem from "./ProjectItem";
-import type { FolderInterface, ProjectInterface, ProjectItemLike} from "./types";
-import { ProjectItemType, isFolder } from "./types";
-import type { ParticleSystemInterface, RenderNodeInterface } from "../../Renderer/Types";
-import SceneProjectItem from "./SceneProjectItem";
-import ShaderProjectItem from "./ShaderProjectItem";
-import MaterialProjectItem from "./MaterialProjectItem";
-import TextureProjectItem from "./TextureProjectItem";
-import type { ProjectItemRecord } from "../../State/ProjectItemRecord";
-import type TreeNode from "../../Scene/Types/TreeNode";
-import SceneObjectProjectItem from "./SceneObjectProjectItem";
-import ModelProjectItem from "./ModelProjectItem";
+import { observable, runInAction } from 'mobx';
+import Http from '../../Http/src';
+import type { GameObject2DInterface } from '../../State/types';
+import Folder from './Folder';
+import ProjectItem from './ProjectItem';
+import type { FolderInterface, ProjectInterface, ProjectItemLike} from './types';
+import { ProjectItemType, isFolder } from './types';
+import type { ParticleSystemInterface, RenderNodeInterface } from '../../Renderer/Types';
+import SceneProjectItem from './SceneProjectItem';
+import ShaderProjectItem from './ShaderProjectItem';
+import MaterialProjectItem from './MaterialProjectItem';
+import TextureProjectItem from './TextureProjectItem';
+import type { ProjectItemRecord } from '../../State/ProjectItemRecord';
+import type TreeNode from '../../Scene/Types/TreeNode';
+import SceneObjectProjectItem from './SceneObjectProjectItem';
+import ModelProjectItem from './ModelProjectItem';
 
 class Project implements ProjectInterface {
   @observable

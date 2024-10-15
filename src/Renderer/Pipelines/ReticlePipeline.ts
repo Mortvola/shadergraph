@@ -2,7 +2,7 @@ import { bindGroups } from '../BindGroups';
 import { gpu } from '../Gpu';
 import { BlendMode, CullMode } from '../ShaderBuilder/Types';
 import { reticleShader } from '../shaders/reticle';
-import Pipeline from "./Pipeline";
+import Pipeline from './Pipeline';
 
 const label = 'reticle';
 
@@ -17,11 +17,11 @@ class ReticlePipeline extends Pipeline {
       label,
       vertex: {
         module: shaderModule,
-        entryPoint: "vs",
+        entryPoint: 'vs',
       },
       fragment: {
         module: shaderModule,
-        entryPoint: "fs",
+        entryPoint: 'fs',
         targets: [
           {
             format: navigator.gpu.getPreferredCanvasFormat(),
@@ -39,14 +39,14 @@ class ReticlePipeline extends Pipeline {
         ],
       },
       primitive: {
-        topology: "triangle-list",
-        cullMode: "back",
-        frontFace: "ccw",
+        topology: 'triangle-list',
+        cullMode: 'back',
+        frontFace: 'ccw',
       },
       depthStencil: {
         depthWriteEnabled: true,
-        depthCompare: "less",
-        format: "depth24plus"
+        depthCompare: 'less',
+        format: 'depth24plus'
       },
       layout: gpu.device.createPipelineLayout({
         label,

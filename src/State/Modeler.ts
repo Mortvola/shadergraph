@@ -1,11 +1,11 @@
-import { makeObservable, observable, runInAction } from "mobx";
-import { isRenderNode } from "../Renderer/Drawables/SceneNodes/RenderNode";
-import { isDrawableComponent } from "../Renderer/Drawables/SceneNodes/utils";
-import type Renderer from "../Renderer/Renderer";
-import { type RenderNodeInterface, type DrawableComponentInterface, type MaterialInterface } from "../Renderer/Types";
-import type { ModelerInterface, NodeMaterials } from "./types";
-import { materialManager } from "../Renderer/Materials/MaterialManager";
-import { DrawableType } from "../Renderer/Drawables/DrawableInterface";
+import { makeObservable, observable, runInAction } from 'mobx';
+import { isRenderNode } from '../Renderer/Drawables/SceneNodes/RenderNode';
+import { isDrawableComponent } from '../Renderer/Drawables/SceneNodes/utils';
+import type Renderer from '../Renderer/Renderer';
+import { type RenderNodeInterface, type DrawableComponentInterface, type MaterialInterface } from '../Renderer/Types';
+import type { ModelerInterface, NodeMaterials } from './types';
+import { materialManager } from '../Renderer/Materials/MaterialManager';
+import { DrawableType } from '../Renderer/Drawables/DrawableInterface';
 
 class Modeler implements ModelerInterface {
   model: RenderNodeInterface | null = null;

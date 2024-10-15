@@ -1,10 +1,10 @@
-import { observable, runInAction } from "mobx";
-import { store } from "../../State/store";
-import Http from "../../Http/src";
-import { type SceneDescriptor } from "./Types";
-import type { NodesResponse, SceneInterface, SceneItemType, SceneObjectDescriptor, TreeId, TreeNodeDescriptor } from "./Types";
-import TreeNode from "./TreeNode";
-import SceneObject from "./SceneObject";
+import { observable, runInAction } from 'mobx';
+import { store } from '../../State/store';
+import Http from '../../Http/src';
+import { type SceneDescriptor } from './Types';
+import type { NodesResponse, SceneInterface, SceneItemType, SceneObjectDescriptor, TreeId, TreeNodeDescriptor } from './Types';
+import TreeNode from './TreeNode';
+import SceneObject from './SceneObject';
 
 class Scene implements SceneInterface {
   id: number = -1;

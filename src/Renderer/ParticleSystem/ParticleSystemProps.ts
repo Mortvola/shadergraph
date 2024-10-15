@@ -1,23 +1,23 @@
-import { PSBoolean, PSNumber, PSSpace } from "../Properties/Property";
-import { removeUndefinedKeys } from "../Properties/Types";
-import PropsBase from "../Properties/PropsBase";
-import Collision from "./Collision";
-import LifetimeColor from "./LifetimeColor";
-import LifetimeSize from "./LIfetimeSize";
-import LifetimeVelocity from "./LifetimeVelocity";
-import PSColor from "../Properties/PSColor";
-import PSValue from "../Properties/PSValue";
-import PSValue3D from "../Properties/PSValue3D";
-import Renderer from "./Renderer";
-import Shape from "./Shapes/Shape";
+import { PSBoolean, PSNumber, PSSpace } from '../Properties/Property';
+import { removeUndefinedKeys } from '../Properties/Types';
+import PropsBase from '../Properties/PropsBase';
+import Collision from './Collision';
+import LifetimeColor from './LifetimeColor';
+import LifetimeSize from './LIfetimeSize';
+import LifetimeVelocity from './LifetimeVelocity';
+import PSColor from '../Properties/PSColor';
+import PSValue from '../Properties/PSValue';
+import PSValue3D from '../Properties/PSValue3D';
+import Renderer from './Renderer';
+import Shape from './Shapes/Shape';
 import {
   type ParticleSystemPropsDescriptor,
   PSValueType, RenderMode,
   SpaceType,
-} from "./Types";
-import type { ParticleSystemPropsInterface } from "./ParticleSystemPropsInterface";
-import Emissions from "./Emissions";
-import LifetimeRotation from "./LifetimeRotation";
+} from './Types';
+import type { ParticleSystemPropsInterface } from './ParticleSystemPropsInterface';
+import Emissions from './Emissions';
+import LifetimeRotation from './LifetimeRotation';
 
 class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterface {
   duration: PSNumber;
