@@ -2,16 +2,13 @@ import { gpu } from "../Gpu";
 import { pipelineManager } from "../Pipelines/PipelineManager";
 import type { MaterialInterface, PipelineInterface, StageBindings } from "../Types";
 import type { PropertyInterface } from "../ShaderBuilder/Types";
-import Http from "../../Http/src";
 import type { MaterialDescriptor } from "./MaterialDescriptor";
 import { shaderManager } from "../shaders/ShaderManager";
 import type { ShaderDescriptor } from "../shaders/ShaderDescriptor";
 import ShaderGraph from "../ShaderBuilder/ShaderGraph";
 import type { ValueType } from "../ShaderBuilder/GraphDescriptor";
 import type { DrawableType } from "../Drawables/DrawableInterface";
-
-const downloadedTextures: Map<number, GPUTexture> = new Map();
-const texturePromises: Map<number, Promise<GPUTexture>> = new Map();
+import { textureManager } from "../Textures/TextureManager";
 
 type MaterialBindings = {
   uniformsBuffer: GPUBuffer | null,
@@ -129,24 +126,11 @@ class Material implements MaterialInterface {
             }
           }
 
-          let flipY = false;
+          const texture = await textureManager.get(textureId)
 
-          const response = await Http.get<{ flipY: boolean }>(`/api/textures/${textureId}`)
-
-          if (response.ok) {
-            flipY = (await response.body()).flipY;
+          if (texture !== undefined) {
+            textures.push(texture.texture);
           }
-
-          let texturePromise = texturePromises.get(textureId)
-
-          if (!texturePromise) {
-            texturePromise = Material.retrieveTexture(textureId, flipY);
-            texturePromises.set(textureId, texturePromise)
-          }
-
-          const texture = await texturePromise
-
-          textures.push(texture);
         }
       }
     }
@@ -212,49 +196,6 @@ class Material implements MaterialInterface {
     ]
   }
 
-  static async retrieveTexture(textureId: number, flipY: boolean): Promise<GPUTexture> {
-    let texture = downloadedTextures.get(textureId)
-
-    if (!texture) {
-      const url = `/api/textures/${textureId}/file`
-
-      const res = await Http.get(url);
-
-      if (res.ok) {
-        const blob = await res.blob();
-
-        try {
-          const image = await createImageBitmap(blob, { colorSpaceConversion: 'none' })
-          
-          texture = gpu.device.createTexture({
-            format: 'rgba8unorm',
-            size: { width: image.width, height: image.height },
-            usage: GPUTextureUsage.TEXTURE_BINDING |
-                  GPUTextureUsage.COPY_DST |
-                  GPUTextureUsage.RENDER_ATTACHMENT,
-          });
-      
-          gpu.device.queue.copyExternalImageToTexture(
-            { source: image, flipY },
-            { texture },
-            { width: image.width, height: image.height },
-          );
-  
-          downloadedTextures.set(textureId, texture)
-        }
-        catch (error) {
-          console.log(error);
-          throw(error);
-        }  
-      }
-      else {
-        throw new Error('texture failed to download')
-      }
-    }
-
-    return texture;
-  }
-  
   setBindGroups(passEncoder: GPURenderPassEncoder): void {
     if (this.vertBindings) {
       passEncoder.setBindGroup(this.vertBindings.stageBindings.binding, this.vertBindings.bindGroup);

@@ -8,6 +8,8 @@ import Material from "./Material";
 import type { MaterialDescriptor } from "./MaterialDescriptor";
 
 class MaterialManager implements MaterialManagerInterface {
+  pendingMaterialItems: Map<number, Promise<MaterialItem | undefined>> = new Map();
+
   materialItems: Map<number, MaterialItem> = new Map()
   
   materials: Map<string | number, Map<string, Material>> = new Map()
@@ -16,14 +18,29 @@ class MaterialManager implements MaterialManagerInterface {
     let materialItem = this.materialItems.get(id)
 
     if (!materialItem) {
-      const response = await Http.get<MaterialRecordDescriptor>(`/api/materials/${id}`);
+      let pendingRequest = this.pendingMaterialItems.get(id);
 
-      if (response.ok) {
-        const materialItemDescriptor = await response.body();
+      if (pendingRequest === undefined) {
+        pendingRequest = (async () => {
+          const response = await Http.get<MaterialRecordDescriptor>(`/api/materials/${id}`);
 
-        materialItem = new MaterialItem(this, materialItemDescriptor);
-        this.materialItems.set(id, materialItem)
-      }  
+          if (response.ok) {
+            const materialItemDescriptor = await response.body();
+    
+            const newMaterialItem = new MaterialItem(this, materialItemDescriptor);
+
+            this.materialItems.set(id, newMaterialItem)
+
+            return newMaterialItem
+          }  
+        })()  
+
+        this.pendingMaterialItems.set(id, pendingRequest)
+      }
+
+      materialItem = await pendingRequest
+
+      this.pendingMaterialItems.delete(id)
     }
 
     if (materialItem) {
