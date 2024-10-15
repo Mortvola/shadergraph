@@ -29,7 +29,7 @@ class Clock {
       if (this.systemTime !== null && this.systemStartTime !== null) {
         this.accumulatedTime += (this.systemTime - this.systemStartTime) * this._rate;
       }
-      this.systemStartTime = null;  
+      this.systemStartTime = null;
     }
 
     this._rate = rate;
@@ -43,13 +43,13 @@ class Clock {
       if (this.systemStartTime === null) {
         this.systemStartTime = timestamp;
       }
-  
+
       this.systemTime = timestamp;
 
       this.timestamp = (this.systemTime - this.systemStartTime) * this._rate + this.accumulatedTime;
 
       this.elapsedTime = (this.timestamp - (this.previousTimestamp ?? this.timestamp)) / 1000.0;
-  
+
       this.previousTimestamp = this.timestamp;
 
       // console.log(this.timestamp)
@@ -71,7 +71,7 @@ class Clock {
       if (this.systemTime !== null && this.systemStartTime !== null) {
         this.accumulatedTime += (this.systemTime - this.systemStartTime) * this._rate;
       }
-      this.systemStartTime = null;  
+      this.systemStartTime = null;
     })
   }
 
@@ -83,8 +83,8 @@ class Clock {
         if (this.systemTime !== null && this.systemStartTime !== null) {
           this.accumulatedTime += this.systemTime - this.systemStartTime;
         }
-        this.systemStartTime = null;  
-      }  
+        this.systemStartTime = null;
+      }
     })
   }
 
@@ -93,7 +93,7 @@ class Clock {
       this.timestamp = 0;
       this.systemStartTime = null;
       this.systemTime = null;
-      this.accumulatedTime = 0;  
+      this.accumulatedTime = 0;
     })
   }
 

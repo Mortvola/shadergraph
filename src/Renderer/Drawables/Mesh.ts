@@ -20,45 +20,45 @@ class Mesh extends Drawable {
 
   constructor(mesh: SurfaceMesh, vertices: number[], normals: number[], texcoord: number[], indices: number[], id: number) {
     super(DrawableType.Mesh, id)
-  
+
     this.name = 'Mesh';
-    
+
     this.mesh = mesh;
 
     this.vertexBuffer = gpu.device.createBuffer({
       size: vertices.length * Float32Array.BYTES_PER_ELEMENT,
       usage: GPUBufferUsage.VERTEX,
       mappedAtCreation: true,
-    });  
+    });
 
     {
       const mapping = new Float32Array(this.vertexBuffer.getMappedRange());
       mapping.set(vertices, 0);
-      this.vertexBuffer.unmap();  
+      this.vertexBuffer.unmap();
     }
 
     this.normalBuffer = gpu.device.createBuffer({
       size: normals.length * Float32Array.BYTES_PER_ELEMENT,
       usage: GPUBufferUsage.VERTEX,
       mappedAtCreation: true,
-    });  
+    });
 
     {
       const mapping = new Float32Array(this.normalBuffer.getMappedRange());
       mapping.set(normals, 0);
-      this.normalBuffer.unmap();  
+      this.normalBuffer.unmap();
     }
 
     this.texcoordBuffer = gpu.device.createBuffer({
       size: texcoord.length * Float32Array.BYTES_PER_ELEMENT,
       usage: GPUBufferUsage.VERTEX,
       mappedAtCreation: true,
-    });  
+    });
 
     {
       const mapping = new Float32Array(this.texcoordBuffer.getMappedRange());
       mapping.set(texcoord, 0);
-      this.texcoordBuffer.unmap();  
+      this.texcoordBuffer.unmap();
     }
 
     if (indices.length > 0xFFFF) {
@@ -69,12 +69,12 @@ class Mesh extends Drawable {
         usage: GPUBufferUsage.INDEX,
         mappedAtCreation: true,
       })
-  
+
       {
         const mapping = new Uint32Array(this.indexBuffer.getMappedRange());
         mapping.set(indices, 0);
-        this.indexBuffer.unmap();  
-      }  
+        this.indexBuffer.unmap();
+      }
     }
     else {
       this.indexFormat = "uint16";
@@ -84,12 +84,12 @@ class Mesh extends Drawable {
         usage: GPUBufferUsage.INDEX,
         mappedAtCreation: true,
       })
-  
+
       {
         const mapping = new Uint16Array(this.indexBuffer.getMappedRange());
         mapping.set(indices, 0);
-        this.indexBuffer.unmap();  
-      }  
+        this.indexBuffer.unmap();
+      }
     }
   }
 
@@ -103,7 +103,7 @@ class Mesh extends Drawable {
     const result = this.mesh.hitTest(origin, vector);
 
     if (result) {
-      return { point: result.point, t: result.t, drawable: this };      
+      return { point: result.point, t: result.t, drawable: this };
     }
 
     return null;

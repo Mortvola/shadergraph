@@ -14,9 +14,9 @@ class Mesh2D extends Drawable {
 
   constructor(vertices: number[], texcoord: number[], indices: number[], width: number, height: number) {
     super(DrawableType.Mesh2D, 1)
-  
+
     this.name = 'Mesh2D';
-    
+
     this.vertices = vertices;
     this.texcoord = texcoord;
     this.indices =indices;

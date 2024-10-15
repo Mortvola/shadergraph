@@ -101,7 +101,7 @@ const Preview: React.FC = () => {
               store.project.getAllItemsOfType('model').map((m) => (
                 <option key={m.id} value={m.itemId ?? -1}>{m.name}</option>
               ))
-            }              
+            }
           </select>
         </div>
         <Canvas3d renderer={shaderPreview} />

@@ -37,7 +37,7 @@ import type { DataType } from "../Renderer/ShaderBuilder/GraphDescriptor";
 
 function addNode(node: GraphNodeInterface, x: number, y: number) {
   node.position = { x, y };
-  store.graph?.addNode(node)  
+  store.graph?.addNode(node)
 }
 
 function createObject<T extends GraphNodeInterface>(o: new () => T, x: number, y: number) {
@@ -80,7 +80,7 @@ const math = (): MenuItemLike[] => ([
   { name: 'Multiply', action: (x: number, y: number) => createObject(Multiply, x, y) },
   { name: 'Divide', action: (x: number, y: number) => createObject(Divide, x, y) },
   { name: 'Power', action: (x: number, y: number) => createObject(Power, x, y) },
-  { name: 'Inverse', action: (x: number, y: number) => createObject(Inverse, x, y) },  
+  { name: 'Inverse', action: (x: number, y: number) => createObject(Inverse, x, y) },
   { name: 'Lerp', action: (x: number, y: number) => createObject(Lerp, x, y) },
   { name: 'Max', action: (x: number, y: number) => createObject(Max, x, y) },
   { name: 'Min', action: (x: number, y: number) => createObject(Min, x, y) },
@@ -95,7 +95,7 @@ export const menuItems = (): MenuItemLike[] => ([
   { name: 'Display', action: (x: number, y: number) => createObject(Display, x, y) },
   { name: 'Distance', action: (x: number, y: number) => createObject(Distance, x, y) },
   { name: 'Fraction', action: (x: number, y: number) => createObject(Fraction, x, y) },
-  { name: 'FWidth', action: (x: number, y: number) => createObject(FWidth, x, y) },  
+  { name: 'FWidth', action: (x: number, y: number) => createObject(FWidth, x, y) },
   { name: 'Phong Shading', action: (x: number, y: number) => createObject(PhongShading, x, y) },
   { name: 'SampleTexture', action: (x: number, y: number) => createObject(SampleTexture, x, y) },
   { name: 'Split', action: (x: number, y: number) => createObject(Split, x, y) },

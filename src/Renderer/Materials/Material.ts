@@ -35,12 +35,12 @@ class Material implements MaterialInterface {
     vertProperties?: PropertyInterface[],
   ) {
     this.pipeline = pipeline;
-    
+
     this.color[0] = shaderDescriptor?.color ? shaderDescriptor.color[0] : 1.0;
     this.color[1] = shaderDescriptor?.color ? shaderDescriptor.color[1] : 1.0;
     this.color[2] = shaderDescriptor?.color ? shaderDescriptor.color[2] : 1.0;
     this.color[3] = shaderDescriptor?.color ? shaderDescriptor.color[3] : 1;
-    
+
     this.decal = shaderDescriptor?.type === 'Decal';
 
     if (pipeline.vertexStageBindings) {
@@ -82,7 +82,7 @@ class Material implements MaterialInterface {
     materialDescriptor?: MaterialDescriptor,
   ): Promise<Material> {
     await gpu.ready()
-    
+
     let shaderDescriptor: ShaderDescriptor | undefined
 
     if (
@@ -179,7 +179,7 @@ class Material implements MaterialInterface {
         label: 'uniforms',
         size: bindings.structuredView.arrayBuffer.byteLength,
         usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
-      });  
+      });
 
       entries = entries.concat(
         { binding: numBindings, resource: { buffer: uniformsBuffer }},
@@ -229,9 +229,9 @@ class Material implements MaterialInterface {
           }
         }
       }
-      
+
       bindings.stageBindings.structuredView.set(values);
-      gpu.device.queue.writeBuffer(bindings.uniformsBuffer, 0, bindings.stageBindings.structuredView.arrayBuffer);  
+      gpu.device.queue.writeBuffer(bindings.uniformsBuffer, 0, bindings.stageBindings.structuredView.arrayBuffer);
     }
   }
 
@@ -252,7 +252,7 @@ class Material implements MaterialInterface {
       values[name] = value
 
       bindings.stageBindings.structuredView.set(values);
-      gpu.device.queue.writeBuffer(bindings.uniformsBuffer, 0, bindings.stageBindings.structuredView.arrayBuffer);  
+      gpu.device.queue.writeBuffer(bindings.uniformsBuffer, 0, bindings.stageBindings.structuredView.arrayBuffer);
     }
   }
 }

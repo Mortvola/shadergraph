@@ -12,7 +12,7 @@ class OutlinePipeline extends Pipeline {
       label,
       code: outlineShader,
     })
-    
+
     const vertexBufferLayout: GPUVertexBufferLayout[] = [
       {
         attributes: [
@@ -37,7 +37,7 @@ class OutlinePipeline extends Pipeline {
         stepMode: "vertex",
       }
     ];
-    
+
     const pipelineDescriptor: GPURenderPipelineDescriptor = {
       label,
       vertex: {
@@ -73,7 +73,7 @@ class OutlinePipeline extends Pipeline {
         ],
       }),
     };
-    
+
     super(
       gpu.device.createRenderPipeline(pipelineDescriptor),
       null,

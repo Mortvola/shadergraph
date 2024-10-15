@@ -27,7 +27,7 @@ const ShaderEditor: React.FC<PropsType> = observer(({
       if (graph.changed) {
         const descriptor = graph.graph.createShaderDescriptor();
         localStorage.setItem('material', JSON.stringify(descriptor))
-        graph.changed = false;  
+        graph.changed = false;
       }
     }, 5000)
 

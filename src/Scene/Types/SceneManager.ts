@@ -10,13 +10,13 @@ class SceneManager {
   //     const body = await response.body();
 
   //     object.id = body.id;
-  //   }  
+  //   }
   // }
 
   // async update(object: ObjectBase) {
   //   const response = await Http.patch<unknown, void>(`/api/scene/${object.id}`, object.toDescriptor());
 
-  //   if (response.ok) { /* empty */ }  
+  //   if (response.ok) { /* empty */ }
 
   // }
 }

@@ -11,7 +11,7 @@ import type { GraphInterface } from '../../State/GraphInterface';
 type PropsType = {
   graph: GraphInterface,
   property: PropertyInterface,
-  x: number, 
+  x: number,
   y: number,
   show: boolean,
   onHide: () => void,

@@ -47,7 +47,7 @@ const CurveGraph: React.FC<PropsType> = observer(({
               x: Math.max(0, Math.min(1, (x - graphRect.left) / graphRect.width)),
               y: Math.max(0, Math.min(1, (graphRect.height - (y - graphRect.top)) / graphRect.height)),
             };
-  
+
             break;
 
           case Subpoint.LeftCtrl: {
@@ -108,9 +108,9 @@ const CurveGraph: React.FC<PropsType> = observer(({
     if (element) {
       const x = (event.clientX - graphRect.left) / graphRect.width;
       const y = 1 - (event.clientY - graphRect.top) / graphRect.height;
-  
+
       const point = renderer.current.hitTest(x, y);
-  
+
       if (point) {
         setDragPoint(point)
         element.setPointerCapture(event.pointerId);

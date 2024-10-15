@@ -5,7 +5,7 @@ const MaxByteForOverexposedColor = 191;
 
 class ColorMutator {
   private originalColor: Color;
-  
+
   colorHdr: number[];
 
   private hdrBaseColor: Color;
@@ -31,7 +31,7 @@ class ColorMutator {
     this.hdrBaseColor = new Color(originalColor.r, originalColor.g, originalColor.b, originalColor.a)
 
     this.hdrChannelChanged(-1);
-  
+
     this.baseExposure = this.exposureValue;
   }
 
@@ -86,13 +86,13 @@ class ColorMutator {
       this.hsv[1] * 100,
       this.hsv[2] * 100,
     ]
-  
+
     const rgb = convert.hsv.rgb(hsv);
 
     this.color[0] = rgb[0];
     this.color[1] = rgb[1];
     this.color[2] = rgb[2];
-    
+
     const factor = Math.pow(2, this.exposureValue)
 
     this.colorHdr[0] = this.color[0] / 255.0 * factor;

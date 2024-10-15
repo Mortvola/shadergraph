@@ -27,7 +27,7 @@ class MaterialItem extends Entity implements MaterialItemInterface {
       this.id = descriptor.id;
       this.name = descriptor.name;
       this.shaderId = descriptor.shaderId;
-      this.properties = descriptor.properties;  
+      this.properties = descriptor.properties;
     }
 
     this.onChange = onChange;
@@ -54,9 +54,9 @@ class MaterialItem extends Entity implements MaterialItemInterface {
           value: new Value(p.dataType, p.value),
           builtin: false,
         }));
-  
+
         this.materialManager.saveItem(this)
-      })  
+      })
     }
   }
 }

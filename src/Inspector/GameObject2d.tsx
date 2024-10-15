@@ -14,7 +14,7 @@ const GameObject2D: React.FC<PropsType> = ({
   const handleDragOver: React.DragEventHandler = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    
+
     if (
       event.dataTransfer.types[0] === 'application/project-item'
       && store.draggingItem

@@ -36,7 +36,7 @@ const Inspector: React.FC<PropsType> = observer(({
             if (selectedTexture) {
               selectedTexture.flipY = checked
             }
-          })    
+          })
         }
       }
     }
@@ -79,7 +79,7 @@ const Inspector: React.FC<PropsType> = observer(({
         //   if (particle) {
         //     return (
         //       <Particle particleSystem={particle} />
-        //     )  
+        //     )
         //   }
       }
     }

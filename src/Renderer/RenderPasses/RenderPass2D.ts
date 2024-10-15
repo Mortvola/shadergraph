@@ -50,7 +50,7 @@ class RenderPass2D implements RenderPass2DInterface {
 
       for (const pipelineEntry of scene2d.pipelines) {
         passEncoder.setPipeline(pipelineEntry.pipeline.pipeline);
-    
+
         for (const [material, instances] of pipelineEntry.materials) {
           material.setBindGroups(passEncoder)
 
@@ -61,7 +61,7 @@ class RenderPass2D implements RenderPass2DInterface {
               meshInfo.firstIndex,
               meshInfo.baseVertex,
               meshInfo.firstInstance,
-            );    
+            );
           }
         }
       }

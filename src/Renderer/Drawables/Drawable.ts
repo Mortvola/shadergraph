@@ -101,10 +101,10 @@ class Drawable implements DrawableInterface {
       this.instanceInfo.views[this.numInstances].color[1] = color[1]
       this.instanceInfo.views[this.numInstances].color[2] = color[2]
       this.instanceInfo.views[this.numInstances].color[3] = color[3]
-  
+
       this.instanceInfo.views[this.numInstances].id[0] = this.id;
 
-      this.numInstances += 1;  
+      this.numInstances += 1;
     }
   }
 }

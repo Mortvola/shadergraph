@@ -26,7 +26,7 @@ const Menu: React.FC<PropsType> = ({
     if (isMenuActionRecord(menuItem)) {
       return (
         <MenuItem key={menuItem.name} item={menuItem} originPosition={originPosition} />
-      )  
+      )
     }
 
     if (isSubmenuItem(menuItem) && menuItem.submenu().length > 0) {
@@ -60,13 +60,13 @@ const Menu: React.FC<PropsType> = ({
       const menuRect = menuElement.getBoundingClientRect();
 
       const menuHeight = menuRect.bottom - menuRect.top;
- 
+
       let newOffset: { x: number, y: number, scroll?: boolean } = { x: 0, y: 0 }
 
       // If the menu will be outside the bottom of the wrapper then make adjustments.
       if (y + menuHeight > wrapperRect.bottom) {
         const adjustment = y + menuHeight - wrapperRect.bottom;
-        
+
         // If the adjustment would place the top of the menu
         // above the wrapper then set the top at the top of the wrapper.
         if (y - adjustment < 0) {

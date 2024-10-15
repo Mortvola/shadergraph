@@ -3,7 +3,7 @@ import type SurfaceMesh from "../Renderer/Drawables/SurfaceMesh";
 
 export interface FbxNodeInterface {
   name: string;
-  
+
   scale: Vec3;
 
   translate: Vec3;
@@ -17,11 +17,11 @@ export interface FbxGeometryNodeInterface extends FbxNodeInterface {
   mesh: SurfaceMesh;
 
   vertices: number[];
-  
+
   normals: number[];
 
   texcoords: number[];
-  
+
   indices: number[];
 }
 

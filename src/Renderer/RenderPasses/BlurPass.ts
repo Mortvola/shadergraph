@@ -10,7 +10,7 @@ class BlurPass {
   verticalPipeline: GPURenderPipeline
 
   pingpongBindGroup: GPUBindGroup
-  
+
   scratchTextureView: GPUTextureView
 
   constructor(scratchTextureView: GPUTextureView) {

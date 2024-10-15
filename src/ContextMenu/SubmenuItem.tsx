@@ -58,7 +58,7 @@ const SubmenuItem: React.FC<PropsType> = observer(({
                 onClose={handleClose}
               />
             )
-          : null          
+          : null
         }
       </div>
     </>

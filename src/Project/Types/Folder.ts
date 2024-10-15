@@ -74,20 +74,20 @@ class Folder extends ProjectItem<FolderInterface> implements FolderInterface {
       if (this.isAncestor(item)) {
         throw new Error('item is an ancestor of the destination')
       }
-  
+
       const response = await Http.patch(`/api/folders/${item.id}`, {
         parentId: this.id === -1 ? null : this.id,
       })
-  
+
       if (response.ok) {
         runInAction(() => {
           this.items = this.items.concat([item]);
-  
+
           this.sortItems()
-  
+
           item.parent = this;
         })
-      }  
+      }
     }
     else {
       runInAction(() => {
@@ -122,17 +122,17 @@ class Folder extends ProjectItem<FolderInterface> implements FolderInterface {
     if (response.ok) {
       runInAction(() => {
         const index = this.items.findIndex((i) => i.id === item.id)
-  
+
         if (index !== -1) {
           // Remove from the parent.
           this.items = [
             ...this.items.slice(0, index),
             ...this.items.slice(index + 1)
           ]
-  
+
           item.parent = null;
         }
-      })  
+      })
     }
   }
 
@@ -142,21 +142,21 @@ class Folder extends ProjectItem<FolderInterface> implements FolderInterface {
     if (response.ok) {
       runInAction(() => {
         const index = this.items.findIndex((i) => i.id === item.id)
-  
+
         if (index !== -1) {
           // Remove from the parent.
           this.items = [
             ...this.items.slice(0, index),
             ...this.items.slice(index + 1)
           ]
-  
+
           item.parent = null;
         }
 
         if (item === this.project.selectedItem) {
           this.project.selectedItem = null;
         }
-      })  
+      })
     }
   }
 }

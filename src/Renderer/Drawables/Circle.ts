@@ -14,7 +14,7 @@ class Circle extends Drawable {
     super(DrawableType.Circle, 1)
 
     this.name = 'Circle'
-    
+
     this.vertexProperties.push(
       { name: 'radius', value: new Value('float', radius), builtin: false },
       { name: 'thickness', value: new Value('float', thickness), builtin: false },
@@ -26,7 +26,7 @@ class Circle extends Drawable {
     const numSegments = 64;
 
     // TODO: determine how many lines should be rendered based on radius?
-    passEncoder.draw(numSegments * 2 * 3);  
+    passEncoder.draw(numSegments * 2 * 3);
   }
 
   hitTest(p: Vec4, viewTransform: Mat4): { point: Vec4, t: number, drawable: Drawable} | null {

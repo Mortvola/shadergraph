@@ -9,7 +9,7 @@ type TextureMeta = {
 
 class TextureManager {
   private textures: Map<number, Texture> = new Map();
-  
+
   private pendingTextures: Map<number, Promise<Texture | undefined>> = new Map();
 
   public async get(textureId: number): Promise<Texture | undefined> {
@@ -28,7 +28,7 @@ class TextureManager {
     if (!pendingTexture) {
       pendingTexture = (async () => {
         const response = await Http.get<TextureMeta>(`/api/textures/${id}`)
-  
+
         if (response.ok) {
           const body = await response.body()
 
@@ -65,7 +65,7 @@ class TextureManager {
 
       try {
         const image = await createImageBitmap(blob, { colorSpaceConversion: 'none' })
-        
+
         const gpuTexture = gpu.device.createTexture({
           format: 'rgba8unorm',
           size: { width: image.width, height: image.height },
@@ -73,7 +73,7 @@ class TextureManager {
                 GPUTextureUsage.COPY_DST |
                 GPUTextureUsage.RENDER_ATTACHMENT,
         });
-    
+
         gpu.device.queue.copyExternalImageToTexture(
           { source: image, flipY },
           { texture: gpuTexture },
@@ -85,7 +85,7 @@ class TextureManager {
       catch (error) {
         console.log(error);
         throw(error);
-      }  
+      }
     }
   }
 }

@@ -25,7 +25,7 @@ class PropertyNode extends GraphNode implements PropertyNodeInterface {
     return ({
       id: this.id,
       name: this.property.name,
-      type: this.type,  
+      type: this.type,
       x: this.position?.x,
       y: this.position?.y,
     })

@@ -12,13 +12,13 @@ class Vector extends ValueNode {
       const getLabel = (i: number) => (
         i === 3 ? 'W' : String.fromCharCode('X'.charCodeAt(0) + i)
       )
-    
+
       for (let i = 0; i < value.value.length; i += 1) {
         const port = new InputPort(this, 'float', getLabel(i));
         port.value = new Value('float',  value.value[i]);
 
         this.inputPorts.push(port)
-      }  
+      }
     }
   }
 

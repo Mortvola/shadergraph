@@ -26,13 +26,13 @@ const GradientKey: React.FC<PropsType> = ({
 
       if (element) {
         element.focus();
-      }  
+      }
     }
   }, [selected])
 
   const handleClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();
-  
+
     if (onClick) {
       onClick(id)
     }

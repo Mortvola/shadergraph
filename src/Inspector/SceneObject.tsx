@@ -91,9 +91,9 @@ const SceneObject: React.FC<PropsType> = observer(({
     //       { item: model, type: ComponentType.Mesh },
     //       ...sceneObject.items.slice(index + 1),
     //     ]
-  
+
     //     sceneObject.save()
-    //   }  
+    //   }
     // })
   // }
 
@@ -107,9 +107,9 @@ const SceneObject: React.FC<PropsType> = observer(({
     //       { item: decal, type: ComponentType.Decal },
     //       ...sceneObject.items.slice(index + 1),
     //     ]
-  
+
     //     sceneObject.save()
-    //   }  
+    //   }
     // })
   // }
 
@@ -129,7 +129,7 @@ const SceneObject: React.FC<PropsType> = observer(({
       //   return <Decal decalItem={item.item as DecalItem} onChange={handleDecalChange} />
 
       case ComponentType.Light:
-        return <LightComponent lightProps={item.props as LightProps} />  
+        return <LightComponent lightProps={item.props as LightProps} />
     }
 
     return null;
@@ -191,7 +191,7 @@ const SceneObject: React.FC<PropsType> = observer(({
       }
 
       // case ComponentType.Mesh:
-      //   sceneObject.items.push({ item: { id: 0, materials: {}, toDescriptor: () => { return { type: ComponentType.Mesh, props: {} } } }, type: ComponentType.Mesh }) 
+      //   sceneObject.items.push({ item: { id: 0, materials: {}, toDescriptor: () => { return { type: ComponentType.Mesh, props: {} } } }, type: ComponentType.Mesh })
       //   sceneObject.save()
       //   break;
 
@@ -199,16 +199,16 @@ const SceneObject: React.FC<PropsType> = observer(({
         (async () => {
           const props = new ParticleSystemProps();
           // const particleSystem = new ParticleSystemData(props);
-  
+
           // particleSystemManager.add(particleSystem);
-  
+
           const item: NewSceneObjectComponent = {
             type: ComponentType.ParticleSystem,
             props: props,
             // component: particleSystem,
           }
-  
-          sceneObject.addComponent(item);  
+
+          sceneObject.addComponent(item);
         })()
 
         break;

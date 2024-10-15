@@ -65,7 +65,7 @@ class HttpResponse<T = void> {
         }
       }
       else if (this.response.status === 401) {
-        // If the user is not authorized, then send them 
+        // If the user is not authorized, then send them
         // back to the signin page.
         // if (Http.unauthorizedHandler) {
         //   Http.unauthorizedHandler();

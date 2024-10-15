@@ -31,9 +31,9 @@ class Trajectory extends Drawable {
 
   constructor(trajectoryData: TrajectoryData) {
     super(DrawableType.Billboard, 1);
-  
+
     this.name = 'Trajectory';
-    
+
     this.trajectoryData = trajectoryData;
 
     this.trajectoryBuffer = gpu.device.createBuffer({
@@ -53,7 +53,7 @@ class Trajectory extends Drawable {
 
   render(passEncoder: GPURenderPassEncoder) {
     const numSegments = this.trajectoryData.distance * 4;
-    
+
     // Update the trajectory information
     this.trajectoryStructure.set({
       numSegments: numSegments,
@@ -69,7 +69,7 @@ class Trajectory extends Drawable {
     passEncoder.setBindGroup(2, this.trajectoryBindGroup);
 
     // TODO: determine how many lines should be rendered based on length of arc?
-    passEncoder.draw(numSegments);  
+    passEncoder.draw(numSegments);
   }
 }
 

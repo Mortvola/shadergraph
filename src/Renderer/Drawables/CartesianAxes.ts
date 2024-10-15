@@ -11,15 +11,15 @@ class CartesianAxes extends Drawable {
   vertices = [
     -2000, 0, 0, 1,
     1, 0, 0, 1,
-    
+
     2000, 0, 0, 1,
     1, 0, 0, 1,
 
     0, 0, -2000, 1,
     0, 1, 0, 1,
-    
+
     0, 0, 2000, 1,
-    0, 1, 0, 1,    
+    0, 1, 0, 1,
   ];
 
   modelMatrices = new Float32Array(16 * maxInstances)
@@ -28,9 +28,9 @@ class CartesianAxes extends Drawable {
 
   constructor() {
     super(DrawableType.Mesh, 1);
-    
+
     this.name = 'CartesianAxes';
-    
+
     const gridLineColor = [0.3, 0.3, 0.3, 1];
 
     // x grid lines
@@ -66,22 +66,22 @@ class CartesianAxes extends Drawable {
         ...gridLineColor,
       ])
     }
-    
+
     this.vertexBuffer = gpu.device.createBuffer({
       size: this.vertices.length * Float32Array.BYTES_PER_ELEMENT,
       usage: GPUBufferUsage.VERTEX,
       mappedAtCreation: true,
-    });  
+    });
     {
       const mapping = new Float32Array(this.vertexBuffer.getMappedRange());
       mapping.set(this.vertices, 0);
-      this.vertexBuffer.unmap();  
+      this.vertexBuffer.unmap();
     }
   }
 
   render(passEncoder: GPURenderPassEncoder) {
     passEncoder.setVertexBuffer(0, this.vertexBuffer);
-    passEncoder.draw(this.vertices.length / 8);  
+    passEncoder.draw(this.vertices.length / 8);
   }
 
   hitTest(origin: Vec4, vector: Vec4): { point: Vec4, t: number, drawable: DrawableInterface} | null {

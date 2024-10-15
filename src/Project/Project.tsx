@@ -37,7 +37,7 @@ const Project: React.FC<PropsType> = observer(({
                 level={0}
               >
                 <ProjectToolbar />
-              </ProjectFolder>    
+              </ProjectFolder>
             )
             : null
         }

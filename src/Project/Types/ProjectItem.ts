@@ -30,7 +30,7 @@ class ProjectItem<T> implements ProjectItemInterface<T> {
       const response = await Http.patch(`/api/folders/${this.id}`, {
         name,
       })
-  
+
       if (response) {
         runInAction(() => {
           this.name = name;

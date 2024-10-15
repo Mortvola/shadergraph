@@ -27,7 +27,7 @@ const NodeOutputPort: React.FC<PropsType> = observer(({
   if (!graph) {
     return null;
   }
-  
+
   const [startPoint, setStartPoint] = React.useState<PortInterface | null>(null);
   const [dragKey, setDragKey] = React.useState<string | null>(null);
   const portRef = React.useRef<HTMLDivElement | null>(null);
@@ -54,7 +54,7 @@ const NodeOutputPort: React.FC<PropsType> = observer(({
 
     if (element) {
       setStartPoint(port);
-    }  
+    }
   }
 
   const handleDrag: React.DragEventHandler = (event) => {
@@ -66,7 +66,7 @@ const NodeOutputPort: React.FC<PropsType> = observer(({
 
       if (dragKey) {
         store.setDragObject(null);
-        setStartPoint(null);  
+        setStartPoint(null);
       }
     }
   }

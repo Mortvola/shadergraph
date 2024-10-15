@@ -61,17 +61,17 @@ class Http {
               },
             }),
           });
-    
+
           type Tokens = {
             data: {
               refresh: string,
               access: string,
             },
           }
-      
+
           if (res2.ok) {
             const body = await res2.json() as Tokens;
-    
+
             Http.setTokens(body.data.access, body.data.refresh);
 
             resolve(true);

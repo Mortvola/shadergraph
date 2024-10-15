@@ -33,14 +33,14 @@ const HsvPicker: React.FC<PropsType> = ({
       setValueRange(`rgb(${v1.join()}), rgb(${v2.join()})`)
     }
   }, [colorMutator])
-  
+
   React.useEffect(() => {
     if (colorMutator) {
       setH(Math.round(colorMutator.hsv[0] * 360))
       setS(Math.round(colorMutator.hsv[1] * 100))
       setV(Math.round(colorMutator.hsv[2] * 100))
-  
-      updateHsvGradients();  
+
+      updateHsvGradients();
     }
   }, [colorMutator, updateHsvGradients])
 
@@ -113,7 +113,7 @@ const HsvPicker: React.FC<PropsType> = ({
           value={v}
         />
         <NumberInput value={v} onChange={handleVChange} />
-      </label>    
+      </label>
     </>
   )
 }

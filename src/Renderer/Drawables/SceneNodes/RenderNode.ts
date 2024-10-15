@@ -20,7 +20,7 @@ class RenderNode implements RenderNodeInterface {
   parentNode: RenderNodeInterface | null = null;
 
   components: Set<Component> = new Set();
-  
+
   name = '';
 
   transform = mat4.identity();
@@ -95,7 +95,7 @@ class RenderNode implements RenderNodeInterface {
   removeNode(node: RenderNodeInterface) {
     const index = this.nodes.findIndex((n) => n === node);
 
-    if (index !== -1) {      
+    if (index !== -1) {
       this.nodes = [
         ...this.nodes.slice(0, index),
         ...this.nodes.slice(index + 1)
@@ -140,7 +140,7 @@ class RenderNode implements RenderNodeInterface {
       let result;
       if (isDrawableComponent(node)) {
         if (!filter || filter(node.drawable)) {
-          result = node.hitTest(origin, ray)    
+          result = node.hitTest(origin, ray)
         }
       }
       else if (isRenderNode(node)) {
@@ -155,7 +155,7 @@ class RenderNode implements RenderNodeInterface {
             point: result.point,
           }
         }
-      }  
+      }
     }
 
     return best;

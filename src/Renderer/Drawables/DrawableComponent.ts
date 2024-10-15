@@ -44,7 +44,7 @@ class DrawableComponent extends Component implements DrawableComponentInterface 
         // Convert the intersection point into world coordinates.
         const point = vec4.transformMat4(result.point, this.renderNode.getTransform());
 
-        return { point, t: result.t, drawable: this.drawable };      
+        return { point, t: result.t, drawable: this.drawable };
       }
     }
 
@@ -55,7 +55,7 @@ class DrawableComponent extends Component implements DrawableComponentInterface 
   //   super.computeTransform(transform, prepend);
 
   //   this.instanceIndex = this.drawable.numInstances;
-    
+
   //   this.drawable.addInstanceInfo(this.transform, this.color);
   // }
 }

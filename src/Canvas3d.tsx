@@ -20,7 +20,7 @@ const Canvas3d: React.FC<PropsType> = ({
       (async () => {
         await renderer.setCanvas(element);
         renderer.start();
-      })()  
+      })()
     }
   }, [renderer])
 
@@ -54,7 +54,7 @@ const Canvas3d: React.FC<PropsType> = ({
       return () => resizeObserver.disconnect();
     }
   }, []);
-  
+
   return (
     <div className="canvas-wrapper" onWheel={onWheel}>
       <canvas

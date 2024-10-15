@@ -28,20 +28,20 @@ const OpenProjectDialog: React.FC<PropsType> = ({
       (
         async () => {
           const response = await Http.get<{ id: number, name: string, date: string }[]>('/api/projects')
-  
+
           if (response.ok) {
             const body = await response.body()
-  
+
             const entries: ProjectEntry[] = body.map((entry) => ({
               id: entry.id,
               name: entry.name,
               date: DateTime.fromISO(entry.date),
             }))
-  
+
             setProjects(entries)
           }
         }
-      )()  
+      )()
     }
   }, [show])
 

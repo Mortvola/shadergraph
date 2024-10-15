@@ -29,7 +29,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
   constructor(props: ParticleSystemPropsInterface) {
     super(ComponentType.ParticleSystem)
-  
+
     this.props = props;
   }
 
@@ -72,20 +72,20 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
             // Yes, the sphere and plane will collide
             // if (false) {
             //   scene.removeNode(point.drawable);
-            
+
             //   this.points = [
             //     ...this.points.slice(0, i),
             //     ...this.points.slice(i + 1),
             //   ]
-      
+
             //   i -= 1
-      
-            //   continue  
+
+            //   continue
             // }
-  
+
             // TODO: Improve calculation of point/time of collision and
             // movement along new vector with remaining time.
-  
+
             // Compute the reflection vector and account for how much bounce.
             // The dot product is the magnitude of the velocity projected on to the plane normal
             // Subtracting a vector along the plane normal of that magnituted twice will give us the
@@ -95,7 +95,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
             vec4.subtract(point.velocity, vec4.scale(planeNormal, dot + dot * this.props.collision.bounce.get()), point.velocity)
 
             // Allow the collision to dampen the velocity
-            vec4.scale(point.velocity, 1 - this.props.collision.dampen.get(), point.velocity)  
+            vec4.scale(point.velocity, 1 - this.props.collision.dampen.get(), point.velocity)
 
             // Move the sphere to the intersection point
             // offset by the radius of the sphere along the plane normal.
@@ -116,7 +116,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
               point.velocity,
               elapsedTime * percentRemaining,
               point.position,
-            );  
+            );
 
             return true;
           }
@@ -190,7 +190,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
           this.lastBurstTime = burstTime;
         }
-      }      
+      }
     }
   }
 
@@ -240,7 +240,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       }
 
       // Convert velocity to world space
-      vec4.transformMat4(particle.velocity, this.renderNode!.transform, particle.velocity)  
+      vec4.transformMat4(particle.velocity, this.renderNode!.transform, particle.velocity)
 
       this.particles.set(particle.id, particle)
 
@@ -259,8 +259,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         particle.renderNode.detachSelf();
         particle.renderNode = null;
       }
-      
-      this.particles.delete(particle.id)    
+
+      this.particles.delete(particle.id)
     }
     else {
       const elapsedSeconds = (time - particle.lastUpdateTime) / 1000.0;
@@ -334,13 +334,13 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       particle.drawable.color[0] = lifetimeColor[0] * particle.startColor[0];
       particle.drawable.color[1] = lifetimeColor[1] * particle.startColor[1];
       particle.drawable.color[2] = lifetimeColor[2] * particle.startColor[2];
-      particle.drawable.color[3] = lifetimeColor[3] * particle.startColor[3];   
-      
+      particle.drawable.color[3] = lifetimeColor[3] * particle.startColor[3];
+
       // If the particle's render node does not yet have a parent (its not attached to the scene graph)
       // then add it ot the particle system's root node and update the node's transforms.
       if (particle.renderNode.parentNode === null) {
         this.rootNode?.addNode(particle.renderNode);
-        particle.renderNode.computeTransform(this.rootNode.transform)  
+        particle.renderNode.computeTransform(this.rootNode.transform)
       }
 
       const cameraPosition = vec4.create(
@@ -349,7 +349,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         camera.viewTransform[3 * 4 + 2],
         camera.viewTransform[3 * 4 + 3],
       )
-    
+
       // Transform the position into world space to allow for gravity effect
       // and collision detection.
       //const position = vec4.transformMat4(particle.position, this.rootNode.transform)
@@ -374,19 +374,19 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
           mat4.setAxis(transform, right, 0, transform)
           mat4.setAxis(transform, up, 1, transform)
-          mat4.setAxis(transform, lookAt, 2, transform)  
+          mat4.setAxis(transform, lookAt, 2, transform)
         }
         else if (this.props.renderer.mode.get() === RenderMode.StretchedBillboard) {
           const up = vec3.normalize(particle.velocity)
           const right = vec3.normalize(vec3.cross(up, lookAt));
           lookAt = vec3.normalize(vec3.cross(right, up));
-    
+
           mat4.setAxis(transform, right, 0, transform)
           mat4.setAxis(transform, up, 1, transform)
           mat4.setAxis(transform, lookAt, 2, transform)
 
           mat4.scale(transform, vec3.create(1, vec3.length(particle.velocity), 1), transform)
-        }      
+        }
         else if (this.props.renderer.mode.get() === RenderMode.HorizontalBillboard) {
           lookAt = vec3.create(0, 1, 0)
           const up = vec3.create(0, 0, -1);

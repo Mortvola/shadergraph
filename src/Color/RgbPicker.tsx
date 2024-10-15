@@ -120,7 +120,7 @@ const RgbPicker: React.FC<PropsType> = ({
           value={blue}
         />
         <NumberInput value={blue} onChange={handleBlueChange} />
-      </label>    
+      </label>
     </>
   )
 }

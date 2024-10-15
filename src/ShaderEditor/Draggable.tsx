@@ -29,7 +29,7 @@ const Draggable: React.FC<PropsType> = observer(({
 
   type DragInfo = {
     x: number,
-    y: number, 
+    y: number,
     rect: { top: number, left: number, width: number, height: number },
     resize?: ResizeDirection,
   }
@@ -55,7 +55,7 @@ const Draggable: React.FC<PropsType> = observer(({
       if (clientY >= rect.top && clientY < rect.top + 8) {
         return 'NE'
       }
-      
+
       if (clientY >= rect.bottom - 8 && clientY < rect.bottom) {
         return 'SE'
       }
@@ -197,7 +197,7 @@ const Draggable: React.FC<PropsType> = observer(({
 
       if (element) {
         const rect = element.getBoundingClientRect();
-  
+
         const direction = getResizeDirection(event.clientX, event.clientY, rect);
 
         switch (direction) {
@@ -224,7 +224,7 @@ const Draggable: React.FC<PropsType> = observer(({
           default:
             setResizeCursor('')
         }
-      }  
+      }
     }
   }
 

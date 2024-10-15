@@ -38,17 +38,17 @@ class SceneObjectProjectItem extends ProjectItem<SceneObjectInterface> {
 
     //           // if (modelItem) {
     //           //   const model = await this.getModel(modelItem)
-        
+
     //           //   if (model) {
     //           //     this.mainViewModeler.assignModel(model, modelEntry.materials);
     //           //   }
-    //           // }    
+    //           // }
     //         }
     //         // else if (component.type === ComponentType.ParticleSystem) {
     //           // const particleEntry = item as ParticleItem;
 
     //           // const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
-      
+
     //           // if (particleSystem) {
     //           //   const node = new SceneNode();
     //           //   node.addComponent(particleSystem)

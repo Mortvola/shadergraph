@@ -31,7 +31,7 @@ class ShaderGraphRenderer extends Renderer2d {
         const turn2 = vec2.add(end, vec2.create(-curveRadius, 0));
 
         const distance = vec2.distance(turn1, turn2);
-        
+
         const vector = vec2.normalize(vec2.subtract(turn2, turn1));
 
         const p1 = vec2.addScaled(turn1, vector, distance / 2);

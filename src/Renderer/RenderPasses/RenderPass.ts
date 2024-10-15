@@ -21,7 +21,7 @@ class RenderPass implements RenderPassInterface {
 
         this.pipelines.push(pipelineEntry);
       }
-  
+
       if (pipelineEntry) {
         const materialDrawables = pipelineEntry.materials.get(drawableNode.material);
 
@@ -31,26 +31,26 @@ class RenderPass implements RenderPassInterface {
         else {
           pipelineEntry.materials.set(drawableNode.material, [drawableNode.drawable])
         }
-      }  
+      }
     }
   }
 
   runPipelines(passEncoder: GPURenderPassEncoder) {
     for (const pipelineEntry of this.pipelines) {
       passEncoder.setPipeline(pipelineEntry.pipeline.pipeline);
-  
+
       for (const [material, drawables] of pipelineEntry.materials) {
         material.setBindGroups(passEncoder)
-  
+
         for (const drawable of drawables) {
           if (drawable.numInstances > 0) {
-            gpu.device.queue.writeBuffer(drawable.modelMatrixBuffer, 0, drawable.modelMatrices, 0, drawable.numInstances * 16);  
-            gpu.device.queue.writeBuffer(drawable.inverseModelMatrixBuffer, 0, drawable.inverseModelMatrices, 0, drawable.numInstances * 16);  
-            gpu.device.queue.writeBuffer(drawable.instanceColorBuffer, 0, drawable.instanceInfo.arrayBuffer, 0, drawable.numInstances * 8 * 4);  
+            gpu.device.queue.writeBuffer(drawable.modelMatrixBuffer, 0, drawable.modelMatrices, 0, drawable.numInstances * 16);
+            gpu.device.queue.writeBuffer(drawable.inverseModelMatrixBuffer, 0, drawable.inverseModelMatrices, 0, drawable.numInstances * 16);
+            gpu.device.queue.writeBuffer(drawable.instanceColorBuffer, 0, drawable.instanceInfo.arrayBuffer, 0, drawable.numInstances * 8 * 4);
             passEncoder.setBindGroup(1, drawable.bindGroup);
-  
+
             drawable.render(passEncoder);
-    
+
             drawable.numInstances = 0;
           }
         }

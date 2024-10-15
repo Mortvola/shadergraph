@@ -1,4 +1,4 @@
- 
+
 import type { Vec4} from 'wgpu-matrix';
 import { mat4, quat, vec4 } from 'wgpu-matrix';
 import {
@@ -161,7 +161,7 @@ class Renderer implements RendererInterface {
     await pipelineManager.ready();
 
     const cartesianAxes = await DrawableComponent.create(new CartesianAxes(), { shaderDescriptor: lineDescriptor })
-    
+
     let floor: RenderNode | undefined = undefined;
 
     if (withFloor) {
@@ -169,7 +169,7 @@ class Renderer implements RendererInterface {
       floor = new RenderNode();
       const component = await DrawableComponent.create(quad, { shaderDescriptor: litDescriptor })
       floor.addComponent(component)
-      floor.postTransforms.push(mat4.fromQuat(quat.fromEuler(degToRad(270), 0, 0, 'xyz')))  
+      floor.postTransforms.push(mat4.fromQuat(quat.fromEuler(degToRad(270), 0, 0, 'xyz')))
     }
 
     return new Renderer(bindGroups.getBindGroupLayout0(), cartesianAxes, floor);
@@ -378,7 +378,7 @@ class Renderer implements RendererInterface {
       this.screenTextureView = createTexture(this.context).createView();
 
       this.bloomPass = new BloomPass(this.context, this.screenTextureView, this.scratchTextureView);
-      
+
       this.outlinePass = new OutlinePass(this.scratchTextureView)
 
       this.aspectRatio[0] = this.context.canvas.width / this.context.canvas.height;
@@ -466,7 +466,7 @@ class Renderer implements RendererInterface {
     gpu.device.queue.writeBuffer(this.frameBindGroup.buffer[6], 0, circlesStructure.arrayBuffer);
 
     this.timeBuffer[0] = timestamp / 1000.0;
-    
+
     gpu.device.queue.writeBuffer(this.frameBindGroup.buffer[7], 0, this.timeBuffer);
 
     await this.scene2d.updateLayout()
@@ -524,7 +524,7 @@ class Renderer implements RendererInterface {
         )
 
         if (this.bloomPass) {
-          this.bloomPass.render(canvasView, commandEncoder);      
+          this.bloomPass.render(canvasView, commandEncoder);
         }
 
         if (this.outlinePass && this.outlineMesh) {
@@ -551,12 +551,12 @@ class Renderer implements RendererInterface {
         }
         else if (isRenderNode(node)) {
           const result = this.setOutlineMesh(node);
-  
+
           if (result) {
             return true;
           }
         }
-      }  
+      }
     }
 
     return false;
@@ -569,14 +569,14 @@ class Renderer implements RendererInterface {
   zoomOut() {
     runInAction(() => {
       this.camera.offset += 1;
-      this.camera.rotateX -= 1;  
+      this.camera.rotateX -= 1;
     })
   }
 
   zoomIn() {
     runInAction(() => {
       this.camera.offset -= 1;
-      this.camera.rotateX += 1;  
+      this.camera.rotateX += 1;
     })
   }
 

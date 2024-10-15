@@ -77,7 +77,7 @@ const PSValue3DInput: React.FC<PropsType> = observer(({
                         )
                         : null
                     }
-                  </>        
+                  </>
                 )
 
               case PSValueType.Random:
@@ -90,7 +90,7 @@ const PSValue3DInput: React.FC<PropsType> = observer(({
                           <>
                             <RangeInput value={value.values[1]} />
                             <RangeInput value={value.values[2]} />
-                          </>    
+                          </>
                         )
                         : null
                     }

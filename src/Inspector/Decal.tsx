@@ -40,7 +40,7 @@ const Decal: React.FC<PropsType> = ({
   return (
     <div className={styles.layout}>
       <label>
-        Material: 
+        Material:
         {/* <TextureSelector id={decalItem.textureId} onChange={handleChange} /> */}
         <select value={decalItem.materialId} onChange={handleChange}>
           {

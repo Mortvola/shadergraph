@@ -57,7 +57,7 @@ const CurvePoint: React.FC<PropsType> = ({
       element.releasePointerCapture(event.pointerId);
     }
   }
-  
+
   return (
     <div
       ref={ref}

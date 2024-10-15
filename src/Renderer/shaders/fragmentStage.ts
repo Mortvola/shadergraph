@@ -6,7 +6,7 @@ const fragmentOut = (lit: boolean, bloom: boolean) => {
       @location(1) position: vec4f,
       @location(2) normal: vec4f,
     }        
-    `  
+    `
   }
 
   return bloom ?

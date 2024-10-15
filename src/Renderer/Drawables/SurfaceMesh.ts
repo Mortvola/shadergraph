@@ -93,9 +93,9 @@ class SurfaceMesh {
       //     uv[8 + 0], uv[8 + 1],
       //   ];
       // }
-      
+
       this.addFace([vertices[0], vertices[1], vertices[3]], normals1, uv1);
-      this.addFace([vertices[1], vertices[2], vertices[3]], normals2, uv2);  
+      this.addFace([vertices[1], vertices[2], vertices[3]], normals2, uv2);
     }
   }
 
@@ -189,7 +189,7 @@ class SurfaceMesh {
 
       if (yieldPolyCount >= yieldPolyCountMax) {
         // await yieldToMain();
-        yieldPolyCount = 0;  
+        yieldPolyCount = 0;
       }
     }
 
@@ -231,7 +231,7 @@ class SurfaceMesh {
         const intersection = vec4.add(origin, vec4.mulScalar(ray, result[0]))
 
         return { point: intersection, t: result[0] };
-      }    
+      }
     }
 
     return null;
@@ -239,7 +239,7 @@ class SurfaceMesh {
 
   computeCentroid(): Vec4 {
     const sum = vec3.create(0, 0, 0);
-  
+
     for (let i = 0; i < this.vertices.length; i += 8) {
       sum[0] += this.vertices[i + 0];
       sum[1] += this.vertices[i + 1];

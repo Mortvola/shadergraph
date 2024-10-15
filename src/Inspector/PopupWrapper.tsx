@@ -124,7 +124,7 @@ const PopupWrapper: React.FC<PropsType> = observer(({
       setOffset({ ...newOffset, visibility: 'visible' });
     }
   }, [wrapperRef.current, popupSize, rect.left, rect.top])
-  
+
   return (
     createPortal(
       <div

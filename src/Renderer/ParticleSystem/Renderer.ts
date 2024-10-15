@@ -44,7 +44,7 @@ class Renderer extends PSModule {
 
     this.materialId = new PSMaterialItem('Material', props, descriptor?.materialId, this.onMaterialChange, previousProps?.materialId)
     this.meshId = new PSMeshItem('Mesh', props, descriptor?.meshId, onChange, previousProps?.meshId)
-  
+
     this.mode = new PSRenderMode('Mode', props, descriptor?.mode, defaultDescriptor?.mode, this.onMaterialChange, previousProps?.mode);
 
     this.renderAlignment = new PSRenderAlignment(
@@ -108,7 +108,7 @@ class Renderer extends PSModule {
           return DrawableType.Mesh;
       }
     }
-  
+
     if (!this.drawable || this.drawable.type !== neededType()) {
       switch (neededType()) {
         case DrawableType.Billboard:
@@ -119,7 +119,7 @@ class Renderer extends PSModule {
           const meshId = this.meshId.get()
           if (meshId) {
             const model = await modelManager.getModel(meshId)
-            
+
             if (model) {
               this.drawable = this.getDrawableNode(model)?.drawable
             }
@@ -156,7 +156,7 @@ class Renderer extends PSModule {
       if (materialId !== undefined && this.material === undefined) {
         this.material = await materialManager.getItem(materialId)
       }
-      
+
       return DrawableComponent.create(this.drawable!, this.material);
     })
   }

@@ -52,7 +52,7 @@ class TrajectoryPipeline extends Pipeline {
         ],
       }),
     };
-    
+
     super(
       gpu.device.createRenderPipeline(pipelineDescriptor),
       null,

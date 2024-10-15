@@ -7,7 +7,7 @@ import type {
 
 export interface GraphInterface {
   id: number | null;
-  
+
   name: string;
 
   changed: boolean;
@@ -17,7 +17,7 @@ export interface GraphInterface {
   selectedNode: GraphNodeInterface | null;
 
   dragConnector: { port: PortInterface, point: [number, number] } | null;
-  
+
   setName(name: string): void;
 
   selectNode(node: GraphNodeInterface | null): void;

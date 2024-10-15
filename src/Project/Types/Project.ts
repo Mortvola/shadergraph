@@ -109,7 +109,7 @@ class Project implements ProjectInterface {
       parent.addItem(item)
 
       runInAction(() => {
-        this.selectedItem = item;        
+        this.selectedItem = item;
       })
     }
   }
@@ -271,7 +271,7 @@ class Project implements ProjectInterface {
 
     runInAction(() => {
       folder.newItemType = null;
-    })  
+    })
 
     if (url) {
       const response = await Http.post<unknown, ProjectItemRecord>(
@@ -281,13 +281,13 @@ class Project implements ProjectInterface {
 
       if (response.ok) {
         const rec = await response.body();
-  
+
         const item = this.constructProjectItem(rec, folder);
-    
+
         folder.addItem(item);
 
         return item;
-      }  
+      }
     }
   }
 
@@ -332,15 +332,15 @@ class Project implements ProjectInterface {
       while (stack.length > 0) {
         const item = stack[0];
         stack = stack.slice(1);
-  
+
         if (item.itemId === itemId && item.type === type) {
           return item;
         }
-  
+
         if (isFolder(item)) {
           stack = stack.concat(item.items)
         }
-      }  
+      }
     }
   }
 
@@ -349,19 +349,19 @@ class Project implements ProjectInterface {
 
     if (this.projectItems) {
       let stack: ProjectItemLike[] = [this.projectItems]
-  
+
       while (stack.length > 0) {
         const item = stack[0];
         stack = stack.slice(1);
-  
+
         if (item.type === type) {
           items.push(item);
         }
-  
+
         if (isFolder(item)) {
           stack = stack.concat(item.items)
         }
-      }  
+      }
     }
 
     return items;

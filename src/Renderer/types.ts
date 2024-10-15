@@ -98,7 +98,7 @@ export interface MaterialInterface {
   setBindGroups(passEncoder: GPURenderPassEncoder): void;
 
   setPropertyValues(stage: GPUShaderStageFlags, properties: PropertyInterface[]): void;
-  
+
   updateProperty(stage: GPUShaderStageFlags, name: string, value: ValueType): void;
 }
 
@@ -108,7 +108,7 @@ export interface DrawableComponentInterface {
   drawable: DrawableInterface;
 
   material: MaterialInterface;
-  
+
   color: Float32Array;
 
   instanceIndex: number;

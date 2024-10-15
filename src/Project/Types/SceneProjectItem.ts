@@ -19,9 +19,9 @@ class SceneProjectItem extends ProjectItem<SceneInterface> {
       // runInAction(() => {
       //   if (this.item?.tree) {
       //     this.item.tree.name = name;
-      //   }  
+      //   }
       // })
-      
+
       return true;
     }
 
@@ -47,7 +47,7 @@ class SceneProjectItem extends ProjectItem<SceneInterface> {
 
         return scene;
       }
-    }  
+    }
 
     return null;
   }

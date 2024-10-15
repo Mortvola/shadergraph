@@ -7,9 +7,9 @@ import { PSVec3Type } from "./Property";
 
 class TransformProps extends PropsBase implements TransformPropsInterface {
   translate: PSVec3Type
-  
+
   rotate: PSVec3Type;
-  
+
   scale: PSVec3Type;
 
   constructor(

@@ -11,7 +11,7 @@ class MaterialManager implements MaterialManagerInterface {
   pendingMaterialItems: Map<number, Promise<MaterialItem | undefined>> = new Map();
 
   materialItems: Map<number, MaterialItem> = new Map()
-  
+
   materials: Map<string | number, Map<string, Material>> = new Map()
 
   async getItem(id: number, withShaderDescriptor = true): Promise<MaterialItem | undefined> {
@@ -26,14 +26,14 @@ class MaterialManager implements MaterialManagerInterface {
 
           if (response.ok) {
             const materialItemDescriptor = await response.body();
-    
+
             const newMaterialItem = new MaterialItem(this, materialItemDescriptor);
 
             this.materialItems.set(id, newMaterialItem)
 
             return newMaterialItem
-          }  
-        })()  
+          }
+        })()
 
         this.pendingMaterialItems.set(id, pendingRequest)
       }
@@ -60,7 +60,7 @@ class MaterialManager implements MaterialManagerInterface {
 
     const map = this.materials.get(key)
 
-    if (!map) {      
+    if (!map) {
       let descriptor: MaterialDescriptor | undefined = undefined
 
       if (typeof id === 'number') {

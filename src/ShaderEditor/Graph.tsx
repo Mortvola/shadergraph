@@ -14,7 +14,7 @@ const Graph: React.FC<PropsType> = observer(({
   const { graph } = useStores();
 
   if (!graph) {
-    return null;    
+    return null;
   }
 
   return (

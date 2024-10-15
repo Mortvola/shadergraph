@@ -18,7 +18,7 @@ class PSCurve {
     runInAction(() => {
       this.points = other.points.map((p) => (
         JSON.parse(JSON.stringify(p))
-      ))  
+      ))
     })
   }
 
@@ -127,7 +127,7 @@ class PSCurve {
       if (this.parent){
         this.parent.override = override ?? this.parent.override
       }
-      
+
       this.points = points;
       this.sanitize();
     })

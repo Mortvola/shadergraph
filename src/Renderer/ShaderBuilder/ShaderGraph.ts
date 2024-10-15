@@ -33,7 +33,7 @@ class ShaderGraph {
         new Property(p.name, p.dataType, p.value)
       ))
     }
-  
+
     this.fragment = new StageGraph(
       shaderDescriptor?.graphDescriptor?.fragment ?? {
         nodes: [],
@@ -41,7 +41,7 @@ class ShaderGraph {
       },
       this.properties,
     );
-  
+
     this.type = shaderDescriptor?.type;
 
     const displayNode = this.getDisplayNode();
@@ -66,7 +66,7 @@ class ShaderGraph {
         }
       })
     }
-  
+
     this.editMode = editMode;
   }
 
@@ -94,10 +94,10 @@ class ShaderGraph {
         nodes: [],
         edges: [],
       },
-  
+
       fragment: this.fragment.createDescriptor(),
     }
-  
+
     return descriptor;
   }
 
@@ -106,32 +106,32 @@ class ShaderGraph {
     vertProperties: PropertyInterface[],
     root?: GraphNodeInterface,
   ): [string, PropertyInterface[], PropertyInterface[], ShaderModuleSettings ] {
-    const bindingType = (dataType: DataType) => {  
+    const bindingType = (dataType: DataType) => {
       if (dataType === 'texture2D') {
         return 'texture_2d<f32>';
       }
-    
+
       if (dataType === 'float') {
         return 'f32';
       }
-    
+
       if (dataType === 'color') {
         return 'vec4f'
       }
-    
+
       return dataType;
     }
-    
+
     const space = (dataType: DataType) => {
       if (dataType !== 'texture2D' && dataType !== 'sampler') {
         return '<uniform>';
       }
-    
+
       return '';
     }
-    
+
     let fragmentBody = '';
-  
+
     let vertBindings = '';
     let fragBindings = '';
     let vertUniforms = '';
@@ -144,56 +144,56 @@ class ShaderGraph {
       depthWriteEnabled: true,
       lit: false,
     }
-  
+
     let numVertBindings = 0;
     let numFragBindings = 0;
     let group = 2;
-  
+
     for (let i = 0; i < vertProperties.length; i += 1) {
       vertUniforms = vertUniforms.concat(
         `${vertProperties[i].name}: ${bindingType(vertProperties[i].value.dataType)},`
-      )    
+      )
     }
-  
+
     if (vertUniforms !== '') {
       vertBindings = vertBindings.concat(
         `@group(${group}) @binding(${numVertBindings}) var<uniform> vertProperties: VertProperties;`
       )
       group += 1;
       numVertBindings += 1;
-  
+
       vertUniforms = `struct VertProperties { ${vertUniforms} }\n`
     }
-  
+
     [fragmentBody, fragProperties, settings] = this.fragment.generateCode(this.editMode, root);
-  
+
     console.log(fragmentBody);
-  
+
     for (let i = 0; i < fragProperties.length; i += 1) {
       if (fragProperties[i].value.dataType === 'texture2D' || fragProperties[i].value.dataType === 'sampler') {
         fragBindings = fragBindings.concat(
           `@group(${group}) @binding(${numFragBindings}) var${space(fragProperties[i].value.dataType)} ${fragProperties[i].name}: ${bindingType(fragProperties[i].value.dataType)};\n`
-        )  
-  
+        )
+
         numFragBindings += 1;
       }
       else {
         fragUniforms = fragUniforms.concat(
           `${fragProperties[i].name}: ${bindingType(fragProperties[i].value.dataType)},`
-        )  
+        )
       }
     }
-  
+
     if (fragUniforms !== '') {
       fragBindings = fragBindings.concat(
         `@group(${group}) @binding(${numFragBindings}) var<uniform> fragProperties: FragProperties;`
       )
       group += 1;
       numFragBindings += 1;
-  
+
       fragUniforms = `struct FragProperties { ${fragUniforms} }\n`
     }
-  
+
     return [
       `    
       ${common}
@@ -234,20 +234,20 @@ class ShaderGraph {
     root?: GraphNodeInterface,
   ): ShaderModule {
     const [code, vertProperties, fragProperties, settings] = this.generateShaderCode(drawableType, vertexProperties, root);
-  
+
     let shaderModule: GPUShaderModule
     try {
       shaderModule = gpu.device.createShaderModule({
         label: 'custom shader',
         code: code,
-      })  
+      })
     }
     catch (error) {
       console.log(code)
       console.log(error);
       throw error;
     }
-  
+
     return {
       module: shaderModule,
       vertProperties,

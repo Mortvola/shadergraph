@@ -23,7 +23,7 @@ const Canvas2d = React.forwardRef<HTMLCanvasElement, PropsType>(({
 
   React.useEffect(() => {
     const element = canvasRef.current;
-    
+
     if (element) {
       element.focus();
 
@@ -32,7 +32,7 @@ const Canvas2d = React.forwardRef<HTMLCanvasElement, PropsType>(({
       }
     }
   }, [renderer2d])
-  
+
   React.useEffect(() => {
     const element = canvasRef.current;
 
@@ -79,7 +79,7 @@ const Canvas2d = React.forwardRef<HTMLCanvasElement, PropsType>(({
             forwardedRef(instance);
           } else if (typeof forwardedRef === "object" && forwardedRef !== null) {
             forwardedRef.current = instance;
-          }  
+          }
         }
       }
       onClick={onClick}

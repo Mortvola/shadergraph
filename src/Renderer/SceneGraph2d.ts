@@ -144,7 +144,7 @@ class SceneGraph2D {
     texcoords.push(0, 1)
     texcoords.push(1, 1)
     texcoords.push(1, 0)
-    
+
     indexes.push(0, 1, 3, 3, 1, 2)
 
     return new Mesh2D(vertices, texcoords, indexes, 1, 1)
@@ -161,7 +161,7 @@ class SceneGraph2D {
     this.viewportHeight = viewportHeight ?? this.viewportHeight
 
     this.clipTransform = mat3.identity()
-    
+
     mat3.translate(this.clipTransform, vec2.create(-1, 1), this.clipTransform)
     mat3.scale(this.clipTransform, vec2.create(1 / this.width * this.scaleX, 1 / this.height * -this.scaleY), this.clipTransform)
 
@@ -230,8 +230,8 @@ class SceneGraph2D {
       this.allocateBuffers()
 
       this.addInstances()
-  
-      this.needsUpdate = false;  
+
+      this.needsUpdate = false;
     }
   }
 
@@ -296,7 +296,7 @@ class SceneGraph2D {
 
       for (let i = 0; i < element.nodes.length; i += 1) {
         const node = element.nodes[i]
-        
+
         if (isElementNode(node) && node.style.position === 'absolute') {
           // Absolutely positioned children do not affect the layout of other siblings or of the parent.
           // After all other children are positioned then process the absolute elements
@@ -314,7 +314,7 @@ class SceneGraph2D {
               }
 
               childrenHeight += childHeight
-      
+
               childTop += childHeight;
             }
             else {
@@ -323,9 +323,9 @@ class SceneGraph2D {
               }
 
               childrenWidth += childWidth;
-              
+
               childrenHeight = Math.max(childrenHeight, childHeight);
-      
+
               childLeft += childWidth;
             }
           }
@@ -415,7 +415,7 @@ class SceneGraph2D {
               top += value
             }
           }
-        }  
+        }
       }
 
       element.y = top;
@@ -423,7 +423,7 @@ class SceneGraph2D {
       element.width = width;
       element.height = height;
 
-      // The width and height values are only for the area occupied by the 
+      // The width and height values are only for the area occupied by the
       // content area and the borders. Return the width and height with
       // the margins added in so the parent can have the total area occupied by this child.
       return [
@@ -445,11 +445,11 @@ class SceneGraph2D {
     element.screenX = screenX + element.x
     element.screenY = screenY + element.y
 
-    if (isTextBox(element)) {      
+    if (isTextBox(element)) {
       this.addText(element)
     }
 
-    if (isElementNode(element)) {  
+    if (isElementNode(element)) {
       for (let i = 0; i < element.nodes.length; i += 1) {
         const node = element.nodes[i]
 
@@ -469,7 +469,7 @@ class SceneGraph2D {
       if (element.fontMaterial) {
         material = element.fontMaterial
       }
-    
+
       let entry = this.meshes.get(element.mesh)
 
       if (!entry) {
@@ -495,14 +495,14 @@ class SceneGraph2D {
       if (element.material) {
         material = element.material
       }
-  
+
       const dimensions = {
         x: element.screenX,
         y: element.screenY,
         width: element.width,
         height: element.height,
       }
-      
+
       // If this element has a click handler then add it to the list of clickable elements.
       if (element.onClick) {
         this.clickable.push(element)
@@ -538,7 +538,7 @@ class SceneGraph2D {
         dimensions.y -= element.style.border.width
         dimensions.width += element.style.border.width * 2
         dimensions.height += element.style.border.width * 2
-  
+
         const transform = mat3.identity()
         mat3.translate(transform, vec2.create(dimensions.x, dimensions.y), transform)
         mat3.scale(transform, vec2.create(dimensions.width, dimensions.height), transform)
@@ -566,20 +566,20 @@ class SceneGraph2D {
 
             if (!pipelineEntry) {
               pipelineEntry = { pipeline: instance.material.pipeline, materials: new Map() }
-  
+
               this.transparentPipelines.push(pipelineEntry);
-            }  
+            }
           }
           else {
             pipelineEntry = this.pipelines.find((p) => p.pipeline === instance.material.pipeline) ?? null;
 
             if (!pipelineEntry) {
               pipelineEntry = { pipeline: instance.material.pipeline, materials: new Map() }
-  
+
               this.pipelines.push(pipelineEntry);
-            }  
+            }
           }
-      
+
           if (pipelineEntry) {
             let meshMap = pipelineEntry.materials.get(instance.material);
 
@@ -596,7 +596,7 @@ class SceneGraph2D {
 
               meshMap.set(mesh, instances)
 
-              pipelineEntry.materials.set(instance.material, meshMap)            
+              pipelineEntry.materials.set(instance.material, meshMap)
             }
             else {
               let instances = meshMap.get(mesh)
@@ -609,7 +609,7 @@ class SceneGraph2D {
                   baseVertex: meshInfo.baseVertex,
                   firstInstance: this.numInstances,
                 }
-  
+
                 meshMap.set(mesh, instances)
               }
 
@@ -632,15 +632,15 @@ class SceneGraph2D {
             this.instanceColor[this.numInstances * 4 + 1] = instance.color[1]
             this.instanceColor[this.numInstances * 4 + 2] = instance.color[2]
             this.instanceColor[this.numInstances * 4 + 3] = instance.color[3]
-        
+
             this.numInstances += 1
-          }  
+          }
         }
       }
     }
 
-    gpu.device.queue.writeBuffer(this.transformsBuffer, 0, this.instanceTransform, 0, this.numInstances * 16);  
-    gpu.device.queue.writeBuffer(this.colorsBuffer, 0, this.instanceColor, 0, this.numInstances * 4);  
+    gpu.device.queue.writeBuffer(this.transformsBuffer, 0, this.instanceTransform, 0, this.numInstances * 16);
+    gpu.device.queue.writeBuffer(this.colorsBuffer, 0, this.instanceColor, 0, this.numInstances * 4);
   }
 
   private allocateBuffers() {
@@ -670,14 +670,14 @@ class SceneGraph2D {
         offset += m.vertices.length
       }
 
-      this.vertexBuffer.unmap();  
+      this.vertexBuffer.unmap();
     }
 
     this.texcoordBuffer = gpu.device.createBuffer({
       size: texcoordLength * Float32Array.BYTES_PER_ELEMENT,
       usage: GPUBufferUsage.VERTEX,
       mappedAtCreation: true,
-    });  
+    });
 
     {
       const mapping = new Float32Array(this.texcoordBuffer.getMappedRange());
@@ -688,7 +688,7 @@ class SceneGraph2D {
         offset += m.texcoord.length
       }
 
-      this.texcoordBuffer.unmap();  
+      this.texcoordBuffer.unmap();
     }
 
     if (indicesLength > 0xFFFF) {
@@ -699,7 +699,7 @@ class SceneGraph2D {
         usage: GPUBufferUsage.INDEX,
         mappedAtCreation: true,
       })
-  
+
       {
         const mapping = new Uint32Array(this.indexBuffer.getMappedRange());
 
@@ -709,9 +709,9 @@ class SceneGraph2D {
           mapping.set(m.indices, offset);
           offset += m.indices.length
         }
-  
-        this.indexBuffer.unmap();  
-      }  
+
+        this.indexBuffer.unmap();
+      }
     }
     else {
       this.indexFormat = "uint16";
@@ -721,7 +721,7 @@ class SceneGraph2D {
         usage: GPUBufferUsage.INDEX,
         mappedAtCreation: true,
       })
-  
+
       {
         const mapping = new Uint16Array(this.indexBuffer.getMappedRange());
 
@@ -731,9 +731,9 @@ class SceneGraph2D {
           mapping.set(m.indices, offset);
           offset += m.indices.length
         }
-  
-        this.indexBuffer.unmap();  
-      }  
+
+        this.indexBuffer.unmap();
+      }
     }
   }
 

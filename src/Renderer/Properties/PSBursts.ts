@@ -13,7 +13,7 @@ export class PSBursts extends Property<BurstsType> {
   copyProp(other: Property<BurstsType>) {
     runInAction(() => {
       this.value = [...(other as PSBursts).value];
-      this.override = false;  
+      this.override = false;
     })
   }
 

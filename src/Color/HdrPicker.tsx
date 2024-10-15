@@ -126,7 +126,7 @@ const HdrPicker: React.FC<PropsType> = ({
           onChange={handleBlueSliderChange}
         />
         <NumberInput value={hdrBlue} onChange={handleHdrBlueChange} />
-      </label>    
+      </label>
     </>
   )
 }

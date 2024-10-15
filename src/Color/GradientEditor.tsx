@@ -24,7 +24,7 @@ const GradientEditor: React.FC<PropsType> = observer(({
   const handleOpenClick: React.MouseEventHandler = (event) => {
     event.stopPropagation();
     event.preventDefault();
-    
+
     const element = ref.current;
 
     if (element) {

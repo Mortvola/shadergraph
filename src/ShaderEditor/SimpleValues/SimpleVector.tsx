@@ -18,7 +18,7 @@ const SimpleVector: React.FC<PropsType> = ({
   const handleChange = (newValue: number, index?: number) => {
     if (index !== undefined) {
       value[index] = newValue;
-      
+
       // store.applyMaterial();
       onChange()
     }
@@ -33,7 +33,7 @@ const SimpleVector: React.FC<PropsType> = ({
             value={value[index]}
             onChange={handleChange}
             index={index}
-          /> 
+          />
         ))
       }
     </>

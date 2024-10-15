@@ -19,13 +19,13 @@ class TextureProjectItem extends ProjectItem<TextureInterface> {
       const texture = await textureManager.get(this.itemId)
 
       if (texture) {
-  
+
         runInAction(() => {
           this.item = texture;
         })
-  
+
         return texture
-      }  
+      }
     }
 
     return null;

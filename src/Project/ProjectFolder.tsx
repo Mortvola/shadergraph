@@ -111,7 +111,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
           })()
         }
       }
-    
+
       setDroppable(false);
     }
   }
@@ -137,7 +137,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
             onOpen={onOpen}
             selected={i.id === project.selectedItem?.id}
             draggable
-          />    
+          />
         )
     ))
   )

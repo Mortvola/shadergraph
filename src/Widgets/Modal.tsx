@@ -24,7 +24,7 @@ const Modal: React.FC<PropsType> = ({
   if (!show) {
     return null;
   }
-  
+
   return (
     createPortal(
       <div className={styles.wrapper} onClick={handleWrapperClick} onPointerDown={handlePointerDown}>

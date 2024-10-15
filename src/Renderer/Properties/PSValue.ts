@@ -72,16 +72,16 @@ class PSValue extends PropertyBase {
     previousProp?: PSValue,
   ) {
     super(name, props, previousProp)
-    
+
     this.curve = [new PSCurve(this), new PSCurve(this)]
 
     const d = descriptor ?? defaultDescriptor;
     if (d) {
       this.applyDescriptor(d)
-    }  
+    }
 
     // If there is a previous prop but the initial value
-    // for this property is undefined then copy the value 
+    // for this property is undefined then copy the value
     // from the previous prop. Otherwise, mark this property
     // as an override of the previous prop.
     if (previousProp) {
@@ -90,7 +90,7 @@ class PSValue extends PropertyBase {
       }
       else {
         this.override = true;
-      }  
+      }
     }
 
     this.onChange = onChange;
@@ -127,11 +127,11 @@ class PSValue extends PropertyBase {
     runInAction(() => {
       this._type = other._type;
       this._value = [...other._value];
-      this._curveRange = [...other._curveRange];  
+      this._curveRange = [...other._curveRange];
       this.curve[0].copy(other.curve[0]);
       this.curve[1].copy(other.curve[1]);
-  
-      this.override = false;  
+
+      this.override = false;
     })
   }
 
@@ -157,7 +157,7 @@ class PSValue extends PropertyBase {
         value: this.value,
         curve: [this.curve[0].toDescriptor(), this.curve[0].toDescriptor()],
         curveRange: this.curveRange,
-      })  
+      })
     }
   }
 
@@ -165,18 +165,18 @@ class PSValue extends PropertyBase {
     switch (this.style) {
       case PSValueType.Constant:
         return this.value[0];
-  
+
       case PSValueType.Random:
         return lerp(this.value[0], this.value[1], Math.random());
-  
+
       case PSValueType.Curve: {
         const v = this.curve[0].getValue(t) ?? 1;
         return lerp(this.curveRange[0], this.curveRange[1], v);
       }
     }
-  
+
     return 1;
-  }  
+  }
 }
 
 export default PSValue;

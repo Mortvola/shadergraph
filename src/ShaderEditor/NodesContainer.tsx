@@ -20,13 +20,13 @@ const NodesContainer: React.FC<PropsType> = observer(({
     if (event.ctrlKey) {
       shaderGraphRenderer.changeScale(
         -event.deltaY / 1024,
-      )  
+      )
     }
     else {
       shaderGraphRenderer.setTranslation(
         shaderGraphRenderer.translate[0] - event.deltaX / 2,
         shaderGraphRenderer.translate[1] - event.deltaY / 2,
-      )  
+      )
     }
   }
 
@@ -41,9 +41,9 @@ const NodesContainer: React.FC<PropsType> = observer(({
   }, [])
 
   if (!graph) {
-    return null;    
+    return null;
   }
-  
+
   return (
     <div
       ref={ref}

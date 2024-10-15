@@ -11,7 +11,7 @@ import ParticleSystemProps from "../../Renderer/ParticleSystem/ParticleSystemPro
 import { type ParticleSystemPropsDescriptor } from "../../Renderer/ParticleSystem/Types";
 import LightProps from "../../Renderer/Properties/LightProps";
 
-  
+
 class SceneObject implements SceneObjectInterface {
   @observable
   accessor components: SceneObjectComponent[] = []
@@ -57,35 +57,35 @@ class SceneObject implements SceneObjectInterface {
         const componentDescriptor = descriptor?.object.components.find((component) => (
           component.id === c.id && component.type === c.type
         ));
-  
+
         switch (c.type) {
           case ComponentType.ParticleSystem: {
             const prefabProps = c.props as ParticleSystemProps;
-  
+
             const props = new ParticleSystemProps(
               componentDescriptor?.props as ParticleSystemPropsDescriptor,
               prefabProps,
             );
-  
+
             props.onChange = object.onChange;
             props.nodeObject = object;
-  
+
             return {
               id: c.id,
               type: c.type,
               props: props,
             }
           }
-  
+
           case ComponentType.Light: {
-  
+
             return {
               id: c.id,
               type: c.type,
               props: c.props,
             }
           }
-        }    
+        }
       })
         .filter((c) => c !== undefined)
 
@@ -134,7 +134,7 @@ class SceneObject implements SceneObjectInterface {
 
           return undefined
         })
-          .filter((c) => c !== undefined)  
+          .filter((c) => c !== undefined)
       }
 
       object.transformProps = new TransformProps(descriptor.object.transformProps, object.transformChanged);
@@ -144,7 +144,7 @@ class SceneObject implements SceneObjectInterface {
     for (let i = 0; i < object.transformProps.scale.get().length; i += 1) {
       if (object.transformProps.scale.get()[i] === 0) {
         object.transformProps.scale.get()[i] = 1;
-      }  
+      }
     }
 
     // vec3.copy(object.transformProps.translate.get(), object.renderNode.translate)
@@ -211,7 +211,7 @@ class SceneObject implements SceneObjectInterface {
     const nextComponentId = this.nextComponentId;
     this.nextComponentId += 1;
 
-    return nextComponentId;    
+    return nextComponentId;
   }
 
   transformChanged = () => {
@@ -224,7 +224,7 @@ class SceneObject implements SceneObjectInterface {
     if (this.node?.treeId !== undefined && this.node.treeId !== this.node.parent?.treeId) {
       return true;
     }
-  
+
     return false;
   }
 

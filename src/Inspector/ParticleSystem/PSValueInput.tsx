@@ -47,7 +47,7 @@ const PSValueInput: React.FC<PropsType> = observer(({
                     onChange={handleMinChange}
                     onFocus={onFocus}
                     onBlur={onBlur}
-                  />        
+                  />
                 )
 
               case PSValueType.Curve:
@@ -71,7 +71,7 @@ const PSValueInput: React.FC<PropsType> = observer(({
                     onChange={handleMaxChange}
                     onFocus={onFocus}
                     onBlur={onBlur}
-                  />    
+                  />
                 )
             }
 

@@ -10,7 +10,7 @@ class Billboard extends Drawable {
   }
 
   render(passEncoder: GPURenderPassEncoder) {
-    passEncoder.draw(6, this.numInstances);  
+    passEncoder.draw(6, this.numInstances);
   }
 
   addInstanceInfo(transform: Mat4, inverseTransform: Mat4, color: Vec4) {

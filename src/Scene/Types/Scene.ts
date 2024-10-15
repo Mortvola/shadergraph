@@ -59,7 +59,7 @@ class Scene implements SceneInterface {
       if (a.baseTreeId === b.treeId) {
         return 1;
       }
-      
+
       if (b.baseTreeId === a.treeId) {
         return -1;
       }
@@ -97,7 +97,7 @@ class Scene implements SceneInterface {
 
   async treeFromDescriptor(descriptor: NodesResponse): Promise<TreeNode | undefined> {
     let root: TreeNode | undefined;
-  
+
     // Sort the objects so that the base objects are instantiated first
     Scene.sortObjectDescriptors(descriptor.objects)
 
@@ -144,7 +144,7 @@ class Scene implements SceneInterface {
 
     return root;
   }
-  
+
   toDescriptor(): SceneDescriptor {
     return ({
       id: this.id,
@@ -193,10 +193,10 @@ class Scene implements SceneInterface {
 
   saveChanges = async () => {
     if (this.id < 0) {
-      await Http.post('/api/scenes', this.toDescriptor())  
+      await Http.post('/api/scenes', this.toDescriptor())
     }
     else {
-      await Http.patch(`/api/scenes/${this.id}`, this.toDescriptor())  
+      await Http.patch(`/api/scenes/${this.id}`, this.toDescriptor())
     }
   }
 

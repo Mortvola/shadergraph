@@ -23,7 +23,7 @@ const ValueInput: React.FC<PropsType> = observer(({
         value.value[index ?? 0] = v;
         onChange();
       }
-    })  
+    })
   }
 
   const handleColorChange = (v: number[]) => {
@@ -36,7 +36,7 @@ const ValueInput: React.FC<PropsType> = observer(({
   const handleStringChange = (v: string) => {
     runInAction(() => {
       value.value = v;
-      onChange();  
+      onChange();
     })
   }
 

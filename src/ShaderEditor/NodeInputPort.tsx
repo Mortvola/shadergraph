@@ -98,7 +98,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
 
       if (dragKey) {
         store.setDragObject(null);
-        setStartPoint(null);  
+        setStartPoint(null);
       }
     }
   }
@@ -130,12 +130,12 @@ const NodeInputPort: React.FC<PropsType> = observer(({
           : null
         case 'uv':
           return <SimpleUV />
-      }      
+      }
     }
 
     return null;
   }
-  
+
   const renderSimpleValues = () => {
     const parent = parentRef.current;
 

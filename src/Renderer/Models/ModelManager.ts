@@ -27,7 +27,7 @@ class ModelManager {
 
         if (model) {
           this.modelMap.set(id, model)
-        }  
+        }
       }
       else {
         model = await promise
@@ -69,7 +69,7 @@ const parseFbxModel = async (
       const newNode = await parseFbxModel(n, name, nodeMaterials);
 
       if (newNode) {
-        container.addNode(newNode);          
+        container.addNode(newNode);
       }
     }
 
@@ -102,18 +102,18 @@ const parseFbxModel = async (
 
     //   if (materialId !== undefined) {
     //     materialDescriptor = await this.getMaterial(materialId);
-    //   }  
+    //   }
     // }
 
     // if (!materialDescriptor) {
     //   materialDescriptor = litMaterial;
-    // }  
+    // }
 
     const drawableNode = new RenderNode();
     const drawable = await DrawableComponent.create(mesh);
 
     drawableNode.addComponent(drawable);
-    
+
     drawableNode.name = node.name;
     vec3.copy(node.scale, drawableNode.scale);
     vec3.copy(node.translate, drawableNode.translate);

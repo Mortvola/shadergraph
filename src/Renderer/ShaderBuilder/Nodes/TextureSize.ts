@@ -19,7 +19,7 @@ class TextureSize extends OperationNode {
   getDataType(): DataType {
     return 'vec2f'
   }
-  
+
   getExpression(editMode: boolean): [string, DataType] {
     const [texture] = this.inputPorts[0].getValue(editMode);
     return [`vec2f(textureDimensions(${texture}))`, 'vec2f'];

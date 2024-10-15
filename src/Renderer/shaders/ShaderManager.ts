@@ -21,10 +21,10 @@ class ShaderManager {
 
           if (response.ok) {
             shaderRecord = await response.body();
-      
+
             this.shaders.set(id, shaderRecord)
-          }  
-  
+          }
+
           return shaderRecord;
         })()
 

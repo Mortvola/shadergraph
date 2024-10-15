@@ -172,7 +172,7 @@ export const lineCircleIntersection = (center: Vec2, radius: number, p1: Vec2, p
 
     return [vec2.create(p1x + center[0], y1 + center[1]), vec2.create(p1x + center[0], y2 + center[1])];
   }
-  
+
   const m = dy / dx;
   const b = p1y - m * p1x;
 
@@ -388,7 +388,7 @@ export const circleRectangleIntersectionTest = (center: Vec2, radius: number, up
 // console.log(`intersection: ${result}`);
 
 
-const midPointLine = (p1: Vec2, p2: Vec2) => { 
+const midPointLine = (p1: Vec2, p2: Vec2) => {
   let start = p1;
   let end = p2;
 
@@ -402,35 +402,35 @@ const midPointLine = (p1: Vec2, p2: Vec2) => {
     sign = -1;
   }
 
-  // calculate dx & dy 
-  const dx = end[0] - start[0]; 
-  const dy = sign * (end[1] - start[1]); 
+  // calculate dx & dy
+  const dx = end[0] - start[0];
+  const dy = sign * (end[1] - start[1]);
 
-  // initial value of decision 
-  // parameter d 
-  let d = dy - (dx / 2); 
-  let x = start[0], y = start[1]; 
+  // initial value of decision
+  // parameter d
+  let d = dy - (dx / 2);
+  let x = start[0], y = start[1];
 
-  // Plot initial given point 
-  // putpixel(x,y) can be used to 
-  // print pixel of line in graphics 
-  console.log(`${x}, ${y}`); 
+  // Plot initial given point
+  // putpixel(x,y) can be used to
+  // print pixel of line in graphics
+  console.log(`${x}, ${y}`);
 
-  // iterate through value of X 
-  while (x < end[0]) { 
-    x += 1; 
+  // iterate through value of X
+  while (x < end[0]) {
+    x += 1;
 
-    // E or East is chosen 
+    // E or East is chosen
     if (d < 0) {
-      d = d + dy; 
-    } else { 
-      // NE or North East is chosen 
-      d += (dy - dx); 
-      y += sign; 
-    } 
+      d = d + dy;
+    } else {
+      // NE or North East is chosen
+      d += (dy - dx);
+      y += sign;
+    }
 
-    console.log(`${x}, ${y}`); 
-  } 
+    console.log(`${x}, ${y}`);
+  }
 }
 
 // const p1 = vec2.create(0, 0);
@@ -446,7 +446,7 @@ export const lineRectangleClip = (p1: Vec2, p2: Vec2, upperLeft: Vec2, lowerRigh
   const RIGHT = 2;  // 0010
   const BOTTOM = 4; // 0100
   const TOP = 8;    // 1000
-  
+
   let x0 = p1[0];
   let y0 = p1[1];
 

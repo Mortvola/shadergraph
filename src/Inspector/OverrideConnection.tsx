@@ -37,13 +37,13 @@ const OverrideConnection: React.FC<PropsType> = ({
             runInAction(() => {
               connection.treeId = parent.treeId
             })
-            
+
             popupContext.hidePopup()
 
             const parentNodeInfo = connection.scene.nodeMaps.get(parent.id)
             const nodeInfo = connection.scene.nodeMaps.get(connection.id)
 
-            if (parentNodeInfo && nodeInfo) {              
+            if (parentNodeInfo && nodeInfo) {
               for (const [treeId, treeNode] of parentNodeInfo.treeNodes) {
                 if (treeId !== parent.treeId) {
                   const node = new TreeNode(parent.scene, 'Test')
@@ -57,7 +57,7 @@ const OverrideConnection: React.FC<PropsType> = ({
                     node.nodeObject = object;
                     object.node = node;
                   }
-            
+
                   treeNode.autosave = false;
                   treeNode.addNode(node)
                   treeNode.autosave = true;

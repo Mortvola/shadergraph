@@ -38,9 +38,9 @@ const Property: React.FC<PropsType> = observer(({
 
       if (element) {
         const rect = element.getBoundingClientRect();
-  
+
         setOpen(rect);
-      }  
+      }
     }
   }
 

@@ -29,7 +29,7 @@ const MeshNode: React.FC<PropsType> = observer(({
   const handleDragOver: React.DragEventHandler = (event) => {
     event.preventDefault();
     event.stopPropagation();
-    
+
     if (
       event.dataTransfer.types[0] === 'application/project-item'
       && store.draggingItem
@@ -67,19 +67,19 @@ const MeshNode: React.FC<PropsType> = observer(({
 
         // if (modelItem.materials) {
         //   const id = modelItem.materials[node.name];
-    
+
         //   if (id !== undefined) {
         //     const item = store.project.getItemByItemId(id, 'material');
-    
+
         //     name = item?.name
         //   }
         // }
-    
+
         // if (name) {
         //   return (
         //     <div>{name}</div>
         //   )
-        // }    
+        // }
       }
     }
 

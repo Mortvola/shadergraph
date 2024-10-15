@@ -12,7 +12,7 @@ export type SamplerDescriptor = object;
 
 export type ValueType =
   string
-  | number 
+  | number
   | [number, number]
   | [number, number, number]
   | [number, number, number, number]

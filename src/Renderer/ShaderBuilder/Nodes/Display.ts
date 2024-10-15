@@ -46,7 +46,7 @@ class Display extends OperationNode {
     const descriptor = super.createDescriptor()
 
     descriptor.settings = this.settings;
-  
+
     return descriptor
   }
 

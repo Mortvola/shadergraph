@@ -59,7 +59,7 @@ class InputPort extends Port implements InputPortInterface {
     if (this.edge) {
       return this.edge.getDataType()
     }
-    
+
     return this.dataType
   }
 

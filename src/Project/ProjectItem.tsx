@@ -100,7 +100,7 @@ const ProjectItem: React.FC<PropsType> = observer(({
             const response = await Http.post<unknown, ProjectItemRecord>('/api/materials', {
               name: `${item.name} Material`,
               shaderId: item.itemId,
-              properties: shader.graph.properties,    
+              properties: shader.graph.properties,
             })
 
             if (response) {
@@ -111,19 +111,19 @@ const ProjectItem: React.FC<PropsType> = observer(({
               );
 
               (item.parent as FolderInterface).addItem(newItem)
-        
+
               runInAction(() => {
                 store.selectItem(newItem);
               })
             }
           }
         },
-      })      
+      })
     }
-    
+
     return items;
   }, [item, store]);
-  
+
   const handleContextMenu: React.MouseEventHandler = (event) => {
     event.stopPropagation();
     event.preventDefault();
@@ -141,7 +141,7 @@ const ProjectItem: React.FC<PropsType> = observer(({
 
   const renderIcon = () => {
     switch (item.type) {
-      case ProjectItemType.TreeNode: 
+      case ProjectItemType.TreeNode:
         return <Box fill="#07F" size="14" />;
 
       case ProjectItemType.Scene:

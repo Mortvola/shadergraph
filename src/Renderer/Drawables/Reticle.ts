@@ -15,7 +15,7 @@ class Reticle extends Drawable {
     super(DrawableType.Billboard, 1)
 
     this.name = 'Reticle';
-    
+
     this.radius[0] = radius;
 
     this.uniformBuffer3 = gpu.device.createBuffer({
@@ -42,7 +42,7 @@ class Reticle extends Drawable {
 
     passEncoder.setBindGroup(3, this.bindGroup3);
 
-    passEncoder.draw(6);  
+    passEncoder.draw(6);
   }
 
   hitTest(p: Vec4, viewTransform: Mat4): { point: Vec4, t: number, drawable: Drawable} | null {
@@ -52,7 +52,7 @@ class Reticle extends Drawable {
     // let point = vec4.create(t[12], t[13], t[14], t[15])
 
     // const p2 = intersectionPlane(point, vec4.create(0, 0, 1, 0), vec4.create(0, 0, 0, 1), p);
-  
+
     // if (p2) {
     //   const d = vec2.distance(point, p2)
 

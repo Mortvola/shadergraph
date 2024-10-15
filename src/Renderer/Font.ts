@@ -93,7 +93,7 @@ class Font {
           cursor = 0
 
           left = cursor + character.xoffset * scale
-          right = left + character.width * scale  
+          right = left + character.width * scale
 
           wordBreak = false
         }
@@ -110,7 +110,7 @@ class Font {
         texcoords.push(character.x / this.textuerWidth, (character.y + character.height) / this.textureHeight)
         texcoords.push((character.x + character.width) / this.textuerWidth, (character.y + character.height) / this.textureHeight)
         texcoords.push((character.x + character.width) / this.textuerWidth, character.y / this.textureHeight)
-        
+
         indexes.push(
           numVertices + 0,
           numVertices + 1,

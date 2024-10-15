@@ -37,7 +37,7 @@ const ProjectToolbar: React.FC = () => {
       if (inputElement) {
         inputElement.value = '';
         inputElement.click();
-      }  
+      }
     } },
     { name: 'Import model...', action: () => {
       const inputElement = modelInputRef.current;
@@ -45,14 +45,14 @@ const ProjectToolbar: React.FC = () => {
       if (inputElement) {
         inputElement.value = '';
         inputElement.click();
-      }  
+      }
     } },
     { name: 'Create material', action: () => { store.project.addNewItem(ProjectItemType.Material) } },
     { name: 'Create shader', action: () => { store.project.addNewItem(ProjectItemType.Shader) } },
     { name: 'Create scene', action: () => { store.project.addNewItem(ProjectItemType.Scene) } },
     { name: 'Create folder', action: () => { store.project.addNewItem(ProjectItemType.Folder) } },
   ]), [store.project]);
-  
+
   const handleTextureFileSelection: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
     if (event.target.files && event.target.files[0]) {
       store.project.importTexture(event.target.files[0])

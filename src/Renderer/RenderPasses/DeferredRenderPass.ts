@@ -2,7 +2,7 @@ import RenderPass from "./RenderPass";
 
 class DeferredRenderPass extends RenderPass {
   getDescriptor(
-    albedoView: GPUTextureView,  
+    albedoView: GPUTextureView,
     positionView: GPUTextureView,
     normalView: GPUTextureView,
     depthView: GPUTextureView,
@@ -43,7 +43,7 @@ class DeferredRenderPass extends RenderPass {
   }
 
   render(
-    albedoView: GPUTextureView,  
+    albedoView: GPUTextureView,
     positionView: GPUTextureView,
     normalView: GPUTextureView,
     depthView: GPUTextureView | null,

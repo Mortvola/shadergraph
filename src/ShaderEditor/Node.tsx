@@ -93,7 +93,7 @@ const Node: React.FC<PropsType> = observer(({
                   hideName
                   translate={translate}
                   scale={scale}
-                  origin={origin}            
+                  origin={origin}
                 />
               ))
             }
@@ -101,7 +101,7 @@ const Node: React.FC<PropsType> = observer(({
         </>
       )
     }
-    
+
     if (isValueNode(node) && !expanded) {
       return (
         <>
@@ -144,7 +144,7 @@ const Node: React.FC<PropsType> = observer(({
                   port={p}
                   translate={translate}
                   scale={scale}
-                  origin={origin}            
+                  origin={origin}
                 />
               ))
             }
@@ -163,7 +163,7 @@ const Node: React.FC<PropsType> = observer(({
             }
           </div>
         </div>
-      </>      
+      </>
     )
   }
 
@@ -206,7 +206,7 @@ const Node: React.FC<PropsType> = observer(({
                     top: showSettings?.top,
                     transform: `translate(calc(-100% + ${translate.x}px), ${translate.y}px)`,
                   }}
-                />    
+                />
               )
           }
         </Modal>

@@ -32,7 +32,7 @@ const NewProjectItem: React.FC<PropsType> = observer(({
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     setName(event.target.value)
   }
-  
+
   if (folder.newItemType !== null) {
     return (
       <input
@@ -43,7 +43,7 @@ const NewProjectItem: React.FC<PropsType> = observer(({
         onBlur={handleBlur}
         autoFocus
       />
-    )  
+    )
   }
 
   return null;

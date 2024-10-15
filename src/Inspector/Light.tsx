@@ -16,28 +16,28 @@ const LightComponent: React.FC<PropsType> = ({
   const handleColorChange = (value: number[]) => {
     runInAction(() => {
       lightProps.color = [...value];
-      lightProps.handleChange();  
+      lightProps.handleChange();
     })
   }
 
   const handleConstantChange = (value: number) => {
     runInAction(() => {
       lightProps.constant = value;
-      lightProps.handleChange();  
+      lightProps.handleChange();
     })
   }
 
   const handleLinearChange = (value: number) => {
     runInAction(() => {
       lightProps.linear = value;
-      lightProps.handleChange();  
+      lightProps.handleChange();
     })
   }
 
   const handleQuadraticChange = (value: number) => {
     runInAction(() => {
       lightProps.quadratic = value;
-      lightProps.handleChange();  
+      lightProps.handleChange();
     })
   }
 
@@ -65,15 +65,15 @@ const LightComponent: React.FC<PropsType> = ({
       lightProps.constant = attenuationPresets[index][1];
       lightProps.linear = attenuationPresets[index][2];
       lightProps.quadratic = attenuationPresets[index][3];
-  
-      lightProps.handleChange();  
+
+      lightProps.handleChange();
     })
   }, [lightProps])
 
   const menuItems = React.useCallback((): MenuItemLike[] => ([
     ...attenuationPresets.map((l, index) => ({ name: l[0].toString(), action: () => {setPreset(index)} }))
   ]), [setPreset]);
-  
+
   return (
     <div>
       <label>

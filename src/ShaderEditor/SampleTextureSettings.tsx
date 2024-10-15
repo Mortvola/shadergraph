@@ -21,25 +21,25 @@ const SampleTextureSettings: React.FC<PropsType> = observer(({
 
   const handleVAddressModeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     runInAction(() => {
-      node.settings.addressModeV = event.target.value      
+      node.settings.addressModeV = event.target.value
     })
   }
 
   const handleMinFilterChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     runInAction(() => {
-      node.settings.minFilter = event.target.value      
+      node.settings.minFilter = event.target.value
     })
   }
 
   const handleMagFilterChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     runInAction(() => {
-      node.settings.magFilter = event.target.value      
+      node.settings.magFilter = event.target.value
     })
   }
 
   const handleMipmapFilterChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     runInAction(() => {
-      node.settings.mipmapFilter = event.target.value      
+      node.settings.mipmapFilter = event.target.value
     })
   }
 

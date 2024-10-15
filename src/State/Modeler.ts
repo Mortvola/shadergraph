@@ -29,7 +29,7 @@ class Modeler implements ModelerInterface {
     if (model && materials) {
       await this.assignMaterals(model, materials)
     }
-    
+
     runInAction(() => {
       this.model = model;
 

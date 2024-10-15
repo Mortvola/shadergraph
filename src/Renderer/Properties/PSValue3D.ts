@@ -16,7 +16,7 @@ class PSValue3D extends PropertyBase {
       this._separateAxes = value.value;
       if (value.override !== undefined) {
         this.override = value.override && this.base !== undefined
-      }  
+      }
     })
   }
 
@@ -38,7 +38,7 @@ class PSValue3D extends PropertyBase {
       this._style = value.value;
       if (value.override) {
         this.override = value.override && this.base !== undefined
-      }  
+      }
     })
   }
 
@@ -60,7 +60,7 @@ class PSValue3D extends PropertyBase {
     }
 
     // If there is a previous prop but the initial value
-    // for this property is undefined then copy the value 
+    // for this property is undefined then copy the value
     // from the previous prop. Otherwise, mark this property
     // as an override of the previous prop.
     if (previousProp) {
@@ -69,7 +69,7 @@ class PSValue3D extends PropertyBase {
       }
       else {
         this.override = true;
-      }  
+      }
     }
 
     this.onChange = onChange;
@@ -87,8 +87,8 @@ class PSValue3D extends PropertyBase {
       this._separateAxes = other._separateAxes;
       this._style = other._style;
       this.values = [...other.values];
-  
-      this.override = false;  
+
+      this.override = false;
     })
   }
 
@@ -101,7 +101,7 @@ class PSValue3D extends PropertyBase {
         this.applyValueDescriptor(descriptor.values[0]),
         this.applyValueDescriptor(descriptor.values[1]),
         this.applyValueDescriptor(descriptor.values[2]),
-      ]  
+      ]
     }
     else if (descriptor.value !== undefined) {
       // TODO: This is here to support older descriptors. Remove when no longer needed
@@ -140,7 +140,7 @@ class PSValue3D extends PropertyBase {
           this.toValueDescriptor(this.values[1]),
           this.toValueDescriptor(this.values[2]),
         ]
-      })  
+      })
     }
   }
 
@@ -170,16 +170,16 @@ class PSValue3D extends PropertyBase {
     switch (style) {
       case PSValueType.Constant:
         return value.value[0];
-  
+
       case PSValueType.Random:
         return lerp(value.value[0], value.value[1], Math.random());
-  
+
       case PSValueType.Curve: {
         const v = value.curve[0].getValue(t) ?? 1;
         return lerp(value.curveRange[0], value.curveRange[1], v);
       }
     }
-  
+
     return 1;
   }
 }

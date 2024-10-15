@@ -22,7 +22,7 @@ export class PropertyBase implements PropertyBaseInterface {
     this.name = name;
     this.props = props;
     this.base = originalProp;
-    
+
     if (originalProp) {
       originalProp.variations.add(this);
     }
@@ -63,17 +63,17 @@ export class PropertyBase implements PropertyBaseInterface {
   applyOverride(original: PropertyBase): void {
     runInAction(() => {
       original.copyProp(this)
-  
+
       // Mark the change as an override unless the original is the
       // root property (.original === undefined)
       original.override = original.base !== undefined
-  
-      this.revertOverride()       
+
+      this.revertOverride()
     })
 
     // Propogate the new property value to the variants.
     runInAction(() => {
-      original.propogate()      
+      original.propogate()
     })
   }
 
@@ -109,7 +109,7 @@ export class PropertyBase implements PropertyBaseInterface {
         if (this.onChange) {
           this.onChange()
         }
-      })  
+      })
     }
   }
 

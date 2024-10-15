@@ -13,7 +13,7 @@ class LightProps extends PropsBase implements LightPropsInterface {
 
   constructor(descriptor?: LightPropsDescriptor) {
     super()
-    
+
     this.color = descriptor?.color ?? this.color;
     this.constant = descriptor?.constant ?? this.constant;
     this.linear = descriptor?.linear ?? this.linear;

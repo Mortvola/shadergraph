@@ -16,7 +16,7 @@ class PSValue2 {
       this._value = value.value;
       if (this.parent && value.override !== undefined) {
         this.parent.override = value.override && this.parent.base !== undefined
-      }  
+      }
     })
   }
 
@@ -33,7 +33,7 @@ class PSValue2 {
       this._curveRange = value.value;
       if (this.parent && value.override !== undefined) {
         this.parent.override = value.override && this.parent.base !== undefined
-      }  
+      }
     })
   }
 
@@ -41,7 +41,7 @@ class PSValue2 {
 
   constructor(parent: { override: boolean }) {
     this.parent = parent;
-  
+
     this.curve = [new PSCurve(parent), new PSCurve(parent)]
   }
 

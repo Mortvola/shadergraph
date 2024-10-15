@@ -14,7 +14,7 @@ class DecalPipeline extends Pipeline {
       label,
       code: decalShader,
     })
-    
+
     const vertexBufferLayout: GPUVertexBufferLayout[] = [
       {
         attributes: [
@@ -27,7 +27,7 @@ class DecalPipeline extends Pipeline {
         arrayStride: 16,
         stepMode: "vertex",
       },
-    ];    
+    ];
 
     const textureGroupLayout = gpu.device.createBindGroupLayout({
       label,
@@ -91,7 +91,7 @@ class DecalPipeline extends Pipeline {
         ]
       }),
     };
-    
+
     super(
       gpu.device.createRenderPipeline(pipelineDescriptor),
       null,
@@ -112,7 +112,7 @@ class DecalPipeline extends Pipeline {
         new Property('sampler', 'sampler', {}, false),
         new Property('albedo', 'texture2D', 0, false),
       ],
-      structuredView: null,    
+      structuredView: null,
     }
   }
 }

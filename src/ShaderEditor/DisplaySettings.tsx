@@ -53,7 +53,7 @@ const DisplaySettings: React.FC<PropsType> = observer(({
       node.settings.lit = value;
     })
   }
-  
+
   return (
     <div className={styles.settings} style={style} onPointerDown={handlePointerDown} onClick={handleClick}>
       <Checkbox value={node.settings.lit} label="Lit" onChange={handleLitChange} />

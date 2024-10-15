@@ -24,7 +24,7 @@ export type ProjectItemLike =
 
 export enum ProjectItemType {
   Particle = 'particle',
-  Model = 'model', 
+  Model = 'model',
   Shader = 'shader',
   Texture = 'texture',
   Material = 'material',
@@ -93,7 +93,7 @@ export interface FolderInterface extends ProjectItemInterface<FolderInterface> {
   items: ProjectItemLike[]
 
   newItemType: ProjectItemType | null
-  
+
   open: boolean;
 
   toggleOpen(): void;

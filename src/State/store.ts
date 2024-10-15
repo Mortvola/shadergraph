@@ -73,7 +73,7 @@ class Store implements StoreInterface {
         offset: this.mainView.camera.offset,
         rotateX: this.mainView.camera.rotateX,
         finalRotateY: this.mainView.camera.finalRotateY,
-      }), 
+      }),
       () => {
         localStorage.setItem('camera', JSON.stringify({
           offset: this.mainView.camera.offset,
@@ -114,21 +114,21 @@ class Store implements StoreInterface {
 
           // if (modelItem) {
           //   const model = await this.getModel(modelItem)
-    
+
           //   if (model) {
           //     this.mainViewModeler.renderer.removeSceneNode(model)
           //   }
-          // }    
+          // }
         }
         else if (component.type === ComponentType.Decal) { /* empty */ }
-      }  
+      }
     }
 
     runInAction(() => {
       if (item && this.scene) {
         this.scene.selectedNode = null;
       }
-  
+
       item?.getItem()
       this.project.selectedItem = item;
     })
@@ -147,10 +147,10 @@ class Store implements StoreInterface {
               }
               this.scene = scene;
               scene.renderScene();
-            })    
-          }  
+            })
+          }
         }
-  
+
         break;
       }
 
@@ -162,9 +162,9 @@ class Store implements StoreInterface {
             runInAction(() => {
               shaderGraphRenderer.setTranslation(0, 0)
               this.graph = shader
-              this.graph.applyMaterial()  
-            })  
-          }  
+              this.graph.applyMaterial()
+            })
+          }
         }
 
         break;
@@ -186,7 +186,7 @@ class Store implements StoreInterface {
     }
 
     return model?.model
-  }  
+  }
 }
 
 const store = await Store.create();

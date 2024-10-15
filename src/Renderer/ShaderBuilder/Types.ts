@@ -19,7 +19,7 @@ export interface InputPortInterface extends PortInterface {
   value?: ValueInterface;
 
   constantName: string; // used for temporary var names for the "constants" attached to an input port
-  
+
   getVarName(): [string, DataType];
 
   getValue(editMode: boolean): [string, DataType];
@@ -37,7 +37,7 @@ export const isInputPort = (r: unknown): r is InputPortInterface => (
 
 export interface OutputPortInterface extends PortInterface {
   edges: GraphEdgeInterface[];
-  
+
   getVarName(): [string, DataType];
 
   getValue(editMode: boolean): [string, DataType];
@@ -104,7 +104,7 @@ export const isValueNode = (r: unknown): r is ValueNodeInterface => (
   (r as ValueNodeInterface).value !== undefined
 )
 
-export interface GraphEdgeInterface {  
+export interface GraphEdgeInterface {
   output: OutputPortInterface;
 
   input: InputPortInterface;
@@ -160,7 +160,7 @@ export const convertType = (type: string) => {
 
     case 'vec3f':
       return '3';
-      
+
     case 'vec4f':
     case 'color':
       return '4';

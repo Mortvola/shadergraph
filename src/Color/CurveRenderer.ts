@@ -26,7 +26,7 @@ class CurveRenderer extends Renderer2d {
       this.ctx.ellipse(x, y, this.radius / this.canvasScale[0], this.radius / this.canvasScale[1], 0, 0, 2 * Math.PI);
       this.ctx.fill()
       this.ctx.strokeStyle = "black";
-      this.ctx.stroke()  
+      this.ctx.stroke()
     }
   }
 
@@ -88,7 +88,7 @@ class CurveRenderer extends Renderer2d {
           this.ctx.stroke();
         }
       }
-      
+
       // Draw connecting line between last point and left control point.
       const i = points.length - 1;
 
@@ -107,9 +107,9 @@ class CurveRenderer extends Renderer2d {
       for (let i = 0; i < points.length; i += 1) {
         const x = points[i].x * width / this.canvasScale[0];
         const y = (height - points[i].y * height) / this.canvasScale[1];
-  
+
         // Draw the point
-        this.renderPoint(x, y, 'lightblue', 'lightblue');  
+        this.renderPoint(x, y, 'lightblue', 'lightblue');
 
         // Draw the left control point
         if (i > 0) {
@@ -118,7 +118,7 @@ class CurveRenderer extends Renderer2d {
             y - points[i].leftCtrl.y * height / this.canvasScale[1],
             'coral',
             'coral',
-          );  
+          );
         }
 
         // Draw the left control point
@@ -128,7 +128,7 @@ class CurveRenderer extends Renderer2d {
             y - points[i].rightCtrl.y * height / this.canvasScale[1],
             'coral',
             'coral',
-          );  
+          );
         }
       }
     }
@@ -162,13 +162,13 @@ class CurveRenderer extends Renderer2d {
           vec2.create(x * width / this.canvasScale[0], (height - y * height) / this.canvasScale[1]),
           vec2.create((point.x + point.leftCtrl.x) * width / this.canvasScale[0], (height - (point.y + point.leftCtrl.y) * height) / this.canvasScale[1]),
         )
-  
+
         if (d <= this.radius) {
           if (closestDistance === undefined || d < closestDistance) {
             selectedPoint = { point, subpoint: Subpoint.LeftCtrl };
             closestDistance = d;
           }
-        }  
+        }
       }
 
       // Test right control point
@@ -177,13 +177,13 @@ class CurveRenderer extends Renderer2d {
           vec2.create(x * width / this.canvasScale[0], (height - y * height) / this.canvasScale[1]),
           vec2.create((point.x + point.rightCtrl.x) * width / this.canvasScale[0], (height - (point.y + point.rightCtrl.y) * height) / this.canvasScale[1]),
         )
-  
+
         if (d <= this.radius) {
           if (closestDistance === undefined || d < closestDistance) {
             selectedPoint = { point, subpoint: Subpoint.RightCtrl };
             closestDistance = d;
           }
-        }        
+        }
       }
     }
 

@@ -26,7 +26,7 @@ interface DrawableInterface {
   modelMatrices: Float32Array
 
   inverseModelMatrices: Float32Array
-  
+
   modelMatrixBuffer: GPUBuffer;
 
   inverseModelMatrixBuffer: GPUBuffer;

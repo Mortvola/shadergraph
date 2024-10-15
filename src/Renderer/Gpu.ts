@@ -17,21 +17,21 @@ class Gpu {
     if (this.d) {
       return true;
     }
-    
+
     if (navigator.gpu) {
       if (!this.adpapterPromise) {
         this.adpapterPromise = navigator.gpu.requestAdapter();
       }
 
       const adapter = await this.adpapterPromise
-  
-      if (adapter) {  
+
+      if (adapter) {
         if (!this.devicePromise) {
           this.devicePromise = adapter.requestDevice();
         }
 
         this.d = await this.devicePromise
-      
+
         return this.d !== undefined;
       }
     }

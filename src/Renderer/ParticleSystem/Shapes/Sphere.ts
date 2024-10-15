@@ -38,7 +38,7 @@ class Sphere {
     const v = Math.random();
     const theta = u * 2.0 * Math.PI;
     const phi = Math.acos(2.0 * v - 1.0);
-    
+
     const sinTheta = Math.sin(theta);
     const cosTheta = Math.cos(theta);
     const sinPhi = Math.sin(phi);
@@ -51,7 +51,7 @@ class Sphere {
     if (this.hemisphere) {
       y = Math.abs(y);
     }
-  
+
     //const r = Math.cbrt(Math.random());
     const r  = this.radius.get();
 

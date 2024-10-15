@@ -21,7 +21,7 @@ const MainView: React.FC = observer(() => {
   const { mainView, scene, project } = store;
 
   const [showDialog, setShowDialog] = React.useState<boolean>(false)
-  
+
   const handleWheel: React.WheelEventHandler<HTMLDivElement> = (event) => {
     if (event.ctrlKey) {
       mainView?.camera.changeOffset(event.deltaY * 0.01);
@@ -44,9 +44,9 @@ const MainView: React.FC = observer(() => {
           if (scene) {
             scene.removeScene()
           }
-      
+
           project.open(body.id)
-          localStorage.setItem('projectId', body.id.toString())      
+          localStorage.setItem('projectId', body.id.toString())
         }
       }
     )()

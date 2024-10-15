@@ -45,7 +45,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
       && !folder.isAncestor(scene.draggingNode)
     )) {
       event.dataTransfer.dropEffect = 'move';
-      setDroppable(true);      
+      setDroppable(true);
     } else if ((
       event.dataTransfer.types[0] === 'application/project-item'
       && store.draggingItem?.type === ProjectItemType.TreeNode
@@ -79,7 +79,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
 
             if (response.ok) {
               node.detachSelf();
-              folder.addNode(node);        
+              folder.addNode(node);
             }
           }
         )()
@@ -131,11 +131,11 @@ const SceneFolder: React.FC<PropsType> = observer(({
           switch (folder.newItemType) {
             case SceneItemType.SceneObject: {
               const node = await objectManager.add(undefined, name, folder)
-  
+
               if (node) {
                 scene.setSelected(node);
               }
-    
+
               break;
             }
 
@@ -143,7 +143,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
               const props = new ParticleSystemProps();
 
               const node = await objectManager.add(
-                { type: ComponentType.ParticleSystem, props }, 
+                { type: ComponentType.ParticleSystem, props },
                 name,
                 folder,
               );
@@ -163,17 +163,17 @@ const SceneFolder: React.FC<PropsType> = observer(({
                 name,
                 folder,
               );
-      
+
               if (node) {
                 scene.setSelected(node);
               }
-      
+
               break;
             }
           }
 
           folder.cancelNewItem()
-          setName('');    
+          setName('');
         }
       )()
     }

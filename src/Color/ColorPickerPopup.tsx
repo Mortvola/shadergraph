@@ -34,12 +34,12 @@ const ColorPickerPopup: React.FC<PropsType> = ({
 }) => {
   const [alpha, setAlpha] = React.useState<number>(useAlpha ? value[3] : 1);
   const [intensity, setIntensity] = React.useState<number>(0)
-  
+
   const ref = React.useRef<HTMLDivElement>(null);
   const [wrapperBounds, setWrapperBounds] = React.useState<DOMRect>();
   const colorMutator = React.useRef<ColorMutator>()
   const [colorMode, setColorMode] = React.useState<ColorMode>(ColorMode.HDR)
-  
+
   React.useEffect(() => {
     colorMutator.current = new ColorMutator(new Color(value[0], value[1], value[2], value[3]));
 
@@ -144,7 +144,7 @@ const ColorPickerPopup: React.FC<PropsType> = ({
                         <NumberInput value={alpha} onChange={handleAlphaChange} />
                       </label>
                     )
-                    : null                
+                    : null
                 }
                 {
                   useHdr
@@ -152,7 +152,7 @@ const ColorPickerPopup: React.FC<PropsType> = ({
                       <label>
                         Intensity:
                         <NumberInput value={intensity} onChange={handleIntensityChange} />
-                      </label>    
+                      </label>
                     )
                     : null
                 }

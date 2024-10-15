@@ -124,15 +124,15 @@ class TreeNode extends Entity {
       if (object) {
         for (const comp of object.components) {
           switch (comp.type) {
-            case ComponentType.ParticleSystem: {    
+            case ComponentType.ParticleSystem: {
               // const props = new ParticleSystemProps(
               //   undefined,
               //   comp.props as ParticleSystemProps,
               // );
               const props = comp.props as ParticleSystemProps;
-    
+
               const ps = new ParticleSystem(props)
-    
+
               components.set(comp.id, {
                 type: comp.type,
                 props,
@@ -141,12 +141,12 @@ class TreeNode extends Entity {
 
               break;
             }
-    
+
             case ComponentType.Light: {
             //   const light = new Light(c.props as LightPropsInterface);
-    
+
             //   // object.renderNode.addComponent(light)
-    
+
             //   return {
             //     id: c.id,
             //     type: c.type,
@@ -207,12 +207,12 @@ class TreeNode extends Entity {
         const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${this.id}`, {
           name,
         })
-    
+
         if (response.ok) {
           runInAction(() => {
             this.name = name
           })
-        }    
+        }
       }
     )()
   }
@@ -233,7 +233,7 @@ class TreeNode extends Entity {
       while (stack.length > 0) {
         const node = stack[0];
         stack = stack.slice(1)
-  
+
         for (const child of node.nodes) {
           if (child.treeId === this.treeId) {
             stack.push(child)
@@ -242,7 +242,7 @@ class TreeNode extends Entity {
             connections.push(child)
           }
         }
-      }  
+      }
     }
 
     return connections;

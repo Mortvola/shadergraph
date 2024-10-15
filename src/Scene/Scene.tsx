@@ -13,7 +13,7 @@ type PropsType = {
 const Scene: React.FC<PropsType> = observer(({
   scene,
 }) => {
-  const handleObjectClick = (node: TreeNode) => {    
+  const handleObjectClick = (node: TreeNode) => {
     scene?.setSelected(node)
   }
 

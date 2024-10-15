@@ -54,7 +54,7 @@ const PSRenderer: React.FC<PropsType> = observer(({
     ) {
       if (
         draggingItem
-        && draggingItem.itemId !== null  
+        && draggingItem.itemId !== null
       ) {
         switch (draggingItem.type) {
           case ProjectItemType.Material:

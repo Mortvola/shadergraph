@@ -35,7 +35,7 @@ const ShapeModule: React.FC<PropsType> = observer(({
 
             case ShapeType.Hemisphere:
               return <Sphere sphere={shape.hemisphere} />
-  
+
             default:
               return null;
           }

@@ -209,7 +209,7 @@ class PipelineManager implements PipelineManagerInterface {
                 dstFactor: 'one' as GPUBlendFactor,
               },
             }),
-        });  
+        });
       }
       else {
         targets.push(
@@ -242,7 +242,7 @@ class PipelineManager implements PipelineManagerInterface {
       ]
 
       const defs = makeShaderDataDefinitions(shaderModule.code);
-      
+
       let binding = 2;
 
       if (shaderModule.vertProperties.length > 0) {
@@ -259,7 +259,7 @@ class PipelineManager implements PipelineManagerInterface {
           }
 
           binding += 1
-        }  
+        }
       }
 
       if (shaderModule.fragProperties.length > 0) {
@@ -307,7 +307,7 @@ class PipelineManager implements PipelineManagerInterface {
         },
         layout: pipelineLayout,
       };
-      
+
       const gpuPipeline = gpu.device.createRenderPipeline(pipelineDescriptor);
 
       pipeline = new Pipeline(gpuPipeline, vertStageBindings, fragStageBindings, shaderModule.settings);

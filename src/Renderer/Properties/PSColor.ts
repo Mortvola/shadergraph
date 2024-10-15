@@ -51,7 +51,7 @@ class PSColor extends PropertyBase {
 
     if (descriptor) {
       this.applyDescriptor(descriptor)
-    }  
+    }
 
     if (prevousProp) {
       if (descriptor === undefined) {
@@ -59,7 +59,7 @@ class PSColor extends PropertyBase {
       }
       else {
         this.override = true
-      }  
+      }
     }
 
     this.onChange = onChange;
@@ -87,7 +87,7 @@ class PSColor extends PropertyBase {
       this._color = [
         [...other._color[0]],
         [...other._color[1]],
-      ];  
+      ];
       this.gradients[0].copy(other.gradients[0]);
       this.gradients[1].copy(other.gradients[1]);
 
@@ -117,7 +117,7 @@ class PSColor extends PropertyBase {
         type: this.style,
         color: [this.color[0].slice(), this.color[1].slice()],
         gradients: [this.gradients[0].toDescriptor(), this.gradients[1].toDescriptor()],
-      })  
+      })
     }
   }
 
@@ -125,22 +125,22 @@ class PSColor extends PropertyBase {
     switch (this.style) {
       case PSColorType.Constant:
         return this.color[0];
-      
+
       case PSColorType.Random: {
         const r = Math.random();
-  
+
         return lerp(this.color[0], this.color[1], r)
       }
-  
+
       case PSColorType.Gradient:
         return this.gradients[0].getColor(t);
-  
+
       case PSColorType.RandomGradient: {
         const color1 = this.gradients[0].getColor(t);
         const color2 = this.gradients[1].getColor(t);
-  
+
         const r = Math.random();
-  
+
         return lerp(color1, color2, r)
       }
     }

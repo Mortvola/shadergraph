@@ -77,7 +77,7 @@ const GradientEditorPopup: React.FC<PropsType> = observer(({
     if (newKey !== undefined) {
       setColor(newKey.value)
       setSelectedColorId(newKey.id);
-      setSelectedAlphaId(undefined)  
+      setSelectedAlphaId(undefined)
     }
   }
 

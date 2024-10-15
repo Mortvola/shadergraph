@@ -40,7 +40,7 @@ const PSModule: React.FC<PropsType> = observer(({
             ? (
               <div>
                 {children}
-              </div>      
+              </div>
             )
             : null
         }

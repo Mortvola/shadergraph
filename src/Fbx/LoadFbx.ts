@@ -78,7 +78,7 @@ const loadGeometry = async (
             texcoord.push(uv[uvIndex[offset] * 2 + 0])
             texcoord.push(uv[uvIndex[offset] * 2 + 1])
           }
-    
+
           if (
             mappingInformationType === 'ByPolygonVertex'
             && referenceInformationType === 'Direct'
@@ -87,7 +87,7 @@ const loadGeometry = async (
             norms.push(normals[(offset) * 3 + 1])
             norms.push(normals[(offset) * 3 + 2])
           }
-  
+
           v[n] = m.addVertex(
             vertices[index[n] * 3 + 0],
             vertices[index[n] * 3 + 1],
@@ -137,9 +137,9 @@ const addTransformProperties = (sceneNode: FbxNode, node: FBXParser.FBXReaderNod
   const yTranslation = (trans?.prop(5, 'number') ?? 0) * scaleFactor;
   const zTranslation = (trans?.prop(5, 'number') ?? 0) * scaleFactor;
 
-  sceneNode.scale = vec3.create(xScale, yScale, zScale); 
+  sceneNode.scale = vec3.create(xScale, yScale, zScale);
   sceneNode.setFromAngles(degToRad(xRotation), degToRad(yRotation), degToRad(zRotation));
-  sceneNode.translate = vec3.create(xTranslation, yTranslation, zTranslation); 
+  sceneNode.translate = vec3.create(xTranslation, yTranslation, zTranslation);
 }
 
 type Result = {
@@ -227,12 +227,12 @@ const traverseTree = async (
         switch (node.fbxNode.name) {
           case 'Geometry': {
             const geometry = await loadGeometry(node, geoPctComplete);
-  
+
             if (geometry) {
               const results = await geometry.generateBuffers();
 
               const geometryNode = new FbxGeometryNode(geometry, results.vertices, results.normals, results.texcoords, results.indices);
-              
+
               geometryNode.name =  node.prop(1, 'string')?.split('::')[1] ?? '';
               if (geometryNode.name === '') {
                 geometryNode.name = node.prop(2, 'string') ?? 'Unknown';
@@ -242,12 +242,12 @@ const traverseTree = async (
 
               result.sceneNodes.push(geometryNode);
             }
-  
+
             geoPctComplete(null);
 
             break;
           }
-        
+
           case 'Model': {
             const model = new FbxContainerNode();
 
@@ -263,7 +263,7 @@ const traverseTree = async (
 
                 model.addNode(sceneNode);
                 // if (isDrawableInterface(sceneNode)) {
-                  // renderer?.mainRenderPass.addDrawable(sceneNode);              
+                  // renderer?.mainRenderPass.addDrawable(sceneNode);
                 // }
               }
             }
@@ -289,7 +289,7 @@ const traverseTree = async (
 
                 model.addNode(sceneNode);
                 // if (isDrawableInterface(sceneNode)) {
-                  // renderer?.mainRenderPass.addDrawable(sceneNode);              
+                  // renderer?.mainRenderPass.addDrawable(sceneNode);
                 // }
               }
             }
@@ -309,8 +309,8 @@ const traverseTree = async (
       }
 
       context.connectionsProcessed.push([c, connectedObjectId, objectId, type])
-      context.connectionsProcessedCount += 1;  
-  
+      context.connectionsProcessedCount += 1;
+
       setPercentComplete(context.connectionsProcessedCount / context.totalOOConnections)
     }
     else {
@@ -395,7 +395,7 @@ export const downloadFbx = async (url: string): Promise<FbxNode | undefined> => 
               edge.visited = true;
               stack.push(edge.objectId);
             }
-          }  
+          }
         }
 
         const priorCount = edges.length;
@@ -411,14 +411,14 @@ export const downloadFbx = async (url: string): Promise<FbxNode | undefined> => 
         // Keep only the visited edges.
         edges = edges.filter((edge) => edge.visited);
         console.log(`edges removed: ${priorCount - edges.length}`)
-        
+
         const context: Context = {
           totalOOConnections: edges.length,
           connectionsProcessedCount: 0,
           connectionsProcessed: [],
           unhandled: {},
         }
-        
+
         // setPercentComplete(0);
 
         // await yieldToMain()
@@ -442,9 +442,9 @@ export const downloadFbx = async (url: string): Promise<FbxNode | undefined> => 
         );
 
         // for (const sceneNode of result.sceneNodes) {
-          // renderer?.document.addNode(sceneNode);  
+          // renderer?.document.addNode(sceneNode);
         // }
-  
+
         // Report what objects were not visited.
         for (const node of objectsNode.fbxNode.nodes) {
           const id = node.props[0] as number;
@@ -466,7 +466,7 @@ export const downloadFbx = async (url: string): Promise<FbxNode | undefined> => 
         }
 
         const containerNode = new FbxContainerNode();
-        
+
         for (const node of result.sceneNodes) {
           containerNode.addNode(node);
         }
@@ -477,5 +477,5 @@ export const downloadFbx = async (url: string): Promise<FbxNode | undefined> => 
   }
   catch (error) {
     console.log(error);
-  }    
+  }
 };

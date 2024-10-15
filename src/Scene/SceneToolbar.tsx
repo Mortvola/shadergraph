@@ -57,7 +57,7 @@ const SceneToolbar: React.FC<PropsType> = ({
     // { name: 'Create particle system', action: () => { store.project.addNewItem('particle') } },
     // { name: 'Create folder', action: () => { store.project.createFolder() } },
   ]), [scene]);
-  
+
   const handleTextureFileSelection: React.ChangeEventHandler<HTMLInputElement> = async (event) => {
     if (event.target.files && event.target.files[0]) {
       store.project.importTexture(event.target.files[0])

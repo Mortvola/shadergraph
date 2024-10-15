@@ -34,7 +34,7 @@ class ObjectManager {
       parentNode.addNode(node);
 
       return node
-    }  
+    }
   }
 
   static getUrl(object: SceneObject) {
@@ -44,7 +44,7 @@ class ObjectManager {
   async update(object: SceneObject) {
     const response = await Http.put<SceneObjectDescriptor, void>(`/api/scene-objects/${ObjectManager.getUrl(object)}`, object.toDescriptor());
 
-    if (response.ok) { /* empty */ }  
+    if (response.ok) { /* empty */ }
   }
 }
 

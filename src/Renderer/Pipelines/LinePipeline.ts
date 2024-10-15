@@ -29,8 +29,8 @@ class LinePipeline extends Pipeline {
         arrayStride: 32,
         stepMode: "vertex",
       },
-    ];    
-    
+    ];
+
     const targets: GPUColorTargetState[] = [{
       format: outputFormat,
     }]
@@ -69,7 +69,7 @@ class LinePipeline extends Pipeline {
         ],
       }),
     };
-    
+
     super(
       gpu.device.createRenderPipeline(pipelineDescriptor),
       null,

@@ -23,7 +23,7 @@ export interface PropertyBaseInterface {
   variations: Set<PropertyBaseInterface>;
 
   props: PropsBaseInterface;
-  
+
   toString(): string;
 
   revertOverride(): void

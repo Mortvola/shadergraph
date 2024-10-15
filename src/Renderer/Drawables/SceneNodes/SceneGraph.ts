@@ -70,7 +70,7 @@ class SceneGraph implements SceneGraphInterface {
       stack = stack.slice(1);
 
       n.sceneGraph = null;
-    
+
       if (isRenderNode(n)) {
         stack.push(...n.nodes)
 
@@ -97,7 +97,7 @@ class SceneGraph implements SceneGraphInterface {
 
   updateTransforms() {
     let stack: { node: RenderNodeInterface, transform: Mat4 }[] = [{ node: this.rootRenderNode, transform: mat4.identity() }];
-  
+
     while (stack.length > 0) {
       const { node, transform } = stack[0];
       stack = stack.slice(1);
@@ -133,7 +133,7 @@ class SceneGraph implements SceneGraphInterface {
           }
           else if (renderer.unlitRenderPass) {
             renderer.unlitRenderPass.addDrawable(c);
-          }    
+          }
         }
       }
 
@@ -145,7 +145,7 @@ class SceneGraph implements SceneGraphInterface {
     const circles: RangeCircle[] = [];
 
     this.rangeCircles.forEach((c) => circles.push(c))
-    
+
     return circles
   }
 
@@ -153,7 +153,7 @@ class SceneGraph implements SceneGraphInterface {
     const lights: Light[] = [];
 
     this.lights.forEach((c) => lights.push(c))
-    
+
     return lights
   }
 }

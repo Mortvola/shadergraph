@@ -20,7 +20,7 @@ const PSEmissions: React.FC<PropsType> = observer(({
   const handleRateChange = (value: number) => {
     emissions.rate.set(value, true);
   }
-  
+
   const handleAddClick = () => {
     runInAction(() => {
       emissions.bursts.set(
@@ -42,7 +42,7 @@ const PSEmissions: React.FC<PropsType> = observer(({
             ...emissions.bursts.get().slice(activeRow + 1),
           ],
           true,
-        )  
+        )
       }
     })
   }

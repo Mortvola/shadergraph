@@ -12,7 +12,7 @@ class ReticlePipeline extends Pipeline {
       label,
       code: reticleShader,
     })
-    
+
     const pipelineDescriptor: GPURenderPipelineDescriptor = {
       label,
       vertex: {
@@ -58,10 +58,10 @@ class ReticlePipeline extends Pipeline {
         ]
       }),
     };
-    
+
     super(
       gpu.device.createRenderPipeline(pipelineDescriptor),
-      null, 
+      null,
       null,
       {
         transparent: false,

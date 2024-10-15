@@ -12,7 +12,7 @@ export class Property<T extends { toString(): string } | undefined> extends Prop
       if (value !== undefined) {
         this.value = value;
         this.override = override && this.base !== undefined;
-      }    
+      }
     })
   }
 
@@ -41,7 +41,7 @@ export class Property<T extends { toString(): string } | undefined> extends Prop
     this.value = value ?? defaultValue
 
     // If there is a previous prop but the initial value
-    // for this property is undefined then copy the value 
+    // for this property is undefined then copy the value
     // from the previous prop. Otherwise, mark this property
     // as an override of the previous prop.
     if (previousProp) {
@@ -60,7 +60,7 @@ export class Property<T extends { toString(): string } | undefined> extends Prop
   copyProp(other: Property<T>) {
     runInAction(() => {
       this.value = other.value;
-      this.override = false;    
+      this.override = false;
     })
   }
 
@@ -128,7 +128,7 @@ export class PSVec3Type extends Property<Vec3n> {
   copyProp(other: Property<Vec3n>) {
     runInAction(() => {
       this.value = vec3n.create(...(other as PSVec3Type).value);
-      this.override = false;  
+      this.override = false;
     })
   }
 

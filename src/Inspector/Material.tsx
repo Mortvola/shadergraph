@@ -41,12 +41,12 @@ const Material: React.FC<PropsType> = observer(({
           name: p.name,
           value: new Value(p.dataType, p.value),
         })) ?? [])
-  
-        setPropValues(values);    
-      }      
+
+        setPropValues(values);
+      }
     })()
   }, [materialItem?.shaderId])
-  
+
   const handleShaderChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     if (materialItem) {
       runInAction(() => {

@@ -5,7 +5,7 @@ let nextObjectId = 0;
 
 export const getNextObjectId = () => {
   nextObjectId -= 1;
-  
+
   return nextObjectId;
 }
 

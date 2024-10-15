@@ -28,7 +28,7 @@ class Camera {
   accessor finalRotateY = 0;
 
   near = 0.125;
-  
+
   far = 2000;
 
   moveDirection = vec4.create(0, 0, 0, 0);
@@ -56,7 +56,7 @@ class Camera {
     if (this.moveCameraTo !== null && this.moveCameraStartTime === null) {
       this.moveCameraStartTime = timestamp;
     }
-  
+
     const cameraQuat = quat.fromEuler(degToRad(0), degToRad(this.rotateY), degToRad(0), "yxz");
     const rotationMatrix = mat4.fromQuat(cameraQuat);
 
@@ -82,7 +82,7 @@ class Camera {
 
       if (this.moveCameraStartTime === null || timestamp - this.moveCameraStartTime > 2000) {
         this.moveCameraTo = null;
-      } 
+      }
     }
 
     this.computeViewTransform();
@@ -126,7 +126,7 @@ class Camera {
 
     runInAction(() => {
       this.finalRotateY = normalizeDegrees(this.finalRotateY + deltaX);
-      this.rotateX = normalizeDegrees(this.rotateX + deltaY);  
+      this.rotateX = normalizeDegrees(this.rotateX + deltaY);
     })
 
     this.computeViewTransform();
@@ -201,7 +201,7 @@ class Camera {
   // Returns ray and origin in world space coordinates.
   computeHitTestRay(x: number, y: number): { ray: Vec4, origin: Vec4 } {
     let point = this.ndcToCameraSpace(x, y);
-  
+
     // Transform point and camera to world space.
     point = vec4.transformMat4(point, this.viewTransform)
     const origin = vec4.transformMat4(vec4.create(0, 0, 0, 1), this.viewTransform);
@@ -215,7 +215,7 @@ class Camera {
       ray,
       origin,
     })
-  }  
+  }
 }
 
 export default Camera;

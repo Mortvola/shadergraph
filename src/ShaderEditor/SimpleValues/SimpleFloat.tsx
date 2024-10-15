@@ -27,7 +27,7 @@ const SimpleFloat: React.FC<PropsType> = ({
         <Float
           value={value.value}
           onChange={handleChange}
-        />   
+        />
       )
       : null
   )

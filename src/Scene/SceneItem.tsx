@@ -77,10 +77,10 @@ const SceneItem: React.FC<PropsType> = observer(({
     const items: MenuItemLike[] = [
       { name: 'Delete', action: () => { treeNode.delete(); scene.setSelected(null) } },
     ];
-    
+
     return items;
   }, [treeNode]);
-  
+
   const handleContextMenu: React.MouseEventHandler = (event) => {
     event.stopPropagation();
     event.preventDefault();

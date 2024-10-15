@@ -23,7 +23,7 @@ class Graph implements GraphInterface {
   id: number | null = null;
 
   name = '';
-  
+
   graph: ShaderGraph;
 
   dragConnector: { port: PortInterface, point: [number, number] } | null = null;
@@ -38,7 +38,7 @@ class Graph implements GraphInterface {
     this.store = store;
 
     this.id = id ?? null;
-    
+
     this.name = name ?? getNextShaderName();
 
     this.graph = new ShaderGraph(descriptor, true);
@@ -86,7 +86,7 @@ class Graph implements GraphInterface {
   addProperty(property: PropertyInterface): void {
     runInAction(() => {
       this.graph.properties.push(property);
-      this.changed = true;  
+      this.changed = true;
     })
   }
 
@@ -100,7 +100,7 @@ class Graph implements GraphInterface {
           ...this.graph.properties.slice(index + 1),
         ];
 
-        this.changed = true;  
+        this.changed = true;
       })
     }
   }
@@ -147,7 +147,7 @@ class Graph implements GraphInterface {
 
     // Find the edge in the edge list and remove it
     const index = this.graph.fragment.edges.findIndex((e) => e === edge);
-    
+
     if (index !== -1) {
       this.graph.fragment.edges = [
         ...this.graph.fragment.edges.slice(0, index),
@@ -166,7 +166,7 @@ class Graph implements GraphInterface {
 
   deleteNode(node: GraphNodeInterface): void {
     const index = this.graph.fragment.nodes.findIndex((n) => n === node);
-    
+
     if (index !== -1) {
       runInAction(() => {
         const node = this.graph.fragment.nodes[index];
@@ -202,7 +202,7 @@ class Graph implements GraphInterface {
 
     if (material) {
       this.store.previewModeler.applyMaterial(material);
-    }  
+    }
   }
 
   async generateMaterial(): Promise<MaterialInterface> {

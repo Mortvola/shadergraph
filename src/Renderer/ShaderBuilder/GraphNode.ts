@@ -37,7 +37,7 @@ class GraphNode implements GraphNodeInterface {
     this.id = id ?? GraphNode.getNextNodeId();
 
     this.position = { x: 0, y: 0};
-    
+
     if (this.id >= GraphNode.nextNodeId) {
       GraphNode.nextNodeId = this.id + 1;
     }
@@ -101,7 +101,7 @@ class GraphNode implements GraphNodeInterface {
     return this.getExpression(editMode);
   }
 
-  output(editMode: boolean): string { 
+  output(editMode: boolean): string {
     if (this.getNumOutputEdges() <= 1) {
       return '';
     }

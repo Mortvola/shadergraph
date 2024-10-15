@@ -27,7 +27,7 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
   loop: PSBoolean;
 
   maxPoints: PSNumber
-  
+
   emissions: Emissions
 
   shape: Shape;
@@ -92,7 +92,7 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
     this.lifetimeColor = new LifetimeColor(this, descriptor?.lifetimeColor, this.handleChange, previousProps?.lifetimeColor);
     this.gravityModifier = new PSValue(
       'Gravity Modifier',
-      this, 
+      this,
       descriptor?.gravityModifier,
       {
         type: PSValueType.Constant,
