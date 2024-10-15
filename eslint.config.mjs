@@ -23,5 +23,6 @@ export default tseslint.config({
     '@typescript-eslint/no-empty-object-type': 'warn',
     '@stylistic/no-trailing-spaces': 'warn',
     '@stylistic/quotes': ['warn', 'single'],
+    '@stylistic/jsx-quotes': ['warn', 'prefer-double'],
   }
 });
