@@ -67,22 +67,10 @@ const SceneFolder: React.FC<PropsType> = observer(({
     event.preventDefault();
 
     if (droppable) {
-      if (scene.draggingNode && event.dataTransfer.types[0] === 'application/scene-item') {
-        const node = scene.draggingNode;
-
-        (
-          async () => {
-            const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${node.id}`, {
-              parentNodeId: folder.id,
-              parentTreeId: folder.treeId,
-            })
-
-            if (response.ok) {
-              node.detachSelf();
-              folder.addNode(node);
-            }
-          }
-        )()
+      if (event.dataTransfer.types[0] === 'application/scene-item') {
+        if (scene.draggingNode) {
+          scene.draggingNode.reparent(folder)
+        }
       }
       else if (
         event.dataTransfer.types[0] === 'application/project-item'
@@ -99,6 +87,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
 
           const response = await Http.post<unknown, NodesResponse>('/api/tree-nodes', {
             parentNodeId: folder.id,
+            parentTreeId: folder.treeId ?? null,
             rootNodeId: item.itemId
           })
 

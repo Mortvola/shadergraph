@@ -104,6 +104,27 @@ class TreeNode extends Entity {
     }
   }
 
+  async reparent(newParent: TreeNode) {
+    let nodeToUpdate = this.id;
+
+    // If there is a tree ID associated with this node but the parent
+    // does not have the same associate then we must be at the root
+    // of a tree. Therefore, update the node with the tree id instead the node with id.
+    if (this.treeId !== undefined && this.treeId !== this.parent?.treeId) {
+      nodeToUpdate = this.treeId;
+    }
+
+    const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${nodeToUpdate}`, {
+      parentNodeId: newParent.id,
+      parentTreeId: newParent.treeId ?? null,
+    })
+
+    if (response.ok) {
+      this.detachSelf();
+      newParent.addNode(this);
+    }
+  }
+
   private getComponentProps() {
     const stack: SceneObjectInterface[] = [];
     let nodeObject: SceneObjectInterface | undefined = this._nodeObject;
@@ -204,7 +225,16 @@ class TreeNode extends Entity {
   changeName(name: string) {
     (
       async () => {
-        const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${this.id}`, {
+        let nodeToUpdate = this.id;
+
+        // If there is a tree ID associated with this node but the parent
+        // does not have the same associate then we must be at the root
+        // of a tree. Therefore, update the node with the tree id instead the node with id.
+        if (this.treeId !== undefined && this.treeId !== this.parent?.treeId) {
+          nodeToUpdate = this.treeId;
+        }
+
+        const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${nodeToUpdate}`, {
           name,
         })
 

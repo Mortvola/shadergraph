@@ -5,7 +5,7 @@ import ContextMenu from '../ContextMenu/ContextMenu';
 import type { MenuItemLike } from '../ContextMenu/types';
 import type { SceneInterface } from './Types/Types';
 import type TreeNode from './Types/TreeNode';
-import { Box, Plus } from 'lucide-react';
+import { BoxIcon, PlusIcon } from 'lucide-react';
 
 type PropsType = {
   scene: SceneInterface,
@@ -97,17 +97,21 @@ const SceneItem: React.FC<PropsType> = observer(({
   }
 
   const renderIcon = () => {
-    if (treeNode.parent?.treeId !== undefined && treeNode.treeId !== treeNode.parent.treeId) {
-      return (
-        <div>
-          <Plus size="10" fill="#FFF" strokeWidth={4} />
-          <Box fill="#FFF" size="14" />
-        </div>
-      )
-    }
-
     return (
-      <Box fill={treeNode.treeId === undefined || treeNode.treeId === treeNode.parent?.treeId ? '#FFF' : '#07F'} size="14" />
+      <div>
+        {
+          // If the node's parent has a tree ID and the node's tree id does not match the
+          // parent's then this must be an outside connection. Include a plus icon with the box icon.
+          treeNode.parent?.treeId !== undefined && treeNode.treeId !== treeNode.parent.treeId
+            ? <PlusIcon size="10" fill="#FFF" strokeWidth={4} />
+            : null
+        }
+        {
+          // If the node has a tree id and parent's tree id does not match the node's tree id then
+          // this must be a new tree. Fill the icon with blue.
+        }
+        <BoxIcon fill={treeNode.treeId !== undefined && treeNode.treeId !== treeNode.parent?.treeId ? '#07F' : '#FFF'} size="14" />
+      </div>
     )
   }
 
