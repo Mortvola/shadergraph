@@ -79,17 +79,17 @@ const SceneFolder: React.FC<PropsType> = observer(({
         const item = store.draggingItem;
 
         (async () => {
-          console.log((item.itemId))
-
           if (item.itemId === null) {
             throw new Error('itemId is null')
           }
 
-          const response = await Http.post<unknown, NodesResponse>('/api/tree-nodes', {
+          const payload = {
             parentNodeId: folder.id,
-            parentTreeId: folder.treeId ?? null,
+            parentTreeId: folder.topLevelWrapperId ?? null,
             rootNodeId: item.itemId
-          })
+          }
+
+          const response = await Http.post<unknown, NodesResponse>('/api/tree-nodes', payload)
 
           if (response.ok) {
             const body = await response.body()
@@ -185,11 +185,12 @@ const SceneFolder: React.FC<PropsType> = observer(({
       onDragLeave={handleDragLeave}
     >
       <SceneItem
-        key={`${folder.id}:${folder.treeId}`}
+        key={`${folder.id}:${folder.wrapped ?? folder.wrapperId}`}
         scene={scene}
         treeNode={folder}
         onSelect={onSelect}
         selected={folder === scene.selectedNode}
+        // draggable={folder.wrapperId === undefined && folder.wrapperId === folder.topLevelWrapperId}
         draggable
         level={level}
       />
@@ -210,7 +211,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
       {
         folder.nodes.map((i) => (
           <SceneFolder
-            key={`${i.id}:${i.treeId}`}
+            key={`${i.id}:${i.wrapped ?? i.wrapperId}`}
             scene={scene}
             folder={i}
             onSelect={onSelect}

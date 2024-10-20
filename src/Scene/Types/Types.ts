@@ -31,6 +31,11 @@ export type PrefabNodeDescriptor = {
 
 export type TreeId = number;
 
+export type NodeInfo = {
+  treeNodes: Map<TreeId | undefined, TreeNode>,
+  objects: Map<TreeId | undefined, SceneObjectInterface>,
+}
+
 export interface SceneInterface {
   root: TreeNode | undefined;
 
@@ -38,9 +43,18 @@ export interface SceneInterface {
 
   draggingNode: TreeNode | null;
 
-  nodeMaps: Map<number, { treeNodes: Map<TreeId | undefined, TreeNode>, objects: Map<TreeId | undefined, SceneObjectInterface> }>
+  nodeMaps: Map<number, NodeInfo>
 
   treeFromDescriptor(descriptor: NodesResponse): Promise<TreeNode | undefined>;
+
+  createNode(
+    id: number,
+    name: string,
+    nodeInfo: NodeInfo,
+    wrapperId?: number,
+    parentWrapperId?: number,
+    parent?: TreeNode,
+  ): TreeNode
 
   loadObjects(objects: SceneObjectDescriptor[], trees?: { id: number, name: string }[]): Promise<void>;
 
@@ -168,8 +182,8 @@ export enum ObjectType {
 export type TreeNodeDescriptor = {
   id: number,
   name: string,
-  treeId?: number,
-  objectId: number,
+  wrapperId?: number,
+  parentWrapperId?: number,
   children: TreeNodeDescriptor[],
 }
 

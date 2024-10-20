@@ -18,7 +18,7 @@ class SceneObject implements SceneObjectInterface {
 
   transformProps: TransformPropsInterface = new TransformProps();
 
-  baseObject?: SceneObject
+  baseObject?: SceneObjectInterface
 
   nodeId: number;
 
@@ -48,7 +48,7 @@ class SceneObject implements SceneObjectInterface {
     this.node = treeNode
   }
 
-  static async fromDescriptor(descriptor: SceneObjectDescriptor, baseObject?: SceneObject) {
+  static async fromDescriptor(descriptor: SceneObjectDescriptor, baseObject?: SceneObjectInterface) {
     const object = new SceneObject(descriptor.nodeId, descriptor.treeId);
     object.autosave = false;
 
@@ -221,11 +221,7 @@ class SceneObject implements SceneObjectInterface {
   }
 
   isPrefabInstanceRoot(): boolean {
-    if (this.node?.treeId !== undefined && this.node.treeId !== this.node.parent?.treeId) {
-      return true;
-    }
-
-    return false;
+    return this.node?.wrapped !== undefined
   }
 
   toDescriptor(): SceneObjectDescriptor {

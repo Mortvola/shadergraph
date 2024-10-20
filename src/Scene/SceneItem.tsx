@@ -5,7 +5,7 @@ import ContextMenu from '../ContextMenu/ContextMenu';
 import type { MenuItemLike } from '../ContextMenu/types';
 import type { SceneInterface } from './Types/Types';
 import type TreeNode from './Types/TreeNode';
-import { BoxIcon, PlusIcon } from 'lucide-react';
+import { BoxIcon, ChevronRight, PlusIcon } from 'lucide-react';
 
 type PropsType = {
   scene: SceneInterface,
@@ -102,7 +102,7 @@ const SceneItem: React.FC<PropsType> = observer(({
         {
           // If the node's parent has a tree ID and the node's tree id does not match the
           // parent's then this must be an outside connection. Include a plus icon with the box icon.
-          treeNode.parent?.treeId !== undefined && treeNode.treeId !== treeNode.parent.treeId
+          treeNode.parentWrapperId
             ? <PlusIcon size="10" fill="#FFF" strokeWidth={4} />
             : null
         }
@@ -110,14 +110,14 @@ const SceneItem: React.FC<PropsType> = observer(({
           // If the node has a tree id and parent's tree id does not match the node's tree id then
           // this must be a new tree. Fill the icon with blue.
         }
-        <BoxIcon fill={treeNode.treeId !== undefined && treeNode.treeId !== treeNode.parent?.treeId ? '#07F' : '#FFF'} size="14" />
+        <BoxIcon fill={treeNode.wrapperRoot ? '#07F' : '#FFF'} size="14" />
       </div>
     )
   }
 
   return (
     <div
-      className={`${styles.item} ${selected ? styles.selected : ''} ${(treeNode.treeId !== undefined) ? styles.prefab : ''}`}
+      className={`${styles.item} ${selected ? styles.selected : ''} ${(treeNode.withinWrapper) ? styles.prefab : ''}`}
       onClick={handleClick}
       draggable={draggable}
       onDragStart={handleDragStart}
@@ -147,6 +147,11 @@ const SceneItem: React.FC<PropsType> = observer(({
             : null
         }
       </div>
+      {
+        treeNode.wrapperRoot
+          ? <ChevronRight size={16} />
+          : null
+      }
     </div>
   )
 })

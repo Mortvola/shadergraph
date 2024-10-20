@@ -1,6 +1,6 @@
 .item {
   display: grid;
-  grid-template-columns: 4px minmax(0,1fr);
+  grid-template-columns: 4px minmax(0,1fr) max-content;
 
   &.selected {
     background-color: lightgray;
@@ -20,5 +20,10 @@
     column-gap: 3px;
     flex-direction: row;
     align-items: center;
+
+    & >div {
+      display: inherit;
+      align-items: center;
+    }
   }
 }

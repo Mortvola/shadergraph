@@ -2,7 +2,7 @@ import { observable, runInAction } from 'mobx';
 import { store } from '../../State/store';
 import Http from '../../Http/src';
 import { type SceneDescriptor } from './Types';
-import type { NodesResponse, SceneInterface, SceneItemType, SceneObjectDescriptor, TreeId, TreeNodeDescriptor } from './Types';
+import type { NodeInfo, NodesResponse, SceneInterface, SceneItemType, SceneObjectDescriptor, SceneObjectInterface, TreeNodeDescriptor } from './Types';
 import TreeNode from './TreeNode';
 import SceneObject from './SceneObject';
 
@@ -20,7 +20,7 @@ class Scene implements SceneInterface {
   draggingNode: TreeNode | null = null;
 
   // Map of nodes index by node id and then tree id
-  nodeMaps: Map<number, { treeNodes: Map<TreeId | undefined, TreeNode>, objects: Map<TreeId | undefined, SceneObject> }> = new Map()
+  nodeMaps: Map<number, NodeInfo> = new Map()
 
   static async fromDescriptor(descriptor?: SceneDescriptor) {
     const scene = new Scene();
@@ -28,7 +28,6 @@ class Scene implements SceneInterface {
     if (descriptor) {
       scene.id = descriptor.id;
       scene.name = descriptor.name;
-      // scene.root = descriptor.treeId;
 
       const response = await Http.get<NodesResponse>(`/api/tree-nodes/${descriptor.rootNodeId}`)
 
@@ -78,7 +77,7 @@ class Scene implements SceneInterface {
           this.nodeMaps.set(object.nodeId, nodeInfo)
         }
 
-        let baseObject: SceneObject | undefined = undefined;
+        let baseObject: SceneObjectInterface | undefined = undefined;
 
         if (object.treeId !== undefined) {
           baseObject = nodeInfo.objects.get(object.baseTreeId)
@@ -103,46 +102,76 @@ class Scene implements SceneInterface {
 
     await this.loadObjects(descriptor.objects, descriptor.trees)
 
-    type StackEntry = { nodeDescriptor: TreeNodeDescriptor, parent: TreeNode | undefined }
+    type StackEntry = {
+      nodeDescriptor: TreeNodeDescriptor,
+      parent: TreeNode | undefined,
+    }
+
     let stack: StackEntry[] = [{ nodeDescriptor: descriptor.root, parent: undefined }]
 
     while (stack.length > 0) {
       const { nodeDescriptor, parent } = stack[0]
       stack = stack.slice(1)
 
-      const node = new TreeNode(this, nodeDescriptor.name)
-
-      node.id = nodeDescriptor.id;
-      node.treeId = nodeDescriptor.treeId;
-
-      const nodeInfo = this.nodeMaps.get(node.id)
+      const nodeInfo = this.nodeMaps.get(nodeDescriptor.id)
 
       if (nodeInfo === undefined) {
         throw new Error('node info not found')
       }
 
-      const object = nodeInfo.objects.get(node.treeId)
+      const node = this.createNode(
+        nodeDescriptor.id,
+        nodeDescriptor.name,
+        nodeInfo,
+        nodeDescriptor.wrapperId,
+        nodeDescriptor.parentWrapperId,
+        parent,
+      )
 
-      if (object) {
-        node.nodeObject = object;
-        object.node = node;
+      nodeInfo.treeNodes.set(node.topLevelWrapperId, node)
+
+      if (root === undefined) {
+        root = node
       }
 
-      if (parent) {
-        parent.autosave = false;
-        parent.addNode(node)
-        parent.autosave = true;
-      }
-      else {
-        root = node;
-      }
-
-      nodeInfo.treeNodes.set(node.treeId, node)
-
-      stack = stack.concat(nodeDescriptor.children.map((child) => ({ nodeDescriptor: child, parent: node })))
+      stack = stack.concat(nodeDescriptor.children.map(
+        (child) => ({
+          nodeDescriptor: child,
+          parent: node,
+        }))
+      )
     }
 
     return root;
+  }
+
+  createNode(
+    id: number,
+    name: string,
+    nodeInfo: NodeInfo,
+    wrapperId?: number,
+    parentWrapperId?: number,
+    parent?: TreeNode,
+  ): TreeNode {
+    const node = new TreeNode(this, name)
+
+    node.id = id;
+    node.wrapped = wrapperId
+    node.parentWrapperId = parentWrapperId
+
+    if (parent) {
+      parent.autosave = false;
+      parent.addNode(node)
+      parent.autosave = true;
+    }
+
+    const object = nodeInfo.objects.get(node.topLevelWrapperId)
+
+    if (object) {
+      node.nodeObject = object;
+    }
+
+    return node
   }
 
   toDescriptor(): SceneDescriptor {

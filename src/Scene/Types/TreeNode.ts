@@ -24,8 +24,20 @@ class TreeNode extends Entity {
 
   parent?: TreeNode;
 
+  get wrapperId(): number | undefined {
+    if (this.parent === undefined) {
+      return undefined
+    }
+
+    if (this.parent.wrapped !== undefined) {
+      return this.parent.wrapped
+    }
+
+    return this.parent.wrapperId
+  }
+
   @observable
-  accessor treeId: number | undefined;
+  accessor wrapped: number | undefined;
 
   private _nodeObject: SceneObjectInterface;
 
@@ -35,13 +47,48 @@ class TreeNode extends Entity {
 
   set nodeObject(object: SceneObjectInterface) {
     this._nodeObject = object
+    object.node = this;
+
     this.getComponentProps()
     this.transformChanged()
+  }
+
+  get topLevelWrapperId(): number | undefined {
+    let wrapperId = undefined
+
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let node: TreeNode | undefined = this;
+
+    for (;;) {
+      if (node === undefined) {
+        break;
+      }
+
+      if (node.wrapped !== undefined) {
+        wrapperId = node.wrapped
+        break;
+      }
+
+      node = node.parent
+    }
+
+    return wrapperId
   }
 
   renderNode = new RenderNode();
 
   scene: SceneInterface;
+
+  @observable
+  accessor parentWrapperId: number | undefined;
+
+  get wrapperRoot(): boolean {
+    return this.wrapped !== undefined
+  }
+
+  get withinWrapper(): boolean {
+    return this.wrapperId !== undefined || this.wrapped !== undefined
+  }
 
   @observable
   accessor newItemType: SceneItemType | undefined = undefined;
@@ -104,24 +151,75 @@ class TreeNode extends Entity {
     }
   }
 
-  async reparent(newParent: TreeNode) {
-    let nodeToUpdate = this.id;
-
+  get actualNodeId(): number {
     // If there is a tree ID associated with this node but the parent
     // does not have the same associate then we must be at the root
     // of a tree. Therefore, update the node with the tree id instead the node with id.
-    if (this.treeId !== undefined && this.treeId !== this.parent?.treeId) {
-      nodeToUpdate = this.treeId;
+    if (this.wrapped !== undefined) {
+      return this.wrapped;
     }
 
-    const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${nodeToUpdate}`, {
+    return this.id
+  }
+
+  async reparent(newParent: TreeNode) {
+    let parentWrapperid = newParent.topLevelWrapperId;
+
+    if (parentWrapperid === newParent.parentWrapperId) {
+      parentWrapperid = undefined
+    }
+
+    const payload = {
       parentNodeId: newParent.id,
-      parentTreeId: newParent.treeId ?? null,
-    })
+      parentWrapperId: parentWrapperid ?? null
+    }
+
+    const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${this.actualNodeId}`, payload)
 
     if (response.ok) {
+      this.parentWrapperId = parentWrapperid
+
       this.detachSelf();
       newParent.addNode(this);
+    }
+  }
+
+  async applyConnectionOverride(parentWrapperId?: number): Promise<void> {
+    if (this.parent) {
+      const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${this.actualNodeId}`, {
+        parentNodeId: this.parent.id,
+        parentWrapperId: parentWrapperId ?? null,
+      })
+
+      if (response.ok) {
+        const body = await response.body()
+
+        if (body.objects) {
+          await this.parent.scene.loadObjects(body.objects, body.trees)
+        }
+
+        runInAction(() => {
+          this.parentWrapperId = parentWrapperId
+        })
+
+        const parentNodeInfo = this.scene.nodeMaps.get(this.parent.id)
+        const nodeInfo = this.scene.nodeMaps.get(this.id)
+
+        if (parentNodeInfo && nodeInfo) {
+          for (const [wrapperId, treeNode] of parentNodeInfo.treeNodes) {
+            if (wrapperId !== this.parent.wrapperId && this.parent !== treeNode) {
+              this.scene.createNode(
+                this.id,
+                this.name,
+                nodeInfo,
+                this.wrapped,
+                this.parentWrapperId,
+                treeNode,
+              )
+            }
+          }
+        }
+      }
     }
   }
 
@@ -197,7 +295,7 @@ class TreeNode extends Entity {
   }
 
   async delete() {
-    const response = await Http.delete(`/api/tree-nodes/${this.treeId ?? this.id}`);
+    const response = await Http.delete(`/api/tree-nodes/${this.actualNodeId}`);
 
     if (response.ok) {
       runInAction(() => {
@@ -225,16 +323,7 @@ class TreeNode extends Entity {
   changeName(name: string) {
     (
       async () => {
-        let nodeToUpdate = this.id;
-
-        // If there is a tree ID associated with this node but the parent
-        // does not have the same associate then we must be at the root
-        // of a tree. Therefore, update the node with the tree id instead the node with id.
-        if (this.treeId !== undefined && this.treeId !== this.parent?.treeId) {
-          nodeToUpdate = this.treeId;
-        }
-
-        const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${nodeToUpdate}`, {
+        const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${this.actualNodeId}`, {
           name,
         })
 
@@ -257,7 +346,7 @@ class TreeNode extends Entity {
   get connectionOverrides(): TreeNode[] {
     const connections: TreeNode[] = [];
 
-    if (this.treeId !== undefined) {
+    if (this.wrapperRoot) {
       let stack: TreeNode[] = [this];
 
       while (stack.length > 0) {
@@ -265,12 +354,11 @@ class TreeNode extends Entity {
         stack = stack.slice(1)
 
         for (const child of node.nodes) {
-          if (child.treeId === this.treeId) {
-            stack.push(child)
-          }
-          else {
+          if (child.parentWrapperId !== undefined) {
             connections.push(child)
           }
+
+          stack.push(child)
         }
       }
     }
