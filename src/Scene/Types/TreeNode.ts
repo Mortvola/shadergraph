@@ -1,7 +1,7 @@
 import { computed, observable, runInAction } from 'mobx';
 import RenderNode from '../../Renderer/Drawables/SceneNodes/RenderNode';
 import Entity, { getNextObjectId } from '../../State/Entity';
-import { type SceneObjectInterface, type SceneInterface, type SceneItemType, type NodesResponse } from './Types';
+import { type SceneObjectInterface, type SceneInterface, type SceneItemType } from './Types';
 import type ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemProps';
 import type LightProps from '../../Renderer/Properties/LightProps';
 import { ComponentType, type LightInterface, type ParticleSystemInterface } from '../../Renderer/Types';
@@ -230,7 +230,7 @@ class TreeNode extends Entity {
       pathId: path?.id ?? null,
     }
 
-    const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${this.actualNodeId}`, payload)
+    const response = await Http.patch<unknown, void>(`/api/tree-nodes/${this.actualNodeId}`, payload)
 
     if (response.ok) {
       runInAction(() => {
@@ -244,7 +244,7 @@ class TreeNode extends Entity {
 
   async applyConnectionOverride(parentWrapperId?: number): Promise<void> {
     if (this.parent) {
-      const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${this.actualNodeId}`, {
+      const response = await Http.patch<unknown, void>(`/api/tree-nodes/${this.actualNodeId}`, {
         parentNodeId: this.parent.id,
         parentWrapperId: parentWrapperId ?? null,
       })
@@ -252,9 +252,9 @@ class TreeNode extends Entity {
       if (response.ok) {
         const body = await response.body()
 
-        if (body.objects) {
-          await this.parent.scene.loadObjects(body.objects, body.trees)
-        }
+        // if (body.objects) {
+          // await this.parent.scene.loadObjects(body.objects, body.trees)
+        // }
 
         runInAction(() => {
           this.parentWrapperId = parentWrapperId
@@ -271,7 +271,7 @@ class TreeNode extends Entity {
               this.scene.createNode(
                 this.id,
                 this.name,
-                nodeInfo,
+                undefined, // nodeInfo,
                 this.wrapped,
                 this.parentWrapperId,
                 undefined,
@@ -385,7 +385,7 @@ class TreeNode extends Entity {
   changeName(name: string) {
     (
       async () => {
-        const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${this.actualNodeId}`, {
+        const response = await Http.patch<unknown, void>(`/api/tree-nodes/${this.actualNodeId}`, {
           name,
         })
 
@@ -435,16 +435,16 @@ class TreeNode extends Entity {
       rootNodeId: rootNodeId,
     }
 
-    const response = await Http.post<unknown, NodesResponse>('/api/tree-nodes', payload)
+    const response = await Http.post<unknown, void>('/api/tree-nodes', payload)
 
     if (response.ok) {
-      const body = await response.body()
+      // const body = await response.body()
 
-      const tree = await this.scene.treeFromDescriptor(body);
+      // const tree = await this.scene.treeFromDescriptor(body);
 
-      if (tree) {
-        this.addNode(tree);
-      }
+      // if (tree) {
+      //   this.addNode(tree);
+      // }
     }
   }
 }

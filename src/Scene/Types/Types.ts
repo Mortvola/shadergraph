@@ -47,12 +47,12 @@ export interface SceneInterface {
 
   nodeMaps: Map<number, NodeInfo>
 
-  treeFromDescriptor(descriptor: NodesResponse): Promise<TreeNode | undefined>;
+  // treeFromDescriptor(descriptor: NodesResponse): Promise<TreeNode | undefined>;
 
   createNode(
     id: number,
     name: string,
-    nodeInfo: NodeInfo,
+    object?: SceneObjectInterface,
     wrapperId?: number,
     parentWrapperId?: number,
     pathId?: number,
@@ -60,7 +60,7 @@ export interface SceneInterface {
     parent?: TreeNode,
   ): TreeNode
 
-  loadObjects(objects: SceneObjectDescriptor[], trees?: { id: number, name: string }[]): Promise<void>;
+  // loadObjects(objects: SceneObjectDescriptor[], trees?: { id: number, name: string }[]): Promise<void>;
 
   addNode(node: TreeNode, autosave: boolean): void;
 
@@ -183,24 +183,45 @@ export enum ObjectType {
   NodeObjectOverride = 'ObjectOverride',
 }
 
+// export type TreeNodeDescriptor = {
+//   id: number,
+//   name: string,
+//   wrapperId?: number,
+//   parentWrapperId?: number,
+//   pathId?: number,
+//   path?: number[],
+//   children: TreeNodeDescriptor[],
+// }
+
+export type TreeModifierDescriptor = {
+  rootNodeId?: number,
+  addedNodes?: number[],
+}
+
 export type TreeNodeDescriptor = {
   id: number,
   name: string,
-  wrapperId?: number,
+  parentNodeId?: number,
   parentWrapperId?: number,
   pathId?: number,
   path?: number[],
-  children: TreeNodeDescriptor[],
-}
+  children?: number[],
+} & TreeModifierDescriptor
 
 export const isSceneObjectDescriptor = (r: unknown): r is SceneObjectDescriptor => (
   (r as SceneObjectDescriptor)?.object?.type === ObjectType.NodeObject
 )
 
-export type NodesResponse = {
-  root: TreeNodeDescriptor,
+// export type NodesResponse = {
+//   root: TreeNodeDescriptor,
+//   objects: SceneObjectDescriptor[],
+//   trees: { id: number, name: string}[],
+// }
+
+export type NodesResponse2 = {
+  rootNodeId: number,
+  nodes: TreeNodeDescriptor[],
   objects: SceneObjectDescriptor[],
-  trees: { id: number, name: string}[],
 }
 
 export type ItemResponse = {
@@ -209,7 +230,7 @@ export type ItemResponse = {
     name: string,
     type: ProjectItemType,
   },
-  root?: TreeNodeDescriptor,
+  // root?: TreeNodeDescriptor,
   objects?: SceneObjectDescriptor[],
 }
 

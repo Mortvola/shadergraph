@@ -1,10 +1,7 @@
 import React from 'react';
 import styles from './Overrides.module.scss';
 import type TreeNode from '../Scene/Types/TreeNode';
-import Http from '../Http/src';
 import { PopupContext } from './PopupContext';
-import { type NodesResponse } from '../Scene/Types/Types';
-import { runInAction } from 'mobx';
 
 type PropsType = {
   connection: TreeNode,
