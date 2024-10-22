@@ -15,6 +15,9 @@ class Scene implements SceneInterface {
   accessor root: TreeNode | undefined
 
   @observable
+  accessor tempRoot: TreeNode | undefined
+
+  @observable
   accessor selectedNode: TreeNode | null = null;
 
   draggingNode: TreeNode | null = null;

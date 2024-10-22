@@ -6,6 +6,7 @@ import type { MenuItemLike } from '../ContextMenu/types';
 import type { SceneInterface } from './Types/Types';
 import type TreeNode from './Types/TreeNode';
 import { BoxIcon, ChevronRight, PlusIcon } from 'lucide-react';
+import { runInAction } from 'mobx';
 
 type PropsType = {
   scene: SceneInterface,
@@ -115,6 +116,13 @@ const SceneItem: React.FC<PropsType> = observer(({
     )
   }
 
+  const handleOpenClick = () => {
+    console.log('Change scene')
+    runInAction(() => {
+      scene.tempRoot = treeNode
+    })
+  }
+
   return (
     <div
       className={`${styles.item} ${selected ? styles.selected : ''} ${(treeNode.withinWrapper) ? styles.prefab : ''}`}
@@ -149,7 +157,7 @@ const SceneItem: React.FC<PropsType> = observer(({
       </div>
       {
         treeNode.wrapperRoot
-          ? <ChevronRight size={16} />
+          ? <ChevronRight size={16} onClick={handleOpenClick} />
           : null
       }
     </div>
