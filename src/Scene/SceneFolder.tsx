@@ -3,14 +3,13 @@ import SceneItem from './SceneItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
-import { type NodesResponse, SceneItemType, type SceneInterface } from './Types/Types';
+import { SceneItemType, type SceneInterface } from './Types/Types';
 import type TreeNode from './Types/TreeNode';
 import { objectManager } from './Types/ObjectManager';
 import { ComponentType } from '../Renderer/Types';
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
 import LightProps from '../Renderer/Properties/LightProps';
 import { ProjectItemType } from '../Project/Types/types';
-import Http from '../Http/src';
 
 type PropsType = {
   scene: SceneInterface,
@@ -78,29 +77,11 @@ const SceneFolder: React.FC<PropsType> = observer(({
       ) {
         const item = store.draggingItem;
 
-        (async () => {
-          if (item.itemId === null) {
-            throw new Error('itemId is null')
-          }
+        if (item.itemId === null) {
+          throw new Error('itemId is null')
+        }
 
-          const payload = {
-            parentNodeId: folder.id,
-            parentTreeId: folder.topLevelWrapperId ?? null,
-            rootNodeId: item.itemId
-          }
-
-          const response = await Http.post<unknown, NodesResponse>('/api/tree-nodes', payload)
-
-          if (response.ok) {
-            const body = await response.body()
-
-            const tree = await scene.treeFromDescriptor(body);
-
-            if (tree) {
-              folder.addNode(tree);
-            }
-          }
-        })()
+        folder.instantiatePrefab(item.itemId)
       }
 
       setDroppable(false);

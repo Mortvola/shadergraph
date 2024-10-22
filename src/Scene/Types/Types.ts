@@ -53,6 +53,8 @@ export interface SceneInterface {
     nodeInfo: NodeInfo,
     wrapperId?: number,
     parentWrapperId?: number,
+    pathId?: number,
+    path?: number[],
     parent?: TreeNode,
   ): TreeNode
 
@@ -184,6 +186,8 @@ export type TreeNodeDescriptor = {
   name: string,
   wrapperId?: number,
   parentWrapperId?: number,
+  pathId?: number,
+  path?: number[],
   children: TreeNodeDescriptor[],
 }
 

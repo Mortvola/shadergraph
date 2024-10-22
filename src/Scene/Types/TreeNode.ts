@@ -82,6 +82,10 @@ class TreeNode extends Entity {
   @observable
   accessor parentWrapperId: number | undefined;
 
+  pathId?: number
+
+  path?: number[]
+
   get wrapperRoot(): boolean {
     return this.wrapped !== undefined
   }
@@ -162,25 +166,79 @@ class TreeNode extends Entity {
     return this.id
   }
 
-  async reparent(newParent: TreeNode) {
-    let parentWrapperid = newParent.topLevelWrapperId;
+  getPathId(start: TreeNode, wrapperId: number) {
+    let id = 0
+    const path: number[] = []
 
-    if (parentWrapperid === newParent.parentWrapperId) {
-      parentWrapperid = undefined
+    let node: TreeNode | undefined = start
+    while (node !== undefined) {
+      if (node.wrapped === wrapperId) {
+        break;
+      }
+
+      if (node.wrapped !== undefined) {
+        id ^= node.wrapped
+        path.push(node.wrapped)
+      }
+
+      node = node.parent
+    }
+
+    return { id, path }
+  }
+
+  getTopLevelWrapperId(): number | undefined {
+    let wrapperId = undefined
+
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let node: TreeNode | undefined = this;
+
+    for (;;) {
+      if (node === undefined) {
+        break;
+      }
+
+      if (node.wrapped !== undefined) {
+        wrapperId = node.wrapped
+      }
+
+      node = node.parent
+    }
+
+    return wrapperId
+  }
+
+  async reparent(newParent: TreeNode) {
+    // let parentWrapperid = newParent.topLevelWrapperId;
+    let wrapperId = newParent.getTopLevelWrapperId()
+
+    if (wrapperId === newParent.parentWrapperId) {
+      wrapperId = undefined
+    }
+
+    let path: { id: number, path: number[] } | undefined
+
+    if (wrapperId !== undefined) {
+      path = this.getPathId(newParent, wrapperId)
+      console.log(`${path.id}, ${JSON.stringify(path.path)}, ${wrapperId}`)
     }
 
     const payload = {
       parentNodeId: newParent.id,
-      parentWrapperId: parentWrapperid ?? null
+      parentWrapperId: wrapperId ?? null,
+      path: path?.path ?? null,
+      pathId: path?.id ?? null,
     }
 
     const response = await Http.patch<unknown, NodesResponse>(`/api/tree-nodes/${this.actualNodeId}`, payload)
 
     if (response.ok) {
-      this.parentWrapperId = parentWrapperid
+      runInAction(() => {
+        this.parentWrapperId = wrapperId
 
-      this.detachSelf();
-      newParent.addNode(this);
+        this.detachSelf();
+        newParent.addNode(this);
+      })
     }
   }
 
@@ -200,6 +258,8 @@ class TreeNode extends Entity {
 
         runInAction(() => {
           this.parentWrapperId = parentWrapperId
+          this.pathId = undefined
+          this.path = undefined
         })
 
         const parentNodeInfo = this.scene.nodeMaps.get(this.parent.id)
@@ -214,6 +274,8 @@ class TreeNode extends Entity {
                 nodeInfo,
                 this.wrapped,
                 this.parentWrapperId,
+                undefined,
+                undefined,
                 treeNode,
               )
             }
@@ -364,6 +426,26 @@ class TreeNode extends Entity {
     }
 
     return connections;
+  }
+
+  async instantiatePrefab(rootNodeId: number) {
+    const payload = {
+      parentNodeId: this.id,
+      parentTreeId: this.topLevelWrapperId ?? null,
+      rootNodeId: rootNodeId,
+    }
+
+    const response = await Http.post<unknown, NodesResponse>('/api/tree-nodes', payload)
+
+    if (response.ok) {
+      const body = await response.body()
+
+      const tree = await this.scene.treeFromDescriptor(body);
+
+      if (tree) {
+        this.addNode(tree);
+      }
+    }
   }
 }
 

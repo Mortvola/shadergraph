@@ -125,6 +125,8 @@ class Scene implements SceneInterface {
         nodeInfo,
         nodeDescriptor.wrapperId,
         nodeDescriptor.parentWrapperId,
+        nodeDescriptor.pathId,
+        nodeDescriptor.path,
         parent,
       )
 
@@ -151,13 +153,19 @@ class Scene implements SceneInterface {
     nodeInfo: NodeInfo,
     wrapperId?: number,
     parentWrapperId?: number,
+    pathId?: number,
+    path?: number[],
     parent?: TreeNode,
   ): TreeNode {
     const node = new TreeNode(this, name)
 
-    node.id = id;
-    node.wrapped = wrapperId
-    node.parentWrapperId = parentWrapperId
+    runInAction(() => {
+      node.id = id;
+      node.wrapped = wrapperId
+      node.parentWrapperId = parentWrapperId
+      node.pathId = pathId
+      node.path = path?.slice()
+    })
 
     if (parent) {
       parent.autosave = false;
