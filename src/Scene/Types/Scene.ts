@@ -184,13 +184,21 @@ class Scene implements SceneInterface {
   async createTree(rootNodeId: number) {
     let root: TreeNode | undefined;
 
-    let stack: { nodeId: number, parent?: TreeNode, modifiers: ModifierNode[], modifierNode?: ModifierNode }[] = [{
+    type StackEntry = {
+      nodeId: number,
+      parent?: TreeNode,
+      modifiers: ModifierNode[],
+      modifierNode?: ModifierNode,
+      parentModifierNode?: ModifierNode,
+    }
+
+    let stack: StackEntry[] = [{
       nodeId: rootNodeId,
       modifiers: [],
     }]
 
     while (stack.length > 0) {
-      const { nodeId, parent, modifiers, modifierNode } = stack[0]
+      const { nodeId, parent, modifiers, modifierNode, parentModifierNode } = stack[0]
       stack = stack.slice(1)
 
       const descriptor = this.nodes.get(nodeId)
@@ -202,6 +210,7 @@ class Scene implements SceneInterface {
             parent,
             modifiers: [...modifiers, descriptor],
             modifierNode: descriptor,
+            parentModifierNode,
           })
         } else {
           let object: SceneObjectInterface | undefined
@@ -231,15 +240,6 @@ class Scene implements SceneInterface {
               }
 
               object = o.object
-            }
-          }
-
-          let parentModifierNode: ModifierNode | undefined
-          if (descriptor.parentWrapperId) {
-            const node = this.nodes.get(descriptor.parentWrapperId)
-
-            if (isModifierNode(node)) {
-              parentModifierNode = node
             }
           }
 
@@ -278,9 +278,15 @@ class Scene implements SceneInterface {
                   parent,
                   modifiers: [...modifiers, added],
                   modifierNode: added,
+                  parentModifierNode: modifiers[i],
                 })
               } else {
-                stack.push({ nodeId: added.nodeId, parent: node, modifiers: modifiers })
+                stack.push({
+                  nodeId: added.nodeId,
+                  parent: node,
+                  modifiers: modifiers,
+                  parentModifierNode: modifiers[i],
+                })
               }
             }
 
