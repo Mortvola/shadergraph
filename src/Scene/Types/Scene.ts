@@ -184,13 +184,13 @@ class Scene implements SceneInterface {
   async createTree(rootNodeId: number) {
     let root: TreeNode | undefined;
 
-    let stack: { nodeId: number, parent?: TreeNode, wrappers: ModifierNode[], modifierNode?: ModifierNode }[] = [{
+    let stack: { nodeId: number, parent?: TreeNode, modifiers: ModifierNode[], modifierNode?: ModifierNode }[] = [{
       nodeId: rootNodeId,
-      wrappers: [],
+      modifiers: [],
     }]
 
     while (stack.length > 0) {
-      const { nodeId, parent, wrappers, modifierNode } = stack[0]
+      const { nodeId, parent, modifiers, modifierNode } = stack[0]
       stack = stack.slice(1)
 
       const descriptor = this.nodes.get(nodeId)
@@ -200,7 +200,7 @@ class Scene implements SceneInterface {
           stack.push({
             nodeId: descriptor.rootNodeId,
             parent,
-            wrappers: [...wrappers, descriptor],
+            modifiers: [...modifiers, descriptor],
             modifierNode: descriptor,
           })
         } else {
@@ -222,8 +222,8 @@ class Scene implements SceneInterface {
 
           // Find any object modifiers in the modifider nodes
           // and apply the modifications.
-          for (let i = wrappers.length - 1; i >= 0; i -= 1) {
-            const o = wrappers[i].objects.get(descriptor.id)
+          for (let i = modifiers.length - 1; i >= 0; i -= 1) {
+            const o = modifiers[i].objects.get(descriptor.id)
 
             if (o) {
               if (o.object === undefined) {
@@ -260,23 +260,31 @@ class Scene implements SceneInterface {
             stack.push(...descriptor.children.map((child) => ({
               nodeId: child,
               parent: node,
-              wrappers,
+              modifiers,
             })))
           }
 
+          // Push onto the stack any added nodes through ancestral modifier nodes...
           let pathId = 0;
-          for (let i = wrappers.length - 1; i >= 0; i -= 1) {
-            const added = wrappers[i].addedNodes?.find((addedNode) => {
-              const a = this.nodes.get(addedNode.nodeId)
-
-              return (isTreeNodeDescriptor(a) && addedNode?.parentNodeId === node.id && addedNode?.pathId === pathId)
+          for (let i = modifiers.length - 1; i >= 0; i -= 1) {
+            const added = modifiers[i].addedNodes?.find((addedNode) => {
+              return (addedNode?.parentNodeId === node.id && addedNode?.pathId === pathId)
             })
 
             if (added) {
-              stack.push({ nodeId: added.nodeId, parent: node, wrappers })
+              if (isModifierNode(added)) {
+                stack.push({
+                  nodeId: added.rootNodeId,
+                  parent,
+                  modifiers: [...modifiers, added],
+                  modifierNode: added,
+                })
+              } else {
+                stack.push({ nodeId: added.nodeId, parent: node, modifiers: modifiers })
+              }
             }
 
-            pathId ^= wrappers[i].id
+            pathId ^= modifiers[i].id
           }
         }
       }
