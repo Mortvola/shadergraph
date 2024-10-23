@@ -1,7 +1,7 @@
 import { lerp } from '../Renderer/Math';
 import type { AlphaGradientKey, ColorGradientKey } from '../Renderer/ParticleSystem/Types';
 
-export class Color {
+class Color {
   r = 0;
 
   g = 0;
