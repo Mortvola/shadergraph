@@ -213,6 +213,8 @@ class TreeNode extends Entity {
     // let parentWrapperid = newParent.topLevelWrapperId;
     let modifierNode = newParent.getTopLevelModifierNode()
 
+    // If we are connecting the node to another node that is an added node
+    // from the same modifier node then we don't consider this an added node.
     if (modifierNode === newParent.parentModifierNode) {
       modifierNode = undefined
     }
@@ -235,6 +237,72 @@ class TreeNode extends Entity {
 
     if (response.ok) {
       runInAction(() => {
+        if (this.parentModifierNode !== undefined) {
+          if (this.parentModifierNode?.id !== modifierNode?.id) {
+            // Changing parent modifier nodes. Remove from the old and
+            // add to the new (if there is a new one).
+            const index = this.parentModifierNode.addedNodes.findIndex((entry) => entry.nodeId === this.id)
+
+            if (index !== -1) {
+              this.parentModifierNode.addedNodes = [
+                ...this.parentModifierNode.addedNodes.slice(0, index),
+                ...this.parentModifierNode.addedNodes.slice(index + 1),
+              ]
+            }
+
+            // If there is a new modifier node then add
+            // this node to its list of added nodes.
+            if (modifierNode !== undefined) {
+              if (path === undefined) {
+                throw new Error('path not defined')
+              }
+
+              modifierNode.addedNodes.push({
+                nodeId: this.id,
+                parentNodeId: newParent.id,
+                pathId: path.id,
+              })
+            }
+          } else {
+            // The node is staying within the addedNodes of the
+            // same modifier node.
+
+            if (path === undefined) {
+              throw new Error('path not defined')
+            }
+
+            // Find the existing node in the addedNodes and update it
+            const entry = modifierNode.addedNodes.find((entry) => entry.nodeId === this.id)
+
+            if (entry) {
+              entry.parentNodeId = newParent.id
+              entry.pathId = path.id
+            } else {
+              // For some reason, the node was not found.
+              // Add it.
+              console.log(`Node not found in addedNodes: ${modifierNode.id}, ${this.id}`)
+
+              modifierNode.addedNodes.push({
+                nodeId: this.id,
+                parentNodeId: newParent.id,
+                pathId: path.id,
+              })
+            }
+          }
+        } else if (modifierNode !== undefined) {
+          // node was not an added ndoe in a modifier node but
+          // is being added to a modifier node.
+          if (path === undefined) {
+            throw new Error('path not defined')
+          }
+
+          modifierNode.addedNodes.push({
+            nodeId: this.id,
+            parentNodeId: newParent.id,
+            pathId: path.id,
+          })
+        }
+
         this.parentModifierNode = modifierNode
 
         this.detachSelf();
