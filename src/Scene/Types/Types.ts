@@ -47,20 +47,14 @@ export interface SceneInterface {
 
   nodeMaps: Map<number, NodeInfo>
 
-  // treeFromDescriptor(descriptor: NodesResponse): Promise<TreeNode | undefined>;
-
   createNode(
     id: number,
     name: string,
     object?: SceneObjectInterface,
     wrapperId?: number,
     parentWrapperId?: number,
-    pathId?: number,
-    path?: number[],
     parent?: TreeNode,
   ): TreeNode
-
-  // loadObjects(objects: SceneObjectDescriptor[], trees?: { id: number, name: string }[]): Promise<void>;
 
   addNode(node: TreeNode, autosave: boolean): void;
 
@@ -193,20 +187,33 @@ export enum ObjectType {
 //   children: TreeNodeDescriptor[],
 // }
 
-export type TreeModifierDescriptor = {
-  rootNodeId?: number,
-  addedNodes?: number[],
+export type AddedNode = {
+  nodeId: number,
+  parentNodeId: number,
+  pathId: number,
 }
+
+export type TreeModifierDescriptor = {
+  id: number,
+  rootNodeId: number,
+  addedNodes: AddedNode[],
+}
+
+export const isTreeModifierDescriptor = (r: unknown): r is TreeModifierDescriptor => (
+  (r as TreeModifierDescriptor).rootNodeId !== undefined
+)
 
 export type TreeNodeDescriptor = {
   id: number,
   name: string,
   parentNodeId?: number,
   parentWrapperId?: number,
-  pathId?: number,
-  path?: number[],
   children?: number[],
-} & TreeModifierDescriptor
+}
+
+export const isTreeNodeDescriptor = (r: unknown): r is TreeNodeDescriptor => (
+  (r as TreeModifierDescriptor)?.rootNodeId === undefined
+)
 
 export const isSceneObjectDescriptor = (r: unknown): r is SceneObjectDescriptor => (
   (r as SceneObjectDescriptor)?.object?.type === ObjectType.NodeObject
@@ -220,7 +227,7 @@ export const isSceneObjectDescriptor = (r: unknown): r is SceneObjectDescriptor 
 
 export type NodesResponse2 = {
   rootNodeId: number,
-  nodes: TreeNodeDescriptor[],
+  nodes: (TreeNodeDescriptor | TreeModifierDescriptor)[],
   objects: SceneObjectDescriptor[],
 }
 

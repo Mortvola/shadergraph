@@ -82,9 +82,9 @@ class TreeNode extends Entity {
   @observable
   accessor parentWrapperId: number | undefined;
 
-  pathId?: number
+  // pathId?: number
 
-  path?: number[]
+  // path?: number[]
 
   get wrapperRoot(): boolean {
     return this.wrapped !== undefined
@@ -258,8 +258,6 @@ class TreeNode extends Entity {
 
         runInAction(() => {
           this.parentWrapperId = parentWrapperId
-          this.pathId = undefined
-          this.path = undefined
         })
 
         const parentNodeInfo = this.scene.nodeMaps.get(this.parent.id)
@@ -274,8 +272,6 @@ class TreeNode extends Entity {
                 undefined, // nodeInfo,
                 this.wrapped,
                 this.parentWrapperId,
-                undefined,
-                undefined,
                 treeNode,
               )
             }

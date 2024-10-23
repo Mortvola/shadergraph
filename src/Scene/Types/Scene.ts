@@ -1,13 +1,15 @@
 import { observable, runInAction } from 'mobx';
 import { store } from '../../State/store';
 import Http from '../../Http/src';
-import { type SceneDescriptor } from './Types';
+import { isTreeNodeDescriptor, type SceneDescriptor } from './Types';
 import type {
   NodeInfo, NodesResponse2, SceneInterface, SceneItemType, SceneObjectDescriptor,
-  SceneObjectInterface, TreeId, TreeNodeDescriptor,
+  SceneObjectInterface, TreeNodeDescriptor,
 } from './Types';
 import TreeNode from './TreeNode';
 import SceneObject from './SceneObject';
+import ModifierNode from './ModifierNode';
+import { isModifierNode } from './ModifierNode';
 
 class Scene implements SceneInterface {
   id: number = -1;
@@ -28,9 +30,9 @@ class Scene implements SceneInterface {
   // Map of nodes index by node id and then tree id
   nodeMaps: Map<number, NodeInfo> = new Map()
 
-  nodes: Map<number, TreeNodeDescriptor> = new Map()
+  nodes: Map<number, TreeNodeDescriptor | ModifierNode> = new Map()
 
-  objects: Map<TreeId | undefined, Map<number, { descriptor: SceneObjectDescriptor, object?: SceneObjectInterface }>> = new Map()
+  objects: Map<number, { descriptor: SceneObjectDescriptor, object?: SceneObjectInterface }> = new Map()
 
   static async fromDescriptor(descriptor?: SceneDescriptor) {
     const scene = new Scene();
@@ -45,18 +47,25 @@ class Scene implements SceneInterface {
         const body = await response.body();
 
         for (const node of body.nodes) {
-          scene.nodes.set(node.id, node)
+          if (isTreeNodeDescriptor(node)) {
+            scene.nodes.set(node.id, node)
+          } else {
+            scene.nodes.set(node.id, new ModifierNode(node))
+          }
         }
 
         for (const obj of body.objects) {
-          let nodeObjects = scene.objects.get(obj.treeId ?? undefined)
+          if (obj.treeId != null) {
+            // Find modifier node and add the object modifier
+            // to the map of object modifiers using the node id as the key
+            const modifiderNode = scene.nodes.get(obj.treeId)
 
-          if (nodeObjects === undefined) {
-            nodeObjects = new Map()
-            scene.objects.set(obj.treeId ?? undefined, nodeObjects)
+            if (isModifierNode(modifiderNode)) {
+              modifiderNode.objects.set(obj.nodeId, { descriptor: obj })
+            }
+          } else {
+            scene.objects.set(obj.nodeId, { descriptor: obj })
           }
-
-          nodeObjects.set(obj.nodeId, { descriptor: obj })
         }
 
         scene.root = await scene.createTree(body.rootNodeId)
@@ -175,7 +184,7 @@ class Scene implements SceneInterface {
   async createTree(rootNodeId: number) {
     let root: TreeNode | undefined;
 
-    let stack: { nodeId: number, parent?: TreeNode, wrappers: TreeNodeDescriptor[], wrapperId?: number }[] = [{
+    let stack: { nodeId: number, parent?: TreeNode, wrappers: ModifierNode[], wrapperId?: number }[] = [{
       nodeId: rootNodeId,
       wrappers: [],
     }]
@@ -187,34 +196,41 @@ class Scene implements SceneInterface {
       const descriptor = this.nodes.get(nodeId)
 
       if (descriptor) {
-        if (descriptor.rootNodeId === undefined) {
+        if (isModifierNode(descriptor)) {
+          stack.push({
+            nodeId: descriptor.rootNodeId,
+            parent,
+            wrappers: [...wrappers, descriptor],
+            wrapperId: descriptor.id,
+          })
+        } else {
           let object: SceneObjectInterface | undefined
-          const objects = this.objects.get(undefined)
-          if (objects) {
-            const o = objects.get(descriptor.id)
+
+          // Get the object entry from the map of objects
+          // If the entry was found but the object has not yet
+          // been created then create the object and store it in
+          // the map entry.
+          const o = this.objects.get(descriptor.id)
+
+          if (o) {
+            if (o.object === undefined) {
+              o.object = await SceneObject.fromDescriptor(o.descriptor)
+            }
+
+            object = o.object
+          }
+
+          // Find any object modifiers in the modifider nodes
+          // and apply the modifications.
+          for (let i = wrappers.length - 1; i >= 0; i -= 1) {
+            const o = wrappers[i].objects.get(descriptor.id)
 
             if (o) {
               if (o.object === undefined) {
-                o.object = await SceneObject.fromDescriptor(o.descriptor)
+                o.object = await SceneObject.fromDescriptor(o.descriptor, object)
               }
 
               object = o.object
-            }
-
-            for (let i = wrappers.length - 1; i >= 0; i -= 1) {
-              const objects = this.objects.get(wrappers[i].id)
-
-              if (objects) {
-                const o = objects.get(descriptor.id)
-
-                if (o) {
-                  if (o.object === undefined) {
-                    o.object = await SceneObject.fromDescriptor(o.descriptor, object)
-                  }
-
-                  object = o.object
-                }
-              }
             }
           }
 
@@ -224,8 +240,8 @@ class Scene implements SceneInterface {
             object,
             wrapperId,
             descriptor.parentWrapperId,
-            descriptor.pathId,
-            descriptor.path,
+            // descriptor.pathId,
+            // descriptor.path,
             parent,
           )
 
@@ -243,27 +259,18 @@ class Scene implements SceneInterface {
 
           let pathId = 0;
           for (let i = wrappers.length - 1; i >= 0; i -= 1) {
-            const added = wrappers[i].addedNodes?.find((addedId) => {
-              const a = this.nodes.get(addedId)
+            const added = wrappers[i].addedNodes?.find((addedNode) => {
+              const a = this.nodes.get(addedNode.nodeId)
 
-              if (a?.parentNodeId === node.id && a?.pathId === pathId) {
-                return true
-              }
+              return (isTreeNodeDescriptor(a) && addedNode?.parentNodeId === node.id && addedNode?.pathId === pathId)
             })
 
             if (added) {
-              stack.push({ nodeId: added, parent: node, wrappers })
+              stack.push({ nodeId: added.nodeId, parent: node, wrappers })
             }
 
             pathId ^= wrappers[i].id
           }
-        } else {
-          stack.push({
-            nodeId: descriptor.rootNodeId,
-            parent,
-            wrappers: [...wrappers, descriptor],
-            wrapperId: descriptor.id,
-          })
         }
       }
     }
@@ -277,8 +284,6 @@ class Scene implements SceneInterface {
     object?: SceneObjectInterface,
     wrapperId?: number,
     parentWrapperId?: number,
-    pathId?: number,
-    path?: number[],
     parent?: TreeNode,
   ): TreeNode {
     const node = new TreeNode(this, name)
@@ -287,8 +292,6 @@ class Scene implements SceneInterface {
       node.id = id;
       node.wrapped = wrapperId
       node.parentWrapperId = parentWrapperId
-      node.pathId = pathId
-      node.path = path?.slice()
     })
 
     if (parent) {
