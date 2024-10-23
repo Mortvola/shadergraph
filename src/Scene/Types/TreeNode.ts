@@ -83,10 +83,6 @@ class TreeNode extends Entity {
   @observable
   accessor parentModifierNode: ModifierNode | undefined;
 
-  // pathId?: number
-
-  // path?: number[]
-
   get wrapperRoot(): boolean {
     return this.modifierNode !== undefined
   }
@@ -203,6 +199,12 @@ class TreeNode extends Entity {
         modifierNode = node.modifierNode
       }
 
+      // If we have reached an added node then break
+      // out of the loop.
+      if (node.parentModifierNode !== undefined) {
+        break;
+      }
+
       node = node.parent
     }
 
@@ -215,7 +217,12 @@ class TreeNode extends Entity {
 
     // If we are connecting the node to another node that is an added node
     // from the same modifier node then we don't consider this an added node.
-    if (modifierNode === newParent.parentModifierNode) {
+    // If the node is the child of a modifier node then don't consider this
+    // situtation.
+    if (
+      modifierNode === newParent.parentModifierNode
+      && newParent.modifierNode === undefined
+    ) {
       modifierNode = undefined
     }
 
