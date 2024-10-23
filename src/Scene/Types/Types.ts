@@ -5,6 +5,7 @@ import type {
   ComponentDescriptor, LightPropsDescriptor, NewSceneObjectComponent,
   SceneObjectComponent as SceneObjectComponent, TransformPropsInterface,
 } from '../../Renderer/Types';
+import type ModifierNode from './ModifierNode';
 import type TreeNode from './TreeNode';
 
 export enum SceneItemType {
@@ -51,8 +52,8 @@ export interface SceneInterface {
     id: number,
     name: string,
     object?: SceneObjectInterface,
-    wrapperId?: number,
-    parentWrapperId?: number,
+    modifierNode?: ModifierNode,
+    parentModifierNode?: ModifierNode,
     parent?: TreeNode,
   ): TreeNode
 

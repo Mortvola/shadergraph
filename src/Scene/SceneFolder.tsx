@@ -166,7 +166,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
       onDragLeave={handleDragLeave}
     >
       <SceneItem
-        key={`${folder.id}:${folder.wrapped ?? folder.wrapperId}`}
+        key={`${folder.id}:${folder.modifierNode?.id ?? folder.modifierNodeId}`}
         scene={scene}
         treeNode={folder}
         onSelect={onSelect}
@@ -192,7 +192,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
       {
         folder.nodes.map((i) => (
           <SceneFolder
-            key={`${i.id}:${i.wrapped ?? i.wrapperId}`}
+            key={`${i.id}:${i.modifierNode?.id ?? i.modifierNodeId}`}
             scene={scene}
             folder={i}
             onSelect={onSelect}

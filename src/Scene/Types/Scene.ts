@@ -184,13 +184,13 @@ class Scene implements SceneInterface {
   async createTree(rootNodeId: number) {
     let root: TreeNode | undefined;
 
-    let stack: { nodeId: number, parent?: TreeNode, wrappers: ModifierNode[], wrapperId?: number }[] = [{
+    let stack: { nodeId: number, parent?: TreeNode, wrappers: ModifierNode[], modifierNode?: ModifierNode }[] = [{
       nodeId: rootNodeId,
       wrappers: [],
     }]
 
     while (stack.length > 0) {
-      const { nodeId, parent, wrappers, wrapperId } = stack[0]
+      const { nodeId, parent, wrappers, modifierNode } = stack[0]
       stack = stack.slice(1)
 
       const descriptor = this.nodes.get(nodeId)
@@ -201,7 +201,7 @@ class Scene implements SceneInterface {
             nodeId: descriptor.rootNodeId,
             parent,
             wrappers: [...wrappers, descriptor],
-            wrapperId: descriptor.id,
+            modifierNode: descriptor,
           })
         } else {
           let object: SceneObjectInterface | undefined
@@ -234,14 +234,21 @@ class Scene implements SceneInterface {
             }
           }
 
+          let parentModifierNode: ModifierNode | undefined
+          if (descriptor.parentWrapperId) {
+            const node = this.nodes.get(descriptor.parentWrapperId)
+
+            if (isModifierNode(node)) {
+              parentModifierNode = node
+            }
+          }
+
           const node = this.createNode(
             descriptor.id,
             descriptor.name,
             object,
-            wrapperId,
-            descriptor.parentWrapperId,
-            // descriptor.pathId,
-            // descriptor.path,
+            modifierNode,
+            parentModifierNode,
             parent,
           )
 
@@ -282,16 +289,16 @@ class Scene implements SceneInterface {
     id: number,
     name: string,
     object?: SceneObjectInterface,
-    wrapperId?: number,
-    parentWrapperId?: number,
+    modifierNode?: ModifierNode,
+    parentModifierNode?: ModifierNode,
     parent?: TreeNode,
   ): TreeNode {
     const node = new TreeNode(this, name)
 
     runInAction(() => {
       node.id = id;
-      node.wrapped = wrapperId
-      node.parentWrapperId = parentWrapperId
+      node.modifierNode = modifierNode
+      node.parentModifierNode = parentModifierNode
     })
 
     if (parent) {

@@ -9,6 +9,7 @@ import ParticleSystem from '../../Renderer/ParticleSystem/ParticleSystem';
 import { vec3 } from 'wgpu-matrix';
 import Http from '../../Http/src';
 import SceneObject from './SceneObject';
+import type ModifierNode from './ModifierNode';
 
 type NodeComponent = {
   type: ComponentType,
@@ -24,20 +25,20 @@ class TreeNode extends Entity {
 
   parent?: TreeNode;
 
-  get wrapperId(): number | undefined {
+  get modifierNodeId(): number | undefined {
     if (this.parent === undefined) {
       return undefined
     }
 
-    if (this.parent.wrapped !== undefined) {
-      return this.parent.wrapped
+    if (this.parent.modifierNode !== undefined) {
+      return this.parent.modifierNode.id
     }
 
-    return this.parent.wrapperId
+    return this.parent.modifierNodeId
   }
 
   @observable
-  accessor wrapped: number | undefined;
+  accessor modifierNode: ModifierNode | undefined;
 
   private _nodeObject: SceneObjectInterface;
 
@@ -53,8 +54,8 @@ class TreeNode extends Entity {
     this.transformChanged()
   }
 
-  get topLevelWrapperId(): number | undefined {
-    let wrapperId = undefined
+  get topLevelModifierNodeId(): number | undefined {
+    let modifierNode = undefined
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let node: TreeNode | undefined = this;
@@ -64,15 +65,15 @@ class TreeNode extends Entity {
         break;
       }
 
-      if (node.wrapped !== undefined) {
-        wrapperId = node.wrapped
+      if (node.modifierNode !== undefined) {
+        modifierNode = node.modifierNode
         break;
       }
 
       node = node.parent
     }
 
-    return wrapperId
+    return modifierNode?.id
   }
 
   renderNode = new RenderNode();
@@ -80,18 +81,18 @@ class TreeNode extends Entity {
   scene: SceneInterface;
 
   @observable
-  accessor parentWrapperId: number | undefined;
+  accessor parentModifierNode: ModifierNode | undefined;
 
   // pathId?: number
 
   // path?: number[]
 
   get wrapperRoot(): boolean {
-    return this.wrapped !== undefined
+    return this.modifierNode !== undefined
   }
 
   get withinWrapper(): boolean {
-    return this.wrapperId !== undefined || this.wrapped !== undefined
+    return this.modifierNodeId !== undefined || this.modifierNode !== undefined
   }
 
   @observable
@@ -159,26 +160,26 @@ class TreeNode extends Entity {
     // If there is a tree ID associated with this node but the parent
     // does not have the same associate then we must be at the root
     // of a tree. Therefore, update the node with the tree id instead the node with id.
-    if (this.wrapped !== undefined) {
-      return this.wrapped;
+    if (this.modifierNode !== undefined) {
+      return this.modifierNode.id;
     }
 
     return this.id
   }
 
-  getPathId(start: TreeNode, wrapperId: number) {
+  getPathId(start: TreeNode, modifierNode: ModifierNode) {
     let id = 0
     const path: number[] = []
 
     let node: TreeNode | undefined = start
     while (node !== undefined) {
-      if (node.wrapped === wrapperId) {
+      if (node.modifierNode?.id === modifierNode.id) {
         break;
       }
 
-      if (node.wrapped !== undefined) {
-        id ^= node.wrapped
-        path.push(node.wrapped)
+      if (node.modifierNode !== undefined) {
+        id ^= node.modifierNode.id
+        path.push(node.modifierNode.id)
       }
 
       node = node.parent
@@ -187,8 +188,8 @@ class TreeNode extends Entity {
     return { id, path }
   }
 
-  getTopLevelWrapperId(): number | undefined {
-    let wrapperId = undefined
+  getTopLevelModifierNode(): ModifierNode | undefined {
+    let modifierNode = undefined
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let node: TreeNode | undefined = this;
@@ -198,34 +199,34 @@ class TreeNode extends Entity {
         break;
       }
 
-      if (node.wrapped !== undefined) {
-        wrapperId = node.wrapped
+      if (node.modifierNode !== undefined) {
+        modifierNode = node.modifierNode
       }
 
       node = node.parent
     }
 
-    return wrapperId
+    return modifierNode
   }
 
   async reparent(newParent: TreeNode) {
     // let parentWrapperid = newParent.topLevelWrapperId;
-    let wrapperId = newParent.getTopLevelWrapperId()
+    let modifierNode = newParent.getTopLevelModifierNode()
 
-    if (wrapperId === newParent.parentWrapperId) {
-      wrapperId = undefined
+    if (modifierNode === newParent.parentModifierNode) {
+      modifierNode = undefined
     }
 
     let path: { id: number, path: number[] } | undefined
 
-    if (wrapperId !== undefined) {
-      path = this.getPathId(newParent, wrapperId)
-      console.log(`${path.id}, ${JSON.stringify(path.path)}, ${wrapperId}`)
+    if (modifierNode !== undefined) {
+      path = this.getPathId(newParent, modifierNode)
+      console.log(`${path.id}, ${JSON.stringify(path.path)}, ${modifierNode.id}`)
     }
 
     const payload = {
       parentNodeId: newParent.id,
-      parentWrapperId: wrapperId ?? null,
+      parentWrapperId: modifierNode?.id ?? null,
       path: path?.path ?? null,
       pathId: path?.id ?? null,
     }
@@ -234,7 +235,7 @@ class TreeNode extends Entity {
 
     if (response.ok) {
       runInAction(() => {
-        this.parentWrapperId = wrapperId
+        this.parentModifierNode = modifierNode
 
         this.detachSelf();
         newParent.addNode(this);
@@ -257,7 +258,7 @@ class TreeNode extends Entity {
         // }
 
         runInAction(() => {
-          this.parentWrapperId = parentWrapperId
+          // this.parentModifierNode = parentWrapperId
         })
 
         const parentNodeInfo = this.scene.nodeMaps.get(this.parent.id)
@@ -265,13 +266,13 @@ class TreeNode extends Entity {
 
         if (parentNodeInfo && nodeInfo) {
           for (const [wrapperId, treeNode] of parentNodeInfo.treeNodes) {
-            if (wrapperId !== this.parent.wrapperId && this.parent !== treeNode) {
+            if (wrapperId !== this.parent.modifierNodeId && this.parent !== treeNode) {
               this.scene.createNode(
                 this.id,
                 this.name,
                 undefined, // nodeInfo,
-                this.wrapped,
-                this.parentWrapperId,
+                this.modifierNode,
+                this.parentModifierNode,
                 treeNode,
               )
             }
@@ -412,7 +413,7 @@ class TreeNode extends Entity {
         stack = stack.slice(1)
 
         for (const child of node.nodes) {
-          if (child.parentWrapperId !== undefined) {
+          if (child.parentModifierNode !== undefined) {
             connections.push(child)
           }
 
@@ -427,7 +428,7 @@ class TreeNode extends Entity {
   async instantiatePrefab(rootNodeId: number) {
     const payload = {
       parentNodeId: this.id,
-      parentTreeId: this.topLevelWrapperId ?? null,
+      parentTreeId: this.topLevelModifierNodeId ?? null,
       rootNodeId: rootNodeId,
     }
 
