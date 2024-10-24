@@ -24,5 +24,7 @@ export default tseslint.config({
     '@stylistic/no-trailing-spaces': 'warn',
     '@stylistic/quotes': ['warn', 'single'],
     '@stylistic/jsx-quotes': ['warn', 'prefer-double'],
+    '@stylistic/max-len': ['warn', { code: 120 }],
+    '@stylistic/comma-dangle': ['warn', 'always-multiline'],
   }
 });
