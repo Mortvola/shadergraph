@@ -100,7 +100,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
         async () => {
           switch (folder.newItemType) {
             case SceneItemType.SceneObject: {
-              const node = await objectManager.add(undefined, name, folder)
+              const node = await folder.addChild(undefined, name)
 
               if (node) {
                 scene.setSelected(node);
@@ -112,10 +112,9 @@ const SceneFolder: React.FC<PropsType> = observer(({
             case SceneItemType.ParticleSystem: {
               const props = new ParticleSystemProps();
 
-              const node = await objectManager.add(
+              const node = await folder.addChild(
                 { type: ComponentType.ParticleSystem, props },
                 name,
-                folder,
               );
 
               if (node) {
@@ -128,10 +127,9 @@ const SceneFolder: React.FC<PropsType> = observer(({
             case SceneItemType.Light: {
               const props = new LightProps();
 
-              const node = await objectManager.add(
+              const node = await folder.addChild(
                 { type: ComponentType.Light, props: props },
                 name,
-                folder,
               );
 
               if (node) {
@@ -166,7 +164,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
       onDragLeave={handleDragLeave}
     >
       <SceneItem
-        key={`${folder.id}:${folder.modifierNode?.id ?? folder.modifierNodeId}`}
+        key={`${folder.id}:${folder.modifications?.id ?? folder.modifierNodeId}`}
         scene={scene}
         treeNode={folder}
         onSelect={onSelect}
@@ -192,7 +190,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
       {
         folder.nodes.map((i) => (
           <SceneFolder
-            key={`${i.id}:${i.modifierNode?.id ?? i.modifierNodeId}`}
+            key={`${i.id}:${i.modifications?.id ?? i.modifierNodeId}`}
             scene={scene}
             folder={i}
             onSelect={onSelect}

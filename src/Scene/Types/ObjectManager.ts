@@ -22,7 +22,7 @@ class ObjectManager {
 
     const response = await Http.post<unknown, SceneObjectDescriptor>('/api/scene-objects', {
       parentNodeId: parentNode.id,
-      parentTreeId: parentNode.modifierNodeId,
+      modifierNodeId: parentNode.modifierNodeId,
       name,
       component: descriptor,
     });

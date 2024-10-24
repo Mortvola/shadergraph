@@ -48,12 +48,14 @@ export interface SceneInterface {
 
   nodeMaps: Map<number, NodeInfo>
 
+  objects: Map<number, { descriptor: SceneObjectDescriptor, object?: SceneObjectInterface }>
+
   createNode(
     id: number,
     name: string,
     object?: SceneObjectInterface,
     modifierNode?: ModifierNode,
-    parentModifierNode?: ModifierNode,
+    parentModifierNode?: TreeNode,
     parent?: TreeNode,
   ): TreeNode
 
@@ -211,7 +213,7 @@ export type TreeNodeDescriptor = {
   id: number,
   name: string,
   parentNodeId?: number,
-  parentWrapperId?: number,
+  modifierNodeId?: number,
   children?: number[],
 }
 

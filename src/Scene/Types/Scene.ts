@@ -196,9 +196,8 @@ class Scene implements SceneInterface {
     type StackEntry = {
       nodeId: number,
       parent?: TreeNode,
-      modifiers: ModifierNode[],
-      modifierNode?: ModifierNode,
-      parentModifierNode?: ModifierNode,
+      modifiers: { modifier: ModifierNode, node?: TreeNode }[],
+      parentModifierNode?: TreeNode,
     }
 
     let stack: StackEntry[] = [{
@@ -207,7 +206,7 @@ class Scene implements SceneInterface {
     }]
 
     while (stack.length > 0) {
-      const { nodeId, parent, modifiers, modifierNode, parentModifierNode } = stack[0]
+      const { nodeId, parent, modifiers, parentModifierNode } = stack[0]
       stack = stack.slice(1)
 
       const descriptor = this.nodes.get(nodeId)
@@ -217,8 +216,7 @@ class Scene implements SceneInterface {
           stack.push({
             nodeId: descriptor.rootNodeId,
             parent,
-            modifiers: [...modifiers, descriptor],
-            modifierNode: descriptor,
+            modifiers: [...modifiers, { modifier: descriptor }],
             parentModifierNode,
           })
         } else {
@@ -242,7 +240,7 @@ class Scene implements SceneInterface {
           // and apply the modifications.
           let pathId = 0;
           for (let i = modifiers.length - 1; i >= 0; i -= 1) {
-            const modifier = modifiers[i]
+            const modifier = modifiers[i].modifier
 
             let pathMap = modifier.objects.get(descriptor.id)
 
@@ -272,6 +270,15 @@ class Scene implements SceneInterface {
             pathId ^= modifier.id
           }
 
+          let modifierNode: ModifierNode | undefined
+          if (modifiers.length > 0 && modifiers[modifiers.length - 1].node === undefined) {
+            modifierNode = modifiers[modifiers.length - 1].modifier
+          }
+
+          if (object == null) {
+            throw new Error('object not set')
+          }
+
           const node = this.createNode(
             descriptor.id,
             descriptor.name,
@@ -280,6 +287,10 @@ class Scene implements SceneInterface {
             parentModifierNode,
             parent,
           )
+
+          if (modifierNode) {
+            modifiers[modifiers.length - 1].node = node
+          }
 
           if (root === undefined) {
             root = node
@@ -296,7 +307,7 @@ class Scene implements SceneInterface {
           // Push onto the stack any nodes added through modifier nodes...
           pathId = 0;
           for (let i = modifiers.length - 1; i >= 0; i -= 1) {
-            const modifier = modifiers[i]
+            const modifier = modifiers[i].modifier
 
             const added = modifier.addedNodes?.find((addedNode) => {
               return (addedNode?.parentNodeId === node.id && addedNode?.pathId === pathId)
@@ -311,17 +322,16 @@ class Scene implements SceneInterface {
                   parent,
                   modifiers: [
                     ...modifiers.slice(0, i),
-                    added,
+                    { modifier: added },
                   ],
-                  modifierNode: added,
-                  parentModifierNode: modifier,
+                  parentModifierNode: modifiers[i].node,
                 })
               } else {
                 stack.push({
                   nodeId: added.nodeId,
                   parent: node,
                   modifiers: modifiers.slice(0, i),
-                  parentModifierNode: modifier,
+                  parentModifierNode: modifiers[i].node,
                 })
               }
             }
@@ -338,28 +348,24 @@ class Scene implements SceneInterface {
   createNode(
     id: number,
     name: string,
-    object?: SceneObjectInterface,
+    object: SceneObjectInterface,
     modifierNode?: ModifierNode,
-    parentModifierNode?: ModifierNode,
+    parentModifierNode?: TreeNode,
     parent?: TreeNode,
   ): TreeNode {
     const node = new TreeNode(this, name)
 
     runInAction(() => {
       node.id = id;
-      node.modifierNode = modifierNode
+      node.modifications = modifierNode
       node.parentModifierNode = parentModifierNode
+      node.nodeObject = object;
     })
 
     if (parent) {
       parent.autosave = false;
       parent.addNode(node)
       parent.autosave = true;
-    }
-
-    if (object) {
-      node.nodeObject = object;
-      object.node = node;
     }
 
     return node
