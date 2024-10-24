@@ -7,7 +7,7 @@ type PropsType = {
 }
 
 const OverrideComparison: React.FC<PropsType> = ({
-  property
+  property,
 }) => {
   const handleRevertClick = () => {
     property.revertOverride();

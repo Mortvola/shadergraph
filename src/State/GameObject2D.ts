@@ -36,7 +36,7 @@ class GameObject2D extends Entity implements GameObject2DInterface {
         width: this.width,
         height: this.height,
         material: this.material ?? undefined,
-      }
+      },
     });
 
     if (response.ok) {

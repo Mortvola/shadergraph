@@ -46,7 +46,7 @@ class ReticlePipeline extends Pipeline {
       depthStencil: {
         depthWriteEnabled: true,
         depthCompare: 'less',
-        format: 'depth24plus'
+        format: 'depth24plus',
       },
       layout: gpu.device.createPipelineLayout({
         label,
@@ -55,7 +55,7 @@ class ReticlePipeline extends Pipeline {
           bindGroups.getBindGroupLayout1(),
           bindGroups.getBindGroupLayout2(),
           bindGroups.getBindGroupLayout3(),
-        ]
+        ],
       }),
     };
 
@@ -69,7 +69,7 @@ class ReticlePipeline extends Pipeline {
         cullMode: CullMode.None,
         depthWriteEnabled: true,
         lit: false,
-      }
+      },
     );
   }
 }

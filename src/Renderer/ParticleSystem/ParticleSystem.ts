@@ -53,7 +53,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
           vec4.scale(
             planeNormal,
             sphereRadius,
-          )
+          ),
         )
 
         // Find the point on the plane that we will collide with if we travel far enough.

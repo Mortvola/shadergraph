@@ -22,7 +22,7 @@ class DecalPass extends RenderPass {
           visibility: GPUShaderStage.FRAGMENT,
           texture: {},
         },
-      ]
+      ],
     });
 
     const sampler = gpu.device.createSampler();
@@ -64,7 +64,7 @@ class DecalPass extends RenderPass {
         depthClearValue: 1.0,
         depthLoadOp: 'load' as GPULoadOp,
         depthStoreOp: 'store' as GPUStoreOp,
-      }
+      },
     });
 
     passEncoder.setBindGroup(0, frameBindGroup);

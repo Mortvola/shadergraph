@@ -179,12 +179,12 @@ export const convertType = (type: string) => {
 export enum CullMode {
   Back = 'back',
   None = 'none',
-  Front = 'front'
+  Front = 'front',
 }
 
 export enum BlendMode {
   Alpha = 'Alpha',
-  Addititve = 'Additive'
+  Addititve = 'Additive',
 }
 
 export type DisplaySettings = {

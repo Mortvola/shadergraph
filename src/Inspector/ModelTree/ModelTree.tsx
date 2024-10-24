@@ -56,14 +56,14 @@ const ModelTree: React.FC<PropsType> = observer(({
 
         if (isDrawableComponent(node.node)) {
           elements.push(
-            <MeshNode key={key} node={node.node} level={node.level} onMaterialAssignment={handleMaterialAssignment} />
+            <MeshNode key={key} node={node.node} level={node.level} onMaterialAssignment={handleMaterialAssignment} />,
           )
         }
         else {
           elements.push(
             <div key={key} style={{ marginLeft: 16 * node.level }}>
               {node.node.name ? node.node.name : 'Unnamed'}
-            </div>
+            </div>,
           )
         }
 

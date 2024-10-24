@@ -26,7 +26,7 @@ const PSEmissions: React.FC<PropsType> = observer(({
       emissions.bursts.set(
         [
           ...emissions.bursts.get(),
-          { time: 0, count: new PSValue('', emissions, { value: [1, 1] }), cycles: 0, probability: 1 }
+          { time: 0, count: new PSValue('', emissions, { value: [1, 1] }), cycles: 0, probability: 1 },
         ],
         true,
       )

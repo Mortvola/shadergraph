@@ -98,7 +98,7 @@ class Project implements ProjectInterface {
 
     const response = await fetch(`${url}?parentId=${parentId}`, {
       method: 'POST',
-      body: formData
+      body: formData,
     })
 
     if (response.ok) {
@@ -156,7 +156,7 @@ class Project implements ProjectInterface {
             x: -0.1 / 2,
             y: 0.1 / 2,
             width: 0.1,
-            height: 0.1
+            height: 0.1,
           },
         }
 

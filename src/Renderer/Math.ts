@@ -105,8 +105,8 @@ export const gravity = -9.81;
 export const minimumVelocity = (targetX: number, targetY: number) => (
   Math.sqrt(
     Math.sqrt(
-      Math.pow(gravity, 2) * (Math.pow(targetX, 2) + Math.pow(targetY, 2)) - gravity * targetY
-    )
+      Math.pow(gravity, 2) * (Math.pow(targetX, 2) + Math.pow(targetY, 2)) - gravity * targetY,
+    ),
   )
 )
 
@@ -114,7 +114,7 @@ export const minimumVelocity = (targetX: number, targetY: number) => (
 // Given that the gravitational constant is in meters, all parameters are in meters.
 export const anglesOfLaunch = (velocity: number, targetX: number, targetY: number) => {
   const sqrtTerm = Math.sqrt(
-    Math.pow(velocity, 4) - gravity * (gravity * Math.pow(targetX, 2) - 2 * Math.pow(velocity, 2) * targetY)
+    Math.pow(velocity, 4) - gravity * (gravity * Math.pow(targetX, 2) - 2 * Math.pow(velocity, 2) * targetY),
   )
 
   // Note: we negate the Y component (second paramter) just to get atan2 to return a value in the correct quadrant.

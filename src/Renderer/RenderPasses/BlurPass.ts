@@ -29,7 +29,7 @@ class BlurPass {
           visibility: GPUShaderStage.FRAGMENT,
           texture: {},
         },
-      ]
+      ],
     });
 
     const sampler = gpu.device.createSampler();
@@ -44,7 +44,7 @@ class BlurPass {
         },
         {
           binding: 1, resource: this.scratchTextureView,
-        }
+        },
       ],
     });
 
@@ -82,7 +82,7 @@ class BlurPass {
         label,
         bindGroupLayouts: [
           bindGroupLayout,
-        ]
+        ],
       }),
     };
 

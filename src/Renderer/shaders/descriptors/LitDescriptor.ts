@@ -7,7 +7,7 @@ export const litDescriptor: ShaderDescriptor = {
   graphDescriptor: {
     vertex: {
       nodes: [],
-      edges: []
+      edges: [],
     },
     fragment: {
       nodes: [
@@ -21,24 +21,24 @@ export const litDescriptor: ShaderDescriptor = {
                 1.0,
                 1.0,
                 1.0,
-                1
-              ]
+                1,
+              ],
             },
             {
               port: 'a',
-              value: 0
-            }
+              value: 0,
+            },
           ],
           settings: {
             transparent: false,
             blendMode: BlendMode.Alpha,
             cullMode: CullMode.None,
             depthWriteEnabled: true,
-            lit: true
-          }
-        }
+            lit: true,
+          },
+        },
       ],
-      edges: []
-    }
-  }
+      edges: [],
+    },
+  },
 }

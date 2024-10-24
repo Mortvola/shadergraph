@@ -138,7 +138,7 @@ class PipelineManager implements PipelineManagerInterface {
                 shaderLocation: 1, // normal
                 offset: 0,
                 format: 'float32x4',
-              }
+              },
             ],
             arrayStride: 16,
             stepMode: 'vertex',
@@ -149,11 +149,11 @@ class PipelineManager implements PipelineManagerInterface {
                 shaderLocation: 2, // texcoord
                 offset: 0,
                 format: 'float32x2',
-              }
+              },
             ],
             arrayStride: 8,
             stepMode: 'vertex',
-          }
+          },
         ];
       }
       else if (drawableType === DrawableType.Mesh2D) {
@@ -175,11 +175,11 @@ class PipelineManager implements PipelineManagerInterface {
                 shaderLocation: 1, // texcoord
                 offset: 0,
                 format: 'float32x2',
-              }
+              },
             ],
             arrayStride: 8,
             stepMode: 'vertex',
-          }
+          },
         ];
       }
 
@@ -303,7 +303,7 @@ class PipelineManager implements PipelineManagerInterface {
         depthStencil: {
           depthWriteEnabled: shaderModule.settings.depthWriteEnabled ?? true,
           depthCompare: (shaderModule.settings.transparent ?? false) ? 'less-equal' : 'less',
-          format: 'depth24plus'
+          format: 'depth24plus',
         },
         layout: pipelineLayout,
       };

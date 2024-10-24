@@ -8,7 +8,7 @@ type PropsType = {
 }
 
 const Collision: React.FC<PropsType> = ({
-  value
+  value,
 }) => {
   const handleBounceChange = (bounce: number) => {
     value.bounce.set(bounce, true)

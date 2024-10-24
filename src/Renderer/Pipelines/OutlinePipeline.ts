@@ -31,11 +31,11 @@ class OutlinePipeline extends Pipeline {
             shaderLocation: 1, // normal
             offset: 0,
             format: 'float32x4',
-          }
+          },
         ],
         arrayStride: 16,
         stepMode: 'vertex',
-      }
+      },
     ];
 
     const pipelineDescriptor: GPURenderPipelineDescriptor = {
@@ -62,7 +62,7 @@ class OutlinePipeline extends Pipeline {
       depthStencil: {
         depthWriteEnabled: true,
         depthCompare: 'less',
-        format: 'depth24plus'
+        format: 'depth24plus',
       },
       layout: gpu.device.createPipelineLayout({
         bindGroupLayouts: [
@@ -84,7 +84,7 @@ class OutlinePipeline extends Pipeline {
         cullMode: CullMode.None,
         depthWriteEnabled: true,
         lit: false,
-      }
+      },
     );
   }
 }

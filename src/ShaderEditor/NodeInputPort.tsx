@@ -149,7 +149,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
                 style={{
                   left: origin.x - origin.x * scale + (port.node.position!.x + translate.x) * scale + port.offsetX,
                   top: origin.y - origin.y * scale + (port.node.position!.y + translate.y) * scale + port.offsetY,
-                  transform: `translate(calc(-${100 * scale}% - ${15 * scale}px), -${50 * scale}%)  scale(${scale})`
+                  transform: `translate(calc(-${100 * scale}% - ${15 * scale}px), -${50 * scale}%)  scale(${scale})`,
                 }}
               >
                 {
@@ -166,7 +166,7 @@ const NodeInputPort: React.FC<PropsType> = observer(({
                 style={{
                   left: ((port.node.position!.x + translate.x) * scale + (origin.x - origin.x * scale)) + port.offsetX,
                   top: ((port.node.position!.y + translate.y) * scale + (origin.y - origin.y * scale)) + port.offsetY,
-                  transform: `translate(-${15 * scale}px, 0) scale(${scale})`
+                  transform: `translate(-${15 * scale}px, 0) scale(${scale})`,
                 }}
               />,
               parent,

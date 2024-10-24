@@ -164,7 +164,7 @@ class SceneObject implements SceneObjectInterface {
       {
         id: this.getNextComponentId(),
         ...component,
-      }
+      },
     ];
 
     component.props.onChange = this.onChange;
@@ -244,7 +244,7 @@ class SceneObject implements SceneObjectInterface {
           .filter((c) => c.props !== undefined),
         transformProps: this.transformProps.toDescriptor(/*this.baseObject !== undefined*/)!,
         nextComponentId: this.nextComponentId,
-      }
+      },
     }
 
     return descriptor;

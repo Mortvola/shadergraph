@@ -117,7 +117,7 @@ class SceneGraph2D {
           visibility: GPUShaderStage.VERTEX,
           buffer: {},
         },
-      ]
+      ],
     });
 
     this.bindGroup = gpu.device.createBindGroup({
@@ -457,7 +457,7 @@ class SceneGraph2D {
       }
 
       await this.addElement(
-        element
+        element,
       )
     }
   }

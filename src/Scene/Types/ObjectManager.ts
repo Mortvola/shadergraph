@@ -6,7 +6,11 @@ import type PropsBase from '../../Renderer/Properties/PropsBase';
 import { type SceneObjectDescriptor } from './Types';
 
 class ObjectManager {
-  async add(component: { type: ComponentType, props: PropsBase } | undefined, name: string, parentNode: TreeNode): Promise<TreeNode | undefined> {
+  async add(
+    component: { type: ComponentType, props: PropsBase } | undefined,
+    name: string,
+    parentNode: TreeNode,
+  ): Promise<TreeNode | undefined> {
     let descriptor: object | undefined
 
     if (component) {

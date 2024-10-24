@@ -116,7 +116,7 @@ class PSValue3D extends PropertyBase {
 
     value.value = { value: descriptor.value !== undefined
       ? [descriptor.value![0], descriptor.value![1]]
-      : [1, 1]
+      : [1, 1],
     };
     value.curve = [
       PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 0) ? descriptor.curve![0] : undefined, this),
@@ -139,7 +139,7 @@ class PSValue3D extends PropertyBase {
           this.toValueDescriptor(this.values[0]),
           this.toValueDescriptor(this.values[1]),
           this.toValueDescriptor(this.values[2]),
-        ]
+        ],
       })
     }
   }

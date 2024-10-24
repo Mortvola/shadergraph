@@ -98,7 +98,7 @@ class RenderNode implements RenderNodeInterface {
     if (index !== -1) {
       this.nodes = [
         ...this.nodes.slice(0, index),
-        ...this.nodes.slice(index + 1)
+        ...this.nodes.slice(index + 1),
       ]
     }
 

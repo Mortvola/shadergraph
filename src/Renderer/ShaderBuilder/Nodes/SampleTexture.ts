@@ -59,7 +59,7 @@ class SampleTexture extends OperationNode {
       }),
       () => {
         this.notify()
-      }
+      },
     )
   }
 

@@ -218,7 +218,7 @@ class StageGraph {
 
       edges: this.edges.map((e) => (
         [{ id: e.output.node.id, port: e.output.name}, { id: e.input.node.id, port: e.input.name}]
-      ))
+      )),
     }
   }
 

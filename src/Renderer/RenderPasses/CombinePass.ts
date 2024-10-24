@@ -37,7 +37,7 @@ class CombinePass {
           visibility: GPUShaderStage.FRAGMENT,
           texture: {},
         },
-      ]
+      ],
     });
 
     const sampler = gpu.device.createSampler();
@@ -103,7 +103,7 @@ class CombinePass {
         bindGroupLayouts: [
           bindGroups.getBindGroupLayout0(),
           bindGroupLayout,
-        ]
+        ],
       }),
     };
 

@@ -151,13 +151,13 @@ class ShaderGraph {
 
     for (let i = 0; i < vertProperties.length; i += 1) {
       vertUniforms = vertUniforms.concat(
-        `${vertProperties[i].name}: ${bindingType(vertProperties[i].value.dataType)},`
+        `${vertProperties[i].name}: ${bindingType(vertProperties[i].value.dataType)},`,
       )
     }
 
     if (vertUniforms !== '') {
       vertBindings = vertBindings.concat(
-        `@group(${group}) @binding(${numVertBindings}) var<uniform> vertProperties: VertProperties;`
+        `@group(${group}) @binding(${numVertBindings}) var<uniform> vertProperties: VertProperties;`,
       )
       group += 1;
       numVertBindings += 1;
@@ -172,21 +172,21 @@ class ShaderGraph {
     for (let i = 0; i < fragProperties.length; i += 1) {
       if (fragProperties[i].value.dataType === 'texture2D' || fragProperties[i].value.dataType === 'sampler') {
         fragBindings = fragBindings.concat(
-          `@group(${group}) @binding(${numFragBindings}) var${space(fragProperties[i].value.dataType)} ${fragProperties[i].name}: ${bindingType(fragProperties[i].value.dataType)};\n`
+          `@group(${group}) @binding(${numFragBindings}) var${space(fragProperties[i].value.dataType)} ${fragProperties[i].name}: ${bindingType(fragProperties[i].value.dataType)};\n`,
         )
 
         numFragBindings += 1;
       }
       else {
         fragUniforms = fragUniforms.concat(
-          `${fragProperties[i].name}: ${bindingType(fragProperties[i].value.dataType)},`
+          `${fragProperties[i].name}: ${bindingType(fragProperties[i].value.dataType)},`,
         )
       }
     }
 
     if (fragUniforms !== '') {
       fragBindings = fragBindings.concat(
-        `@group(${group}) @binding(${numFragBindings}) var<uniform> fragProperties: FragProperties;`
+        `@group(${group}) @binding(${numFragBindings}) var<uniform> fragProperties: FragProperties;`,
       )
       group += 1;
       numFragBindings += 1;

@@ -103,7 +103,7 @@ class MaterialManager implements MaterialManagerInterface {
 
   async applyPropertyValues(
     id: number,
-    properties: PropertyInterface[]
+    properties: PropertyInterface[],
   ) {
     const key = JSON.stringify(id)
 
@@ -117,7 +117,7 @@ class MaterialManager implements MaterialManagerInterface {
     }
 
     Http.patch(`/api/materials/${id}`, {
-      properties
+      properties,
     })
   }
 

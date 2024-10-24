@@ -40,7 +40,7 @@ class OutlinePass {
           visibility: GPUShaderStage.FRAGMENT,
           texture: {},
         },
-      ]
+      ],
     });
 
     const sampler = gpu.device.createSampler();
@@ -56,7 +56,7 @@ class OutlinePass {
         {
           binding: 1,
           resource: this.scratchTextureView,
-        }
+        },
       ],
     });
 
@@ -107,7 +107,7 @@ class OutlinePass {
         bindGroupLayouts: [
           bindGroups.getBindGroupLayout0(),
           bindGroups.getBindGroupLayout1(),
-        ]
+        ],
       }),
     };
 
@@ -149,7 +149,7 @@ class OutlinePass {
         label: 'Apply Outline',
         bindGroupLayouts: [
           bindGroupLayout,
-        ]
+        ],
       }),
     };
 

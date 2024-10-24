@@ -47,7 +47,7 @@ class BloomPass {
           visibility: GPUShaderStage.FRAGMENT,
           texture: {},
         },
-      ]
+      ],
     });
 
     const sampler = gpu.device.createSampler();
@@ -114,7 +114,7 @@ class BloomPass {
         bindGroupLayouts: [
           bindGroupLayout,
           bindGroupLayout,
-        ]
+        ],
       }),
     };
 

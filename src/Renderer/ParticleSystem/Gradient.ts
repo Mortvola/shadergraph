@@ -14,7 +14,7 @@ class Gradient {
       id: 1,
       position: 1,
       value: 1,
-    }
+    },
   ];
 
   @observable
@@ -28,7 +28,7 @@ class Gradient {
       id: 1,
       position: 1,
       value: [1, 1, 1],
-    }
+    },
   ]
 
   parent?: { override: boolean }

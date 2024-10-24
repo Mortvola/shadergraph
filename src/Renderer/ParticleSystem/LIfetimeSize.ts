@@ -24,7 +24,7 @@ class LifetimeSize extends PSModule {
       const tmpDescriptor: PSValue3DDescriptor = {
         separateAxes: false,
         type: descriptor?.size?.type ?? PSValueType.Constant,
-        values: [valueDescriptor, valueDescriptor, valueDescriptor]
+        values: [valueDescriptor, valueDescriptor, valueDescriptor],
       }
 
       this.size = new PSValue3D('Size', props, tmpDescriptor, undefined, onChange, previousProps?.size);

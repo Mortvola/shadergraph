@@ -60,7 +60,7 @@ class LinePipeline extends Pipeline {
       depthStencil: {
         depthWriteEnabled: true,
         depthCompare: 'less',
-        format: 'depth24plus'
+        format: 'depth24plus',
       },
       layout: gpu.device.createPipelineLayout({
         label: 'line',
@@ -80,7 +80,7 @@ class LinePipeline extends Pipeline {
         cullMode: CullMode.None,
         depthWriteEnabled: true,
         lit: false,
-      }
+      },
     );
   }
 }

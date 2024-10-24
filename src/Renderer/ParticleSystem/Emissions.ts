@@ -27,7 +27,7 @@ class Emissions extends PSModule {
             probability: burst.probability,
           }))
         : [],
-      descriptor?.bursts !== undefined
+      descriptor?.bursts !== undefined,
     )
   }
 

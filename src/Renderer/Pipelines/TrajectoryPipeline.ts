@@ -41,7 +41,7 @@ class TrajectoryPipeline extends Pipeline {
       depthStencil: {
         depthWriteEnabled: true,
         depthCompare: 'less',
-        format: 'depth24plus'
+        format: 'depth24plus',
       },
       layout: gpu.device.createPipelineLayout({
         label,
@@ -63,7 +63,7 @@ class TrajectoryPipeline extends Pipeline {
         cullMode: CullMode.None,
         depthWriteEnabled: true,
         lit: false,
-      }
+      },
     );
   }
 }

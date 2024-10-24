@@ -63,7 +63,7 @@ class BindGroups {
           visibility: GPUShaderStage.FRAGMENT,
           buffer: {},
         },
-      ]
+      ],
     })
 
     return this.bindGroupLayout0;
@@ -92,7 +92,7 @@ class BindGroups {
           visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT,
           buffer: {},
         },
-      ]
+      ],
     });
 
     return this.bindGroupLayout1;
@@ -126,7 +126,7 @@ class BindGroups {
           visibility: GPUShaderStage.FRAGMENT,
           buffer: {},
         },
-      ]
+      ],
     });
 
     return this.bindGroupLayout2;
@@ -145,7 +145,7 @@ class BindGroups {
           visibility: GPUShaderStage.VERTEX,
           buffer: {},
         },
-      ]
+      ],
     });
 
     return this.bindGroupLayout2A;
@@ -164,7 +164,7 @@ class BindGroups {
           visibility: GPUShaderStage.VERTEX,
           buffer: {},
         },
-      ]
+      ],
     });
 
     return this.bindGroupLayout3;

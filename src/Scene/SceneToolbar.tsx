@@ -51,7 +51,7 @@ const SceneToolbar: React.FC<PropsType> = ({
       if (scene) {
         scene.addNewItem(SceneItemType.Light)
       }
-    } }
+    } },
 
     // { name: 'Create 2D game object', action: () => { store.project.addNewItem('object2D') } },
     // { name: 'Create particle system', action: () => { store.project.addNewItem('particle') } },

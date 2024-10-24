@@ -157,7 +157,7 @@ class Material implements MaterialInterface {
       if (property.value.dataType === 'sampler') {
         entries.push({
           binding: numBindings,
-          resource: gpu.device.createSampler(property.value.value as GPUSamplerDescriptor)
+          resource: gpu.device.createSampler(property.value.value as GPUSamplerDescriptor),
         })
 
         numBindings += 1

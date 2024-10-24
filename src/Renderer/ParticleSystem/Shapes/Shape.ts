@@ -24,7 +24,7 @@ class Shape extends PSModule {
     onChange?: () => void,
     previousProps?: Shape,
   ) {
-    const defaultDescriptor: ShapeDescriptor = { enabled: true, type: ShapeType.Cone, };
+    const defaultDescriptor: ShapeDescriptor = { enabled: true, type: ShapeType.Cone };
 
     super(props, descriptor?.enabled, defaultDescriptor.enabled, onChange, previousProps?.enabled);
 

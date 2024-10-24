@@ -11,7 +11,7 @@ type PropsType = {
 const Modal: React.FC<PropsType> = ({
   show,
   onHide,
-  children
+  children,
 }) => {
   const handleWrapperClick = () => {
     onHide()

@@ -127,7 +127,7 @@ class Folder extends ProjectItem<FolderInterface> implements FolderInterface {
           // Remove from the parent.
           this.items = [
             ...this.items.slice(0, index),
-            ...this.items.slice(index + 1)
+            ...this.items.slice(index + 1),
           ]
 
           item.parent = null;
@@ -147,7 +147,7 @@ class Folder extends ProjectItem<FolderInterface> implements FolderInterface {
           // Remove from the parent.
           this.items = [
             ...this.items.slice(0, index),
-            ...this.items.slice(index + 1)
+            ...this.items.slice(index + 1),
           ]
 
           item.parent = null;

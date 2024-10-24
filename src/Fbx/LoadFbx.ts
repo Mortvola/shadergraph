@@ -191,7 +191,7 @@ const traverseTree = async (
 
     // Did we already process this connection?
     const processed = context.connectionsProcessed.find(
-      (p) => p[0] === c && p[1] === connectedObjectId && p[2] === objectId && p[3] === type
+      (p) => p[0] === c && p[1] === connectedObjectId && p[2] === objectId && p[3] === type,
     );
 
     if (processed) {

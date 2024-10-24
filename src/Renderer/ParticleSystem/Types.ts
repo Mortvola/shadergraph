@@ -12,7 +12,7 @@ export enum RenderMode {
 export enum RenderAlignment {
   View = 'View',
   Local = 'Local',
-  World = 'World,'
+  World = 'World,',
 }
 
 export type RendererDescriptor = PSModuleDescriptor & {
@@ -137,7 +137,7 @@ export enum ShapeType {
   Cone = 'Cone',
   Sphere = 'Sphere',
   Hemisphere = 'Hemisphere',
-  Box = 'Box'
+  Box = 'Box',
 }
 
 export type ConeDescriptor = {

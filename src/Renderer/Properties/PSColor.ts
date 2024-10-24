@@ -77,7 +77,7 @@ class PSColor extends PropertyBase {
           alphaKeys: this.gradients[1].alphaKeys,
           colorKeys: this.gradients[1].colorKeys,
         },
-      ]
+      ],
     }));
   }
 

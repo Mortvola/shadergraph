@@ -9,9 +9,9 @@ export default defineConfig({
     react({
       babel: {
         plugins: [
-          ['@babel/plugin-proposal-decorators', { 'version': '2023-11' }]
-        ]
-      }
+          ['@babel/plugin-proposal-decorators', { 'version': '2023-11' }],
+        ],
+      },
     }),
     viteTsconfigPaths(),
   ],
@@ -27,8 +27,8 @@ export default defineConfig({
     port: 3000,
     proxy: {
       '/fonts': 'http://localhost:3333',
-      '/api': 'http://localhost:3333'
-    }
+      '/api': 'http://localhost:3333',
+    },
   },
   build: {
     // minify: false,

@@ -28,7 +28,7 @@ const Inspector: React.FC<PropsType> = observer(({
 
       if (selectedTexture) {
         const response = await Http.patch(`/api/textures/${selectedTexture.id}`, {
-          flipY: checked
+          flipY: checked,
         })
 
         if (response.ok) {

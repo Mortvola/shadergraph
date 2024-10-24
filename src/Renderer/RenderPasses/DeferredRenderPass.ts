@@ -25,7 +25,7 @@ class DeferredRenderPass extends RenderPass {
         clearValue: { r: 0.0, g: 0.0, b: 0.0, a: 1.0 },
         loadOp: 'clear' as GPULoadOp,
         storeOp: 'store' as GPUStoreOp,
-      }
+      },
     ]
 
     const descriptor: GPURenderPassDescriptor = {
@@ -36,7 +36,7 @@ class DeferredRenderPass extends RenderPass {
         depthClearValue: 1.0,
         depthLoadOp: 'clear' as GPULoadOp,
         depthStoreOp: 'store' as GPUStoreOp,
-      }
+      },
     };
 
     return descriptor;

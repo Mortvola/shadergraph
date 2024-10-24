@@ -51,8 +51,8 @@ class PSValue2 {
       curveRange: this._curveRange,
       curve: [
         { points: this.curve[0].points },
-        { points: this.curve[1].points }
-      ]
+        { points: this.curve[1].points },
+      ],
     })
   }
 }

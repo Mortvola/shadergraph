@@ -38,7 +38,7 @@ class Display extends OperationNode {
       }),
       () => {
         this.notify()
-      }
+      },
     )
   }
 

@@ -42,7 +42,7 @@ class DecalPipeline extends Pipeline {
           visibility: GPUShaderStage.FRAGMENT,
           texture: {},
         },
-      ]
+      ],
     });
 
     const pipelineDescriptor: GPURenderPipelineDescriptor = {
@@ -79,7 +79,7 @@ class DecalPipeline extends Pipeline {
       depthStencil: {
         depthWriteEnabled: false,
         depthCompare: 'less',
-        format: 'depth24plus'
+        format: 'depth24plus',
       },
       layout: gpu.device.createPipelineLayout({
         label,
@@ -88,7 +88,7 @@ class DecalPipeline extends Pipeline {
           bindGroups.getBindGroupLayout1(),
           textureGroupLayout,
           textureGroupLayout,
-        ]
+        ],
       }),
     };
 
@@ -102,7 +102,7 @@ class DecalPipeline extends Pipeline {
         cullMode: CullMode.None,
         depthWriteEnabled: true,
         lit: false,
-      }
+      },
     );
 
     this.fragmentStageBindings = {

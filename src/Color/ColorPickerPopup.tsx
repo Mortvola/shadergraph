@@ -21,7 +21,7 @@ type PropsType = {
 enum ColorMode {
   RGB,
   HSV,
-  HDR
+  HDR,
 }
 
 const ColorPickerPopup: React.FC<PropsType> = ({

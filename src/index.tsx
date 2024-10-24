@@ -6,7 +6,7 @@ import App from './App';
 import { StoreContext, store } from './State/store';
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
+  document.getElementById('root') as HTMLElement,
 );
 
 root.render(
@@ -14,7 +14,7 @@ root.render(
     <StoreContext.Provider value={store}>
       <App />
     </StoreContext.Provider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

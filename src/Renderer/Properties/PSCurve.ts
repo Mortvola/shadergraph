@@ -48,7 +48,7 @@ class PSCurve {
 
   toDescriptor(): PSCurveDescriptor {
     return ({
-      points: this.points.map((p) => JSON.parse(JSON.stringify(p)))
+      points: this.points.map((p) => JSON.parse(JSON.stringify(p))),
     })
   }
 

@@ -71,7 +71,7 @@ const LightComponent: React.FC<PropsType> = ({
   }, [lightProps])
 
   const menuItems = React.useCallback((): MenuItemLike[] => ([
-    ...attenuationPresets.map((l, index) => ({ name: l[0].toString(), action: () => {setPreset(index)} }))
+    ...attenuationPresets.map((l, index) => ({ name: l[0].toString(), action: () => {setPreset(index)} })),
   ]), [setPreset]);
 
   return (
