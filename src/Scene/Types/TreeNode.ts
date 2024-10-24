@@ -99,7 +99,9 @@ class TreeNode extends Entity {
   constructor(scene: SceneInterface, name: string) {
     super(getNextObjectId(), name)
 
-    this._nodeObject = new SceneObject(this.id, undefined, this)
+    this._nodeObject = new SceneObject()
+    this._nodeObject.node = this;
+
     this.scene = scene;
   }
 
@@ -163,11 +165,13 @@ class TreeNode extends Entity {
     return this.id
   }
 
-  getPathId(start: TreeNode, modifierNode: ModifierNode) {
+  getPathId(modifierNode: ModifierNode) {
     let id = 0
     const path: number[] = []
 
-    let node: TreeNode | undefined = start
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let node: TreeNode | undefined = this
+
     while (node !== undefined) {
       if (node.modifierNode?.id === modifierNode.id) {
         break;
@@ -229,7 +233,7 @@ class TreeNode extends Entity {
     let path: { id: number, path: number[] } | undefined
 
     if (modifierNode !== undefined) {
-      path = this.getPathId(newParent, modifierNode)
+      path = newParent.getPathId(modifierNode)
       console.log(`${path.id}, ${JSON.stringify(path.path)}, ${modifierNode.id}`)
     }
 

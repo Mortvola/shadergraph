@@ -37,12 +37,12 @@ class ObjectManager {
     }
   }
 
-  static getUrl(object: SceneObject) {
-    return `${object.nodeId}${object.treeId !== undefined ? `/${object.treeId}` : ''}`
-  }
-
   async update(object: SceneObject) {
-    const response = await Http.put<SceneObjectDescriptor, void>(`/api/scene-objects/${ObjectManager.getUrl(object)}`, object.toDescriptor());
+    if (object.node == null) {
+      throw new Error('node not set')
+    }
+
+    const response = await Http.put<SceneObjectDescriptor, void>(`/api/scene-objects/${object.node.id}`, object.toDescriptor());
 
     if (response.ok) { /* empty */ }
   }

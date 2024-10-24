@@ -55,13 +55,22 @@ class Scene implements SceneInterface {
         }
 
         for (const obj of body.objects) {
-          if (obj.treeId != null) {
+          if (obj.modifierNodeId != null) {
             // Find modifier node and add the object modifier
             // to the map of object modifiers using the node id as the key
-            const modifiderNode = scene.nodes.get(obj.treeId)
+            const modifiderNode = scene.nodes.get(obj.modifierNodeId)
 
             if (isModifierNode(modifiderNode)) {
-              modifiderNode.objects.set(obj.nodeId, { descriptor: obj })
+              let pathMap = modifiderNode.objects.get(obj.nodeId)
+
+              if (pathMap === undefined) {
+                pathMap = new Map()
+                modifiderNode.objects.set(obj.nodeId, pathMap)
+              }
+
+              if (obj.pathId != null) {
+                pathMap.set(obj.pathId, { descriptor: obj })
+              }
             }
           } else {
             scene.objects.set(obj.nodeId, { descriptor: obj })
@@ -231,16 +240,32 @@ class Scene implements SceneInterface {
 
           // Find any object modifiers in the modifider nodes
           // and apply the modifications.
+          let pathId = 0;
           for (let i = modifiers.length - 1; i >= 0; i -= 1) {
-            const o = modifiers[i].objects.get(descriptor.id)
+            const pathMap = modifiers[i].objects.get(descriptor.id)
 
-            if (o) {
-              if (o.object === undefined) {
-                o.object = await SceneObject.fromDescriptor(o.descriptor, object)
+            if (pathMap !== undefined) {
+              let o = pathMap.get(pathId)
+
+              if (o) {
+                if (o.object === undefined) {
+                  o.object = await SceneObject.fromDescriptor(o.descriptor, object)
+                }
+              } else {
+                o = { descriptor: undefined, object: await SceneObject.fromDescriptor(undefined, object)}
+
+                if (o.object === undefined) {
+                  throw new Error('object not defined')
+                }
+
+                pathMap.set(pathId, o)
               }
 
+              o.object.modifierNode = modifiers[i]
               object = o.object
             }
+
+            pathId ^= modifiers[i].id
           }
 
           const node = this.createNode(
@@ -265,7 +290,7 @@ class Scene implements SceneInterface {
           }
 
           // Push onto the stack any added nodes through ancestral modifier nodes...
-          let pathId = 0;
+          pathId = 0;
           for (let i = modifiers.length - 1; i >= 0; i -= 1) {
             const added = modifiers[i].addedNodes?.find((addedNode) => {
               return (addedNode?.parentNodeId === node.id && addedNode?.pathId === pathId)
@@ -323,6 +348,7 @@ class Scene implements SceneInterface {
 
     if (object) {
       node.nodeObject = object;
+      object.node = node;
     }
 
     return node

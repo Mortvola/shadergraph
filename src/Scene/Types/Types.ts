@@ -82,6 +82,8 @@ export interface SceneObjectInterface {
 
   node?: TreeNode;
 
+  modifierNode?: ModifierNode;
+
   baseObject?: SceneObjectInterface;
 
   tree?: { id: number, name: string };
@@ -108,7 +110,8 @@ export const isGameObject = (r: unknown): r is SceneObjectInterface => (
 
 export type SceneObjectDescriptor = {
   nodeId: number,
-  treeId?: number,
+  modifierNodeId?: number,
+  pathId?: number,
 
   object: {
     type: ObjectType,

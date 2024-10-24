@@ -10,6 +10,7 @@ import { objectManager } from './ObjectManager';
 import ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemProps';
 import { type ParticleSystemPropsDescriptor } from '../../Renderer/ParticleSystem/Types';
 import LightProps from '../../Renderer/Properties/LightProps';
+import type ModifierNode from './ModifierNode';
 
 
 class SceneObject implements SceneObjectInterface {
@@ -20,11 +21,9 @@ class SceneObject implements SceneObjectInterface {
 
   baseObject?: SceneObjectInterface
 
-  nodeId: number;
-
-  treeId?: number;
-
   node?: TreeNode;
+
+  modifierNode?: ModifierNode;
 
   tree?: { id: number, name: string };
 
@@ -42,14 +41,8 @@ class SceneObject implements SceneObjectInterface {
     return false;
   }
 
-  constructor(nodeId: number, treeId?: number, treeNode?: TreeNode) {
-    this.nodeId = nodeId
-    this.treeId = treeId
-    this.node = treeNode
-  }
-
-  static async fromDescriptor(descriptor: SceneObjectDescriptor, baseObject?: SceneObjectInterface) {
-    const object = new SceneObject(descriptor.nodeId, descriptor.treeId);
+  static async fromDescriptor(descriptor?: SceneObjectDescriptor, baseObject?: SceneObjectInterface) {
+    const object = new SceneObject();
     object.autosave = false;
 
     if (baseObject) {
@@ -92,13 +85,13 @@ class SceneObject implements SceneObjectInterface {
       object.baseObject = baseObject
 
       object.transformProps = new TransformProps(
-        descriptor.object.transformProps,
+        descriptor?.object.transformProps,
         object.transformChanged,
         baseObject.transformProps,
       );
     }
     else {
-      const components = descriptor.object.components;
+      const components = descriptor?.object.components;
 
       if (components) {
         object.components = components.map((c) => {
@@ -137,7 +130,7 @@ class SceneObject implements SceneObjectInterface {
           .filter((c) => c !== undefined)
       }
 
-      object.transformProps = new TransformProps(descriptor.object.transformProps, object.transformChanged);
+      object.transformProps = new TransformProps(descriptor?.object.transformProps, object.transformChanged);
     }
 
     // Fix any scale values that are zero.
@@ -225,8 +218,22 @@ class SceneObject implements SceneObjectInterface {
   }
 
   toDescriptor(): SceneObjectDescriptor {
+    if (this.node == null) {
+      throw new Error('node not set')
+    }
+
+    let pathId: number | undefined
+
+    if (this.modifierNode) {
+      const path = this.node.getPathId(this.modifierNode)
+
+      pathId = path.id
+    }
+
     const descriptor = {
-      nodeId: this.nodeId,
+      nodeId: this.node.id,
+      modifierNodeId: this.modifierNode?.id,
+      pathId,
       object: {
         type: ObjectType.NodeObject,
         components: this.components.map((c) => ({

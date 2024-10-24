@@ -10,7 +10,7 @@ class ModifierNode {
 
   addedNodes: AddedNode[] = []
 
-  objects: Map<number, { descriptor: SceneObjectDescriptor, object?: SceneObjectInterface }> = new Map()
+  objects: Map<number, Map<number, { descriptor?: SceneObjectDescriptor, object?: SceneObjectInterface }>> = new Map()
 
   constructor(descriptor: TreeModifierDescriptor) {
     this.id = descriptor.id
