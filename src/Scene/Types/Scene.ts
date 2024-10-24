@@ -242,11 +242,13 @@ class Scene implements SceneInterface {
           // and apply the modifications.
           let pathId = 0;
           for (let i = modifiers.length - 1; i >= 0; i -= 1) {
-            let pathMap = modifiers[i].objects.get(descriptor.id)
+            const modifier = modifiers[i]
+
+            let pathMap = modifier.objects.get(descriptor.id)
 
             if (pathMap === undefined) {
               pathMap = new Map()
-              modifiers[i].objects.set(descriptor.id, pathMap)
+              modifier.objects.set(descriptor.id, pathMap)
             }
 
             let o = pathMap.get(pathId)
@@ -264,10 +266,10 @@ class Scene implements SceneInterface {
               throw new Error('object not defined')
             }
 
-            o.object.modifierNode = modifiers[i]
+            o.object.modifierNode = modifier
             object = o.object
 
-            pathId ^= modifiers[i].id
+            pathId ^= modifier.id
           }
 
           const node = this.createNode(
@@ -291,33 +293,40 @@ class Scene implements SceneInterface {
             })))
           }
 
-          // Push onto the stack any added nodes through ancestral modifier nodes...
+          // Push onto the stack any nodes added through modifier nodes...
           pathId = 0;
           for (let i = modifiers.length - 1; i >= 0; i -= 1) {
-            const added = modifiers[i].addedNodes?.find((addedNode) => {
+            const modifier = modifiers[i]
+
+            const added = modifier.addedNodes?.find((addedNode) => {
               return (addedNode?.parentNodeId === node.id && addedNode?.pathId === pathId)
             })
 
             if (added) {
+              // Remove from the stack of modifiers the current modifier
+              // and the ones following
               if (isModifierNode(added)) {
                 stack.push({
                   nodeId: added.rootNodeId,
                   parent,
-                  modifiers: [...modifiers, added],
+                  modifiers: [
+                    ...modifiers.slice(0, i),
+                    added,
+                  ],
                   modifierNode: added,
-                  parentModifierNode: modifiers[i],
+                  parentModifierNode: modifier,
                 })
               } else {
                 stack.push({
                   nodeId: added.nodeId,
                   parent: node,
-                  modifiers: modifiers,
-                  parentModifierNode: modifiers[i],
+                  modifiers: modifiers.slice(0, i),
+                  parentModifierNode: modifier,
                 })
               }
             }
 
-            pathId ^= modifiers[i].id
+            pathId ^= modifier.id
           }
         }
       }
