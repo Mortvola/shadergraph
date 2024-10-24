@@ -3,6 +3,7 @@ import { store } from '../../State/store';
 import Http from '../../Http/src';
 import { isTreeNodeDescriptor, type SceneDescriptor } from './Types';
 import type {
+  ItemResponse,
   NodeInfo, NodesResponse2, SceneInterface, SceneItemType, SceneObjectDescriptor,
   SceneObjectInterface, TreeNodeDescriptor,
 } from './Types';
@@ -10,6 +11,8 @@ import TreeNode from './TreeNode';
 import SceneObject from './SceneObject';
 import ModifierNode from './ModifierNode';
 import { isModifierNode } from './ModifierNode';
+import ProjectItem from '../../Project/Types/ProjectItem';
+import { type FolderInterface } from '../../Project/Types/types';
 
 class Scene implements SceneInterface {
   id: number = -1;
@@ -275,6 +278,40 @@ class Scene implements SceneInterface {
     }
 
     return root;
+  }
+
+  async createPrefab(node: TreeNode, folder: FolderInterface) {
+    let path: { id: number, path: number[] } | undefined
+
+    if (node.parent != null && node?.modifications !== undefined) {
+      path = node.parent.getPathId(node.modifications)
+    }
+
+    const response = await Http.post<unknown, ItemResponse>('/api/tree-nodes/tree', {
+      folderId: folder.id,
+      nodeId: node.modifierNodeId ?? node.id,
+      modifierNodeId: node.modifications?.id ?? null,
+      path: path?.path ?? null,
+      pathId: path?.id ?? null,
+    })
+
+    if (response.ok) {
+      const body = await response.body();
+
+      const projectItem = new ProjectItem<TreeNode>(
+        body.item.id, body.item.name, body.item.type, folder, node.id,
+      );
+
+      projectItem.item = node;
+
+      folder.addItem(projectItem)
+
+      const parent = node.parent;
+      node.detachSelf()
+
+      this.processNodeResponse(body)
+      this.createTree(body.rootNodeId, parent)
+    }
   }
 
   async instantiatePrefab(rootNodeId: number, parent: TreeNode) {

@@ -83,34 +83,7 @@ const ProjectFolder: React.FC<PropsType> = observer(({
       }
       else if (event.dataTransfer.types[0] === 'application/scene-item') {
         if (isTreeNode(store.scene?.draggingNode)) {
-          const sceneNode = store.scene?.draggingNode;
-
-          ( async () => {
-              const response = await Http.post<unknown, ItemResponse>('/api/tree-nodes/tree', {
-                folderId: folder.id,
-                nodeId: sceneNode.modifierNodeId ?? sceneNode.id,
-              })
-
-              if (response.ok) {
-                const body = await response.body();
-
-                const projectItem = new ProjectItemData<TreeNode>(
-                  body.item.id, body.item.name, body.item.type, folder, sceneNode.id,
-                );
-                projectItem.item = sceneNode;
-
-                folder.addItem(projectItem)
-
-                // if (body.root && body.objects) {
-                  // const root = await sceneNode.scene.treeFromDescriptor({ root: body.root, objects: body.objects, trees: [] });
-
-                  // if (root) {
-                  //   sceneNode.parent?.addNode(root);
-                  //   sceneNode.detachSelf();
-                  // }
-                // }
-              }
-          })()
+          store.scene.createPrefab(store.scene.draggingNode, folder);
         }
       }
 

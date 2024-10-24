@@ -1,4 +1,4 @@
-import { type ProjectItemType } from '../../Project/Types/types';
+import { type FolderInterface, type ProjectItemType } from '../../Project/Types/types';
 import type { ParticleSystemPropsDescriptor } from '../../Renderer/ParticleSystem/Types';
 import type { PropertyBaseInterface } from '../../Renderer/Properties/Types';
 import type {
@@ -62,6 +62,8 @@ export interface SceneInterface {
   ): TreeNode
 
   createTree(rootNodeId: number, parent?: TreeNode): Promise<TreeNode | undefined>;
+
+  createPrefab(node: TreeNode, folder: FolderInterface): Promise<void>;
 
   instantiatePrefab(rootNodeId: number, parent: TreeNode): Promise<void>;
 
@@ -249,7 +251,5 @@ export type ItemResponse = {
     name: string,
     type: ProjectItemType,
   },
-  // root?: TreeNodeDescriptor,
-  objects?: SceneObjectDescriptor[],
-}
+} & NodesResponse2
 

@@ -14,7 +14,6 @@
     "@types/react-dom": "^18.2.18",
     "@vitejs/plugin-react": "^4.3.1",
     "@webgpu/types": "^0.1.40",
-    "boostrap": "^2.0.0",
     "bootstrap": "^5.3.3",
     "color-convert": "^2.0.1",
     "fbx-parser": "^2.1.3",
@@ -39,12 +38,6 @@
     "eslint": "eslint .",
     "madge": "madge -c ./src/index.tsx",
     "knip": "knip"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "madge": {
     "detectiveOptions": {
