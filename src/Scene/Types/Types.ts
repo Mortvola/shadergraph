@@ -63,6 +63,8 @@ export interface SceneInterface {
 
   createTree(rootNodeId: number, parent?: TreeNode): Promise<TreeNode | undefined>;
 
+  instantiatePrefab(rootNodeId: number, parent: TreeNode): Promise<void>;
+
   addNode(node: TreeNode, autosave: boolean): void;
 
   setSelected(node: TreeNode | null): void;

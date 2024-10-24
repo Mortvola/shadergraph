@@ -34,6 +34,42 @@ class Scene implements SceneInterface {
 
   objects: Map<number, { descriptor: SceneObjectDescriptor, object?: SceneObjectInterface }> = new Map()
 
+  private processNodeResponse(response: NodesResponse2) {
+    for (const node of response.nodes) {
+      // TODO: consider updating the node in the map
+      if (!this.nodes.has(node.id)) {
+        if (isTreeNodeDescriptor(node)) {
+          this.nodes.set(node.id, node)
+        } else {
+          this.nodes.set(node.id, new ModifierNode(node))
+        }
+      }
+    }
+
+    for (const obj of response.objects) {
+      if (obj.modifierNodeId != null) {
+        // Find modifier node and add the object modifier
+        // to the map of object modifiers using the node id as the key
+        const modifiderNode = this.nodes.get(obj.modifierNodeId)
+
+        if (isModifierNode(modifiderNode)) {
+          let pathMap = modifiderNode.objects.get(obj.nodeId)
+
+          if (pathMap === undefined) {
+            pathMap = new Map()
+            modifiderNode.objects.set(obj.nodeId, pathMap)
+          }
+
+          if (obj.pathId != null && !pathMap.has(obj.pathId)) {
+            pathMap.set(obj.pathId, { descriptor: obj })
+          }
+        }
+      } else if (!this.objects.has(obj.nodeId)) {
+        this.objects.set(obj.nodeId, { descriptor: obj })
+      }
+    }
+  }
+
   static async fromDescriptor(descriptor?: SceneDescriptor) {
     const scene = new Scene();
 
@@ -46,36 +82,7 @@ class Scene implements SceneInterface {
       if (response.ok) {
         const body = await response.body();
 
-        for (const node of body.nodes) {
-          if (isTreeNodeDescriptor(node)) {
-            scene.nodes.set(node.id, node)
-          } else {
-            scene.nodes.set(node.id, new ModifierNode(node))
-          }
-        }
-
-        for (const obj of body.objects) {
-          if (obj.modifierNodeId != null) {
-            // Find modifier node and add the object modifier
-            // to the map of object modifiers using the node id as the key
-            const modifiderNode = scene.nodes.get(obj.modifierNodeId)
-
-            if (isModifierNode(modifiderNode)) {
-              let pathMap = modifiderNode.objects.get(obj.nodeId)
-
-              if (pathMap === undefined) {
-                pathMap = new Map()
-                modifiderNode.objects.set(obj.nodeId, pathMap)
-              }
-
-              if (obj.pathId != null) {
-                pathMap.set(obj.pathId, { descriptor: obj })
-              }
-            }
-          } else {
-            scene.objects.set(obj.nodeId, { descriptor: obj })
-          }
-        }
+        scene.processNodeResponse(body)
 
         scene.root = await scene.createTree(body.rootNodeId)
       }
@@ -83,112 +90,6 @@ class Scene implements SceneInterface {
 
     return scene;
   }
-
-  // static sortObjectDescriptors(objects: SceneObjectDescriptor[]) {
-  //   objects.sort((a, b) => {
-  //     if (a.baseTreeId === undefined) {
-  //       if (b.baseTreeId === undefined) {
-  //         return 0
-  //       }
-
-  //       return -1;
-  //     }
-
-  //     if (b.baseTreeId === undefined) {
-  //       return 1;
-  //     }
-
-  //     if (a.baseTreeId === b.treeId) {
-  //       return 1;
-  //     }
-
-  //     if (b.baseTreeId === a.treeId) {
-  //       return -1;
-  //     }
-
-  //     return 0;
-  //   })
-  // }
-
-  // async loadObjects(objects: SceneObjectDescriptor[], trees?: { id: number, name: string }[]) {
-  //   for (const object of objects) {
-  //     if (object.nodeId !== undefined) {
-  //       let nodeInfo = this.nodeMaps.get(object.nodeId)
-
-  //       if (nodeInfo === undefined) {
-  //         nodeInfo = { treeNodes: new Map(), objects: new Map() }
-  //         this.nodeMaps.set(object.nodeId, nodeInfo)
-  //       }
-
-  //       let baseObject: SceneObjectInterface | undefined = undefined;
-
-  //       if (object.treeId !== undefined) {
-  //         baseObject = nodeInfo.objects.get(object.baseTreeId)
-
-  //         if (baseObject === undefined) {
-  //           console.log('base object not instantiated')
-  //         }
-  //       }
-
-  //       const sceneObject = await SceneObject.fromDescriptor(object, baseObject)
-  //       sceneObject.tree = trees?.find((tree) => tree.id === object.rootId)
-  //       nodeInfo.objects.set(object.treeId, sceneObject)
-  //     }
-  //   }
-  // }
-
-  // async treeFromDescriptor(descriptor: NodesResponse): Promise<TreeNode | undefined> {
-  //   let root: TreeNode | undefined;
-
-  //   // Sort the objects so that the base objects are instantiated first
-  //   Scene.sortObjectDescriptors(descriptor.objects)
-
-  //   await this.loadObjects(descriptor.objects, descriptor.trees)
-
-  //   type StackEntry = {
-  //     nodeDescriptor: TreeNodeDescriptor,
-  //     parent: TreeNode | undefined,
-  //   }
-
-  //   let stack: StackEntry[] = [{ nodeDescriptor: descriptor.root, parent: undefined }]
-
-  //   while (stack.length > 0) {
-  //     const { nodeDescriptor, parent } = stack[0]
-  //     stack = stack.slice(1)
-
-  //     const nodeInfo = this.nodeMaps.get(nodeDescriptor.id)
-
-  //     if (nodeInfo === undefined) {
-  //       throw new Error('node info not found')
-  //     }
-
-  //     const node = this.createNode(
-  //       nodeDescriptor.id,
-  //       nodeDescriptor.name,
-  //       undefined, // nodeInfo.objects,
-  //       nodeDescriptor.wrapperId,
-  //       nodeDescriptor.parentWrapperId,
-  //       nodeDescriptor.pathId,
-  //       nodeDescriptor.path,
-  //       parent,
-  //     )
-
-  //     nodeInfo.treeNodes.set(node.topLevelWrapperId, node)
-
-  //     if (root === undefined) {
-  //       root = node
-  //     }
-
-  //     stack = stack.concat(nodeDescriptor.children.map(
-  //       (child) => ({
-  //         nodeDescriptor: child,
-  //         parent: node,
-  //       }))
-  //     )
-  //   }
-
-  //   return root;
-  // }
 
   getModifiers(start: TreeNode | undefined) {
     const modifiers: { modifier: ModifierNode, node?: TreeNode }[] = []
@@ -374,6 +275,34 @@ class Scene implements SceneInterface {
     }
 
     return root;
+  }
+
+  async instantiatePrefab(rootNodeId: number, parent: TreeNode) {
+    const modifierNode = parent.getTopLevelModifierNode()
+
+    let path: { id: number, path: number[] } | undefined
+
+    if (modifierNode?.modifications !== undefined) {
+      path = parent.getPathId(modifierNode.modifications)
+    }
+
+    const payload = {
+      parentNodeId: parent.id,
+      modifierNodeId: modifierNode?.modifications?.id ?? null,
+      path: path?.path ?? null,
+      pathId: path?.id ?? null,
+      rootNodeId: rootNodeId,
+    }
+
+    const response = await Http.post<unknown, NodesResponse2>('/api/tree-nodes', payload)
+
+    if (response.ok) {
+      const body = await response.body();
+
+      this.processNodeResponse(body)
+
+      this.createTree(body.rootNodeId, parent)
+    }
   }
 
   createNode(

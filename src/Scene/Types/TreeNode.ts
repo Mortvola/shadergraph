@@ -3,7 +3,6 @@ import RenderNode from '../../Renderer/Drawables/SceneNodes/RenderNode';
 import Entity, { getNextObjectId } from '../../State/Entity';
 import {
   type SceneObjectInterface, type SceneInterface, type SceneItemType, type SceneObjectDescriptor,
-  type NodesResponse2, isTreeNodeDescriptor,
 } from './Types';
 import type ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemProps';
 import type LightProps from '../../Renderer/Properties/LightProps';
@@ -12,7 +11,7 @@ import ParticleSystem from '../../Renderer/ParticleSystem/ParticleSystem';
 import { vec3 } from 'wgpu-matrix';
 import Http from '../../Http/src';
 import SceneObject from './SceneObject';
-import ModifierNode, { isModifierNode } from './ModifierNode';
+import type ModifierNode from './ModifierNode';
 import type PropsBase from '../../Renderer/Properties/PropsBase';
 
 type NodeComponent = {
@@ -542,68 +541,6 @@ class TreeNode extends Entity {
     }
 
     return connections;
-  }
-
-  async instantiatePrefab(rootNodeId: number) {
-    const modifierNode = this.getTopLevelModifierNode()
-
-    let path: { id: number, path: number[] } | undefined
-
-    if (modifierNode?.modifications !== undefined) {
-      path = this.getPathId(modifierNode.modifications)
-    }
-
-    const payload = {
-      parentNodeId: this.id,
-      modifierNodeId: modifierNode?.modifications?.id ?? null,
-      path: path?.path ?? null,
-      pathId: path?.id ?? null,
-      rootNodeId: rootNodeId,
-    }
-
-    const response = await Http.post<unknown, NodesResponse2>('/api/tree-nodes', payload)
-
-    if (response.ok) {
-      const body = await response.body();
-
-      const scene = this.scene;
-
-      for (const node of body.nodes) {
-        // TODO: consider updating the node in the map
-        if (!scene.nodes.has(node.id)) {
-          if (isTreeNodeDescriptor(node)) {
-            scene.nodes.set(node.id, node)
-          } else {
-            scene.nodes.set(node.id, new ModifierNode(node))
-          }
-        }
-      }
-
-      for (const obj of body.objects) {
-        if (obj.modifierNodeId != null) {
-          // Find modifier node and add the object modifier
-          // to the map of object modifiers using the node id as the key
-          const modifiderNode = scene.nodes.get(obj.modifierNodeId)
-
-          if (isModifierNode(modifiderNode)) {
-            let pathMap = modifiderNode.objects.get(obj.nodeId)
-
-            if (pathMap === undefined) {
-              pathMap = new Map()
-              modifiderNode.objects.set(obj.nodeId, pathMap)
-            }
-
-            if (obj.pathId != null && !pathMap.has(obj.pathId)) {
-              pathMap.set(obj.pathId, { descriptor: obj })
-            }
-          }
-        } else if (!scene.objects.has(obj.nodeId)) {
-          scene.objects.set(obj.nodeId, { descriptor: obj })
-        }
-      }
-
-      scene.createTree(body.rootNodeId, this)
-    }
   }
 }
 

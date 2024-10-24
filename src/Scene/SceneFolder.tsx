@@ -81,7 +81,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
           throw new Error('itemId is null')
         }
 
-        folder.instantiatePrefab(item.itemId)
+        scene.instantiatePrefab(item.itemId, folder)
       }
 
       setDroppable(false);
