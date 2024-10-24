@@ -242,28 +242,30 @@ class Scene implements SceneInterface {
           // and apply the modifications.
           let pathId = 0;
           for (let i = modifiers.length - 1; i >= 0; i -= 1) {
-            const pathMap = modifiers[i].objects.get(descriptor.id)
+            let pathMap = modifiers[i].objects.get(descriptor.id)
 
-            if (pathMap !== undefined) {
-              let o = pathMap.get(pathId)
-
-              if (o) {
-                if (o.object === undefined) {
-                  o.object = await SceneObject.fromDescriptor(o.descriptor, object)
-                }
-              } else {
-                o = { descriptor: undefined, object: await SceneObject.fromDescriptor(undefined, object)}
-
-                if (o.object === undefined) {
-                  throw new Error('object not defined')
-                }
-
-                pathMap.set(pathId, o)
-              }
-
-              o.object.modifierNode = modifiers[i]
-              object = o.object
+            if (pathMap === undefined) {
+              pathMap = new Map()
+              modifiers[i].objects.set(descriptor.id, pathMap)
             }
+
+            let o = pathMap.get(pathId)
+
+            if (o === undefined) {
+              o = { descriptor: undefined, object: undefined }
+              pathMap.set(pathId, o)
+            }
+
+            if (o.object === undefined) {
+              o.object = await SceneObject.fromDescriptor(o.descriptor, object)
+            }
+
+            if (o.object === undefined) {
+              throw new Error('object not defined')
+            }
+
+            o.object.modifierNode = modifiers[i]
+            object = o.object
 
             pathId ^= modifiers[i].id
           }
