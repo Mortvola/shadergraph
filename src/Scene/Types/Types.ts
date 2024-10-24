@@ -48,6 +48,8 @@ export interface SceneInterface {
 
   nodeMaps: Map<number, NodeInfo>
 
+  nodes: Map<number, TreeNodeDescriptor | ModifierNode>
+
   objects: Map<number, { descriptor: SceneObjectDescriptor, object?: SceneObjectInterface }>
 
   createNode(
@@ -58,6 +60,8 @@ export interface SceneInterface {
     parentModifierNode?: TreeNode,
     parent?: TreeNode,
   ): TreeNode
+
+  createTree(rootNodeId: number, parent?: TreeNode): Promise<TreeNode | undefined>;
 
   addNode(node: TreeNode, autosave: boolean): void;
 

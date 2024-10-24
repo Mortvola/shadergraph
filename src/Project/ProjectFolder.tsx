@@ -94,7 +94,9 @@ const ProjectFolder: React.FC<PropsType> = observer(({
               if (response.ok) {
                 const body = await response.body();
 
-                const projectItem = new ProjectItemData<TreeNode>(body.item.id, body.item.name, body.item.type, folder, sceneNode.id);
+                const projectItem = new ProjectItemData<TreeNode>(
+                  body.item.id, body.item.name, body.item.type, folder, sceneNode.id,
+                );
                 projectItem.item = sceneNode;
 
                 folder.addItem(projectItem)

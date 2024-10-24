@@ -190,7 +190,35 @@ class Scene implements SceneInterface {
   //   return root;
   // }
 
-  async createTree(rootNodeId: number) {
+  getModifiers(start: TreeNode | undefined) {
+    const modifiers: { modifier: ModifierNode, node?: TreeNode }[] = []
+
+    let node: TreeNode | undefined = start
+
+    for(;;) {
+      if (node == null) {
+        break;
+      }
+
+      if (node.modifications != null) {
+        modifiers.push({
+          modifier: node.modifications,
+          node,
+        })
+      }
+
+      if (node.parentModifierNode != null) {
+        node = node.parentModifierNode.parent
+      }
+      else {
+        node = node.parent
+      }
+    }
+
+    return modifiers
+  }
+
+  async createTree(rootNodeId: number, parent?: TreeNode) {
     let root: TreeNode | undefined;
 
     type StackEntry = {
@@ -200,9 +228,12 @@ class Scene implements SceneInterface {
       parentModifierNode?: TreeNode,
     }
 
+    const modifiers = this.getModifiers(parent)
+
     let stack: StackEntry[] = [{
       nodeId: rootNodeId,
-      modifiers: [],
+      parent,
+      modifiers,
     }]
 
     while (stack.length > 0) {
