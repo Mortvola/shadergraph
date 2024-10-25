@@ -117,10 +117,12 @@ const SceneItem: React.FC<PropsType> = observer(({
   }
 
   const handleOpenClick = () => {
-    console.log('Change scene')
-    runInAction(() => {
-      scene.tempRoot = treeNode
-    })
+    (
+      async () => {
+        await scene.pushTree(treeNode.id)
+        scene.renderScene()
+      }
+    )()
   }
 
   return (

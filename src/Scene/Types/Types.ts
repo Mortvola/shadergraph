@@ -38,9 +38,7 @@ export type NodeInfo = {
 }
 
 export interface SceneInterface {
-  root: TreeNode | undefined;
-
-  tempRoot: TreeNode | undefined;
+  root: TreeNode[];
 
   selectedNode: TreeNode | null;
 
@@ -62,6 +60,8 @@ export interface SceneInterface {
   ): TreeNode
 
   createTree(rootNodeId: number, parent?: TreeNode): Promise<TreeNode | undefined>;
+
+  pushTree(nodeId: number): Promise<void>
 
   createPrefab(node: TreeNode, folder: FolderInterface): Promise<void>;
 

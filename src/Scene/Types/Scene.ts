@@ -20,10 +20,9 @@ class Scene implements SceneInterface {
   name: string = '';
 
   @observable
-  accessor root: TreeNode | undefined
+  accessor root: TreeNode[] = []
 
-  @observable
-  accessor tempRoot: TreeNode | undefined
+  private renderedScene: TreeNode | undefined
 
   @observable
   accessor selectedNode: TreeNode | null = null;
@@ -87,7 +86,7 @@ class Scene implements SceneInterface {
 
         scene.processNodeResponse(body)
 
-        scene.root = await scene.createTree(body.rootNodeId)
+        scene.pushTree(body.rootNodeId)
       }
     }
 
@@ -280,6 +279,14 @@ class Scene implements SceneInterface {
     return root;
   }
 
+  async pushTree(nodeId: number) {
+    const tree = await this.createTree(nodeId)
+
+    if (tree) {
+      this.root = [...this.root, tree]
+    }
+  }
+
   async createPrefab(node: TreeNode, folder: FolderInterface) {
     let path: { id: number, path: number[] } | undefined
 
@@ -337,7 +344,6 @@ class Scene implements SceneInterface {
       const body = await response.body();
 
       this.processNodeResponse(body)
-
       this.createTree(body.rootNodeId, parent)
     }
   }
@@ -372,7 +378,7 @@ class Scene implements SceneInterface {
     return ({
       id: this.id,
       name: this.name,
-      rootNodeId: this.root!.id,
+      rootNodeId: this.root[0].id,
     })
   }
 
@@ -387,14 +393,18 @@ class Scene implements SceneInterface {
   }
 
   renderScene() {
-    if (this.root) {
-      store.mainView.addSceneNode(this.root.renderNode);
+    this.removeScene()
+
+    if (this.root.length > 0) {
+      store.mainView.addSceneNode(this.root[this.root.length - 1].renderNode);
+      this.renderedScene = this.root[this.root.length - 1]
     }
   }
 
   removeScene() {
-    if (this.root) {
-      store.mainView.removeSceneNode(this.root.renderNode);
+    if (this.renderedScene) {
+      store.mainView.removeSceneNode(this.renderedScene.renderNode)
+      this.renderedScene = undefined
     }
   }
 
@@ -404,13 +414,13 @@ class Scene implements SceneInterface {
       this.selectedNode.addNode(node)
       this.selectedNode.autosave = true
     }
-    else if (this.root) {
-      this.root.autosave = autosave
-      this.root.addNode(node)
-      this.root.autosave = true
+    else if (this.root.length > 0) {
+      this.root[this.root.length - 1].autosave = autosave
+      this.root[this.root.length - 1].addNode(node)
+      this.root[this.root.length - 1].autosave = true
     }
     else {
-      this.root = node;
+      this.root[0] = node;
     }
   }
 
@@ -428,7 +438,7 @@ class Scene implements SceneInterface {
       let parent: TreeNode | undefined = this.selectedNode ?? undefined
 
       if (parent === null) {
-        parent = this.root;
+        parent = this.root[this.root.length - 1];
       }
 
       if (parent) {

@@ -4,10 +4,7 @@ import ProjectItem from './ProjectItem';
 import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
-import { isTreeNode, type ItemResponse } from '../Scene/Types/Types';
-import Http from '../Http/src';
-import ProjectItemData from './Types/ProjectItem';
-import type TreeNode from '../Scene/Types/TreeNode';
+import { isTreeNode } from '../Scene/Types/Types';
 import NewProjectItem from './NewProjectItem';
 
 type PropsType = {

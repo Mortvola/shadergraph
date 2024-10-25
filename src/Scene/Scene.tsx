@@ -33,7 +33,7 @@ const Scene: React.FC<PropsType> = observer(({
       </div>
       <SceneFolder
         scene={scene}
-        folder={scene.tempRoot ?? scene.root!}
+        folder={scene.root[scene.root.length - 1]}
         onSelect={handleObjectClick}
         level={1}
       />

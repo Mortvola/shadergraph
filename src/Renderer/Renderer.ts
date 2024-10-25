@@ -373,7 +373,9 @@ class Renderer implements RendererInterface {
 
       this.decalPass = new DecalPass(this.positionTextureView)
 
-      this.combinePass = new CombinePass(this.albedoTextureView, this.positionTextureView, this.scratchTextureView, this.decalView);
+      this.combinePass = new CombinePass(
+        this.albedoTextureView, this.positionTextureView, this.scratchTextureView, this.decalView,
+      );
 
       this.screenTextureView = createTexture(this.context).createView();
 
@@ -532,8 +534,12 @@ class Renderer implements RendererInterface {
         }
       }
 
-      // this.renderPass2D.render(canvasView, this.depthTextureView!, commandEncoder, this.frameBindGroup.bindGroup, this.scene2d);
-      // this.transparentRenderPass2D.render(canvasView, this.depthTextureView!, commandEncoder, this.frameBindGroup.bindGroup, this.scene2d);
+      // this.renderPass2D.render(
+      //  canvasView, this.depthTextureView!, commandEncoder, this.frameBindGroup.bindGroup, this.scene2d,
+      //);
+      // this.transparentRenderPass2D.render(
+      //  canvasView, this.depthTextureView!, commandEncoder, this.frameBindGroup.bindGroup, this.scene2d,
+      //);
 
       gpu.device.queue.submit([commandEncoder.finish()]);
     }

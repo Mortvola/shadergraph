@@ -169,7 +169,16 @@ const ProjectItem: React.FC<PropsType> = observer(({
       }
       {
         editing
-          ? <input type="text" value={name} onBlur={handleBlur} onChange={handleChange} autoFocus onFocus={handleFocus} />
+          ? (
+            <input
+              type="text"
+              value={name}
+              onBlur={handleBlur}
+              onChange={handleChange}
+              autoFocus
+              onFocus={handleFocus}
+            />
+          )
           : `${item.name}`
       }
       {
