@@ -20,7 +20,7 @@ class Scene implements SceneInterface {
   name: string = '';
 
   @observable
-  private accessor rootStack: TreeNode[] = []
+  accessor rootStack: TreeNode[] = []
 
   @observable
   accessor root: TreeNode | undefined
@@ -288,6 +288,13 @@ class Scene implements SceneInterface {
     if (tree) {
       this.rootStack = [...this.rootStack, tree]
 
+      this.root = this.rootStack[this.rootStack.length - 1]
+    }
+  }
+
+  popTree() {
+    if (this.rootStack.length > 0) {
+      this.rootStack.pop()
       this.root = this.rootStack[this.rootStack.length - 1]
     }
   }

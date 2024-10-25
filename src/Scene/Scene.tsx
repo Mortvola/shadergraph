@@ -5,6 +5,7 @@ import type { SceneInterface } from './Types/Types';
 import SceneFolder from './SceneFolder';
 import styles from './Scene.module.scss'
 import type TreeNode from './Types/TreeNode';
+import { ChevronLeft } from 'lucide-react';
 
 type PropsType = {
   scene?: SceneInterface,
@@ -19,6 +20,13 @@ const Scene: React.FC<PropsType> = observer(({
     scene?.setSelected(node)
   }
 
+  const handleBackClick = () => {
+    if (scene) {
+      scene.popTree()
+      scene.renderScene()
+    }
+  }
+
   if (scene === undefined) {
     return (
       <div className={className}>Select a scene to edit.</div>
@@ -31,12 +39,23 @@ const Scene: React.FC<PropsType> = observer(({
         Scene
         <SceneToolbar scene={scene} />
       </div>
-      <SceneFolder
-        scene={scene}
-        folder={scene.root}
-        onSelect={handleObjectClick}
-        level={1}
-      />
+      {
+        scene.rootStack.length > 1
+          ? <ChevronLeft size={16} onClick={handleBackClick} />
+          : null
+      }
+      {
+        scene.root
+          ? (
+            <SceneFolder
+            scene={scene}
+            folder={scene.root}
+            onSelect={handleObjectClick}
+            level={1}
+          />
+          )
+          : null
+      }
     </div>
   )
 })

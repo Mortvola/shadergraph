@@ -40,6 +40,8 @@ export type NodeInfo = {
 export interface SceneInterface {
   root: TreeNode | undefined;
 
+  rootStack: TreeNode[];
+
   selectedNode: TreeNode | null;
 
   draggingNode: TreeNode | null;
@@ -62,6 +64,8 @@ export interface SceneInterface {
   createTree(rootNodeId: number, parent?: TreeNode): Promise<TreeNode | undefined>;
 
   pushTree(nodeId: number): Promise<void>
+
+  popTree(): void
 
   createPrefab(node: TreeNode, folder: FolderInterface): Promise<void>;
 
