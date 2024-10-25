@@ -20,7 +20,10 @@ class Scene implements SceneInterface {
   name: string = '';
 
   @observable
-  accessor root: TreeNode[] = []
+  private accessor rootStack: TreeNode[] = []
+
+  @observable
+  accessor root: TreeNode | undefined
 
   private renderedScene: TreeNode | undefined
 
@@ -283,7 +286,9 @@ class Scene implements SceneInterface {
     const tree = await this.createTree(nodeId)
 
     if (tree) {
-      this.root = [...this.root, tree]
+      this.rootStack = [...this.rootStack, tree]
+
+      this.root = this.rootStack[this.rootStack.length - 1]
     }
   }
 
@@ -378,7 +383,7 @@ class Scene implements SceneInterface {
     return ({
       id: this.id,
       name: this.name,
-      rootNodeId: this.root[0].id,
+      rootNodeId: this.rootStack[0].id,
     })
   }
 
@@ -395,9 +400,9 @@ class Scene implements SceneInterface {
   renderScene() {
     this.removeScene()
 
-    if (this.root.length > 0) {
-      store.mainView.addSceneNode(this.root[this.root.length - 1].renderNode);
-      this.renderedScene = this.root[this.root.length - 1]
+    if (this.root) {
+      store.mainView.addSceneNode(this.root.renderNode);
+      this.renderedScene = this.root
     }
   }
 
@@ -414,13 +419,10 @@ class Scene implements SceneInterface {
       this.selectedNode.addNode(node)
       this.selectedNode.autosave = true
     }
-    else if (this.root.length > 0) {
-      this.root[this.root.length - 1].autosave = autosave
-      this.root[this.root.length - 1].addNode(node)
-      this.root[this.root.length - 1].autosave = true
-    }
-    else {
-      this.root[0] = node;
+    else if (this.root) {
+      this.root.autosave = autosave
+      this.root.addNode(node)
+      this.root.autosave = true
     }
   }
 
@@ -435,11 +437,7 @@ class Scene implements SceneInterface {
 
   addNewItem(type: SceneItemType) {
     runInAction(() => {
-      let parent: TreeNode | undefined = this.selectedNode ?? undefined
-
-      if (parent === null) {
-        parent = this.root[this.root.length - 1];
-      }
+      const parent: TreeNode | undefined = this.selectedNode ?? this.root
 
       if (parent) {
         parent.newItemType = type;

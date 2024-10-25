@@ -38,7 +38,7 @@ export type NodeInfo = {
 }
 
 export interface SceneInterface {
-  root: TreeNode[];
+  root: TreeNode | undefined;
 
   selectedNode: TreeNode | null;
 
