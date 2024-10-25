@@ -286,23 +286,29 @@ class Scene implements SceneInterface {
     const tree = await this.createTree(nodeId)
 
     if (tree) {
-      this.rootStack = [...this.rootStack, tree]
-
-      this.root = this.rootStack[this.rootStack.length - 1]
+      runInAction(() => {
+        this.rootStack = [...this.rootStack, tree]
+        this.root = this.rootStack[this.rootStack.length - 1]
+      })
     }
   }
 
   async popTree() {
-    if (this.rootStack.length > 0) {
-      this.rootStack.pop()
+    if (this.rootStack.length > 1) {
+      runInAction(() => {
+        this.rootStack = this.rootStack.slice(0, this.rootStack.length - 1)
+      })
 
       // Rebuild the tree to make sure any changes are picked up.
       const tree = await this.createTree(this.rootStack[this.rootStack.length - 1].id)
-      if (tree) {
-        this.rootStack[this.rootStack.length - 1] = tree
-      }
 
-      this.root = this.rootStack[this.rootStack.length - 1]
+      runInAction(() => {
+        if (tree) {
+          this.rootStack[this.rootStack.length - 1] = tree
+        }
+
+        this.root = this.rootStack[this.rootStack.length - 1]
+      })
     }
   }
 
