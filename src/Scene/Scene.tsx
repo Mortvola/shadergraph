@@ -22,8 +22,12 @@ const Scene: React.FC<PropsType> = observer(({
 
   const handleBackClick = () => {
     if (scene) {
-      scene.popTree()
-      scene.renderScene()
+      (
+        async () => {
+          await scene.popTree()
+          scene.renderScene()
+        }
+      )()
     }
   }
 

@@ -65,7 +65,7 @@ export interface SceneInterface {
 
   pushTree(nodeId: number): Promise<void>
 
-  popTree(): void
+  popTree(): Promise<void>
 
   createPrefab(node: TreeNode, folder: FolderInterface): Promise<void>;
 
