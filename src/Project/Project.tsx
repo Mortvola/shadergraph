@@ -8,10 +8,12 @@ import styles from './Project.module.scss';
 
 type PropsType = {
   project: ProjectInterface,
+  className?: string,
 }
 
 const Project: React.FC<PropsType> = observer(({
   project,
+  className,
 }) => {
   const store = useStores();
 
@@ -24,7 +26,7 @@ const Project: React.FC<PropsType> = observer(({
   }
 
   return (
-    <div className={styles.layout}>
+    <div className={`${styles.layout} ${className ?? ''}`}>
       <div className={styles.project}>
         {
           project.projectItems

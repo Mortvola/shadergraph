@@ -8,10 +8,12 @@ import type TreeNode from './Types/TreeNode';
 
 type PropsType = {
   scene?: SceneInterface,
+  className?: string,
 }
 
 const Scene: React.FC<PropsType> = observer(({
   scene,
+  className,
 }) => {
   const handleObjectClick = (node: TreeNode) => {
     scene?.setSelected(node)
@@ -19,12 +21,12 @@ const Scene: React.FC<PropsType> = observer(({
 
   if (scene === undefined) {
     return (
-      <div>Select a scene to edit.</div>
+      <div className={className}>Select a scene to edit.</div>
     )
   }
 
   return (
-    <div className={styles.scene}>
+    <div className={`${styles.scene} ${className ?? ''}`}>
       <div className={styles.sceneTitle}>
         Scene
         <SceneToolbar scene={scene} />

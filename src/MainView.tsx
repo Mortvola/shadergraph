@@ -118,7 +118,11 @@ const MainView: React.FC = observer(() => {
                         variant="secondary"
                         onClick={handlePlayClick}
                       >
-                        {store.mainView.clock.paused ? <PlayIcon strokeWidth={1.25} /> : <PauseIcon strokeWidth={1.25} />}
+                        {
+                          store.mainView.clock.paused
+                            ? <PlayIcon strokeWidth={1.25} />
+                            : <PauseIcon strokeWidth={1.25} />
+                        }
                       </Button>
                       <select value={store.mainView.clock.rate} onChange={handleRateChange}>
                         <option value="1.25">1.25</option>
@@ -132,11 +136,9 @@ const MainView: React.FC = observer(() => {
                   </Container>
                 </Navbar>
                 <Canvas3d renderer={mainView} onWheel={handleWheel} />
+                <Scene className={styles.scene} scene={scene} />
                 <Inspector selectedItem={project.selectedItem} selectedNode={scene?.selectedNode} />
-                <div className={styles.sidebar}>
-                  <Scene scene={scene} />
-                  <Project project={project} />
-                </div>
+                <Project className={styles.sidebar} project={project} />
               </div>
               <OpenProjectDialog show={showDialog} onHide={handleHideDialog} onSelect={handleSelect} />
             </>

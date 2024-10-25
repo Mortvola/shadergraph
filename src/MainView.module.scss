@@ -1,8 +1,8 @@
 .main {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 200px;
+  grid-template-columns: minmax(0, 1fr) 200px 200px;
   grid-template-rows: max-content minmax(0, 1fr);
-  grid-template-areas: "menubar sidebar" "canvas sidebar" "inspector sidebar";
+  grid-template-areas: "menubar scene sidebar" "canvas scene sidebar" "inspector inspector sidebar";
   width: 100%;
   height: 100%;
   user-select: none;
@@ -28,7 +28,16 @@
   background-color: white;
   box-sizing: border-box;
   font-size: 14px;
+  border-left: thin black solid;
   grid-area: sidebar;
+}
+
+.scene {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  border-left: thin black solid;
+  grid-area: scene;
 }
 
 .button {
