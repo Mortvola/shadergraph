@@ -419,6 +419,8 @@ class Scene implements SceneInterface {
 
     if (this.root) {
       store.mainView.addSceneNode(this.root.renderNode);
+      store.mainView.clock.restart();
+
       this.renderedScene = this.root
     }
   }
