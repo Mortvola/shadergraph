@@ -65,7 +65,9 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
     super();
 
     this.duration = new PSNumber('Duration', this, descriptor?.duration, 5, this.handleChange, previousProps?.duration);
-    this.startDelay = new PSNumber('Start Delay', this, descriptor?.startDelay, 0, this.handleChange, previousProps?.startDelay);
+    this.startDelay = new PSNumber(
+      'Start Delay', this, descriptor?.startDelay, 0, this.handleChange, previousProps?.startDelay,
+    );
     this.loop = new PSBoolean('Loop', this, descriptor?.loop, true, this.handleChange, previousProps?.loop);
 
     // Handle retrieving the rate over time from the old location

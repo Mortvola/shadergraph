@@ -6,7 +6,6 @@ import type { MenuItemLike } from '../ContextMenu/types';
 import type { SceneInterface } from './Types/Types';
 import type TreeNode from './Types/TreeNode';
 import { BoxIcon, ChevronRight, PlusIcon } from 'lucide-react';
-import { runInAction } from 'mobx';
 
 type PropsType = {
   scene: SceneInterface,
@@ -47,7 +46,7 @@ const SceneItem: React.FC<PropsType> = observer(({
   }
 
   const [editing, setEditing] = React.useState<boolean>(false);
-  const [name, setName] = React.useState<string>(treeNode.name);
+  const [name, setName] = React.useState<string>(treeNode.nodeObject.header.name.get() ?? 'Unknown');
 
   const handleKeyDown: React.KeyboardEventHandler = (event) => {
     if (event.code === 'Enter') {
@@ -158,7 +157,7 @@ const SceneItem: React.FC<PropsType> = observer(({
                 onFocus={handleFocus}
               />
             )
-            : `${treeNode.name}`
+            : `${treeNode.nodeObject.header.name.get()}`
         }
         {
           showMenu

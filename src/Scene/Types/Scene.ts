@@ -218,7 +218,6 @@ class Scene implements SceneInterface {
 
           const node = this.createNode(
             descriptor.id,
-            descriptor.name,
             object,
             modifierNode,
             parentModifierNode,
@@ -375,16 +374,14 @@ class Scene implements SceneInterface {
 
   createNode(
     id: number,
-    name: string,
     object: SceneObjectInterface,
     modifierNode?: ModifierNode,
     parentModifierNode?: TreeNode,
     parent?: TreeNode,
   ): TreeNode {
-    const node = new TreeNode(this, name)
+    const node = new TreeNode(id, this)
 
     runInAction(() => {
-      node.id = id;
       node.modifications = modifierNode
       node.parentModifierNode = parentModifierNode
       node.nodeObject = object;

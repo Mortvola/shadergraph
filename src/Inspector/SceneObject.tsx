@@ -173,7 +173,10 @@ const SceneObject: React.FC<PropsType> = observer(({
   const addComponent = React.useCallback((type: ComponentType) => {
     switch (type) {
       // case ComponentType.Decal:
-      //   sceneObject.items.push({ item: { toDescriptor: () => { return { type: ComponentType.Decal, props: {} } }}, type: ComponentType.Decal })
+      //   sceneObject.items.push({
+      //     item: { toDescriptor: () => { return { type: ComponentType.Decal, props: {} } }},
+      //     type: ComponentType.Decal,
+      //   })
       //   sceneObject.save()
       //   break;
 
@@ -191,7 +194,12 @@ const SceneObject: React.FC<PropsType> = observer(({
       }
 
       // case ComponentType.Mesh:
-      //   sceneObject.items.push({ item: { id: 0, materials: {}, toDescriptor: () => { return { type: ComponentType.Mesh, props: {} } } }, type: ComponentType.Mesh })
+      //   sceneObject.items.push(
+      //     {
+      //       item: { id: 0, materials: {}, toDescriptor: () => { return { type: ComponentType.Mesh, props: {} } } },
+      //       type: ComponentType.Mesh,
+      //     },
+      //   )
       //   sceneObject.save()
       //   break;
 
@@ -226,7 +234,7 @@ const SceneObject: React.FC<PropsType> = observer(({
   return (
     <div className={styles.gameObject} onDragOver={handleDragOver} onDrop={handleDrop}>
       <div className={styles.title}>
-        {`Name: ${sceneObject.node?.name}`}
+        {`Name: ${sceneObject.header.name.get()}`}
         <div>
           <button ref={buttonRef} onClick={handleAddClick}>Add Component</button>
           {

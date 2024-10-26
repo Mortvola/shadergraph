@@ -1,5 +1,6 @@
 import { type FolderInterface, type ProjectItemType } from '../../Project/Types/types';
 import type { ParticleSystemPropsDescriptor } from '../../Renderer/ParticleSystem/Types';
+import { type PSString } from '../../Renderer/Properties/Property';
 import type { PropertyBaseInterface } from '../../Renderer/Properties/Types';
 import type {
   ComponentDescriptor, LightPropsDescriptor, NewSceneObjectComponent,
@@ -54,7 +55,6 @@ export interface SceneInterface {
 
   createNode(
     id: number,
-    name: string,
     object?: SceneObjectInterface,
     modifierNode?: ModifierNode,
     parentModifierNode?: TreeNode,
@@ -89,7 +89,13 @@ export const isTreeNode = (r: unknown): r is TreeNode => (
   && (r as TreeNode)?.components !== undefined
 )
 
+export interface HeaderInterface {
+  name: PSString
+}
+
 export interface SceneObjectInterface {
+  header: HeaderInterface;
+
   components: SceneObjectComponent[];
 
   transformProps: TransformPropsInterface;
@@ -124,6 +130,7 @@ export const isGameObject = (r: unknown): r is SceneObjectInterface => (
 
 export type SceneObjectDescriptor = {
   nodeId: number,
+  name?: string,
   modifierNodeId?: number,
   pathId?: number,
 
@@ -223,7 +230,6 @@ export const isTreeModifierDescriptor = (r: unknown): r is TreeModifierDescripto
 
 export type TreeNodeDescriptor = {
   id: number,
-  name: string,
   parentNodeId?: number,
   modifierNodeId?: number,
   children?: number[],

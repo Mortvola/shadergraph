@@ -73,55 +73,129 @@ export class Property<T extends { toString(): string } | undefined> extends Prop
 }
 
 export class PSBoolean extends Property<boolean> {
-  constructor(name: string, props: PropsBase, value?: boolean, defaultValue = false, onChange?: () => void, previousProp?: PSBoolean) {
+  constructor(
+    name: string,
+    props: PropsBase,
+    value?: boolean,
+    defaultValue = false,
+    onChange?: () => void,
+    previousProp?: PSBoolean,
+  ) {
+    super(name, props, value, defaultValue, onChange, previousProp)
+  }
+}
+
+export class PSString extends Property<string | undefined> {
+  constructor(
+    name: string,
+    props: PropsBase,
+    value?: string,
+    defaultValue = undefined,
+    onChange?: () => void,
+    previousProp?: PSString,
+  ) {
     super(name, props, value, defaultValue, onChange, previousProp)
   }
 }
 
 export class PSNumber extends Property<number> {
-  constructor(name: string, props: PropsBase, value?: number, defaultValue = 0, onChange?: () => void, previousProp?: PSNumber) {
+  constructor(
+    name: string,
+    props: PropsBase,
+    value?: number,
+    defaultValue = 0,
+    onChange?: () => void,
+    previousProp?: PSNumber,
+  ) {
     super(name, props, value, defaultValue, onChange, previousProp)
   }
 }
 
 export class PSSpace extends Property<SpaceType> {
-  constructor(name: string, props: PropsBase, value?: SpaceType, defaultValue = SpaceType.Local, onChange?: () => void, previousProp?: PSSpace) {
+  constructor(
+    name: string,
+    props: PropsBase,
+    value?: SpaceType,
+    defaultValue = SpaceType.Local,
+    onChange?: () => void,
+    previousProp?: PSSpace,
+  ) {
     super(name, props, value, defaultValue, onChange, previousProp)
   }
 }
 
 export class PSRenderMode extends Property<RenderMode> {
-  constructor(name: string, props: PropsBase, value?: RenderMode, defaultValue = RenderMode.Billboard, onChange?: () => void, previousProp?: PSRenderMode) {
+  constructor(
+    name: string,
+    props: PropsBase,
+    value?: RenderMode,
+    defaultValue = RenderMode.Billboard,
+    onChange?: () => void,
+    previousProp?: PSRenderMode,
+  ) {
     super(name, props, value, defaultValue, onChange, previousProp)
   }
 }
 
 export class PSRenderAlignment extends Property<RenderAlignment> {
-  constructor(name: string, props: PropsBase, value?: RenderAlignment, defaultValue = RenderAlignment.View, onChange?: () => void, previousProp?: PSRenderAlignment) {
+  constructor(
+    name: string,
+    props: PropsBase,
+    value?: RenderAlignment,
+    defaultValue = RenderAlignment.View,
+    onChange?: () => void,
+    previousProp?: PSRenderAlignment,
+  ) {
     super(name, props, value, defaultValue, onChange, previousProp)
   }
 }
 
 export class PSShapeType extends Property<ShapeType> {
-  constructor(name: string, props: PropsBase, value?: ShapeType, defaultValue = ShapeType.Cone, onChange?: () => void, previousProp?: PSShapeType) {
+  constructor(
+    name: string,
+    props: PropsBase,
+    value?: ShapeType,
+    defaultValue = ShapeType.Cone,
+    onChange?: () => void,
+    previousProp?: PSShapeType,
+  ) {
     super(name, props, value, defaultValue, onChange, previousProp)
   }
 }
 
 export class PSMaterialItem extends Property<number | undefined> {
-  constructor(name: string, props: PropsBase, value: number | undefined, onChange?: () => void, previousProp?: PSMaterialItem) {
+  constructor(
+    name: string,
+    props: PropsBase,
+    value: number | undefined,
+    onChange?: () => void,
+    previousProp?: PSMaterialItem,
+  ) {
     super(name, props, value, undefined, onChange, previousProp)
   }
 }
 
 export class PSMeshItem extends Property<number | undefined> {
-  constructor(name: string, props: PropsBase, value: number | undefined, onChange?: () => void, previousProp?: PSMeshItem) {
+  constructor(
+    name: string,
+    props: PropsBase,
+    value: number | undefined,
+    onChange?: () => void,
+    previousProp?: PSMeshItem,
+  ) {
     super(name, props, value, undefined, onChange, previousProp)
   }
 }
 
 export class PSVec3Type extends Property<Vec3n> {
-  constructor(name: string, props: PropsBase, value?: Vec3n, defaultValue = vec3n.create(), onChange?: () => void, previousProp?: PSVec3Type) {
+  constructor(
+    name: string,
+    props: PropsBase,
+    value?: Vec3n,
+    defaultValue = vec3n.create(),
+    onChange?: () => void,
+    previousProp?: PSVec3Type,
+  ) {
     super(name, props, value, defaultValue, onChange, previousProp)
   }
 

@@ -37,11 +37,10 @@ class PropertyBase implements PropertyBaseInterface {
     let property: PropertyBase | undefined = this.base;
 
     while (property) {
-      const nodeObject = property.props.nodeObject;
       lineage.push({
         property,
-        name: this.props.nodeObject?.node?.name ?? 'unknown node',
-        container: nodeObject?.tree?.name ?? 'unknown prefab',
+        name: this.props.nodeObject?.header.name.get() ?? 'unknown node',
+        container: property.props.nodeObject?.tree?.name ?? 'unknown prefab',
       })
 
       property = property.base

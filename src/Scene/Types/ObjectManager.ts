@@ -30,9 +30,8 @@ class ObjectManager {
     if (response.ok) {
       const body = await response.body();
 
-      const node = new TreeNode(parentNode.scene, name)
+      const node = new TreeNode(body.nodeId, parentNode.scene)
 
-      node.id = body.nodeId
       node.nodeObject = await SceneObject.fromDescriptor(body);
 
       parentNode.addNode(node);
@@ -46,7 +45,10 @@ class ObjectManager {
       throw new Error('node not set')
     }
 
-    const response = await Http.put<SceneObjectDescriptor, void>(`/api/scene-objects/${object.node.id}`, object.toDescriptor());
+    const response = await Http.put<SceneObjectDescriptor, void>(
+      `/api/scene-objects/${object.node.id}`,
+      object.toDescriptor(),
+    );
 
     if (response.ok) { /* empty */ }
   }

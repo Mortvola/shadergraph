@@ -3,7 +3,7 @@ import {
   ComponentType, type LightPropsDescriptor, type NewSceneObjectComponent,
   type SceneObjectComponent, type TransformPropsInterface,
 } from '../../Renderer/Types';
-import { ObjectType, type SceneObjectInterface, type SceneObjectDescriptor } from './Types';
+import { ObjectType, type SceneObjectInterface, type SceneObjectDescriptor, type HeaderInterface } from './Types';
 import TransformProps from '../../Renderer/Properties/TransformProps';
 import type TreeNode from './TreeNode';
 import { objectManager } from './ObjectManager';
@@ -11,9 +11,26 @@ import ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemPro
 import { type ParticleSystemPropsDescriptor } from '../../Renderer/ParticleSystem/Types';
 import LightProps from '../../Renderer/Properties/LightProps';
 import type ModifierNode from './ModifierNode';
+import { PSString } from '../../Renderer/Properties/Property';
+import PropsBase from '../../Renderer/Properties/PropsBase';
 
+class Header extends PropsBase implements HeaderInterface {
+  name: PSString
+
+  constructor() {
+    super()
+
+    this.name = new PSString('name', this)
+  }
+
+  toDescriptor(): object | undefined {
+    return undefined
+  }
+}
 
 class SceneObject implements SceneObjectInterface {
+  header: Header
+
   @observable
   accessor components: SceneObjectComponent[] = []
 
@@ -41,9 +58,17 @@ class SceneObject implements SceneObjectInterface {
     return false;
   }
 
+  constructor() {
+    this.header = new Header()
+  }
+
   static async fromDescriptor(descriptor?: SceneObjectDescriptor, baseObject?: SceneObjectInterface) {
     const object = new SceneObject();
     object.autosave = false;
+
+    object.header.name = new PSString(
+      'name', object.header, descriptor?.name ?? undefined, undefined, object.onChange, baseObject?.header.name,
+    )
 
     if (baseObject) {
       object.components = baseObject.components.map((c) => {
@@ -232,6 +257,7 @@ class SceneObject implements SceneObjectInterface {
 
     const descriptor = {
       nodeId: this.node.id,
+      name: this.header.name.toDescriptor(),
       modifierNodeId: this.modifierNode?.id,
       pathId,
       object: {

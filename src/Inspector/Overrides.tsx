@@ -26,12 +26,12 @@ const Overrides: React.FC<PropsType> = observer(({
 
   return (
     <div className={styles.layout}>
-      <div>{node.nodeObject.node?.name}</div>
+      <div>{node.nodeObject.header.name.get()}</div>
       <div className={styles.body}>
         {
           overrides.map((object) => (
             <div>
-              <div key={object.object.node?.id}>{object.object.node?.name}</div>
+              <div key={object.object.node?.id}>{object.object.header.name.get()}</div>
               <div className={styles.overrides}>
                 {
                   object.overrides.map((override) => {
@@ -58,7 +58,7 @@ const Overrides: React.FC<PropsType> = observer(({
           node.connectionOverrides.map((connection) => (
             <PopupButton
               className={styles.overridesButton}
-              label={connection.name}
+              label={connection.nodeObject.header.name.get()}
               position={Position.left}
             >
               <OverrideConnection connection={connection} />

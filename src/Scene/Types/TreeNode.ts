@@ -1,6 +1,6 @@
 import { computed, observable, runInAction } from 'mobx';
 import RenderNode from '../../Renderer/Drawables/SceneNodes/RenderNode';
-import Entity, { getNextObjectId } from '../../State/Entity';
+import { getNextObjectId } from '../../State/Entity';
 import {
   type SceneObjectInterface, type SceneInterface, type SceneItemType, type SceneObjectDescriptor,
 } from './Types';
@@ -20,7 +20,9 @@ type NodeComponent = {
   component: ParticleSystemInterface | LightInterface,
 }
 
-class TreeNode extends Entity {
+class TreeNode {
+  id: number;
+
   @observable
   accessor nodes: TreeNode[] = [];
 
@@ -99,8 +101,8 @@ class TreeNode extends Entity {
 
   autosave = true;
 
-  constructor(scene: SceneInterface, name: string) {
-    super(getNextObjectId(), name)
+  constructor(id: number, scene: SceneInterface) {
+    this.id = id;
 
     this._nodeObject = new SceneObject()
     this._nodeObject.node = this;
@@ -345,9 +347,8 @@ class TreeNode extends Entity {
     if (response.ok) {
       const descriptor = await response.body();
 
-      const node = new TreeNode(this.scene, name)
+      const node = new TreeNode(descriptor.nodeId, this.scene)
 
-      node.id = descriptor.nodeId
       node.parentModifierNode = modifierNode;
 
       const object = await SceneObject.fromDescriptor(descriptor);
@@ -387,7 +388,6 @@ class TreeNode extends Entity {
             if (wrapperId !== this.parent.modifierNodeId && this.parent !== treeNode) {
               this.scene.createNode(
                 this.id,
-                this.name,
                 undefined, // nodeInfo,
                 this.modifications,
                 this.parentModifierNode,
@@ -506,7 +506,7 @@ class TreeNode extends Entity {
 
         if (response.ok) {
           runInAction(() => {
-            this.name = name
+            this.nodeObject.header.name.set(name, true)
           })
         }
       }
