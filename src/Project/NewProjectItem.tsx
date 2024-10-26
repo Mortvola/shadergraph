@@ -1,6 +1,7 @@
 import React from 'react';
 import { type FolderInterface, type ProjectInterface } from './Types/types';
 import { observer } from 'mobx-react-lite';
+import { useStores } from '../State/store';
 
 type PropsType = {
   project: ProjectInterface,
@@ -11,6 +12,8 @@ const NewProjectItem: React.FC<PropsType> = observer(({
   project,
   folder,
 }) => {
+  const store = useStores();
+
   const [name, setName] = React.useState<string>('')
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (event) => {
@@ -18,7 +21,17 @@ const NewProjectItem: React.FC<PropsType> = observer(({
       project.cancelNewItem(folder)
     }
     else if (event.code === 'Enter' && folder.newItemType != null && name.length > 0) {
-      project.createNewItem(name, folder.newItemType, folder)
+      const newItemType = folder.newItemType;
+      (
+        async () => {
+          const item = await project.createNewItem(name, newItemType, folder)
+
+          if (item) {
+            store.selectItem(item)
+            store.openItem(item)
+          }
+        }
+      )()
     }
 
     // setName('');

@@ -8,8 +8,6 @@ import { observable, reaction, runInAction } from 'mobx';
 import Renderer from '../Renderer/Renderer';
 import type { ProjectItemInterface, ProjectItemLike } from '../Project/Types/types';
 import { isSceneItem, isShaderItem, ProjectItemType } from '../Project/Types/types';
-import type {
-  RenderNodeInterface} from '../Renderer/Types';
 import {
   ComponentType,
 } from '../Renderer/Types';
@@ -100,7 +98,10 @@ class Store implements StoreInterface {
   }
 
   async selectItem(item: ProjectItemLike | null) {
-    if (this.project.selectedItem?.type === ProjectItemType.SceneObject && isGameObject(this.project.selectedItem.item)) {
+    if (
+      this.project.selectedItem?.type === ProjectItemType.SceneObject
+      && isGameObject(this.project.selectedItem.item)
+    ) {
       for (const component of this.project.selectedItem.item.components) {
         if (component.type === ComponentType.ParticleSystem) {
           // const particleEntry = item.item as ParticleItem;
