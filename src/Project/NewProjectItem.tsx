@@ -17,8 +17,8 @@ const NewProjectItem: React.FC<PropsType> = observer(({
     if (event.code === 'Escape') {
       project.cancelNewItem(folder)
     }
-    else if (event.code === 'Enter' && name.length > 0) {
-      project.createNewItem(name, folder.newItemType!, folder)
+    else if (event.code === 'Enter' && folder.newItemType != null && name.length > 0) {
+      project.createNewItem(name, folder.newItemType, folder)
     }
 
     // setName('');

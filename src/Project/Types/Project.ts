@@ -226,34 +226,16 @@ class Project implements ProjectInterface {
     let url: string | undefined = undefined;
 
     switch (type) {
-      case ProjectItemType.SceneObject: {
-        url = '/api/scene-objects'
-
-        break
-      }
-
-      case 'object2D': {
-        url = '/api/scene-objects'
-
-        break
-      }
-
-      case 'shader': {
+      case ProjectItemType.Shader: {
         url = '/api/shader-descriptors'
 
         break
       }
 
-      case 'material': {
+      case ProjectItemType.Material: {
         url = '/api/materials'
 
         break;
-      }
-
-      case 'particle': {
-        url = '/api/particless'
-
-        break
       }
 
       case ProjectItemType.Scene: {

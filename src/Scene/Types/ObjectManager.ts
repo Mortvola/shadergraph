@@ -1,45 +1,8 @@
 import Http from '../../Http/src';
-import SceneObject from './SceneObject';
-import TreeNode from './TreeNode';
-import { type ComponentType } from '../../Renderer/Types';
-import type PropsBase from '../../Renderer/Properties/PropsBase';
+import type SceneObject from './SceneObject';
 import { type SceneObjectDescriptor } from './Types';
 
 class ObjectManager {
-  async add(
-    component: { type: ComponentType, props: PropsBase } | undefined,
-    name: string,
-    parentNode: TreeNode,
-  ): Promise<TreeNode | undefined> {
-    let descriptor: object | undefined
-
-    if (component) {
-      descriptor = {
-        type: component.type,
-        props: component.props.toDescriptor(),
-      }
-    }
-
-    const response = await Http.post<unknown, SceneObjectDescriptor>('/api/scene-objects', {
-      parentNodeId: parentNode.id,
-      modifierNodeId: parentNode.modifierNodeId,
-      name,
-      component: descriptor,
-    });
-
-    if (response.ok) {
-      const body = await response.body();
-
-      const node = new TreeNode(body.nodeId, parentNode.scene)
-
-      node.nodeObject = await SceneObject.fromDescriptor(body);
-
-      parentNode.addNode(node);
-
-      return node
-    }
-  }
-
   async update(object: SceneObject) {
     if (object.node == null) {
       throw new Error('node not set')
