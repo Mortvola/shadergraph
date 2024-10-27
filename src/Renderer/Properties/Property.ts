@@ -87,7 +87,7 @@ export class PSBoolean extends Property<boolean> {
 
 export class PSString extends Property<string | undefined> {
   constructor(
-    name: string,
+    name: string | undefined,
     props: PropsBase,
     value?: string,
     defaultValue = undefined,

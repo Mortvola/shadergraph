@@ -3,7 +3,7 @@ import type { ParticleSystemPropsDescriptor } from '../../Renderer/ParticleSyste
 import { type PSString } from '../../Renderer/Properties/Property';
 import type { PropertyBaseInterface } from '../../Renderer/Properties/Types';
 import type {
-  ComponentDescriptor, LightPropsDescriptor, NewSceneObjectComponent,
+  ComponentDescriptor, LightPropsDescriptor, ModificationDescriptor, NewSceneObjectComponent,
   SceneObjectComponent as SceneObjectComponent, TransformPropsInterface,
 } from '../../Renderer/Types';
 import type ModifierNode from './ModifierNode';
@@ -133,16 +133,8 @@ export type SceneObjectDescriptor = {
   name?: string,
   modifierNodeId?: number,
   pathId?: number,
-
-  object: {
-    type: ObjectType,
-    components: ComponentDescriptor[],
-    transformProps: TransformPropsDescriptor,
-  },
-
-  baseTreeId?: number,
-
-  rootId?: number,
+  components: number[],
+  modifications?: Record<string, unknown>,
 }
 
 export type ConnectedObject = { prefabNodeId: number, objectId: number }
@@ -239,20 +231,11 @@ export const isTreeNodeDescriptor = (r: unknown): r is TreeNodeDescriptor => (
   (r as TreeModifierDescriptor)?.rootNodeId === undefined
 )
 
-export const isSceneObjectDescriptor = (r: unknown): r is SceneObjectDescriptor => (
-  (r as SceneObjectDescriptor)?.object?.type === ObjectType.NodeObject
-)
-
-// export type NodesResponse = {
-//   root: TreeNodeDescriptor,
-//   objects: SceneObjectDescriptor[],
-//   trees: { id: number, name: string}[],
-// }
-
 export type NodesResponse2 = {
   rootNodeId: number,
   nodes: (TreeNodeDescriptor | TreeModifierDescriptor)[],
   objects: SceneObjectDescriptor[],
+  components: ComponentDescriptor[],
 }
 
 export type ItemResponse = {

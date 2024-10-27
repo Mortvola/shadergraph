@@ -12,6 +12,8 @@ class TransformProps extends PropsBase implements TransformPropsInterface {
 
   scale: PSVec3Type;
 
+  onChange?: () => void;
+
   constructor(
     descriptor?: Partial<TransformPropsDescriptor>,
     onChange?: () => void,
@@ -19,9 +21,34 @@ class TransformProps extends PropsBase implements TransformPropsInterface {
   ) {
     super()
 
-    this.translate = new PSVec3Type('Translate', this, descriptor?.translate ? vec3n.create(...descriptor.translate) : undefined, vec3n.create(0, 0, 0), onChange, previousProps?.translate)
-    this.rotate = new PSVec3Type('Rotate', this, descriptor?.rotate ? vec3n.create(...descriptor.rotate) : undefined, vec3n.create(0, 0, 0), onChange, previousProps?.rotate)
-    this.scale = new PSVec3Type('Scale', this, descriptor?.scale ? vec3n.create(...descriptor.scale) : undefined, vec3n.create(1, 1, 1), onChange, previousProps?.scale)
+    this.onChange = onChange
+
+    this.translate = new PSVec3Type(
+      'Translate',
+      this,
+      descriptor?.translate ? vec3n.create(...descriptor.translate) : undefined,
+      vec3n.create(0, 0, 0),
+      () => this.handleChange,
+      previousProps?.translate,
+    )
+
+    this.rotate = new PSVec3Type(
+      'Rotate',
+      this,
+      descriptor?.rotate ? vec3n.create(...descriptor.rotate) : undefined,
+      vec3n.create(0, 0, 0),
+      () => this.handleChange,
+      previousProps?.rotate,
+    )
+
+    this.scale = new PSVec3Type(
+      'Scale',
+      this,
+      descriptor?.scale ? vec3n.create(...descriptor.scale) : undefined,
+      vec3n.create(1, 1, 1),
+      () => this.handleChange,
+      previousProps?.scale,
+    )
   }
 
   toDescriptor(): TransformPropsDescriptor | undefined {
@@ -36,6 +63,12 @@ class TransformProps extends PropsBase implements TransformPropsInterface {
     }
 
     return removeUndefinedKeys(descriptor)
+  }
+
+  handleChange() {
+    if (this.onChange) {
+      this.onChange()
+    }
   }
 }
 

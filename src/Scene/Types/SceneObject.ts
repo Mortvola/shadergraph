@@ -1,9 +1,13 @@
 import { observable } from 'mobx';
 import {
+  type ComponentDescriptor,
   ComponentType, type LightPropsDescriptor, type NewSceneObjectComponent,
   type SceneObjectComponent, type TransformPropsInterface,
 } from '../../Renderer/Types';
-import { ObjectType, type SceneObjectInterface, type SceneObjectDescriptor, type HeaderInterface } from './Types';
+import {
+  type SceneObjectInterface, type SceneObjectDescriptor,
+  type HeaderInterface, type TransformPropsDescriptor,
+} from './Types';
 import TransformProps from '../../Renderer/Properties/TransformProps';
 import type TreeNode from './TreeNode';
 import { objectManager } from './ObjectManager';
@@ -13,6 +17,7 @@ import LightProps from '../../Renderer/Properties/LightProps';
 import type ModifierNode from './ModifierNode';
 import { PSString } from '../../Renderer/Properties/Property';
 import PropsBase from '../../Renderer/Properties/PropsBase';
+import Http from '../../Http/src';
 
 class Header extends PropsBase implements HeaderInterface {
   name: PSString
@@ -62,100 +67,172 @@ class SceneObject implements SceneObjectInterface {
     this.header = new Header()
   }
 
-  static async fromDescriptor(descriptor?: SceneObjectDescriptor, baseObject?: SceneObjectInterface) {
+  static async fromDescriptor(
+    descriptor?: SceneObjectDescriptor,
+    components?: Map<number, ComponentDescriptor>,
+    baseObject?: SceneObjectInterface,
+  ) {
     const object = new SceneObject();
     object.autosave = false;
 
-    object.header.name = new PSString(
-      'name', object.header, descriptor?.name ?? undefined, undefined, object.onChange, baseObject?.header.name,
-    )
+    object.components = []
 
     if (baseObject) {
-      object.components = baseObject.components.map((c) => {
-        const componentDescriptor = descriptor?.object.components.find((component) => (
-          component.id === c.id && component.type === c.type
-        ));
+      object.header.name = new PSString(
+        'name',
+        object.header,
+        descriptor?.modifications?.name as string,
+        undefined,
+        object.onChange,
+        baseObject?.header.name,
+      )
+
+      for (const c of baseObject.components) {
+        let componentDescriptor: unknown | undefined
+        if (descriptor?.modifications) {
+          componentDescriptor = descriptor?.modifications[c.type]
+        }
 
         switch (c.type) {
-          case ComponentType.ParticleSystem: {
-            const prefabProps = c.props as ParticleSystemProps;
+          case ComponentType.Transform: {
+            const props = new TransformProps(
+              componentDescriptor as TransformPropsDescriptor,
+              object.transformChanged,
+              baseObject.transformProps,
+            );
 
+            object.components.push({
+              id: c.id,
+              type: c.type,
+              props,
+            })
+
+            object.transformProps = props
+            break
+          }
+
+          case ComponentType.ParticleSystem: {
             const props = new ParticleSystemProps(
-              componentDescriptor?.props as ParticleSystemPropsDescriptor,
-              prefabProps,
+              componentDescriptor as ParticleSystemPropsDescriptor,
+              c.props as ParticleSystemProps,
             );
 
             props.onChange = object.onChange;
             props.nodeObject = object;
 
-            return {
+            object.components.push({
               id: c.id,
               type: c.type,
-              props: props,
-            }
+              props,
+            })
+
+            break
           }
 
           case ComponentType.Light: {
-
-            return {
+            object.components.push({
               id: c.id,
               type: c.type,
               props: c.props,
+            })
+
+            break
+          }
+        }
+      }
+
+      // let componentDescriptor: unknown | undefined
+      // if (descriptor?.modifications) {
+      //   componentDescriptor = descriptor?.modifications[ComponentType.Transform]
+      // }
+
+      // object.transformProps = new TransformProps(
+      //   componentDescriptor as TransformPropsDescriptor,
+      //   object.transformChanged,
+      //   baseObject.transformProps,
+      // );
+
+      object.baseObject = baseObject
+    }
+    else {
+      object.header.name = new PSString(
+        'name',
+        object.header,
+        descriptor?.name ?? undefined,
+        undefined,
+        object.onChange,
+      )
+
+      const componentIds = descriptor?.components;
+
+      if (componentIds) {
+        for (const compId of componentIds) {
+          const c = components?.get(compId)
+
+          if (c) {
+            switch (c.type) {
+              case ComponentType.Transform: {
+                const props = new TransformProps(
+                  c.props as TransformPropsDescriptor,
+                );
+
+                const component = {
+                  id: c.id,
+                  type: c.type,
+                  props,
+                }
+
+                object.components.push(component)
+
+                props.onChange = () => {
+                  object.transformChanged()
+
+                  object.updateComponent(component)
+                }
+
+                object.transformProps = props
+
+                break
+              }
+
+              case ComponentType.ParticleSystem: {
+                const propsDescriptor = c.props as ParticleSystemPropsDescriptor;
+
+                const props = new ParticleSystemProps(propsDescriptor);
+
+                const component = {
+                  id: c.id ?? object.getNextComponentId(),
+                  type: c.type,
+                  props,
+                }
+
+                props.onChange = () => { object.updateComponent(component) };
+                props.nodeObject = object;
+
+                object.components.push(component)
+
+                break;
+              }
+
+              case ComponentType.Light: {
+                const propsDescriptor = c.props as LightPropsDescriptor;
+
+                const props = new LightProps(propsDescriptor);
+                props.onChange = object.onChange;
+                props.nodeObject = object;
+
+                object.components.push({
+                  id: c.id ?? object.getNextComponentId(),
+                  type: c.type,
+                  props,
+                })
+
+                break;
+              }
             }
           }
         }
-      })
-        .filter((c) => c !== undefined)
-
-      object.baseObject = baseObject
-
-      object.transformProps = new TransformProps(
-        descriptor?.object.transformProps,
-        object.transformChanged,
-        baseObject.transformProps,
-      );
-    }
-    else {
-      const components = descriptor?.object.components;
-
-      if (components) {
-        object.components = components.map((c) => {
-          switch (c.type) {
-            case ComponentType.ParticleSystem: {
-              const propsDescriptor = c.props as ParticleSystemPropsDescriptor;
-
-              const props = new ParticleSystemProps(propsDescriptor);
-              props.onChange = object.onChange;
-              props.nodeObject = object;
-
-              return {
-                id: c.id ?? object.getNextComponentId(),
-                type: c.type,
-                props,
-              }
-            }
-
-            case ComponentType.Light: {
-              const propsDescriptor = c.props as LightPropsDescriptor;
-
-              const props = new LightProps(propsDescriptor);
-              props.onChange = object.onChange;
-              props.nodeObject = object;
-
-              return {
-                id: c.id ?? object.getNextComponentId(),
-                type: c.type,
-                props,
-              }
-            }
-          }
-
-          return undefined
-        })
-          .filter((c) => c !== undefined)
       }
-
-      object.transformProps = new TransformProps(descriptor?.object.transformProps, object.transformChanged);
     }
 
     // Fix any scale values that are zero.
@@ -180,6 +257,14 @@ class SceneObject implements SceneObjectInterface {
   onChange = () => {
     if (this.autosave) {
       this.save();
+    }
+  }
+
+  async updateComponent(component: SceneObjectComponent) {
+    const response = await Http.patch(`/api/components/${component.id}`, component.props.toDescriptor())
+
+    if (response.ok) {
+      //
     }
   }
 
@@ -248,11 +333,24 @@ class SceneObject implements SceneObjectInterface {
     }
 
     let pathId: number | undefined
+    let modifications: Record<string, unknown> | undefined
+    let components: number[] = []
 
     if (this.modifierNode) {
       const path = this.node.getPathId(this.modifierNode)
 
       pathId = path.id
+
+      modifications = {}
+      for (const mod of this.components) {
+        const props = mod.props.toDescriptor()
+
+        if (props) {
+          modifications[mod.type] = props
+        }
+      }
+    } else {
+      components = this.components.map((c) => c.id)
     }
 
     const descriptor = {
@@ -260,17 +358,9 @@ class SceneObject implements SceneObjectInterface {
       name: this.header.name.toDescriptor(),
       modifierNodeId: this.modifierNode?.id,
       pathId,
-      object: {
-        type: ObjectType.NodeObject,
-        components: this.components.map((c) => ({
-          id: c.id,
-          type: c.type,
-          props: c.props.toDescriptor(),
-        }))
-          .filter((c) => c.props !== undefined),
-        transformProps: this.transformProps.toDescriptor(/*this.baseObject !== undefined*/)!,
-        nextComponentId: this.nextComponentId,
-      },
+      components,
+      modifications,
+      // transformProps: this.transformProps.toDescriptor(/*this.baseObject !== undefined*/)!,
     }
 
     return descriptor;

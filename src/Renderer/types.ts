@@ -15,6 +15,7 @@ import type { ValueType } from './ShaderBuilder/GraphDescriptor';
 import type { TransformPropsDescriptor } from '../Scene/Types/Types';
 import type Camera from './Camera';
 import { type PropsBaseInterface } from './Properties/Types';
+import type TransformProps from './Properties/TransformProps';
 
 export interface RenderNodeInterface {
   nodes: RenderNodeInterface[];
@@ -181,6 +182,7 @@ export type DecalItem = {
 }
 
 export enum ComponentType {
+  Transform = 'Transform',
   Drawable = 'Drawable',
   Light = 'Light',
   RangeCircle = 'RangeCircle',
@@ -201,6 +203,11 @@ export interface ComponentInterface {
 
 export type ComponentDescriptor = {
   id: number,
+  type: ComponentType,
+  props?: LightPropsDescriptor | ParticleSystemPropsDescriptor | DecalPropsDescriptor | ModelPropsDescriptor,
+}
+
+export type ModificationDescriptor = {
   type: ComponentType,
   props?: LightPropsDescriptor | ParticleSystemPropsDescriptor | DecalPropsDescriptor | ModelPropsDescriptor,
 }
@@ -228,7 +235,7 @@ export interface LightInterface extends ComponentInterface {
 export type SceneObjectComponent = {
   id: number,
   type: ComponentType,
-  props: ParticleSystemProps | LightProps,
+  props: TransformProps | ParticleSystemProps | LightProps,
 }
 
 export type NewSceneObjectComponent = Omit<SceneObjectComponent, 'id'>
@@ -239,6 +246,8 @@ export interface TransformPropsInterface extends PropsBaseInterface {
   scale: PSVec3Type;
 
   toDescriptor(overridesOnly?: boolean): TransformPropsDescriptor | undefined;
+
+  handleChange(): void
 }
 
 export type GameObject = {

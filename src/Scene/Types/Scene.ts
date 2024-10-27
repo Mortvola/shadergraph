@@ -13,6 +13,7 @@ import ModifierNode from './ModifierNode';
 import { isModifierNode } from './ModifierNode';
 import ProjectItem from '../../Project/Types/ProjectItem';
 import { type FolderInterface } from '../../Project/Types/types';
+import { type ComponentDescriptor } from '../../Renderer/Types';
 
 class Scene implements SceneInterface {
   id: number = -1;
@@ -38,6 +39,8 @@ class Scene implements SceneInterface {
   nodes: Map<number, TreeNodeDescriptor | ModifierNode> = new Map()
 
   objects: Map<number, { descriptor: SceneObjectDescriptor, object?: SceneObjectInterface }> = new Map()
+
+  components: Map<number, ComponentDescriptor> = new Map()
 
   private processNodeResponse(response: NodesResponse2) {
     for (const node of response.nodes) {
@@ -72,6 +75,10 @@ class Scene implements SceneInterface {
       } else if (!this.objects.has(obj.nodeId)) {
         this.objects.set(obj.nodeId, { descriptor: obj })
       }
+    }
+
+    for (const component of response.components) {
+      this.components.set(component.id, component)
     }
   }
 
@@ -127,10 +134,12 @@ class Scene implements SceneInterface {
   async createTree(rootNodeId: number, parent?: TreeNode) {
     let root: TreeNode | undefined;
 
+    type ModifierNodeEntry = { modifier: ModifierNode, node?: TreeNode }
+
     type StackEntry = {
       nodeId: number,
       parent?: TreeNode,
-      modifiers: { modifier: ModifierNode, node?: TreeNode }[],
+      modifiers: ModifierNodeEntry[],
       parentModifierNode?: TreeNode,
     }
 
@@ -167,10 +176,14 @@ class Scene implements SceneInterface {
 
           if (o) {
             if (o.object === undefined) {
-              o.object = await SceneObject.fromDescriptor(o.descriptor)
+              o.object = await SceneObject.fromDescriptor(o.descriptor, this.components)
             }
 
             object = o.object
+          }
+
+          if (object == null) {
+            throw new Error('object not set')
           }
 
           // Find any object modifiers in the modifider nodes
@@ -179,53 +192,26 @@ class Scene implements SceneInterface {
           for (let i = modifiers.length - 1; i >= 0; i -= 1) {
             const modifier = modifiers[i].modifier
 
-            let pathMap = modifier.objects.get(descriptor.id)
-
-            if (pathMap === undefined) {
-              pathMap = new Map()
-              modifier.objects.set(descriptor.id, pathMap)
-            }
-
-            let o = pathMap.get(pathId)
-
-            if (o === undefined) {
-              o = { descriptor: undefined, object: undefined }
-              pathMap.set(pathId, o)
-            }
-
-            if (o.object === undefined) {
-              o.object = await SceneObject.fromDescriptor(o.descriptor, object)
-            }
-
-            if (o.object === undefined) {
-              throw new Error('object not defined')
-            }
-
-            o.object.modifierNode = modifier
-            object = o.object
+            object = await modifier.getObject(descriptor.id, pathId, object)
 
             pathId ^= modifier.id
           }
 
-          let modifierNode: ModifierNode | undefined
-          if (modifiers.length > 0 && modifiers[modifiers.length - 1].node === undefined) {
-            modifierNode = modifiers[modifiers.length - 1].modifier
-          }
-
-          if (object == null) {
-            throw new Error('object not set')
+          let modifierNodeEntry: ModifierNodeEntry | undefined
+          if (modifiers.at(-1)?.node === undefined) {
+            modifierNodeEntry = modifiers.at(-1)
           }
 
           const node = this.createNode(
             descriptor.id,
             object,
-            modifierNode,
+            modifierNodeEntry?.modifier,
             parentModifierNode,
             parent,
           )
 
-          if (modifierNode) {
-            modifiers[modifiers.length - 1].node = node
+          if (modifierNodeEntry) {
+            modifierNodeEntry.node = node
           }
 
           if (root === undefined) {
@@ -287,7 +273,7 @@ class Scene implements SceneInterface {
     if (tree) {
       runInAction(() => {
         this.rootStack = [...this.rootStack, tree]
-        this.root = this.rootStack[this.rootStack.length - 1]
+        this.root = this.rootStack.at(-1)
       })
     }
   }
@@ -306,7 +292,7 @@ class Scene implements SceneInterface {
           this.rootStack[this.rootStack.length - 1] = tree
         }
 
-        this.root = this.rootStack[this.rootStack.length - 1]
+        this.root = this.rootStack.at(-1)
       })
     }
   }

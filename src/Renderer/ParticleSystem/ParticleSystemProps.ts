@@ -106,7 +106,11 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
     this.collision = new Collision(this, descriptor?.collision, this.handleChange, previousProps?.collision);
 
     this.renderer = new Renderer(
-      this, descriptor?.renderer, { enabled: true, mode: RenderMode.Billboard }, this.handleChange, previousProps?.renderer,
+      this,
+      descriptor?.renderer,
+      { enabled: true, mode: RenderMode.Billboard },
+      this.handleChange,
+      previousProps?.renderer,
     );
  }
 
