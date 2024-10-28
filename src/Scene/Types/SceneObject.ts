@@ -378,35 +378,12 @@ class SceneObject implements SceneObjectInterface {
       throw new Error('node not set')
     }
 
-    let pathId: number | undefined
-    let modifications: Record<string, unknown> | undefined
-    let components: number[] = []
-
-    if (this.modifications) {
-      // const path = this.node.getPathId(this.modifierNode)
-
-      // pathId = path.id
-
-      // modifications = {}
-      // for (const mod of this.components) {
-      //   const props = mod.props.toDescriptor()
-
-      //   if (props) {
-      //     modifications[mod.type] = props
-      //   }
-      // }
-    } else {
-      components = this.components.map((c) => c.id)
-    }
+    const components = this.components.map((c) => c.id)
 
     const descriptor = {
       nodeId: this.node.id,
       name: this.header.name.toDescriptor(),
-      // modifierNodeId: this.modifierNode?.id,
-      // pathId,
       components,
-      // modifications,
-      // transformProps: this.transformProps.toDescriptor(/*this.baseObject !== undefined*/)!,
     }
 
     return descriptor;
