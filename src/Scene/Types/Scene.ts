@@ -49,32 +49,33 @@ class Scene implements SceneInterface {
         if (isTreeNodeDescriptor(node)) {
           this.nodes.set(node.id, node)
         } else {
-          this.nodes.set(node.id, new ModifierNode(node))
+          const modNode = new ModifierNode(node)
+          this.nodes.set(node.id, modNode)
         }
       }
     }
 
     for (const obj of response.objects) {
-      if (obj.modifierNodeId != null) {
-        // Find modifier node and add the object modifier
-        // to the map of object modifiers using the node id as the key
-        const modifiderNode = this.nodes.get(obj.modifierNodeId)
+      // if (obj.modifierNodeId != null) {
+      //   // Find modifier node and add the object modifier
+      //   // to the map of object modifiers using the node id as the key
+      //   const modifiderNode = this.nodes.get(obj.modifierNodeId)
 
-        if (isModifierNode(modifiderNode)) {
-          let pathMap = modifiderNode.objects.get(obj.nodeId)
+      //   if (isModifierNode(modifiderNode)) {
+      //     let pathMap = modifiderNode.modifications.get(obj.nodeId)
 
-          if (pathMap === undefined) {
-            pathMap = new Map()
-            modifiderNode.objects.set(obj.nodeId, pathMap)
-          }
+      //     if (pathMap === undefined) {
+      //       pathMap = new Map()
+      //       modifiderNode.modifications.set(obj.nodeId, pathMap)
+      //     }
 
-          if (obj.pathId != null && !pathMap.has(obj.pathId)) {
-            pathMap.set(obj.pathId, { descriptor: obj })
-          }
-        }
-      } else if (!this.objects.has(obj.nodeId)) {
+      //     if (obj.pathId != null && !pathMap.has(obj.pathId)) {
+      //       pathMap.set(obj.pathId, { modifications: obj })
+      //     }
+      //   }
+      // } else if (!this.objects.has(obj.nodeId)) {
         this.objects.set(obj.nodeId, { descriptor: obj })
-      }
+      // }
     }
 
     for (const component of response.components) {

@@ -210,10 +210,17 @@ export type AddedNode = {
   pathId: number,
 }
 
+export type ModificationEntry = {
+  nodeId: number,
+  pathId: number,
+  modifications: Record<string, unknown>,
+}
+
 export type TreeModifierDescriptor = {
   id: number,
   rootNodeId: number,
   addedNodes: AddedNode[],
+  modifications: ModificationEntry[],
 }
 
 export const isTreeModifierDescriptor = (r: unknown): r is TreeModifierDescriptor => (

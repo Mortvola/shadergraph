@@ -1,6 +1,5 @@
 import { computed, observable, runInAction } from 'mobx';
 import RenderNode from '../../Renderer/Drawables/SceneNodes/RenderNode';
-import { getNextObjectId } from '../../State/Entity';
 import {
   type SceneObjectInterface, type SceneInterface, type SceneItemType, type SceneObjectDescriptor,
 } from './Types';

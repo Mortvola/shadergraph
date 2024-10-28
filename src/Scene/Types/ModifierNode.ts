@@ -1,6 +1,7 @@
 import SceneObject from './SceneObject'
 import {
-  type AddedNode, type SceneObjectDescriptor, type SceneObjectInterface,
+  type ModificationEntry,
+  type AddedNode, type SceneObjectInterface,
   type TreeModifierDescriptor,
 } from './Types'
 
@@ -14,12 +15,23 @@ class ModifierNode {
 
   addedNodes: AddedNode[] = []
 
-  objects: Map<NodeId, Map<PathId, { descriptor?: SceneObjectDescriptor, object?: SceneObjectInterface }>> = new Map()
+  modifications: Map<NodeId, Map<PathId, ModificationEntry>> = new Map()
 
   constructor(descriptor: TreeModifierDescriptor) {
     this.id = descriptor.id
     this.rootNodeId = descriptor.rootNodeId
     this.addedNodes = [...descriptor.addedNodes]
+
+    for (const mod of descriptor.modifications) {
+      let pathMap = this.modifications.get(mod.nodeId)
+
+      if (pathMap === undefined) {
+        pathMap = new Map()
+        this.modifications.set(mod.nodeId, pathMap)
+      }
+
+      pathMap.set(mod.pathId, mod)
+    }
   }
 
   async getObject(
@@ -27,31 +39,30 @@ class ModifierNode {
     pathId: number,
     baseObject: SceneObjectInterface,
   ): Promise<SceneObjectInterface> {
-    let pathMap = this.objects.get(nodeId)
+    let pathMap = this.modifications.get(nodeId)
 
     if (pathMap === undefined) {
       pathMap = new Map()
-      this.objects.set(nodeId, pathMap)
+      this.modifications.set(nodeId, pathMap)
     }
 
-    let o = pathMap.get(pathId)
+    let mods = pathMap.get(pathId)
 
-    if (o === undefined) {
-      o = { descriptor: undefined, object: undefined }
-      pathMap.set(pathId, o)
+    if (mods === undefined) {
+      mods = { nodeId, pathId, modifications: {} }
+      pathMap.set(pathId, mods)
     }
 
-    if (o.object === undefined) {
-      o.object = await SceneObject.fromDescriptor(o.descriptor, undefined, baseObject)
-    }
+    const object = await SceneObject.fromModifications(mods.modifications, baseObject)
 
-    if (o.object === undefined) {
+    if (object === undefined) {
       throw new Error('object not defined')
     }
 
-    o.object.modifierNode = this
+    object.modifierNode = this
+    object.modifications = mods
 
-    return o.object
+    return object
   }
 }
 
