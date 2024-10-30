@@ -23,26 +23,26 @@ class TreeNode {
   id: number;
 
   @observable
-  accessor nodes: TreeNode[] = [];
-
-  components: Map<number, NodeComponent> = new Map();
+  accessor children: TreeNode[] = [];
 
   parent?: TreeNode;
+
+  components: Map<number, NodeComponent> = new Map();
 
   get modifierNodeId(): number | undefined {
     if (this.parent === undefined) {
       return undefined
     }
 
-    if (this.parent.modifications !== undefined) {
-      return this.parent.modifications.id
+    if (this.parent.modifierNode !== undefined) {
+      return this.parent.modifierNode.id
     }
 
     return this.parent.modifierNodeId
   }
 
   @observable
-  accessor modifications: ModifierNode | undefined;
+  accessor modifierNode: ModifierNode | undefined;
 
   private _nodeObject: SceneObjectInterface;
 
@@ -58,28 +58,6 @@ class TreeNode {
     this.transformChanged()
   }
 
-  get topLevelModifierNodeId(): number | undefined {
-    let modifierNode = undefined
-
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let node: TreeNode | undefined = this;
-
-    for (;;) {
-      if (node === undefined) {
-        break;
-      }
-
-      if (node.modifications !== undefined) {
-        modifierNode = node.modifications
-        break;
-      }
-
-      node = node.parent
-    }
-
-    return modifierNode?.id
-  }
-
   renderNode = new RenderNode();
 
   scene: SceneInterface;
@@ -88,17 +66,34 @@ class TreeNode {
   accessor parentModifierNode: TreeNode | undefined;
 
   get wrapperRoot(): boolean {
-    return this.modifications !== undefined
+    return this.modifierNode !== undefined
   }
 
   get withinWrapper(): boolean {
-    return this.modifierNodeId !== undefined || this.modifications !== undefined
+    return this.modifierNodeId !== undefined || this.modifierNode !== undefined
   }
 
   @observable
   accessor newItemType: SceneItemType | undefined = undefined;
 
   autosave = true;
+
+  get isTopLevel(): boolean {
+    // If the parentModifierNode is set then this is an "add on" node
+    // If this is not an "add on" node then use the top level modifier node
+    // of this node to determine if it is a top level node.
+    // If it is an "add on" node then get the top level modifier node
+    // of the parentModifierNode's parent.
+    if (this.parentModifierNode === undefined) {
+      if (this.modifierNode === undefined) {
+        return this.getTopLevelModifierNode() === undefined
+      }
+
+      return this.parent?.getTopLevelModifierNode() === undefined
+    }
+
+    return this.parentModifierNode.parent?.getTopLevelModifierNode() === undefined
+  }
 
   constructor(id: number, scene: SceneInterface) {
     this.id = id;
@@ -127,10 +122,12 @@ class TreeNode {
     return false;
   }
 
-  async addNode(node: TreeNode): Promise<void> {
-    return runInAction(async () => {
-      this.nodes = [
-        ...this.nodes,
+  addNode(node: TreeNode) {
+    runInAction(() => {
+      node.detachSelf()
+
+      this.children = [
+        ...this.children,
         node,
       ];
 
@@ -142,13 +139,13 @@ class TreeNode {
   }
 
   removeNode(node: TreeNode) {
-    const index = this.nodes.findIndex((o) => o === node)
+    const index = this.children.findIndex((o) => o === node)
 
     if (index !== -1) {
       runInAction(() => {
-        this.nodes = [
-          ...this.nodes.slice(0, index),
-          ...this.nodes.slice(index + 1),
+        this.children = [
+          ...this.children.slice(0, index),
+          ...this.children.slice(index + 1),
         ]
 
         this.renderNode.removeNode(node.renderNode)
@@ -162,8 +159,8 @@ class TreeNode {
     // If there is a tree ID associated with this node but the parent
     // does not have the same associate then we must be at the root
     // of a tree. Therefore, update the node with the tree id instead the node with id.
-    if (this.modifications !== undefined) {
-      return this.modifications.id;
+    if (this.modifierNode !== undefined) {
+      return this.modifierNode.id;
     }
 
     return this.id
@@ -177,13 +174,13 @@ class TreeNode {
     let node: TreeNode | undefined = this
 
     while (node !== undefined) {
-      if (node.modifications?.id === modifierNode.id) {
+      if (node.modifierNode?.id === modifierNode.id) {
         break;
       }
 
-      if (node.modifications !== undefined) {
-        id ^= node.modifications.id
-        path.push(node.modifications.id)
+      if (node.modifierNode !== undefined) {
+        id ^= node.modifierNode.id
+        path.push(node.modifierNode.id)
       }
 
       node = node.parent
@@ -203,7 +200,7 @@ class TreeNode {
         break;
       }
 
-      if (node.modifications !== undefined) {
+      if (node.modifierNode !== undefined) {
         modifierNode = node
       }
 
@@ -221,95 +218,167 @@ class TreeNode {
   }
 
   async reparent(newParent: TreeNode) {
-    const modifierNode = newParent.getTopLevelModifierNode()
+    if (!this.isTopLevel) {
+      throw new Error('Cannot move nodes not at top level')
+    }
 
-    let path: { id: number, path: number[] } | undefined
+    if (this.parent === undefined) {
+      throw new Error('Cannot reparent root nodes')
+    }
 
-    if (modifierNode?.modifications !== undefined) {
-      path = newParent.getPathId(modifierNode.modifications)
+    type ParentDescriptor = {
+      parentNodeId: number | null,
+      modifierNodeId: number | null,
+      nodeId: number | null,
+      pathId: number | null,
+    }
+
+    let previousParent: ParentDescriptor = {
+      parentNodeId: this.parent.id,
+      modifierNodeId: null,
+      nodeId: null,
+      pathId: null,
+    }
+
+    const oldModifierNode = this.parent.getTopLevelModifierNode()
+    let oldPath: { id: number, path: number[] } | undefined
+
+    if (oldModifierNode) {
+      if (oldModifierNode.modifierNode !== undefined) {
+        oldPath = this.parent.getPathId(oldModifierNode.modifierNode)
+      }
+
+      previousParent = {
+        parentNodeId: null,
+        modifierNodeId: oldModifierNode.modifierNode?.id ?? null,
+        nodeId: this.parent.id ?? null,
+        pathId: oldPath?.id ?? null,
+      }
+    }
+
+    let parent: ParentDescriptor = {
+      parentNodeId: newParent.id,
+      modifierNodeId: null,
+      nodeId: null,
+      pathId: null,
+    }
+
+    const newModifierNode = newParent.getTopLevelModifierNode()
+
+    let newPath: { id: number, path: number[] } | undefined
+
+    if (newModifierNode) {
+      if (newModifierNode.modifierNode !== undefined) {
+        newPath = newParent.getPathId(newModifierNode.modifierNode)
+      }
+
+      parent = {
+        parentNodeId: null,
+        modifierNodeId: newModifierNode.modifierNode?.id ?? null,
+        nodeId: newParent.id,
+        pathId: newPath?.id ?? null,
+      }
     }
 
     const payload = {
-      parentNodeId: newParent.id,
-      modifierNodeId: modifierNode?.modifications?.id ?? null,
-      path: path?.path ?? null,
-      pathId: path?.id ?? null,
+      previousParent,
+      ...parent,
     }
 
     const response = await Http.patch<unknown, void>(`/api/tree-nodes/${this.actualNodeId}`, payload)
 
     if (response.ok) {
       runInAction(() => {
-        if (this.parentModifierNode?.modifications !== undefined) {
-          if (this.parentModifierNode.modifications.id !== modifierNode?.modifications?.id) {
-            // Changing parent modifier nodes. Remove from the old and
-            // add to the new (if there is a new one).
-            const index = this.parentModifierNode.modifications.addedNodes
-              .findIndex((entry) => entry.nodeId === this.id)
-
-            if (index !== -1) {
-              this.parentModifierNode.modifications.addedNodes = [
-                ...this.parentModifierNode.modifications.addedNodes.slice(0, index),
-                ...this.parentModifierNode.modifications.addedNodes.slice(index + 1),
-              ]
-            }
-
-            // If there is a new modifier node then add
-            // this node to its list of added nodes.
-            if (modifierNode?.modifications !== undefined) {
-              if (path === undefined) {
-                throw new Error('path not defined')
-              }
-
-              modifierNode.modifications.addedNodes.push({
-                nodeId: this.id,
-                parentNodeId: newParent.id,
-                pathId: path.id,
-              })
-            }
-          } else {
-            // The node is staying within the addedNodes of the
-            // same modifier node.
-
-            if (path === undefined) {
-              throw new Error('path not defined')
-            }
-
-            // Find the existing node in the addedNodes and update it
-            const entry = modifierNode.modifications.addedNodes.find((entry) => entry.nodeId === this.id)
-
-            if (entry) {
-              entry.parentNodeId = newParent.id
-              entry.pathId = path.id
-            } else {
-              // For some reason, the node was not found.
-              // Add it.
-              console.log(`Node not found in addedNodes: ${modifierNode.id}, ${this.id}`)
-
-              modifierNode.modifications.addedNodes.push({
-                nodeId: this.id,
-                parentNodeId: newParent.id,
-                pathId: path.id,
-              })
-            }
-          }
-        } else if (modifierNode?.modifications !== undefined) {
-          // node was not an added ndoe in a modifier node but
-          // is being added to a modifier node.
-          if (path === undefined) {
-            throw new Error('path not defined')
-          }
-
-          modifierNode.modifications.addedNodes.push({
-            nodeId: this.id,
-            parentNodeId: newParent.id,
-            pathId: path.id,
-          })
+        if (this.parent === undefined) {
+          throw new Error('Cannot reparent root nodes')
         }
 
-        this.parentModifierNode = modifierNode
+        if (oldModifierNode) {
+          if (oldPath === undefined) {
+            throw new Error('oldPath not set')
+          }
 
-        this.detachSelf();
+          oldModifierNode.modifierNode?.removeAddedNode(this.parent.id, oldPath.id, this.id)
+        }
+
+        if (newModifierNode) {
+          if (newPath === undefined) {
+            throw new Error('oldPath not set')
+          }
+
+          newModifierNode.modifierNode?.addAddedNode(newParent.id, newPath.id, this.id)
+          this.parentModifierNode = newModifierNode
+        }
+
+        // if (this.parentModifierNode?.modifications !== undefined) {
+        //   if (this.parentModifierNode.modifications.id !== newModifierNode?.modifications?.id) {
+        //     // Changing parent modifier nodes. Remove from the old and
+        //     // add to the new (if there is a new one).
+        //     const index = this.parentModifierNode.modifications.addedNodes
+        //       .findIndex((entry) => entry.nodeId === this.id)
+
+        //     if (index !== -1) {
+        //       this.parentModifierNode.modifications.addedNodes = [
+        //         ...this.parentModifierNode.modifications.addedNodes.slice(0, index),
+        //         ...this.parentModifierNode.modifications.addedNodes.slice(index + 1),
+        //       ]
+        //     }
+
+        //     // If there is a new modifier node then add
+        //     // this node to its list of added nodes.
+        //     if (newModifierNode?.modifications !== undefined) {
+        //       if (newPath === undefined) {
+        //         throw new Error('path not defined')
+        //       }
+
+        //       newModifierNode.modifications.addedNodes.push({
+        //         nodeId: this.id,
+        //         parentNodeId: newParent.id,
+        //         pathId: newPath.id,
+        //       })
+        //     }
+        //   } else {
+        //     // The node is staying within the addedNodes of the
+        //     // same modifier node.
+
+        //     if (newPath === undefined) {
+        //       throw new Error('path not defined')
+        //     }
+
+        //     // Find the existing node in the addedNodes and update it
+        //     const entry = newModifierNode.modifications.addedNodes.find((entry) => entry.nodeId === this.id)
+
+        //     if (entry) {
+        //       entry.parentNodeId = newParent.id
+        //       entry.pathId = newPath.id
+        //     } else {
+        //       // For some reason, the node was not found.
+        //       // Add it.
+        //       console.log(`Node not found in addedNodes: ${newModifierNode.id}, ${this.id}`)
+
+        //       newModifierNode.modifications.addedNodes.push({
+        //         nodeId: this.id,
+        //         parentNodeId: newParent.id,
+        //         pathId: newPath.id,
+        //       })
+        //     }
+        //   }
+        // } else if (newModifierNode?.modifications !== undefined) {
+        //   // node was not an added ndoe in a modifier node but
+        //   // is being added to a modifier node.
+        //   if (newPath === undefined) {
+        //     throw new Error('path not defined')
+        //   }
+
+        //   newModifierNode.modifications.addedNodes.push({
+        //     nodeId: this.id,
+        //     parentNodeId: newParent.id,
+        //     pathId: newPath.id,
+        //   })
+        // }
+
+        this.parentModifierNode = newModifierNode
+
         newParent.addNode(this);
       })
     }
@@ -323,15 +392,33 @@ class TreeNode {
 
     let path: { id: number, path: number[] } | undefined
 
-    if (modifierNode?.modifications !== undefined) {
-      path = this.getPathId(modifierNode.modifications)
+    type ParentDescriptor = {
+      parentNodeId: number | null,
+      modifierNodeId: number | null,
+      nodeId: number | null,
+      pathId: number | null,
+    }
+
+    let parent: ParentDescriptor = {
+      parentNodeId: this.id,
+      modifierNodeId: null,
+      nodeId: null,
+      pathId: null,
+    }
+
+    if (modifierNode?.modifierNode !== undefined) {
+      path = this.getPathId(modifierNode.modifierNode)
+
+      parent = {
+        parentNodeId: null,
+        modifierNodeId: modifierNode.modifierNode?.id ?? null,
+        nodeId: this.id,
+        pathId: path?.id ?? null,
+      }
     }
 
     const payload = {
-      parentNodeId: this.id,
-      modifierNodeId: modifierNode?.modifications?.id ?? null,
-      path: path?.path ?? null,
-      pathId: path?.id ?? null,
+      ...parent,
       name,
       component: component
         ? {
@@ -388,7 +475,7 @@ class TreeNode {
               this.scene.createNode(
                 this.id,
                 undefined, // nodeInfo,
-                this.modifications,
+                this.modifierNode,
                 this.parentModifierNode,
                 treeNode,
               )
@@ -529,7 +616,7 @@ class TreeNode {
         const node = stack[0];
         stack = stack.slice(1)
 
-        for (const child of node.nodes) {
+        for (const child of node.children) {
           if (child.parentModifierNode !== undefined) {
             connections.push(child)
           }

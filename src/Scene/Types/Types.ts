@@ -3,7 +3,7 @@ import type { ParticleSystemPropsDescriptor } from '../../Renderer/ParticleSyste
 import { type PSString } from '../../Renderer/Properties/Property';
 import type { PropertyBaseInterface } from '../../Renderer/Properties/Types';
 import type {
-  ComponentDescriptor, LightPropsDescriptor, ModificationDescriptor, NewSceneObjectComponent,
+  ComponentDescriptor, LightPropsDescriptor, NewSceneObjectComponent,
   SceneObjectComponent as SceneObjectComponent, TransformPropsInterface,
 } from '../../Renderer/Types';
 import type ModifierNode from './ModifierNode';
@@ -71,7 +71,7 @@ export interface SceneInterface {
 
   instantiatePrefab(rootNodeId: number, parent: TreeNode): Promise<void>;
 
-  addNode(node: TreeNode, autosave: boolean): void;
+  addNode(node: TreeNode): void;
 
   setSelected(node: TreeNode | null): void;
 
@@ -85,7 +85,7 @@ export interface SceneInterface {
 export const isTreeNode = (r: unknown): r is TreeNode => (
   (r as TreeNode)?.renderNode !== undefined
   && (r as TreeNode)?.nodeObject !== undefined
-  && (r as TreeNode)?.nodes !== undefined
+  && (r as TreeNode)?.children !== undefined
   && (r as TreeNode)?.components !== undefined
 )
 
@@ -214,12 +214,12 @@ export type ModificationEntry = {
   nodeId: number,
   pathId: number,
   modifications: Record<string, unknown>,
+  addedNodes: number[],
 }
 
 export type TreeModifierDescriptor = {
   id: number,
   rootNodeId: number,
-  addedNodes: AddedNode[],
   modifications: ModificationEntry[],
 }
 
@@ -229,7 +229,6 @@ export const isTreeModifierDescriptor = (r: unknown): r is TreeModifierDescripto
 
 export type TreeNodeDescriptor = {
   id: number,
-  parentNodeId?: number,
   modifierNodeId?: number,
   children?: number[],
 }

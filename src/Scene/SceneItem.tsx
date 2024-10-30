@@ -102,7 +102,7 @@ const SceneItem: React.FC<PropsType> = observer(({
         {
           // If the node's parent has a tree ID and the node's tree id does not match the
           // parent's then this must be an outside connection. Include a plus icon with the box icon.
-          treeNode.parentModifierNode
+          treeNode.parentModifierNode && treeNode.isTopLevel
             ? <PlusIcon size="10" fill="#FFF" strokeWidth={4} />
             : null
         }
@@ -126,7 +126,7 @@ const SceneItem: React.FC<PropsType> = observer(({
 
   return (
     <div
-      className={`${styles.item} ${selected ? styles.selected : ''} ${(treeNode.withinWrapper) ? styles.prefab : ''}`}
+      className={`${styles.item} ${selected ? styles.selected : ''} ${!treeNode.isTopLevel || treeNode.wrapperRoot ? styles.prefab : ''}`}
       onClick={handleClick}
       draggable={draggable}
       onDragStart={handleDragStart}

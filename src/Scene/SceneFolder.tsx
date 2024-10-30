@@ -5,7 +5,6 @@ import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
 import { SceneItemType, type SceneInterface } from './Types/Types';
 import type TreeNode from './Types/TreeNode';
-import { objectManager } from './Types/ObjectManager';
 import { ComponentType } from '../Renderer/Types';
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
 import LightProps from '../Renderer/Properties/LightProps';
@@ -164,7 +163,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
       onDragLeave={handleDragLeave}
     >
       <SceneItem
-        key={`${folder.id}:${folder.modifications?.id ?? folder.modifierNodeId}`}
+        key={`${folder.id}:${folder.modifierNode?.id ?? folder.modifierNodeId}`}
         scene={scene}
         treeNode={folder}
         onSelect={onSelect}
@@ -188,9 +187,9 @@ const SceneFolder: React.FC<PropsType> = observer(({
           : null
       }
       {
-        folder.nodes.map((i) => (
+        folder.children.map((i) => (
           <SceneFolder
-            key={`${i.id}:${i.modifications?.id ?? i.modifierNodeId}`}
+            key={`${i.id}:${i.modifierNode?.id ?? i.modifierNodeId}`}
             scene={scene}
             folder={i}
             onSelect={onSelect}

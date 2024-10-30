@@ -370,7 +370,7 @@ class SceneObject implements SceneObjectInterface {
   }
 
   isPrefabInstanceRoot(): boolean {
-    return this.node?.modifications !== undefined
+    return this.node?.modifierNode !== undefined
   }
 
   toDescriptor(): SceneObjectDescriptor {

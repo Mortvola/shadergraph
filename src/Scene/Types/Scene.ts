@@ -114,9 +114,9 @@ class Scene implements SceneInterface {
         break;
       }
 
-      if (node.modifications != null) {
+      if (node.modifierNode != null) {
         modifiers.push({
-          modifier: node.modifications,
+          modifier: node.modifierNode,
           node,
         })
       }
@@ -232,30 +232,32 @@ class Scene implements SceneInterface {
           for (let i = modifiers.length - 1; i >= 0; i -= 1) {
             const modifier = modifiers[i].modifier
 
-            const added = modifier.addedNodes?.find((addedNode) => {
-              return (addedNode?.parentNodeId === node.id && addedNode?.pathId === pathId)
-            })
+            const { addedNodes } = modifier.getModificationEntry(nodeId, pathId);
 
-            if (added) {
-              // Remove from the stack of modifiers the current modifier
-              // and the ones following
-              if (isModifierNode(added)) {
-                stack.push({
-                  nodeId: added.rootNodeId,
-                  parent,
-                  modifiers: [
-                    ...modifiers.slice(0, i),
-                    { modifier: added },
-                  ],
-                  parentModifierNode: modifiers[i].node,
-                })
-              } else {
-                stack.push({
-                  nodeId: added.nodeId,
-                  parent: node,
-                  modifiers: modifiers.slice(0, i),
-                  parentModifierNode: modifiers[i].node,
-                })
+            for (const addedNodeId of addedNodes) {
+              const added = this.nodes.get(addedNodeId)
+
+              if (added !== undefined) {
+                // Remove from the stack of modifiers the current modifier
+                // and the ones following
+                if (isModifierNode(added)) {
+                  stack.push({
+                    nodeId: added.rootNodeId,
+                    parent: node,
+                    modifiers: [
+                      ...modifiers.slice(0, i),
+                      { modifier: added },
+                    ],
+                    parentModifierNode: modifiers[i].node,
+                  })
+                } else {
+                  stack.push({
+                    nodeId: added.id,
+                    parent: node,
+                    modifiers: modifiers.slice(0, i),
+                    parentModifierNode: modifiers[i].node,
+                  })
+                }
               }
             }
 
@@ -301,14 +303,14 @@ class Scene implements SceneInterface {
   async createPrefab(node: TreeNode, folder: FolderInterface) {
     let path: { id: number, path: number[] } | undefined
 
-    if (node.parent != null && node?.modifications !== undefined) {
-      path = node.parent.getPathId(node.modifications)
+    if (node.parent != null && node?.modifierNode !== undefined) {
+      path = node.parent.getPathId(node.modifierNode)
     }
 
     const response = await Http.post<unknown, ItemResponse>('/api/tree-nodes/tree', {
       folderId: folder.id,
       nodeId: node.modifierNodeId ?? node.id,
-      modifierNodeId: node.modifications?.id ?? null,
+      modifierNodeId: node.modifierNode?.id ?? null,
       path: path?.path ?? null,
       pathId: path?.id ?? null,
     })
@@ -337,13 +339,13 @@ class Scene implements SceneInterface {
 
     let path: { id: number, path: number[] } | undefined
 
-    if (modifierNode?.modifications !== undefined) {
-      path = parent.getPathId(modifierNode.modifications)
+    if (modifierNode?.modifierNode !== undefined) {
+      path = parent.getPathId(modifierNode.modifierNode)
     }
 
     const payload = {
       parentNodeId: parent.id,
-      modifierNodeId: modifierNode?.modifications?.id ?? null,
+      modifierNodeId: modifierNode?.modifierNode?.id ?? null,
       path: path?.path ?? null,
       pathId: path?.id ?? null,
       rootNodeId: rootNodeId,
@@ -369,15 +371,15 @@ class Scene implements SceneInterface {
     const node = new TreeNode(id, this)
 
     runInAction(() => {
-      node.modifications = modifierNode
+      node.modifierNode = modifierNode
       node.parentModifierNode = parentModifierNode
       node.nodeObject = object;
     })
 
     if (parent) {
-      parent.autosave = false;
+      // parent.autosave = false;
       parent.addNode(node)
-      parent.autosave = true;
+      // parent.autosave = true;
     }
 
     return node
@@ -419,16 +421,16 @@ class Scene implements SceneInterface {
     }
   }
 
-  addNode(node: TreeNode, autosave = true) {
+  addNode(node: TreeNode) {
     if (this.selectedNode) {
-      this.selectedNode.autosave = autosave
+      // this.selectedNode.autosave = autosave
       this.selectedNode.addNode(node)
-      this.selectedNode.autosave = true
+      // this.selectedNode.autosave = true
     }
     else if (this.root) {
-      this.root.autosave = autosave
+      // this.root.autosave = autosave
       this.root.addNode(node)
-      this.root.autosave = true
+      // this.root.autosave = true
     }
   }
 
