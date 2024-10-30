@@ -19,6 +19,13 @@ type NodeComponent = {
   component: ParticleSystemInterface | LightInterface,
 }
 
+type ParentDescriptor = {
+  parentNodeId: number | null,
+  modifierNodeId: number | null,
+  nodeId: number | null,
+  pathId: number | null,
+}
+
 class TreeNode {
   id: number;
 
@@ -217,6 +224,33 @@ class TreeNode {
     return modifierNode
   }
 
+  getParentDescriptor(): { descriptor: ParentDescriptor, modifierNode: TreeNode | undefined } {
+    let descriptor: ParentDescriptor = {
+      parentNodeId: this.id,
+      modifierNodeId: null,
+      nodeId: null,
+      pathId: null,
+    }
+
+    let newPath: { id: number, path: number[] } | undefined
+
+    const modifierNode = this.getTopLevelModifierNode()
+    if (modifierNode) {
+      if (modifierNode.modifierNode !== undefined) {
+        newPath = this.getPathId(modifierNode.modifierNode)
+      }
+
+      descriptor = {
+        parentNodeId: null,
+        modifierNodeId: modifierNode.modifierNode?.id ?? null,
+        nodeId: this.id,
+        pathId: newPath?.id ?? null,
+      }
+    }
+
+    return { descriptor, modifierNode };
+  }
+
   async reparent(newParent: TreeNode) {
     if (!this.isTopLevel) {
       throw new Error('Cannot move nodes not at top level')
@@ -226,59 +260,8 @@ class TreeNode {
       throw new Error('Cannot reparent root nodes')
     }
 
-    type ParentDescriptor = {
-      parentNodeId: number | null,
-      modifierNodeId: number | null,
-      nodeId: number | null,
-      pathId: number | null,
-    }
-
-    let previousParent: ParentDescriptor = {
-      parentNodeId: this.parent.id,
-      modifierNodeId: null,
-      nodeId: null,
-      pathId: null,
-    }
-
-    const oldModifierNode = this.parent.getTopLevelModifierNode()
-    let oldPath: { id: number, path: number[] } | undefined
-
-    if (oldModifierNode) {
-      if (oldModifierNode.modifierNode !== undefined) {
-        oldPath = this.parent.getPathId(oldModifierNode.modifierNode)
-      }
-
-      previousParent = {
-        parentNodeId: null,
-        modifierNodeId: oldModifierNode.modifierNode?.id ?? null,
-        nodeId: this.parent.id ?? null,
-        pathId: oldPath?.id ?? null,
-      }
-    }
-
-    let parent: ParentDescriptor = {
-      parentNodeId: newParent.id,
-      modifierNodeId: null,
-      nodeId: null,
-      pathId: null,
-    }
-
-    const newModifierNode = newParent.getTopLevelModifierNode()
-
-    let newPath: { id: number, path: number[] } | undefined
-
-    if (newModifierNode) {
-      if (newModifierNode.modifierNode !== undefined) {
-        newPath = newParent.getPathId(newModifierNode.modifierNode)
-      }
-
-      parent = {
-        parentNodeId: null,
-        modifierNodeId: newModifierNode.modifierNode?.id ?? null,
-        nodeId: newParent.id,
-        pathId: newPath?.id ?? null,
-      }
-    }
+    const { descriptor: previousParent, modifierNode: previousModifierNode } = this.parent.getParentDescriptor()
+    const { descriptor: parent, modifierNode: newModifierNode } = newParent.getParentDescriptor()
 
     const payload = {
       previousParent,
@@ -293,20 +276,20 @@ class TreeNode {
           throw new Error('Cannot reparent root nodes')
         }
 
-        if (oldModifierNode) {
-          if (oldPath === undefined) {
+        if (previousModifierNode) {
+          if (previousParent.pathId === null) {
             throw new Error('oldPath not set')
           }
 
-          oldModifierNode.modifierNode?.removeAddedNode(this.parent.id, oldPath.id, this.id)
+          previousModifierNode.modifierNode?.removeAddedNode(this.parent.id, previousParent.pathId, this.id)
         }
 
         if (newModifierNode) {
-          if (newPath === undefined) {
+          if (parent.pathId === null) {
             throw new Error('oldPath not set')
           }
 
-          newModifierNode.modifierNode?.addAddedNode(newParent.id, newPath.id, this.id)
+          newModifierNode.modifierNode?.addAddedNode(newParent.id, parent.pathId, this.id)
           this.parentModifierNode = newModifierNode
         }
 
@@ -388,34 +371,7 @@ class TreeNode {
     component: { type: ComponentType, props: PropsBase } | undefined,
     name: string,
   ) {
-    const modifierNode = this.getTopLevelModifierNode()
-
-    let path: { id: number, path: number[] } | undefined
-
-    type ParentDescriptor = {
-      parentNodeId: number | null,
-      modifierNodeId: number | null,
-      nodeId: number | null,
-      pathId: number | null,
-    }
-
-    let parent: ParentDescriptor = {
-      parentNodeId: this.id,
-      modifierNodeId: null,
-      nodeId: null,
-      pathId: null,
-    }
-
-    if (modifierNode?.modifierNode !== undefined) {
-      path = this.getPathId(modifierNode.modifierNode)
-
-      parent = {
-        parentNodeId: null,
-        modifierNodeId: modifierNode.modifierNode?.id ?? null,
-        nodeId: this.id,
-        pathId: path?.id ?? null,
-      }
-    }
+    const { descriptor: parent, modifierNode } = this.getParentDescriptor()
 
     const payload = {
       ...parent,
