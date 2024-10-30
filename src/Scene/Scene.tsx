@@ -39,27 +39,31 @@ const Scene: React.FC<PropsType> = observer(({
 
   return (
     <div className={`${styles.scene} ${className ?? ''}`}>
-      <div className={styles.sceneTitle}>
-        Scene
-        <SceneToolbar scene={scene} />
+      <div>
+        <div className={styles.sceneTitle}>
+          Scene
+          <SceneToolbar scene={scene} />
+        </div>
+        {
+          scene.rootStack.length > 1
+            ? <ChevronLeft size={16} onClick={handleBackClick} />
+            : null
+        }
       </div>
-      {
-        scene.rootStack.length > 1
-          ? <ChevronLeft size={16} onClick={handleBackClick} />
-          : null
-      }
-      {
-        scene.root
-          ? (
-            <SceneFolder
-            scene={scene}
-            folder={scene.root}
-            onSelect={handleObjectClick}
-            level={1}
-          />
-          )
-          : null
-      }
+      <div className={styles.tree}>
+        {
+          scene.root
+            ? (
+              <SceneFolder
+              scene={scene}
+              folder={scene.root}
+              onSelect={handleObjectClick}
+              level={1}
+            />
+            )
+            : null
+        }
+      </div>
     </div>
   )
 })

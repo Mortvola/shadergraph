@@ -4,6 +4,8 @@
 
 .scene {
   border-bottom: thin black solid;
+  display: grid;
+  grid-template-rows: max-content minmax(0,1fr);
 }
 
 .sceneTitle {
@@ -12,4 +14,8 @@
   align-items: center;
   border-bottom: thin black solid;
   padding: 0.25rem 0.25rem 0.25rem 0.25rem
+}
+
+.tree {
+  overflow-y: auto;
 }
