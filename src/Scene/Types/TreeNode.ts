@@ -584,19 +584,9 @@ class TreeNode {
   }
 
   changeName(name: string) {
-    (
-      async () => {
-        const response = await Http.patch<unknown, void>(`/api/tree-nodes/${this.actualNodeId}`, {
-          name,
-        })
-
-        if (response.ok) {
-          runInAction(() => {
-            this.nodeObject.header.name.set(name, true)
-          })
-        }
-      }
-    )()
+    runInAction(() => {
+      this.nodeObject.header.name.set(name, true)
+    })
   }
 
   cancelNewItem() {
