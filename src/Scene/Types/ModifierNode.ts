@@ -5,7 +5,7 @@ import {
   type TreeModifierDescriptor,
 } from './Types'
 
-type NodeId = number
+// type NodeId = number
 type PathId = number
 
 class ModifierNode {
@@ -13,48 +13,48 @@ class ModifierNode {
 
   rootNodeId: number
 
-  modifications: Map<NodeId, Map<PathId, ModificationEntry>> = new Map()
+  modifications: Map<PathId, ModificationEntry> = new Map()
 
   constructor(descriptor: TreeModifierDescriptor) {
     this.id = descriptor.id
     this.rootNodeId = descriptor.rootNodeId
 
     for (const mod of descriptor.modifications) {
-      let pathMap = this.modifications.get(mod.nodeId)
+      // let pathMap = this.modifications.get(mod.nodeId)
 
-      if (pathMap === undefined) {
-        pathMap = new Map()
-        this.modifications.set(mod.nodeId, pathMap)
-      }
+      // if (pathMap === undefined) {
+      //   pathMap = new Map()
+      //   this.modifications.set(mod.nodeId, pathMap)
+      // }
 
-      pathMap.set(mod.pathId, mod)
+      this.modifications.set(mod.pathId, mod)
     }
   }
 
-  getModificationEntry(nodeId: number, pathId: number) {
-    let pathMap = this.modifications.get(nodeId)
+  getModificationEntry(pathId: number) {
+    // let pathMap = this.modifications.get(nodeId)
 
-    if (pathMap === undefined) {
-      pathMap = new Map()
-      this.modifications.set(nodeId, pathMap)
-    }
+    // if (pathMap === undefined) {
+    //   pathMap = new Map()
+    //   this.modifications.set(nodeId, pathMap)
+    // }
 
-    let mods = pathMap.get(pathId)
+    let mods = this.modifications.get(pathId)
 
     if (mods === undefined) {
-      mods = { nodeId, pathId, modifications: {}, addedNodes: [] }
-      pathMap.set(pathId, mods)
+      mods = { pathId, modifications: {}, addedNodes: [] }
+      this.modifications.set(pathId, mods)
     }
 
     return mods;
   }
 
   async getObject(
-    nodeId: number,
+    // nodeId: number,
     pathId: number,
     baseObject: SceneObjectInterface,
   ): Promise<SceneObjectInterface> {
-    const mods = this.getModificationEntry(nodeId, pathId);
+    const mods = this.getModificationEntry(pathId);
 
     const object = await SceneObject.fromModifications(mods.modifications, baseObject)
 
@@ -68,8 +68,8 @@ class ModifierNode {
     return object
   }
 
-  addAddedNode(nodeId: number, pathId: number, addedNodeId: number) {
-    const mods = this.getModificationEntry(nodeId, pathId)
+  addAddedNode(pathId: number, addedNodeId: number) {
+    const mods = this.getModificationEntry(pathId)
 
     if (mods) {
       mods.addedNodes = [
@@ -87,8 +87,8 @@ class ModifierNode {
     }
   }
 
-  removeAddedNode(nodeId: number, pathId: number, addedNodeId: number) {
-    const mods = this.getModificationEntry(nodeId, pathId)
+  removeAddedNode(pathId: number, addedNodeId: number) {
+    const mods = this.getModificationEntry(pathId)
 
     if (mods) {
       const index = mods.addedNodes.findIndex((n) => n === addedNodeId)

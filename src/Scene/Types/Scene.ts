@@ -193,7 +193,7 @@ class Scene implements SceneInterface {
           for (let i = modifiers.length - 1; i >= 0; i -= 1) {
             const modifier = modifiers[i].modifier
 
-            object = await modifier.getObject(descriptor.id, pathId, object)
+            object = await modifier.getObject(descriptor.id ^ pathId, object)
 
             pathId ^= modifier.id
           }
@@ -232,7 +232,7 @@ class Scene implements SceneInterface {
           for (let i = modifiers.length - 1; i >= 0; i -= 1) {
             const modifier = modifiers[i].modifier
 
-            const { addedNodes } = modifier.getModificationEntry(nodeId, pathId);
+            const { addedNodes } = modifier.getModificationEntry(nodeId ^ pathId);
 
             for (const addedNodeId of addedNodes) {
               const added = this.nodes.get(addedNodeId)
@@ -301,19 +301,21 @@ class Scene implements SceneInterface {
   }
 
   async createPrefab(node: TreeNode, folder: FolderInterface) {
-    let path: { id: number, path: number[] } | undefined
+    let path: number | undefined
 
     if (node.parent != null && node?.modifierNode !== undefined) {
       path = node.parent.getPathId(node.modifierNode)
     }
 
-    const response = await Http.post<unknown, ItemResponse>('/api/tree-nodes/tree', {
+    const payload = {
       folderId: folder.id,
       nodeId: node.modifierNodeId ?? node.id,
       modifierNodeId: node.modifierNode?.id ?? null,
-      path: path?.path ?? null,
-      pathId: path?.id ?? null,
-    })
+      // path: path?.path ?? null,
+      pathId: path ?? null,
+    }
+
+    const response = await Http.post<unknown, ItemResponse>('/api/tree-nodes/tree', payload)
 
     if (response.ok) {
       const body = await response.body();
@@ -337,7 +339,7 @@ class Scene implements SceneInterface {
   async instantiatePrefab(rootNodeId: number, parent: TreeNode) {
     const modifierNode = parent.getTopLevelModifierNode()
 
-    let path: { id: number, path: number[] } | undefined
+    let path: number | undefined
 
     if (modifierNode?.modifierNode !== undefined) {
       path = parent.getPathId(modifierNode.modifierNode)
@@ -346,8 +348,7 @@ class Scene implements SceneInterface {
     const payload = {
       parentNodeId: parent.id,
       modifierNodeId: modifierNode?.modifierNode?.id ?? null,
-      path: path?.path ?? null,
-      pathId: path?.id ?? null,
+      pathId: path ?? null,
       rootNodeId: rootNodeId,
     }
 

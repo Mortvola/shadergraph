@@ -131,10 +131,7 @@ export const isGameObject = (r: unknown): r is SceneObjectInterface => (
 export type SceneObjectDescriptor = {
   nodeId: number,
   name?: string,
-  modifierNodeId?: number,
-  pathId?: number,
   components: number[],
-  modifications?: Record<string, unknown>,
 }
 
 export type ConnectedObject = { prefabNodeId: number, objectId: number }
@@ -211,7 +208,7 @@ export type AddedNode = {
 }
 
 export type ModificationEntry = {
-  nodeId: number,
+  // nodeId: number,
   pathId: number,
   modifications: Record<string, unknown>,
   addedNodes: number[],

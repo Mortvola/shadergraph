@@ -276,7 +276,7 @@ class SceneObject implements SceneObjectInterface {
 
     const response = await Http.put('/api/node-modifications', {
       modifierNodeId: this.modifierNode.id,
-      nodeId: this.modifications.nodeId,
+      // nodeId: this.modifications.nodeId,
       pathId: this.modifications.pathId,
       modifications,
     })

@@ -22,7 +22,7 @@ type NodeComponent = {
 type ParentDescriptor = {
   parentNodeId: number | null,
   modifierNodeId: number | null,
-  nodeId: number | null,
+  // nodeId: number | null,
   pathId: number | null,
 }
 
@@ -175,7 +175,6 @@ class TreeNode {
 
   getPathId(modifierNode: ModifierNode) {
     let id = 0
-    const path: number[] = []
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let node: TreeNode | undefined = this
@@ -187,13 +186,12 @@ class TreeNode {
 
       if (node.modifierNode !== undefined) {
         id ^= node.modifierNode.id
-        path.push(node.modifierNode.id)
       }
 
       node = node.parent
     }
 
-    return { id, path }
+    return id ^ this.id
   }
 
   getTopLevelModifierNode(): TreeNode | undefined {
@@ -228,23 +226,25 @@ class TreeNode {
     let descriptor: ParentDescriptor = {
       parentNodeId: this.id,
       modifierNodeId: null,
-      nodeId: null,
+      // nodeId: null,
       pathId: null,
     }
 
-    let newPath: { id: number, path: number[] } | undefined
+    let newPath: number
 
     const modifierNode = this.getTopLevelModifierNode()
     if (modifierNode) {
-      if (modifierNode.modifierNode !== undefined) {
-        newPath = this.getPathId(modifierNode.modifierNode)
+      if (modifierNode.modifierNode === undefined) {
+        throw new Error('modifierNOde.modifierNOde is not set')
       }
+
+      newPath = this.getPathId(modifierNode.modifierNode)
 
       descriptor = {
         parentNodeId: null,
         modifierNodeId: modifierNode.modifierNode?.id ?? null,
-        nodeId: this.id,
-        pathId: newPath?.id ?? null,
+        // nodeId: this.id,
+        pathId: newPath,
       }
     }
 
@@ -281,7 +281,7 @@ class TreeNode {
             throw new Error('oldPath not set')
           }
 
-          previousModifierNode.modifierNode?.removeAddedNode(this.parent.id, previousParent.pathId, this.id)
+          previousModifierNode.modifierNode?.removeAddedNode(previousParent.pathId, this.id)
         }
 
         if (newModifierNode) {
@@ -289,7 +289,7 @@ class TreeNode {
             throw new Error('oldPath not set')
           }
 
-          newModifierNode.modifierNode?.addAddedNode(newParent.id, parent.pathId, this.id)
+          newModifierNode.modifierNode?.addAddedNode(parent.pathId, this.id)
           this.parentModifierNode = newModifierNode
         }
 
