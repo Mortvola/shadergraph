@@ -13,7 +13,8 @@ import ModifierNode from './ModifierNode';
 import { isModifierNode } from './ModifierNode';
 import ProjectItem from '../../Project/Types/ProjectItem';
 import { type FolderInterface } from '../../Project/Types/types';
-import { type ComponentDescriptor } from '../../Renderer/Types';
+import { type ComponentType, type ComponentDescriptor } from '../../Renderer/Types';
+import type PropsBase from '../../Renderer/Properties/PropsBase';
 
 class Scene implements SceneInterface {
   id: number = -1;
@@ -56,26 +57,7 @@ class Scene implements SceneInterface {
     }
 
     for (const obj of response.objects) {
-      // if (obj.modifierNodeId != null) {
-      //   // Find modifier node and add the object modifier
-      //   // to the map of object modifiers using the node id as the key
-      //   const modifiderNode = this.nodes.get(obj.modifierNodeId)
-
-      //   if (isModifierNode(modifiderNode)) {
-      //     let pathMap = modifiderNode.modifications.get(obj.nodeId)
-
-      //     if (pathMap === undefined) {
-      //       pathMap = new Map()
-      //       modifiderNode.modifications.set(obj.nodeId, pathMap)
-      //     }
-
-      //     if (obj.pathId != null && !pathMap.has(obj.pathId)) {
-      //       pathMap.set(obj.pathId, { modifications: obj })
-      //     }
-      //   }
-      // } else if (!this.objects.has(obj.nodeId)) {
-        this.objects.set(obj.nodeId, { descriptor: obj })
-      // }
+      this.objects.set(obj.id, { descriptor: obj })
     }
 
     for (const component of response.components) {
@@ -175,7 +157,7 @@ class Scene implements SceneInterface {
           // If the entry was found but the object has not yet
           // been created then create the object and store it in
           // the map entry.
-          const o = this.objects.get(descriptor.id)
+          const o = this.objects.get(descriptor.sceneObjectId)
 
           if (o) {
             if (o.object === undefined) {
@@ -437,6 +419,37 @@ class Scene implements SceneInterface {
       // this.root.autosave = autosave
       this.root.addNode(node)
       // this.root.autosave = true
+    }
+  }
+
+  async addChild(
+    component: { type: ComponentType, props: PropsBase } | undefined,
+    name: string,
+    parent: TreeNode,
+  ) {
+    const { descriptor: parentDescriptor, modifierNode } = parent.getParentDescriptor()
+
+    const payload = {
+      ...parentDescriptor,
+      name,
+      component: component
+        ? {
+          type: component.type,
+          props: component.props.toDescriptor(),
+        }
+        : undefined,
+    }
+
+    const treeId = modifierNode?.modifierNode?.treeId ?? parent.treeId
+
+    const response = await Http.post<unknown, NodesResponse2>(`/api/scene-objects/${treeId}`, payload);
+
+    if (response.ok) {
+      const body = await response.body();
+
+      this.processNodeResponse(body)
+
+      return this.createTree(body.rootNodeId, parent)
     }
   }
 

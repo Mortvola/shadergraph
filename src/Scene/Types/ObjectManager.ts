@@ -4,12 +4,12 @@ import { type SceneObjectDescriptor } from './Types';
 
 class ObjectManager {
   async update(object: SceneObject) {
-    if (object.node == null) {
-      throw new Error('node not set')
+    if (object.id === undefined) {
+      throw new Error('id not set')
     }
 
-    const response = await Http.put<SceneObjectDescriptor, void>(
-      `/api/scene-objects/${object.node.id}`,
+    const response = await Http.patch<Omit<SceneObjectDescriptor, 'id'>, void>(
+      `/api/scene-objects/${object.id}`,
       object.toDescriptor(),
     );
 

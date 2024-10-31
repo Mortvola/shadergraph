@@ -1,7 +1,7 @@
 import { computed, observable, runInAction } from 'mobx';
 import RenderNode from '../../Renderer/Drawables/SceneNodes/RenderNode';
 import {
-  type SceneObjectInterface, type SceneInterface, type SceneItemType, type SceneObjectDescriptor,
+  type SceneObjectInterface, type SceneInterface, type SceneItemType,
 } from './Types';
 import type ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemProps';
 import type LightProps from '../../Renderer/Properties/LightProps';
@@ -11,7 +11,6 @@ import { vec3 } from 'wgpu-matrix';
 import Http from '../../Http/src';
 import SceneObject from './SceneObject';
 import type ModifierNode from './ModifierNode';
-import type PropsBase from '../../Renderer/Properties/PropsBase';
 
 type NodeComponent = {
   type: ComponentType,
@@ -22,7 +21,6 @@ type NodeComponent = {
 type ParentDescriptor = {
   parentNodeId: number | null,
   modifierNodeId: number | null,
-  // nodeId: number | null,
   pathId: number | null,
 }
 
@@ -381,45 +379,6 @@ class TreeNode {
 
         newParent.addNode(this);
       })
-    }
-  }
-
-  async addChild(
-    component: { type: ComponentType, props: PropsBase } | undefined,
-    name: string,
-  ) {
-    const { descriptor: parent, modifierNode } = this.getParentDescriptor()
-
-    const payload = {
-      ...parent,
-      name,
-      component: component
-        ? {
-          type: component.type,
-          props: component.props.toDescriptor(),
-        }
-        : undefined,
-    }
-
-    const treeId = modifierNode?.modifierNode?.treeId ?? this.treeId
-
-    const response = await Http.post<unknown, SceneObjectDescriptor>(`/api/scene-objects/${treeId}`, payload);
-
-    if (response.ok) {
-      const descriptor = await response.body();
-
-      const node = new TreeNode(descriptor.nodeId, descriptor.treeId, this.scene)
-
-      node.parentModifierNode = modifierNode;
-
-      const object = await SceneObject.fromDescriptor(descriptor);
-      this.scene.objects.set(node.id, { descriptor, object })
-
-      node.nodeObject = object
-
-      this.addNode(node);
-
-      return node
     }
   }
 

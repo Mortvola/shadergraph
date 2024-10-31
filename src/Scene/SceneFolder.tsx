@@ -99,7 +99,7 @@ const SceneFolder: React.FC<PropsType> = observer(({
         async () => {
           switch (folder.newItemType) {
             case SceneItemType.SceneObject: {
-              const node = await folder.addChild(undefined, name)
+              const node = await scene.addChild(undefined, name, folder)
 
               if (node) {
                 scene.setSelected(node);
@@ -111,9 +111,10 @@ const SceneFolder: React.FC<PropsType> = observer(({
             case SceneItemType.ParticleSystem: {
               const props = new ParticleSystemProps();
 
-              const node = await folder.addChild(
+              const node = await scene.addChild(
                 { type: ComponentType.ParticleSystem, props },
                 name,
+                folder,
               );
 
               if (node) {
@@ -126,9 +127,10 @@ const SceneFolder: React.FC<PropsType> = observer(({
             case SceneItemType.Light: {
               const props = new LightProps();
 
-              const node = await folder.addChild(
+              const node = await scene.addChild(
                 { type: ComponentType.Light, props: props },
                 name,
+                folder,
               );
 
               if (node) {

@@ -3,11 +3,12 @@ import type { ParticleSystemPropsDescriptor } from '../../Renderer/ParticleSyste
 import { type PSString } from '../../Renderer/Properties/Property';
 import type { PropertyBaseInterface } from '../../Renderer/Properties/Types';
 import type {
-  ComponentDescriptor, LightPropsDescriptor, NewSceneObjectComponent,
+  ComponentDescriptor, ComponentType, LightPropsDescriptor, NewSceneObjectComponent,
   SceneObjectComponent as SceneObjectComponent, TransformPropsInterface,
 } from '../../Renderer/Types';
 import type ModifierNode from './ModifierNode';
 import type TreeNode from './TreeNode';
+import type PropsBase from '../../Renderer/Properties/PropsBase';
 
 export enum SceneItemType {
   SceneObject = 'SceneObject',
@@ -72,6 +73,12 @@ export interface SceneInterface {
 
   instantiatePrefab(rootNodeId: number, parent: TreeNode): Promise<void>;
 
+  addChild(
+    component: { type: ComponentType, props: PropsBase } | undefined,
+    name: string,
+    parent: TreeNode,
+  ): Promise<TreeNode | undefined>
+
   addNode(node: TreeNode): void;
 
   setSelected(node: TreeNode | null): void;
@@ -130,8 +137,7 @@ export const isGameObject = (r: unknown): r is SceneObjectInterface => (
 )
 
 export type SceneObjectDescriptor = {
-  nodeId: number,
-  treeId: number,
+  id: number,
   name?: string,
   components: number[],
 }
@@ -231,6 +237,7 @@ export const isTreeModifierDescriptor = (r: unknown): r is TreeModifierDescripto
 export type TreeNodeDescriptor = {
   id: number,
   treeId: number,
+  sceneObjectId: number,
   children?: number[],
 }
 

@@ -35,6 +35,8 @@ class Header extends PropsBase implements HeaderInterface {
 }
 
 class SceneObject implements SceneObjectInterface {
+  id?: number
+
   header: Header
 
   @observable
@@ -66,15 +68,16 @@ class SceneObject implements SceneObjectInterface {
     return false;
   }
 
-  constructor() {
+  constructor(id?: number) {
+    this.id = id
     this.header = new Header()
   }
 
   static async fromDescriptor(
-    descriptor?: SceneObjectDescriptor,
+    descriptor: SceneObjectDescriptor,
     components?: Map<number, ComponentDescriptor>,
   ) {
-    const object = new SceneObject();
+    const object = new SceneObject(descriptor?.id);
     object.autosave = false;
 
     object.components = []
@@ -276,7 +279,7 @@ class SceneObject implements SceneObjectInterface {
 
     const response = await Http.put('/api/node-modifications', {
       modifierNodeId: this.modifierNode.id,
-      // nodeId: this.modifications.nodeId,
+      treeId: this.modifierNode.treeId,
       pathId: this.modifications.pathId,
       modifications,
     })
@@ -373,18 +376,10 @@ class SceneObject implements SceneObjectInterface {
     return this.node?.modifierNode !== undefined
   }
 
-  toDescriptor(): SceneObjectDescriptor {
-    if (this.node == null) {
-      throw new Error('node not set')
-    }
-
-    const components = this.components.map((c) => c.id)
-
+  toDescriptor(): Omit<SceneObjectDescriptor, 'id'> {
     const descriptor = {
-      nodeId: this.node.id,
-      treeId: this.node.treeId,
       name: this.header.name.toDescriptor(),
-      components,
+      components: this.components.map((c) => c.id),
     }
 
     return descriptor;
