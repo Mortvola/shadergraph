@@ -382,6 +382,7 @@ class SceneObject implements SceneObjectInterface {
 
     const descriptor = {
       nodeId: this.node.id,
+      treeId: this.node.treeId,
       name: this.header.name.toDescriptor(),
       components,
     }

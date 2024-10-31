@@ -29,6 +29,8 @@ type ParentDescriptor = {
 class TreeNode {
   id: number;
 
+  treeId: number;
+
   @observable
   accessor children: TreeNode[] = [];
 
@@ -102,8 +104,9 @@ class TreeNode {
     return this.parentModifierNode.parent?.getTopLevelModifierNode() === undefined
   }
 
-  constructor(id: number, scene: SceneInterface) {
+  constructor(id: number, treeId: number, scene: SceneInterface) {
     this.id = id;
+    this.treeId = treeId;
 
     this._nodeObject = new SceneObject()
     this._nodeObject.node = this;
@@ -171,6 +174,17 @@ class TreeNode {
     }
 
     return this.id
+  }
+
+  get actualTreeId(): number {
+    // If there is a tree ID associated with this node but the parent
+    // does not have the same associate then we must be at the root
+    // of a tree. Therefore, update the node with the tree id instead the node with id.
+    if (this.modifierNode !== undefined) {
+      return this.modifierNode.treeId;
+    }
+
+    return this.treeId
   }
 
   getPathId(modifierNode: ModifierNode) {
@@ -268,7 +282,10 @@ class TreeNode {
       ...parent,
     }
 
-    const response = await Http.patch<unknown, void>(`/api/tree-nodes/${this.actualNodeId}`, payload)
+    const response = await Http.patch<unknown, void>(
+      `/api/tree-nodes/${this.actualTreeId}/${this.actualNodeId}`,
+      payload,
+    )
 
     if (response.ok) {
       runInAction(() => {
@@ -384,12 +401,14 @@ class TreeNode {
         : undefined,
     }
 
-    const response = await Http.post<unknown, SceneObjectDescriptor>('/api/scene-objects', payload);
+    const treeId = modifierNode?.modifierNode?.treeId ?? this.treeId
+
+    const response = await Http.post<unknown, SceneObjectDescriptor>(`/api/scene-objects/${treeId}`, payload);
 
     if (response.ok) {
       const descriptor = await response.body();
 
-      const node = new TreeNode(descriptor.nodeId, this.scene)
+      const node = new TreeNode(descriptor.nodeId, descriptor.treeId, this.scene)
 
       node.parentModifierNode = modifierNode;
 
@@ -406,7 +425,7 @@ class TreeNode {
 
   async applyConnectionOverride(parentWrapperId?: number): Promise<void> {
     if (this.parent) {
-      const response = await Http.patch<unknown, void>(`/api/tree-nodes/${this.actualNodeId}`, {
+      const response = await Http.patch<unknown, void>(`/api/tree-nodes/${this.actualTreeId}/${this.actualNodeId}`, {
         parentNodeId: this.parent.id,
         parentWrapperId: parentWrapperId ?? null,
       })
@@ -430,6 +449,7 @@ class TreeNode {
             if (wrapperId !== this.parent.modifierNodeId && this.parent !== treeNode) {
               this.scene.createNode(
                 this.id,
+                this.treeId,
                 undefined, // nodeInfo,
                 this.modifierNode,
                 this.parentModifierNode,
@@ -514,7 +534,7 @@ class TreeNode {
   }
 
   async delete() {
-    const response = await Http.delete(`/api/tree-nodes/${this.actualNodeId}`);
+    const response = await Http.delete(`/api/tree-nodes/${this.actualTreeId}/${this.actualNodeId}`);
 
     if (response.ok) {
       runInAction(() => {

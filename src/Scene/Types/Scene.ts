@@ -90,7 +90,9 @@ class Scene implements SceneInterface {
       scene.id = descriptor.id;
       scene.name = descriptor.name;
 
-      const response = await Http.get<NodesResponse2>(`/api/tree-nodes/${descriptor.rootNodeId}`)
+      const response = await Http.get<NodesResponse2>(
+        `/api/tree-nodes/${descriptor.rootTreeId}/${descriptor.rootNodeId}`,
+      )
 
       if (response.ok) {
         const body = await response.body();
@@ -205,6 +207,7 @@ class Scene implements SceneInterface {
 
           const node = this.createNode(
             descriptor.id,
+            descriptor.treeId,
             object,
             modifierNodeEntry?.modifier,
             parentModifierNode,
@@ -364,12 +367,13 @@ class Scene implements SceneInterface {
 
   createNode(
     id: number,
+    treeId: number,
     object: SceneObjectInterface,
     modifierNode?: ModifierNode,
     parentModifierNode?: TreeNode,
     parent?: TreeNode,
   ): TreeNode {
-    const node = new TreeNode(id, this)
+    const node = new TreeNode(id, treeId, this)
 
     runInAction(() => {
       node.modifierNode = modifierNode
@@ -390,6 +394,7 @@ class Scene implements SceneInterface {
     return ({
       id: this.id,
       name: this.name,
+      rootTreeId: this.rootStack[0].treeId,
       rootNodeId: this.rootStack[0].id,
     })
   }

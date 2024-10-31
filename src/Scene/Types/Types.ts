@@ -55,6 +55,7 @@ export interface SceneInterface {
 
   createNode(
     id: number,
+    treeId: number,
     object?: SceneObjectInterface,
     modifierNode?: ModifierNode,
     parentModifierNode?: TreeNode,
@@ -130,6 +131,7 @@ export const isGameObject = (r: unknown): r is SceneObjectInterface => (
 
 export type SceneObjectDescriptor = {
   nodeId: number,
+  treeId: number,
   name?: string,
   components: number[],
 }
@@ -172,9 +174,10 @@ export type ObjectOverrides = {
 }
 
 export type SceneDescriptor = {
-  id: number;
-  name: string;
-  rootNodeId: number;
+  id: number,
+  name: string,
+  rootTreeId: number,
+  rootNodeId: number,
 }
 
 export type TransformPropsDescriptor = {
@@ -208,7 +211,6 @@ export type AddedNode = {
 }
 
 export type ModificationEntry = {
-  // nodeId: number,
   pathId: number,
   modifications: Record<string, unknown>,
   addedNodes: number[],
@@ -216,7 +218,9 @@ export type ModificationEntry = {
 
 export type TreeModifierDescriptor = {
   id: number,
+  treeId: number,
   rootNodeId: number,
+  rootTreeId: number,
   modifications: ModificationEntry[],
 }
 
@@ -226,7 +230,7 @@ export const isTreeModifierDescriptor = (r: unknown): r is TreeModifierDescripto
 
 export type TreeNodeDescriptor = {
   id: number,
-  modifierNodeId?: number,
+  treeId: number,
   children?: number[],
 }
 
