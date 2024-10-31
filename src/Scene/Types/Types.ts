@@ -216,9 +216,11 @@ export type AddedNode = {
   pathId: number,
 }
 
+export type SceneObjectModifications = Record<string, unknown>
+
 export type ModificationEntry = {
   pathId: number,
-  modifications: Record<string, unknown>,
+  sceneObject: SceneObjectModifications,
   addedNodes: number[],
 }
 

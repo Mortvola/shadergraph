@@ -48,7 +48,7 @@ class ModifierNode {
     let mods = this.modifications.get(pathId)
 
     if (mods === undefined) {
-      mods = { pathId, modifications: {}, addedNodes: [] }
+      mods = { pathId, sceneObject: {}, addedNodes: [] }
       this.modifications.set(pathId, mods)
     }
 
@@ -62,7 +62,7 @@ class ModifierNode {
   ): Promise<SceneObjectInterface> {
     const mods = this.getModificationEntry(pathId);
 
-    const object = await SceneObject.fromModifications(mods.modifications, baseObject)
+    const object = await SceneObject.fromModifications(mods.sceneObject, baseObject)
 
     if (object === undefined) {
       throw new Error('object not defined')

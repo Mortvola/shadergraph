@@ -8,6 +8,7 @@ import {
   type SceneObjectInterface, type SceneObjectDescriptor,
   type HeaderInterface, type TransformPropsDescriptor,
   type ModificationEntry,
+  type SceneObjectModifications,
 } from './Types';
 import TransformProps from '../../Renderer/Properties/TransformProps';
 import type TreeNode from './TreeNode';
@@ -174,7 +175,7 @@ class SceneObject implements SceneObjectInterface {
   }
 
   static async fromModifications(
-    modifications: Record<string, unknown>,
+    modifications: SceneObjectModifications,
     baseObject: SceneObjectInterface,
   ) {
     const object = new SceneObject();
@@ -272,20 +273,22 @@ class SceneObject implements SceneObjectInterface {
     }
   }
 
-  async saveModifications(modifications: Record<string, unknown>) {
+  async saveModifications(sceneObjectModifications: SceneObjectModifications) {
     if (!this.modifierNode || !this.modifications) {
       throw new Error('modifications not set')
     }
 
-    const response = await Http.put('/api/node-modifications', {
+    const payload = {
       modifierNodeId: this.modifierNode.id,
       treeId: this.modifierNode.treeId,
       pathId: this.modifications.pathId,
-      modifications,
-    })
+      modifications: sceneObjectModifications,
+    }
+
+    const response = await Http.put('/api/node-modifications', payload)
 
     if (response.ok) {
-      this.modifications.modifications = modifications
+      this.modifications.sceneObject = sceneObjectModifications
     }
   }
 
@@ -294,7 +297,7 @@ class SceneObject implements SceneObjectInterface {
       throw new Error('modifications not set')
     }
 
-    const modifications: Record<string, unknown> = {}
+    const modifications: SceneObjectModifications = {}
 
     modifications['name'] = this.header.name.toDescriptor()
 
