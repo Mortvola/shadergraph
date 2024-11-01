@@ -189,7 +189,7 @@ class Scene implements SceneInterface {
 
           const node = this.createNode(
             descriptor.id,
-            descriptor.treeId,
+            descriptor.sceneId,
             object,
             modifierNodeEntry?.modifier,
             parentModifierNode,
@@ -321,17 +321,17 @@ class Scene implements SceneInterface {
     }
   }
 
-  async instantiatePrefab(rootNodeId: number, parent: TreeNode) {
+  async instantiatePrefab(subSceneId: number, parent: TreeNode) {
     const { descriptor: parentDescriptor, modifierNode } = parent.getParentDescriptor()
 
     const payload = {
       ...parentDescriptor,
-      rootNodeId,
+      subSceneId,
     }
 
-    const treeId = modifierNode?.modifierNode?.treeId ?? parent.treeId
+    const sceneId = modifierNode?.modifierNode?.sceneId ?? parent.sceneId
 
-    const response = await Http.post<unknown, NodesResponse2>(`/api/tree-nodes/${treeId}`, payload)
+    const response = await Http.post<unknown, NodesResponse2>(`/api/tree-nodes/${sceneId}`, payload)
 
     if (response.ok) {
       const body = await response.body();
@@ -343,13 +343,13 @@ class Scene implements SceneInterface {
 
   createNode(
     id: number,
-    treeId: number,
+    sceneId: number,
     object: SceneObjectInterface,
     modifierNode?: ModifierNode,
     parentModifierNode?: TreeNode,
     parent?: TreeNode,
   ): TreeNode {
-    const node = new TreeNode(id, treeId, this)
+    const node = new TreeNode(id, sceneId, this)
 
     runInAction(() => {
       node.modifierNode = modifierNode
@@ -370,7 +370,6 @@ class Scene implements SceneInterface {
     return ({
       id: this.id,
       name: this.name,
-      // rootTreeId: this.rootStack[0].treeId,
       rootNodeId: this.rootStack[0].id,
     })
   }
@@ -434,9 +433,9 @@ class Scene implements SceneInterface {
         : undefined,
     }
 
-    const treeId = modifierNode?.modifierNode?.treeId ?? parent.treeId
+    const sceneId = modifierNode?.modifierNode?.sceneId ?? parent.sceneId
 
-    const response = await Http.post<unknown, NodesResponse2>(`/api/scene-objects/${treeId}`, payload);
+    const response = await Http.post<unknown, NodesResponse2>(`/api/scene-objects/${sceneId}`, payload);
 
     if (response.ok) {
       const body = await response.body();

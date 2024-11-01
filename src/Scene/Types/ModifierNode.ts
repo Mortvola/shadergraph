@@ -11,19 +11,19 @@ type PathId = number
 class ModifierNode {
   id: number
 
-  treeId: number
+  sceneId: number
 
   rootNodeId: number
 
-  rootTreeId: number
+  rootSceneId: number
 
   modifications: Map<PathId, ModificationEntry> = new Map()
 
   constructor(descriptor: TreeModifierDescriptor) {
     this.id = descriptor.id
-    this.treeId = descriptor.treeId
+    this.sceneId = descriptor.sceneId
     this.rootNodeId = descriptor.rootNodeId
-    this.rootTreeId = descriptor.rootTreeId
+    this.rootSceneId = descriptor.rootSceneId
 
     for (const mod of descriptor.modifications) {
       // let pathMap = this.modifications.get(mod.nodeId)

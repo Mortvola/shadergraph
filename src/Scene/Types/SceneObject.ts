@@ -280,7 +280,7 @@ class SceneObject implements SceneObjectInterface {
 
     const payload = {
       modifierNodeId: this.modifierNode.id,
-      treeId: this.modifierNode.treeId,
+      sceneId: this.modifierNode.sceneId,
       pathId: this.modifications.pathId,
       modifications: sceneObjectModifications,
     }

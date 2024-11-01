@@ -32,11 +32,11 @@ export type PrefabNodeDescriptor = {
   nodes: PrefabNodeDescriptor[];
 };
 
-export type TreeId = number;
+export type SceneId = number;
 
 export type NodeInfo = {
-  treeNodes: Map<TreeId | undefined, TreeNode>,
-  objects: Map<TreeId | undefined, SceneObjectInterface>,
+  treeNodes: Map<SceneId | undefined, TreeNode>,
+  objects: Map<SceneId | undefined, SceneObjectInterface>,
 }
 
 export interface SceneInterface {
@@ -56,7 +56,7 @@ export interface SceneInterface {
 
   createNode(
     id: number,
-    treeId: number,
+    sceneId: number,
     object?: SceneObjectInterface,
     modifierNode?: ModifierNode,
     parentModifierNode?: TreeNode,
@@ -71,7 +71,7 @@ export interface SceneInterface {
 
   createPrefab(node: TreeNode, folder: FolderInterface): Promise<void>;
 
-  instantiatePrefab(rootNodeId: number, parent: TreeNode): Promise<void>;
+  instantiatePrefab(sceneId: number, parent: TreeNode): Promise<void>;
 
   addChild(
     component: { type: ComponentType, props: PropsBase } | undefined,
@@ -182,7 +182,6 @@ export type ObjectOverrides = {
 export type SceneDescriptor = {
   id: number,
   name: string,
-  // rootTreeId: number,
   rootNodeId: number,
 }
 
@@ -226,9 +225,9 @@ export type ModificationEntry = {
 
 export type TreeModifierDescriptor = {
   id: number,
-  treeId: number,
+  sceneId: number,
   rootNodeId: number,
-  rootTreeId: number,
+  rootSceneId: number,
   modifications: ModificationEntry[],
 }
 
@@ -238,7 +237,7 @@ export const isTreeModifierDescriptor = (r: unknown): r is TreeModifierDescripto
 
 export type TreeNodeDescriptor = {
   id: number,
-  treeId: number,
+  sceneId: number,
   sceneObjectId: number,
   children?: number[],
 }
