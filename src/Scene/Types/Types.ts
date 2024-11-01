@@ -94,7 +94,7 @@ export const isTreeNode = (r: unknown): r is TreeNode => (
   (r as TreeNode)?.renderNode !== undefined
   && (r as TreeNode)?.nodeObject !== undefined
   && (r as TreeNode)?.children !== undefined
-  && (r as TreeNode)?.components !== undefined
+  // && (r as TreeNode)?.components !== undefined
 )
 
 export interface HeaderInterface {
@@ -182,7 +182,7 @@ export type ObjectOverrides = {
 export type SceneDescriptor = {
   id: number,
   name: string,
-  rootTreeId: number,
+  // rootTreeId: number,
   rootNodeId: number,
 }
 

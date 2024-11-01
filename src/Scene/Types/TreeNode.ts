@@ -34,7 +34,7 @@ class TreeNode {
 
   parent?: TreeNode;
 
-  components: Map<number, NodeComponent> = new Map();
+  // components: Map<number, NodeComponent> = new Map();
 
   get modifierNodeId(): number | undefined {
     if (this.parent === undefined) {
@@ -238,7 +238,6 @@ class TreeNode {
     let descriptor: ParentDescriptor = {
       parentNodeId: this.id,
       modifierNodeId: null,
-      // nodeId: null,
       pathId: null,
     }
 
@@ -255,7 +254,6 @@ class TreeNode {
       descriptor = {
         parentNodeId: null,
         modifierNodeId: modifierNode.modifierNode?.id ?? null,
-        // nodeId: this.id,
         pathId: newPath,
       }
     }
@@ -422,21 +420,21 @@ class TreeNode {
   }
 
   private getComponentProps() {
-    const stack: SceneObjectInterface[] = [];
-    let nodeObject: SceneObjectInterface | undefined = this._nodeObject;
+    // const stack: SceneObjectInterface[] = [];
+    const object: SceneObjectInterface | undefined = this._nodeObject;
 
     // Generate array of object derivations so that we can work
     // backwards from the base object to the most recent derivation.
-    while (nodeObject) {
-      stack.push(nodeObject)
+    // while (nodeObject) {
+    //   stack.push(nodeObject)
 
-      nodeObject = nodeObject.baseObject;
-    }
+    //   nodeObject = nodeObject.baseObject;
+    // }
 
     const components: Map<number, NodeComponent> = new Map();
 
-    while (stack.length > 0) {
-      const object = stack.pop();
+    // while (stack.length > 0) {
+    //   const object = stack.pop();
 
       if (object) {
         for (const comp of object.components) {
@@ -476,11 +474,11 @@ class TreeNode {
           }
         }
       }
-    }
+    // }
 
-    this.components = components;
+    // this.components = components;
 
-    for (const [, component] of this.components) {
+    for (const [, component] of components) {
       this.renderNode.addComponent(component.component)
     }
   }

@@ -73,7 +73,7 @@ class Scene implements SceneInterface {
       scene.name = descriptor.name;
 
       const response = await Http.get<NodesResponse2>(
-        `/api/tree-nodes/${descriptor.rootTreeId}/${descriptor.rootNodeId}`,
+        `/api/tree-nodes/${descriptor.id}/${descriptor.rootNodeId}`,
       )
 
       if (response.ok) {
@@ -322,22 +322,16 @@ class Scene implements SceneInterface {
   }
 
   async instantiatePrefab(rootNodeId: number, parent: TreeNode) {
-    const modifierNode = parent.getTopLevelModifierNode()
-
-    let path: number | undefined
-
-    if (modifierNode?.modifierNode !== undefined) {
-      path = parent.getPathId(modifierNode.modifierNode)
-    }
+    const { descriptor: parentDescriptor, modifierNode } = parent.getParentDescriptor()
 
     const payload = {
-      parentNodeId: parent.id,
-      modifierNodeId: modifierNode?.modifierNode?.id ?? null,
-      pathId: path ?? null,
-      rootNodeId: rootNodeId,
+      ...parentDescriptor,
+      rootNodeId,
     }
 
-    const response = await Http.post<unknown, NodesResponse2>('/api/tree-nodes', payload)
+    const treeId = modifierNode?.modifierNode?.treeId ?? parent.treeId
+
+    const response = await Http.post<unknown, NodesResponse2>(`/api/tree-nodes/${treeId}`, payload)
 
     if (response.ok) {
       const body = await response.body();
@@ -376,7 +370,7 @@ class Scene implements SceneInterface {
     return ({
       id: this.id,
       name: this.name,
-      rootTreeId: this.rootStack[0].treeId,
+      // rootTreeId: this.rootStack[0].treeId,
       rootNodeId: this.rootStack[0].id,
     })
   }
