@@ -40,6 +40,8 @@ export type NodeInfo = {
 }
 
 export interface SceneInterface {
+  id: number;
+
   root: TreeNode | undefined;
 
   rootStack: TreeNode[];

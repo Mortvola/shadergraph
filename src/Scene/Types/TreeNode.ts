@@ -34,8 +34,6 @@ class TreeNode {
 
   parent?: TreeNode;
 
-  // components: Map<number, NodeComponent> = new Map();
-
   get modifierNodeId(): number | undefined {
     if (this.parent === undefined) {
       return undefined
@@ -85,21 +83,12 @@ class TreeNode {
 
   autosave = true;
 
+  get isAddedNode(): boolean {
+    return this.parent !== undefined && this.actualSceneId !== this.parent.sceneId
+  }
+
   get isTopLevel(): boolean {
-    // If the parentModifierNode is set then this is an "add on" node
-    // If this is not an "add on" node then use the top level modifier node
-    // of this node to determine if it is a top level node.
-    // If it is an "add on" node then get the top level modifier node
-    // of the parentModifierNode's parent.
-    if (this.parentModifierNode === undefined) {
-      if (this.modifierNode === undefined) {
-        return this.getTopLevelModifierNode() === undefined
-      }
-
-      return this.parent?.getTopLevelModifierNode() === undefined
-    }
-
-    return this.parentModifierNode.parent?.getTopLevelModifierNode() === undefined
+    return this.actualSceneId === this.scene.id
   }
 
   constructor(id: number, sceneId: number, scene: SceneInterface) {

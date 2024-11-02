@@ -17,7 +17,7 @@ import { type ComponentType, type ComponentDescriptor } from '../../Renderer/Typ
 import type PropsBase from '../../Renderer/Properties/PropsBase';
 
 class Scene implements SceneInterface {
-  id: number = -1;
+  id: number;
 
   name: string = '';
 
@@ -43,6 +43,10 @@ class Scene implements SceneInterface {
 
   components: Map<number, ComponentDescriptor> = new Map()
 
+  constructor(id: number) {
+    this.id = id
+  }
+
   private processNodeResponse(response: NodesResponse2) {
     for (const node of response.nodes) {
       // TODO: consider updating the node in the map
@@ -65,24 +69,21 @@ class Scene implements SceneInterface {
     }
   }
 
-  static async fromDescriptor(descriptor?: SceneDescriptor) {
-    const scene = new Scene();
+  static async fromDescriptor(descriptor: SceneDescriptor) {
+    const scene = new Scene(descriptor.id);
 
-    if (descriptor) {
-      scene.id = descriptor.id;
-      scene.name = descriptor.name;
+    scene.name = descriptor.name;
 
-      const response = await Http.get<NodesResponse2>(
-        `/api/tree-nodes/${descriptor.id}/${descriptor.rootNodeId}`,
-      )
+    const response = await Http.get<NodesResponse2>(
+      `/api/tree-nodes/${descriptor.id}/${descriptor.rootNodeId}`,
+    )
 
-      if (response.ok) {
-        const body = await response.body();
+    if (response.ok) {
+      const body = await response.body();
 
-        scene.processNodeResponse(body)
+      scene.processNodeResponse(body)
 
-        scene.pushTree(body.rootNodeId)
-      }
+      scene.pushTree(body.rootNodeId)
     }
 
     return scene;
