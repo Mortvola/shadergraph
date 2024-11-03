@@ -4,6 +4,7 @@ import Http from '../../Http/src';
 import { isTreeNodeDescriptor, type SceneDescriptor } from './Types';
 import type {
   ItemResponse,
+  ModificationEntry,
   NodeInfo, NodesResponse2, SceneInterface, SceneItemType, SceneObjectDescriptor,
   SceneObjectInterface, TreeNodeDescriptor,
 } from './Types';
@@ -49,6 +50,22 @@ class Scene implements SceneInterface {
     this.id = id
   }
 
+  processModifications(modifications: (ModificationEntry & { sceneId: number, nodeId: number })[]) {
+    for (const mod of modifications) {
+      const modNode = this.nodes.get(mod.nodeId)
+
+      if (isModifierNode(modNode)) {
+        for (const modification of modifications) {
+          modNode.modifications.set(modification.pathId, {
+            pathId: modification.pathId,
+            sceneObject: modification.sceneObject,
+            addedNodes: modification.addedNodes,
+          })
+        }
+      }
+    }
+  }
+
   private processNodeResponse(response: NodesResponse2) {
     for (const node of response.nodes) {
       // TODO: consider updating the node in the map
@@ -71,19 +88,7 @@ class Scene implements SceneInterface {
     }
 
     if (response.modifications) {
-      for (const mod of response.modifications) {
-        const modNode = this.nodes.get(mod.nodeId)
-
-        if (isModifierNode(modNode)) {
-          for (const modification of response.modifications) {
-            modNode.modifications.set(modification.pathId, {
-              pathId: modification.pathId,
-              sceneObject: modification.sceneObject,
-              addedNodes: modification.addedNodes,
-            })
-          }
-        }
-      }
+      this.processModifications(response.modifications)
     }
   }
 

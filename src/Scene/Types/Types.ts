@@ -56,6 +56,8 @@ export interface SceneInterface {
 
   objects: Map<number, { descriptor: SceneObjectDescriptor, object?: SceneObjectInterface }>
 
+  processModifications(modifications: (ModificationEntry & { sceneId: number, nodeId: number })[]): void
+
   createNode(
     id: number,
     sceneId: number,

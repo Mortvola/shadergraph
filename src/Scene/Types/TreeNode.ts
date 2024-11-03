@@ -2,6 +2,7 @@ import { computed, observable, runInAction } from 'mobx';
 import RenderNode from '../../Renderer/Drawables/SceneNodes/RenderNode';
 import {
   type SceneObjectInterface, type SceneInterface, type SceneItemType,
+  type ModificationEntry,
 } from './Types';
 import type ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemProps';
 import type LightProps from '../../Renderer/Properties/LightProps';
@@ -267,100 +268,16 @@ class TreeNode {
       ...parent,
     }
 
-    const response = await Http.patch<unknown, void>(
+    const response = await Http.patch<unknown, (ModificationEntry & { sceneId: number, nodeId: number })[]>(
       `/api/tree-nodes/${this.actualSceneId}/${this.actualNodeId}`,
       payload,
     )
 
     if (response.ok) {
+      const body = await response.body()
+
       runInAction(() => {
-        if (this.parent === undefined) {
-          throw new Error('Cannot reparent root nodes')
-        }
-
-        if (previousModifierNode) {
-          if (previousParent.pathId === null) {
-            throw new Error('oldPath not set')
-          }
-
-          previousModifierNode.modifierNode?.removeAddedNode(previousParent.pathId, this.id)
-        }
-
-        if (newModifierNode) {
-          if (parent.pathId === null) {
-            throw new Error('oldPath not set')
-          }
-
-          newModifierNode.modifierNode?.addAddedNode(parent.pathId, this.id)
-          this.parentModifierNode = newModifierNode
-        }
-
-        // if (this.parentModifierNode?.modifications !== undefined) {
-        //   if (this.parentModifierNode.modifications.id !== newModifierNode?.modifications?.id) {
-        //     // Changing parent modifier nodes. Remove from the old and
-        //     // add to the new (if there is a new one).
-        //     const index = this.parentModifierNode.modifications.addedNodes
-        //       .findIndex((entry) => entry.nodeId === this.id)
-
-        //     if (index !== -1) {
-        //       this.parentModifierNode.modifications.addedNodes = [
-        //         ...this.parentModifierNode.modifications.addedNodes.slice(0, index),
-        //         ...this.parentModifierNode.modifications.addedNodes.slice(index + 1),
-        //       ]
-        //     }
-
-        //     // If there is a new modifier node then add
-        //     // this node to its list of added nodes.
-        //     if (newModifierNode?.modifications !== undefined) {
-        //       if (newPath === undefined) {
-        //         throw new Error('path not defined')
-        //       }
-
-        //       newModifierNode.modifications.addedNodes.push({
-        //         nodeId: this.id,
-        //         parentNodeId: newParent.id,
-        //         pathId: newPath.id,
-        //       })
-        //     }
-        //   } else {
-        //     // The node is staying within the addedNodes of the
-        //     // same modifier node.
-
-        //     if (newPath === undefined) {
-        //       throw new Error('path not defined')
-        //     }
-
-        //     // Find the existing node in the addedNodes and update it
-        //     const entry = newModifierNode.modifications.addedNodes.find((entry) => entry.nodeId === this.id)
-
-        //     if (entry) {
-        //       entry.parentNodeId = newParent.id
-        //       entry.pathId = newPath.id
-        //     } else {
-        //       // For some reason, the node was not found.
-        //       // Add it.
-        //       console.log(`Node not found in addedNodes: ${newModifierNode.id}, ${this.id}`)
-
-        //       newModifierNode.modifications.addedNodes.push({
-        //         nodeId: this.id,
-        //         parentNodeId: newParent.id,
-        //         pathId: newPath.id,
-        //       })
-        //     }
-        //   }
-        // } else if (newModifierNode?.modifications !== undefined) {
-        //   // node was not an added ndoe in a modifier node but
-        //   // is being added to a modifier node.
-        //   if (newPath === undefined) {
-        //     throw new Error('path not defined')
-        //   }
-
-        //   newModifierNode.modifications.addedNodes.push({
-        //     nodeId: this.id,
-        //     parentNodeId: newParent.id,
-        //     pathId: newPath.id,
-        //   })
-        // }
+        this.scene.processModifications(body)
 
         this.parentModifierNode = newModifierNode
 
