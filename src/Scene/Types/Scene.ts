@@ -16,6 +16,8 @@ import { type FolderInterface } from '../../Project/Types/types';
 import { type ComponentType, type ComponentDescriptor } from '../../Renderer/Types';
 import type PropsBase from '../../Renderer/Properties/PropsBase';
 
+type ModifierNodeEntry = { modifier: ModifierNode, node?: TreeNode }
+
 class Scene implements SceneInterface {
   id: number;
 
@@ -67,6 +69,22 @@ class Scene implements SceneInterface {
     for (const component of response.components) {
       this.components.set(component.id, component)
     }
+
+    if (response.modifications) {
+      for (const mod of response.modifications) {
+        const modNode = this.nodes.get(mod.nodeId)
+
+        if (isModifierNode(modNode)) {
+          for (const modification of response.modifications) {
+            modNode.modifications.set(modification.pathId, {
+              pathId: modification.pathId,
+              sceneObject: modification.sceneObject,
+              addedNodes: modification.addedNodes,
+            })
+          }
+        }
+      }
+    }
   }
 
   static async fromDescriptor(descriptor: SceneDescriptor) {
@@ -114,13 +132,28 @@ class Scene implements SceneInterface {
       }
     }
 
+    modifiers.reverse()
+
     return modifiers
+  }
+
+  private findParentModifierNode(nodeId: number, parent: TreeNode, modifiers: ModifierNodeEntry[]) {
+    let pathId = 0;
+    for (let i = modifiers.length - 1; i >= 0; i -= 1) {
+      const modifier = modifiers[i].modifier
+
+      const { addedNodes } = modifier.getModificationEntry(parent.id ^ pathId);
+
+      if (addedNodes.some((id) => id === nodeId)) {
+        return modifiers[i].node
+      }
+
+      pathId ^= modifier.id
+    }
   }
 
   async createTree(rootNodeId: number, parent?: TreeNode) {
     let root: TreeNode | undefined;
-
-    type ModifierNodeEntry = { modifier: ModifierNode, node?: TreeNode }
 
     type StackEntry = {
       nodeId: number,
@@ -135,6 +168,7 @@ class Scene implements SceneInterface {
       nodeId: rootNodeId,
       parent,
       modifiers,
+      parentModifierNode: parent ? this.findParentModifierNode(rootNodeId, parent, modifiers) : undefined,
     }]
 
     while (stack.length > 0) {

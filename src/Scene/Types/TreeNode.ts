@@ -232,22 +232,22 @@ class TreeNode {
 
     let newPath: number
 
-    const modifierNode = this.getTopLevelModifierNode()
-    if (modifierNode) {
-      if (modifierNode.modifierNode === undefined) {
-        throw new Error('modifierNOde.modifierNOde is not set')
+    const node = this.getTopLevelModifierNode()
+    if (node) {
+      if (node.modifierNode === undefined) {
+        throw new Error('node.modifierNOde is not set')
       }
 
-      newPath = this.getPathId(modifierNode.modifierNode)
+      newPath = this.getPathId(node.modifierNode)
 
       descriptor = {
         parentNodeId: null,
-        modifierNodeId: modifierNode.modifierNode?.id ?? null,
+        modifierNodeId: node.modifierNode?.id ?? null,
         pathId: newPath,
       }
     }
 
-    return { descriptor, modifierNode };
+    return { descriptor, modifierNode: node };
   }
 
   async reparent(newParent: TreeNode) {

@@ -253,6 +253,7 @@ export type NodesResponse2 = {
   nodes: (TreeNodeDescriptor | TreeModifierDescriptor)[],
   objects: SceneObjectDescriptor[],
   components: ComponentDescriptor[],
+  modifications?: (ModificationEntry & { sceneId: number, nodeId: number })[],
 }
 
 export type ItemResponse = {
