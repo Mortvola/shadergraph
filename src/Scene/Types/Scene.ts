@@ -142,7 +142,7 @@ class Scene implements SceneInterface {
     return modifiers
   }
 
-  private findParentModifierNode(nodeId: number, parent: TreeNode, modifiers: ModifierNodeEntry[]) {
+  private getParentModifierNode(nodeId: number, parent: TreeNode, modifiers: ModifierNodeEntry[]) {
     let pathId = 0;
     for (let i = modifiers.length - 1; i >= 0; i -= 1) {
       const modifier = modifiers[i].modifier
@@ -173,7 +173,7 @@ class Scene implements SceneInterface {
       nodeId: rootNodeId,
       parent,
       modifiers,
-      parentModifierNode: parent ? this.findParentModifierNode(rootNodeId, parent, modifiers) : undefined,
+      parentModifierNode: parent ? this.getParentModifierNode(rootNodeId, parent, modifiers) : undefined,
     }]
 
     while (stack.length > 0) {
@@ -326,21 +326,21 @@ class Scene implements SceneInterface {
   }
 
   async createPrefab(node: TreeNode, folder: FolderInterface) {
-    let path: number | undefined
-
-    if (node.parent != null && node?.modifierNode !== undefined) {
-      path = node.parent.getPathId(node.modifierNode)
+    if (node.parent === undefined) {
+      throw new Error('no parent set')
     }
+
+    const { descriptor: parentDescriptor, modifierNode } = node.parent.getParentDescriptor()
 
     const payload = {
       folderId: folder.id,
       nodeId: node.modifierNodeId ?? node.id,
-      modifierNodeId: node.modifierNode?.id ?? null,
-      // path: path?.path ?? null,
-      pathId: path ?? null,
+      ...parentDescriptor,
     }
 
-    const response = await Http.post<unknown, ItemResponse>('/api/tree-nodes/tree', payload)
+    const sceneId = modifierNode?.modifierNode?.sceneId ?? node.sceneId
+
+    const response = await Http.post<unknown, ItemResponse>(`/api/tree-nodes/tree/${sceneId}`, payload)
 
     if (response.ok) {
       const body = await response.body();
