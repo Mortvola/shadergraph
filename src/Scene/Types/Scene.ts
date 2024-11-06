@@ -5,7 +5,8 @@ import { isTreeNodeDescriptor, type SceneDescriptor } from './Types';
 import type {
   ItemResponse,
   ModificationEntry,
-  NodeInfo, NodesResponse2, SceneInterface, SceneItemType, SceneObjectDescriptor,
+  NodeId,
+  NodesResponse2, SceneId, SceneInterface, SceneItemType, SceneObjectDescriptor,
   SceneObjectInterface, TreeNodeDescriptor,
 } from './Types';
 import TreeNode from './TreeNode';
@@ -38,11 +39,11 @@ class Scene implements SceneInterface {
   draggingNode: TreeNode | null = null;
 
   // Map of nodes index by node id and then tree id
-  nodeMaps: Map<number, NodeInfo> = new Map()
+  // nodeMaps: Map<number, NodeInfo> = new Map()
 
-  nodes: Map<number, TreeNodeDescriptor | ModifierNode> = new Map()
+  private nodes: Map<SceneId, Map<NodeId, TreeNodeDescriptor | ModifierNode>> = new Map()
 
-  objects: Map<number, { descriptor: SceneObjectDescriptor, object?: SceneObjectInterface }> = new Map()
+  private objects: Map<number, { descriptor: SceneObjectDescriptor, object?: SceneObjectInterface }> = new Map()
 
   components: Map<number, ComponentDescriptor> = new Map()
 
@@ -52,7 +53,7 @@ class Scene implements SceneInterface {
 
   processModifications(modifications: (ModificationEntry & { sceneId: number, nodeId: number })[]) {
     for (const mod of modifications) {
-      const modNode = this.nodes.get(mod.nodeId)
+      const modNode = this.getNode(mod.nodeId, mod.sceneId)
 
       if (isModifierNode(modNode)) {
         for (const modification of modifications) {
@@ -66,15 +67,34 @@ class Scene implements SceneInterface {
     }
   }
 
+  private getNodesMap(sceneId: number) {
+    let nodeMap = this.nodes.get(sceneId)
+
+    if (nodeMap === undefined) {
+      nodeMap = new Map()
+      this.nodes.set(sceneId, nodeMap)
+    }
+
+    return nodeMap;
+  }
+
+  private getNode(nodeId: number, sceneId: number) {
+    const nodeMap = this.getNodesMap(sceneId)
+
+    return nodeMap.get(nodeId)
+  }
+
   private processNodeResponse(response: NodesResponse2) {
     for (const node of response.nodes) {
+      const nodesMap = this.getNodesMap(node.sceneId)
+
       // TODO: consider updating the node in the map
       if (!this.nodes.has(node.id)) {
         if (isTreeNodeDescriptor(node)) {
-          this.nodes.set(node.id, node)
+          nodesMap.set(node.id, node)
         } else {
           const modNode = new ModifierNode(node)
-          this.nodes.set(node.id, modNode)
+          nodesMap.set(node.id, modNode)
         }
       }
     }
@@ -106,7 +126,7 @@ class Scene implements SceneInterface {
 
       scene.processNodeResponse(body)
 
-      scene.pushTree(body.rootNodeId)
+      scene.pushTree(body.root.id, body.root.sceneId)
     }
 
     return scene;
@@ -157,11 +177,12 @@ class Scene implements SceneInterface {
     }
   }
 
-  async createTree(rootNodeId: number, parent?: TreeNode) {
+  async createTree(rootNodeId: number, rootSceneId: number, parent?: TreeNode) {
     let root: TreeNode | undefined;
 
     type StackEntry = {
       nodeId: number,
+      sceneId: number,
       parent?: TreeNode,
       modifiers: ModifierNodeEntry[],
       parentModifierNode?: TreeNode,
@@ -171,21 +192,23 @@ class Scene implements SceneInterface {
 
     let stack: StackEntry[] = [{
       nodeId: rootNodeId,
+      sceneId: rootSceneId,
       parent,
       modifiers,
       parentModifierNode: parent ? this.getParentModifierNode(rootNodeId, parent, modifiers) : undefined,
     }]
 
     while (stack.length > 0) {
-      const { nodeId, parent, modifiers, parentModifierNode } = stack[0]
+      const { nodeId, sceneId, parent, modifiers, parentModifierNode } = stack[0]
       stack = stack.slice(1)
 
-      const descriptor = this.nodes.get(nodeId)
+      const descriptor = this.getNode(nodeId, sceneId)
 
       if (descriptor) {
         if (isModifierNode(descriptor)) {
           stack.push({
             nodeId: descriptor.rootNodeId,
+            sceneId: descriptor.rootSceneId,
             parent,
             modifiers: [...modifiers, { modifier: descriptor }],
             parentModifierNode,
@@ -247,6 +270,7 @@ class Scene implements SceneInterface {
           if (descriptor.children) {
             stack.push(...descriptor.children.map((child) => ({
               nodeId: child,
+              sceneId: descriptor.sceneId,
               parent: node,
               modifiers,
             })))
@@ -260,7 +284,7 @@ class Scene implements SceneInterface {
             const { addedNodes } = modifier.getModificationEntry(nodeId ^ pathId);
 
             for (const addedNodeId of addedNodes) {
-              const added = this.nodes.get(addedNodeId)
+              const added = this.getNode(addedNodeId, modifier.sceneId)
 
               if (added !== undefined) {
                 // Remove from the stack of modifiers the current modifier
@@ -268,6 +292,7 @@ class Scene implements SceneInterface {
                 if (isModifierNode(added)) {
                   stack.push({
                     nodeId: added.rootNodeId,
+                    sceneId: added.rootSceneId,
                     parent: node,
                     modifiers: [
                       ...modifiers.slice(0, i),
@@ -278,6 +303,7 @@ class Scene implements SceneInterface {
                 } else {
                   stack.push({
                     nodeId: added.id,
+                    sceneId: added.sceneId,
                     parent: node,
                     modifiers: modifiers.slice(0, i),
                     parentModifierNode: modifiers[i].node,
@@ -295,8 +321,8 @@ class Scene implements SceneInterface {
     return root;
   }
 
-  async pushTree(nodeId: number) {
-    const tree = await this.createTree(nodeId)
+  async pushTree(nodeId: number, sceneId: number) {
+    const tree = await this.createTree(nodeId, sceneId)
 
     if (tree) {
       runInAction(() => {
@@ -313,7 +339,10 @@ class Scene implements SceneInterface {
       })
 
       // Rebuild the tree to make sure any changes are picked up.
-      const tree = await this.createTree(this.rootStack[this.rootStack.length - 1].id)
+      const tree = await this.createTree(
+        this.rootStack[this.rootStack.length - 1].id,
+        this.rootStack[this.rootStack.length - 1].sceneId,
+      )
 
       runInAction(() => {
         if (tree) {
@@ -357,7 +386,7 @@ class Scene implements SceneInterface {
       node.detachSelf()
 
       this.processNodeResponse(body)
-      this.createTree(body.rootNodeId, parent)
+      this.createTree(body.root.id, body.root.sceneId, parent)
     }
   }
 
@@ -377,11 +406,11 @@ class Scene implements SceneInterface {
       const body = await response.body();
 
       this.processNodeResponse(body)
-      this.createTree(body.rootNodeId, parent)
+      this.createTree(body.root.id, body.root.sceneId, parent)
     }
   }
 
-  createNode(
+  private createNode(
     id: number,
     sceneId: number,
     object: SceneObjectInterface,
@@ -482,7 +511,7 @@ class Scene implements SceneInterface {
 
       this.processNodeResponse(body)
 
-      return this.createTree(body.rootNodeId, parent)
+      return this.createTree(body.root.id, body.root.sceneId, parent)
     }
   }
 

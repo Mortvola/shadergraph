@@ -118,7 +118,7 @@ const SceneItem: React.FC<PropsType> = observer(({
   const handleOpenClick = () => {
     (
       async () => {
-        await scene.pushTree(treeNode.id)
+        await scene.pushTree(treeNode.id, treeNode.sceneId)
         scene.renderScene()
       }
     )()

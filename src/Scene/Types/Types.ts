@@ -33,11 +33,12 @@ export type PrefabNodeDescriptor = {
 };
 
 export type SceneId = number;
+export type NodeId = number;
 
-export type NodeInfo = {
-  treeNodes: Map<SceneId | undefined, TreeNode>,
-  objects: Map<SceneId | undefined, SceneObjectInterface>,
-}
+// export type NodeInfo = {
+//   treeNodes: Map<SceneId | undefined, TreeNode>,
+//   objects: Map<SceneId | undefined, SceneObjectInterface>,
+// }
 
 export interface SceneInterface {
   id: number;
@@ -50,26 +51,13 @@ export interface SceneInterface {
 
   draggingNode: TreeNode | null;
 
-  nodeMaps: Map<number, NodeInfo>
-
-  nodes: Map<number, TreeNodeDescriptor | ModifierNode>
-
-  objects: Map<number, { descriptor: SceneObjectDescriptor, object?: SceneObjectInterface }>
+  // nodeMaps: Map<number, NodeInfo>
 
   processModifications(modifications: (ModificationEntry & { sceneId: number, nodeId: number })[]): void
 
-  createNode(
-    id: number,
-    sceneId: number,
-    object?: SceneObjectInterface,
-    modifierNode?: ModifierNode,
-    parentModifierNode?: TreeNode,
-    parent?: TreeNode,
-  ): TreeNode
+  createTree(rootNodeId: number, rootSceneId: number, parent?: TreeNode): Promise<TreeNode | undefined>;
 
-  createTree(rootNodeId: number, parent?: TreeNode): Promise<TreeNode | undefined>;
-
-  pushTree(nodeId: number): Promise<void>
+  pushTree(nodeId: number, sceneId: number): Promise<void>
 
   popTree(): Promise<void>
 
@@ -251,7 +239,10 @@ export const isTreeNodeDescriptor = (r: unknown): r is TreeNodeDescriptor => (
 )
 
 export type NodesResponse2 = {
-  rootNodeId: number,
+  root: {
+    id: number,
+    sceneId: number,
+  }
   nodes: (TreeNodeDescriptor | TreeModifierDescriptor)[],
   objects: SceneObjectDescriptor[],
   components: ComponentDescriptor[],

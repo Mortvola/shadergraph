@@ -294,33 +294,25 @@ class TreeNode {
       })
 
       if (response.ok) {
-        const body = await response.body()
+        // const body = await response.body()
 
-        // if (body.objects) {
-          // await this.parent.scene.loadObjects(body.objects, body.trees)
+        // const parentNodeInfo = this.scene.nodeMaps.get(this.parent.id)
+        // const nodeInfo = this.scene.nodeMaps.get(this.id)
+
+        // if (parentNodeInfo && nodeInfo) {
+        //   for (const [wrapperId, treeNode] of parentNodeInfo.treeNodes) {
+        //     if (wrapperId !== this.parent.modifierNodeId && this.parent !== treeNode) {
+        //       this.scene.createNode(
+        //         this.id,
+        //         this.sceneId,
+        //         undefined, // nodeInfo,
+        //         this.modifierNode,
+        //         this.parentModifierNode,
+        //         treeNode,
+        //       )
+        //     }
+        //   }
         // }
-
-        runInAction(() => {
-          // this.parentModifierNode = parentWrapperId
-        })
-
-        const parentNodeInfo = this.scene.nodeMaps.get(this.parent.id)
-        const nodeInfo = this.scene.nodeMaps.get(this.id)
-
-        if (parentNodeInfo && nodeInfo) {
-          for (const [wrapperId, treeNode] of parentNodeInfo.treeNodes) {
-            if (wrapperId !== this.parent.modifierNodeId && this.parent !== treeNode) {
-              this.scene.createNode(
-                this.id,
-                this.sceneId,
-                undefined, // nodeInfo,
-                this.modifierNode,
-                this.parentModifierNode,
-                treeNode,
-              )
-            }
-          }
-        }
       }
     }
   }
