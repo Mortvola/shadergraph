@@ -393,7 +393,7 @@ class TreeNode {
 
     if (response.ok) {
       runInAction(() => {
-        this.detachSelf()
+        this.scene.removeNode(this)
       })
     }
   }

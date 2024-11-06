@@ -84,7 +84,7 @@ class Scene implements SceneInterface {
     return nodeMap.get(nodeId)
   }
 
-  private processNodeResponse(response: NodesResponse2) {
+  private processNodeResponse(response: NodesResponse2, parent?: TreeNode) {
     for (const node of response.nodes) {
       const nodesMap = this.getNodesMap(node.sceneId)
 
@@ -109,6 +109,24 @@ class Scene implements SceneInterface {
 
     if (response.modifications) {
       this.processModifications(response.modifications)
+    }
+
+    if (response.deletedNodes) {
+      for (const deletedNode of response.deletedNodes) {
+        const nodesMap = this.getNodesMap(deletedNode.sceneId)
+
+        nodesMap.delete(deletedNode.id)
+      }
+    }
+
+    // If there is a parent node and the scene IDs match then
+    // add the root to the parent's list of children
+    if (parent && response.root.sceneId === parent.sceneId) {
+      const parentNode = this.getNode(parent.id, parent.sceneId)
+
+      if (isTreeNodeDescriptor(parentNode)) {
+        parentNode.children?.push(response.root.id)
+      }
     }
   }
 
@@ -385,7 +403,7 @@ class Scene implements SceneInterface {
       const parent = node.parent;
       node.detachSelf()
 
-      this.processNodeResponse(body)
+      this.processNodeResponse(body, parent)
       this.createTree(body.root.id, body.root.sceneId, parent)
     }
   }
@@ -405,7 +423,7 @@ class Scene implements SceneInterface {
     if (response.ok) {
       const body = await response.body();
 
-      this.processNodeResponse(body)
+      this.processNodeResponse(body, parent)
       this.createTree(body.root.id, body.root.sceneId, parent)
     }
   }
@@ -471,17 +489,12 @@ class Scene implements SceneInterface {
     }
   }
 
-  addNode(node: TreeNode) {
-    if (this.selectedNode) {
-      // this.selectedNode.autosave = autosave
-      this.selectedNode.addNode(node)
-      // this.selectedNode.autosave = true
-    }
-    else if (this.root) {
-      // this.root.autosave = autosave
-      this.root.addNode(node)
-      // this.root.autosave = true
-    }
+  removeNode(node: TreeNode) {
+    const nodes = this.getNodesMap(node.sceneId)
+
+    nodes.delete(node.id)
+
+    node.detachSelf()
   }
 
   async addChild(
@@ -509,9 +522,11 @@ class Scene implements SceneInterface {
     if (response.ok) {
       const body = await response.body();
 
-      this.processNodeResponse(body)
+      this.processNodeResponse(body, parent)
 
-      return this.createTree(body.root.id, body.root.sceneId, parent)
+      const subtree = this.createTree(body.root.id, body.root.sceneId, parent)
+
+      return subtree
     }
   }
 

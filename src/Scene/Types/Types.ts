@@ -71,7 +71,7 @@ export interface SceneInterface {
     parent: TreeNode,
   ): Promise<TreeNode | undefined>
 
-  addNode(node: TreeNode): void;
+  removeNode(node: TreeNode): void;
 
   setSelected(node: TreeNode | null): void;
 
@@ -247,6 +247,7 @@ export type NodesResponse2 = {
   objects: SceneObjectDescriptor[],
   components: ComponentDescriptor[],
   modifications?: (ModificationEntry & { sceneId: number, nodeId: number })[],
+  deletedNodes?: { id: number, sceneId: number }[],
 }
 
 export type ItemResponse = {
