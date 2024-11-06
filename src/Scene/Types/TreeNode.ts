@@ -50,6 +50,21 @@ class TreeNode {
   @observable
   accessor modifierNode: ModifierNode | undefined;
 
+  @computed
+  get hasOverrides(): boolean {
+    if (this.modifierNode) {
+      for (const [, mod] of this.modifierNode.modifications) {
+        if (mod.addedNodes.length > 0 || Object.keys(mod.sceneObject).length > 0) {
+          return true
+        }
+      }
+
+      return false
+    }
+
+    return false
+  }
+
   private _nodeObject: SceneObjectInterface;
 
   get nodeObject(): SceneObjectInterface {

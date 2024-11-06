@@ -143,7 +143,7 @@ const SceneItem: React.FC<PropsType> = observer(({
     >
       <div
         style={{
-          backgroundColor: treeNode.nodeObject?.hasOverrides ? 'blue' : undefined,
+          backgroundColor: treeNode.isTopLevel && treeNode.hasOverrides ? 'blue' : undefined,
         }}
       />
       <div style={{ paddingLeft: (level - 1) * 16 }}>
