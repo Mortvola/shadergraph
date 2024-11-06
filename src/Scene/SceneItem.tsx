@@ -124,9 +124,14 @@ const SceneItem: React.FC<PropsType> = observer(({
     )()
   }
 
+  let className = `${styles.item} ${selected ? styles.selected : ''}`;
+  if (!treeNode.isTopLevel || treeNode.wrapperRoot) {
+    className = `${className} ${styles.prefab}`
+  }
+
   return (
     <div
-      className={`${styles.item} ${selected ? styles.selected : ''} ${!treeNode.isTopLevel || treeNode.wrapperRoot ? styles.prefab : ''}`}
+      className={className}
       onClick={handleClick}
       draggable={draggable}
       onDragStart={handleDragStart}

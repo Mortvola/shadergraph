@@ -89,7 +89,7 @@ class TreeNode {
   }
 
   get isTopLevel(): boolean {
-    return this.actualSceneId === this.scene.id
+    return this.actualSceneId === this.scene.root?.sceneId
   }
 
   constructor(id: number, sceneId: number, scene: SceneInterface) {
