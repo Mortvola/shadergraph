@@ -1,0 +1,36 @@
+.compare {
+  display: grid;
+  grid-template-rows: max-content minmax(0,1fr);
+  grid-template-areas:
+    "toolbar toolbar toolbar toolbar"
+    "original original override override"
+  ;
+  column-gap: 0.25rem;
+  row-gap: 0.25rem;
+  
+  background-color: white;
+  border: black thin solid;
+  border-radius: 8px;
+  padding: 0.25rem;
+
+  &> div:first-child {
+    display: flex;
+    justify-content: right;
+    grid-area: toolbar;
+  }
+
+  &> div:nth-child(2) {
+    grid-area: original;
+  }
+
+  &> div:nth-child(3) {
+    grid-area: override;
+  }
+}
+
+.component {
+  background-color: white;
+  padding: 0.5rem;
+  border: black thin solid;
+  border-radius: 8px;
+}

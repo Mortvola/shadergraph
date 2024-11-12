@@ -10,7 +10,6 @@ import { ComponentType, type LightInterface, type ParticleSystemInterface } from
 import ParticleSystem from '../../Renderer/ParticleSystem/ParticleSystem';
 import { vec3 } from 'wgpu-matrix';
 import Http from '../../Http/src';
-import SceneObject from './SceneObject';
 import type ModifierNode from './ModifierNode';
 
 type NodeComponent = {
@@ -36,15 +35,33 @@ class TreeNode {
   parent?: TreeNode;
 
   get modifierNodeId(): number | undefined {
-    if (this.parent === undefined) {
-      return undefined
-    }
-
-    if (this.parent.modifierNode !== undefined) {
+    if (this.parent?.modifierNode !== undefined) {
       return this.parent.modifierNode.id
     }
 
-    return this.parent.modifierNodeId
+    return this.parent?.modifierNodeId
+  }
+
+  get sceneRoot(): TreeNode {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let node: TreeNode | undefined = this;
+    let root: TreeNode = this.scene.root!
+
+    while (node) {
+      if (node.modifierNode) {
+        root = node
+        break;
+      }
+
+      if (node.parentModifierNode) {
+        node = node.parentModifierNode.parent
+      }
+      else {
+        node = node.parent
+      }
+    }
+
+    return root;
   }
 
   @observable
@@ -65,19 +82,19 @@ class TreeNode {
     return false
   }
 
-  private _nodeObject: SceneObjectInterface;
+  private _sceneObject: SceneObjectInterface;
 
   get nodeObject(): SceneObjectInterface {
-    return this._nodeObject
+    return this._sceneObject
   }
 
-  set nodeObject(object: SceneObjectInterface) {
-    this._nodeObject = object
-    object.node = this;
+  // set nodeObject(object: SceneObjectInterface) {
+  //   this._sceneObject = object
+  //   object.node = this;
 
-    this.getComponentProps()
-    this.transformChanged()
-  }
+  //   this.getComponentProps()
+  //   this.transformChanged()
+  // }
 
   renderNode = new RenderNode();
 
@@ -86,12 +103,8 @@ class TreeNode {
   @observable
   accessor parentModifierNode: TreeNode | undefined;
 
-  get wrapperRoot(): boolean {
+  get isModifierRoot(): boolean {
     return this.modifierNode !== undefined
-  }
-
-  get withinWrapper(): boolean {
-    return this.modifierNodeId !== undefined || this.modifierNode !== undefined
   }
 
   @observable
@@ -107,14 +120,17 @@ class TreeNode {
     return this.actualSceneId === this.scene.root?.sceneId
   }
 
-  constructor(id: number, sceneId: number, scene: SceneInterface) {
+  constructor(id: number, sceneId: number, object: SceneObjectInterface, scene: SceneInterface) {
     this.id = id;
     this.sceneId = sceneId;
 
-    this._nodeObject = new SceneObject()
-    this._nodeObject.node = this;
+    this._sceneObject = object
+    this._sceneObject.node = this;
 
     this.scene = scene;
+
+    this.getComponentProps()
+    this.transformChanged()
   }
 
   isAncestor(node: TreeNode): boolean {
@@ -205,7 +221,12 @@ class TreeNode {
         id ^= node.modifierNode.id
       }
 
-      node = node.parent
+      if (node.parentModifierNode != null) {
+        node = node.parentModifierNode.parent
+      }
+      else {
+        node = node.parent
+      }
     }
 
     return id ^ this.id
@@ -275,7 +296,7 @@ class TreeNode {
       throw new Error('Cannot reparent root nodes')
     }
 
-    const { descriptor: previousParent, modifierNode: previousModifierNode } = this.parent.getParentDescriptor()
+    const { descriptor: previousParent } = this.parent.getParentDescriptor()
     const { descriptor: parent, modifierNode: newModifierNode } = newParent.getParentDescriptor()
 
     const payload = {
@@ -334,7 +355,7 @@ class TreeNode {
 
   private getComponentProps() {
     // const stack: SceneObjectInterface[] = [];
-    const object: SceneObjectInterface | undefined = this._nodeObject;
+    const object: SceneObjectInterface | undefined = this._sceneObject;
 
     // Generate array of object derivations so that we can work
     // backwards from the base object to the most recent derivation.
@@ -445,7 +466,7 @@ class TreeNode {
   get connectionOverrides(): TreeNode[] {
     const connections: TreeNode[] = [];
 
-    if (this.wrapperRoot) {
+    if (this.isModifierRoot) {
       let stack: TreeNode[] = [this];
 
       while (stack.length > 0) {
@@ -453,7 +474,7 @@ class TreeNode {
         stack = stack.slice(1)
 
         for (const child of node.children) {
-          if (child.parentModifierNode !== undefined) {
+          if (child.isTopLevel && child.parentModifierNode !== undefined) {
             connections.push(child)
           }
 

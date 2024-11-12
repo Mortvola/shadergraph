@@ -1,3 +1,4 @@
+import { observable } from 'mobx'
 import SceneObject from './SceneObject'
 import {
   type ModificationEntry,
@@ -17,7 +18,8 @@ class ModifierNode {
 
   rootSceneId: number
 
-  modifications: Map<PathId, ModificationEntry> = new Map()
+  @observable
+  accessor modifications: Map<PathId, ModificationEntry> = new Map()
 
   constructor(descriptor: TreeModifierDescriptor) {
     this.id = descriptor.id
@@ -56,7 +58,6 @@ class ModifierNode {
   }
 
   async getObject(
-    // nodeId: number,
     pathId: number,
     baseObject: SceneObjectInterface,
   ): Promise<SceneObjectInterface> {

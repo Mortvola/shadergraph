@@ -8,16 +8,15 @@ import { ComponentType } from '../Renderer/Types';
 import GameObject2D from './GameObject2d';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import type { MenuItemLike } from '../ContextMenu/types';
-import ParticleSystem from './ParticleSystem/ParticleSystem';
-import LightComponent from './Light';
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
 import LightProps from '../Renderer/Properties/LightProps';
-import Transform from './Transform';
 import PopupButton from './PopupButton';
 import Overrides from './Overrides';
 import { Position } from './PopupWrapper';
 import { type SceneObjectInterface } from '../Scene/Types/Types';
 import { Trash2Icon } from 'lucide-react';
+import Component from './Component';
+import Header from './Header';
 
 type PropsType = {
   sceneObject: SceneObjectInterface
@@ -117,24 +116,6 @@ const SceneObject: React.FC<PropsType> = observer(({
     sceneObject.removeComponent(component);
   }
 
-  const renderItem = (item: SceneObjectComponent) => {
-    switch (item.type) {
-      // case ComponentType.Mesh:
-      //   return <ModelTree modelItem={item.item as ModelItem} onChange={handleModelChange} />
-
-      case ComponentType.ParticleSystem:
-        return <ParticleSystem particleSystemProps={(item.props as ParticleSystemProps)} />
-
-      // case ComponentType.Decal:
-      //   return <Decal decalItem={item.item as DecalItem} onChange={handleDecalChange} />
-
-      case ComponentType.Light:
-        return <LightComponent lightProps={item.props as LightProps} />
-    }
-
-    return null;
-  }
-
   const componentTypeName = (item: SceneObjectComponent) => {
     switch (item.type) {
       case ComponentType.Mesh:
@@ -149,6 +130,8 @@ const SceneObject: React.FC<PropsType> = observer(({
       case ComponentType.Light:
         return 'Light';
     }
+
+    return item.type;
   }
 
   const [showMenu, setShowMenu] = React.useState<{ x: number, y: number } | null>(null);
@@ -234,14 +217,14 @@ const SceneObject: React.FC<PropsType> = observer(({
   return (
     <div className={styles.gameObject} onDragOver={handleDragOver} onDrop={handleDrop}>
       <div className={styles.title}>
-        {`Name: ${sceneObject.header.name.get()}`}
+        <Header header={sceneObject.header} />
         <div>
           <button ref={buttonRef} onClick={handleAddClick}>Add Component</button>
           {
             sceneObject.isPrefabInstanceRoot() && sceneObject.node
               ? (
                 <PopupButton label="Overrides" position={Position.top}>
-                  <Overrides node={sceneObject.node} />
+                  <Overrides root={sceneObject.node} />
                 </PopupButton>
               )
               : null
@@ -249,23 +232,22 @@ const SceneObject: React.FC<PropsType> = observer(({
         </div>
       </div>
       <div>
-        <Transform transformProps={sceneObject.transformProps} />
         {
           isGameObject2D(sceneObject)
-            ? (
-              <GameObject2D gameObject={sceneObject} />
-            )
+            ? <GameObject2D gameObject={sceneObject} />
             : sceneObject.components.map((component) => (
-                <div className={styles.item} key={component.id ?? 0} >
-                  <div className={styles.componentTitle}>
-                    { componentTypeName(component) }
-                    <Trash2Icon onClick={() => handleDelete(component)} />
-                  </div>
+              <div className={styles.item} key={component.id ?? 0} >
+                <div className={styles.componentTitle}>
+                  { componentTypeName(component) }
                   {
-                    renderItem(component)
+                    component.type === ComponentType.Transform
+                      ? null
+                      : <Trash2Icon onClick={() => handleDelete(component)} />
                   }
                 </div>
-          ))
+                <Component component={component} />
+              </div>
+            ))
         }
       </div>
       {

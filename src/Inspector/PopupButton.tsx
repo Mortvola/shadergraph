@@ -8,6 +8,7 @@ type PropsType = {
   children?: React.ReactNode,
   className?: string,
   position?: Position,
+  style?: React.CSSProperties,
 }
 
 const PopupButton: React.FC<PropsType> = ({
@@ -15,6 +16,7 @@ const PopupButton: React.FC<PropsType> = ({
   onClick,
   children,
   className,
+  style,
   position = Position.top,
 }) => {
   const [showPopup, setShowPopup] = React.useState<DOMRect | null>(null);
@@ -43,7 +45,7 @@ const PopupButton: React.FC<PropsType> = ({
 
   return (
     <>
-      <button ref={buttonRef} className={className} onClick={handleClick}>
+      <button ref={buttonRef} className={className} style={style} onClick={handleClick}>
         {label ?? 'Show Popup'}
       </button>
       <PopupContext.Provider value={popupContext}>

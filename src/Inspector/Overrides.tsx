@@ -1,69 +1,166 @@
 import React from 'react';
-// import { isPrefabInstanceObject } from '../Scene/Types/PrefabNodeInstance';
-import { isPropertyOverride, type ObjectOverrides } from '../Scene/Types/Types';
 import styles from './Overrides.module.scss';
 import PopupButton from './PopupButton';
-import OverrideComparison from './OverrideComparison';
 import { Position } from './PopupWrapper';
 import OverrideConnection from './OverrideConnection';
 import type TreeNode from '../Scene/Types/TreeNode';
 import { observer } from 'mobx-react-lite';
+import ComponentComparison from './ComponentComparison';
+import HeaderComparison from './HeaderComparison';
 
 type PropsType = {
-  node: TreeNode,
+  root: TreeNode,
 }
 
 const Overrides: React.FC<PropsType> = observer(({
-   node,
+  root,
 }) => {
-  const [overrides, setOverrides] = React.useState<ObjectOverrides[]>([])
+  const renderTree = () => {
+    const connections: React.ReactNode[] = [];
 
-  // React.useEffect(() => {
-  //   if (isPrefabInstanceObject(sceneNode)) {
-  //     setOverrides(sceneNode.prefabInstance.getOverrides())
-  //   }
-  // }, [])
+    if (root.modifierNode !== undefined) {
+      type StackEntry = { node: TreeNode, level: number }
+      let stack: StackEntry[] = [{ node: root, level: 0 }];
+
+      while (stack.length > 0) {
+        const { node, level } = stack[0];
+        stack = stack.slice(1)
+
+        let fontWeight: string | undefined = undefined
+
+        const pathId = node.getPathId(root.modifierNode)
+        const mod = root.modifierNode.modifications.get(pathId)
+
+        if (mod?.sceneObject.name !== undefined) {
+          fontWeight = 'bold'
+        }
+
+        if (node.parentModifierNode && node.isTopLevel) {
+          connections.push(
+            <PopupButton
+              key={`${node.getPathId(root.modifierNode)}`}
+              className={styles.overridesButton}
+              label={node.nodeObject.header.name.get()}
+              position={Position.left}
+              style={{ marginLeft: `${level}rem`, fontWeight: 'bold' }}
+            >
+              <OverrideConnection connection={node} />
+            </PopupButton>,
+          )
+        } else if (mod?.sceneObject.name !== undefined) {
+          let baseObject = node.nodeObject
+          while (baseObject.baseObject) {
+            baseObject = baseObject.baseObject
+          }
+
+          connections.push(
+            <PopupButton
+              key={`${node.getPathId(root.modifierNode)}`}
+              className={styles.overridesButton}
+              label={node.nodeObject.header.name.get()}
+              position={Position.left}
+              style={{ marginLeft: `${level}rem`, fontWeight: 'bold' }}
+            >
+              <HeaderComparison root={root} node={node} baseObject={baseObject} object={node.nodeObject} />
+            </PopupButton>,
+          )
+        } else {
+          connections.push(
+            <div
+              key={`${node.getPathId(root.modifierNode)}`}
+              style={{ marginLeft: `${level}rem`, fontWeight }}
+            >
+              {node.nodeObject.header.name.get()}
+            </div>,
+          )
+        }
+
+        if (mod) {
+          for (const k of Object.keys(mod.sceneObject)) {
+            if (k !== 'name') {
+              const component = node.nodeObject.components.find((c) => c.type === k)
+
+              let baseObject = node.nodeObject
+              while (baseObject.baseObject) {
+                baseObject = baseObject.baseObject
+              }
+
+              const baseComponent = baseObject.components.find((c) => c.type === k)
+
+              if (baseComponent !== undefined && component !== undefined) {
+                connections.push(
+                  <PopupButton
+                    key={`${node.getPathId(root.modifierNode)}`}
+                    className={styles.overridesButton}
+                    label={k}
+                    position={Position.left}
+                    style={{ marginLeft: `${level + 1}rem`, fontWeight: 'bold' }}
+                  >
+                    <ComponentComparison baseComponent={baseComponent} component={component} />
+                  </PopupButton>,
+                )
+              }
+            }
+          }
+        }
+
+        const children: StackEntry[] = node.children.map((child) => ({
+          node: child, level: level + 1,
+        }))
+
+        stack = [
+          ...children,
+          ...stack,
+        ]
+      }
+    }
+
+    return connections;
+  }
 
   return (
     <div className={styles.layout}>
-      <div>{node.nodeObject.header.name.get()}</div>
+      {/* <div>{node.nodeObject.header.name.get()}</div> */}
       <div className={styles.body}>
         {
-          overrides.map((object) => (
-            <div>
-              <div key={object.object.node?.id}>{object.object.header.name.get()}</div>
-              <div className={styles.overrides}>
-                {
-                  object.overrides.map((override) => {
-                    if (isPropertyOverride(override)) {
-                      return (
-                        <PopupButton
-                          className={styles.overridesButton}
-                          label={override.property.name}
-                          position={Position.left}
-                        >
-                          <OverrideComparison property={override.property} />
-                        </PopupButton>
-                      )
-                    }
+          // overrides.map((object) => (
+          //   <div>
+          //     <div key={object.object.node?.id}>{object.object.header.name.get()}</div>
+          //     <div className={styles.overrides}>
+          //       {
+          //         object.overrides.map((override) => {
+          //           if (isPropertyOverride(override)) {
+          //             return (
+          //               <PopupButton
+          //                 className={styles.overridesButton}
+          //                 label={override.property.name}
+          //                 position={Position.left}
+          //               >
+          //                 <OverrideComparison property={override.property} />
+          //               </PopupButton>
+          //             )
+          //           }
 
-                    return null
-                  })
-                }
-              </div>
-            </div>
-          ))
+          //           return null
+          //         })
+          //       }
+          //     </div>
+          //   </div>
+          // ))
         }
         {
-          node.connectionOverrides.map((connection) => (
-            <PopupButton
-              className={styles.overridesButton}
-              label={connection.nodeObject.header.name.get()}
-              position={Position.left}
-            >
-              <OverrideConnection connection={connection} />
-            </PopupButton>
-          ))
+          // node.connectionOverrides.map((node) => (
+          //   <PopupButton
+          //     className={styles.overridesButton}
+          //     label={node.nodeObject.header.name.get()}
+          //     position={Position.left}
+          //   >
+          //     <OverrideConnection connection={node} />
+          //   </PopupButton>
+          // ))
+        }
+        {
+          renderTree()
         }
       </div>
       <div className={styles.footer}>

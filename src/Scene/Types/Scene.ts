@@ -436,12 +436,11 @@ class Scene implements SceneInterface {
     parentModifierNode?: TreeNode,
     parent?: TreeNode,
   ): TreeNode {
-    const node = new TreeNode(id, sceneId, this)
+    const node = new TreeNode(id, sceneId, object, this)
 
     runInAction(() => {
       node.modifierNode = modifierNode
       node.parentModifierNode = parentModifierNode
-      node.nodeObject = object;
     })
 
     if (parent) {

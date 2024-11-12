@@ -355,12 +355,12 @@ class SceneObject implements SceneObjectInterface {
     }
   }
 
-  detachSelf() {
-    // if (this.parent) {
-    //   this.parent.removeObject(this);
-    //   this.parent = null;
-    // }
-  }
+  // detachSelf() {
+  //   // if (this.parent) {
+  //   //   this.parent.removeObject(this);
+  //   //   this.parent = null;
+  //   // }
+  // }
 
   getNextComponentId(): number {
     const nextComponentId = this.nextComponentId;

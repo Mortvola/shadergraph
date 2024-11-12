@@ -112,7 +112,7 @@ export interface SceneObjectInterface {
 
   removeComponent(component: SceneObjectComponent): void;
 
-  detachSelf(): void;
+  // detachSelf(): void;
 
   isPrefabInstanceRoot(): boolean;
 
