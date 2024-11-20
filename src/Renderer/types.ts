@@ -201,15 +201,21 @@ export interface ComponentInterface {
   toDescriptor(): ComponentDescriptor;
 }
 
+export type ComponentPropsDescriptor =
+  LightPropsDescriptor |
+  ParticleSystemPropsDescriptor |
+  DecalPropsDescriptor |
+  ModelPropsDescriptor
+
 export type ComponentDescriptor = {
   id: number,
   type: ComponentType,
-  props?: LightPropsDescriptor | ParticleSystemPropsDescriptor | DecalPropsDescriptor | ModelPropsDescriptor,
+  props?: ComponentPropsDescriptor,
 }
 
 export type ModificationDescriptor = {
   type: ComponentType,
-  props?: LightPropsDescriptor | ParticleSystemPropsDescriptor | DecalPropsDescriptor | ModelPropsDescriptor,
+  props?: ComponentPropsDescriptor,
 }
 
 export type LightPropsDescriptor = {
@@ -244,6 +250,8 @@ export interface TransformPropsInterface extends PropsBaseInterface {
   translate: PSVec3Type;
   rotate: PSVec3Type;
   scale: PSVec3Type;
+
+  applyModifications(descriptor: TransformPropsDescriptor, override: boolean): void;
 
   toDescriptor(overridesOnly?: boolean): TransformPropsDescriptor | undefined;
 

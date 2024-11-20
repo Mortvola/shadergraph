@@ -6,8 +6,13 @@ import type PropsBase from './PropsBase';
 type BurstsType = { time: number, count: PSValue, cycles: number, probability: number }[];
 
 export class PSBursts extends Property<BurstsType> {
-  constructor(name: string, props: PropsBase, value?: BurstsType, defaultValue = [], onChange?: () => void, previousProp?: PSBursts) {
-    super(name, props, value, defaultValue, onChange, previousProp)
+  constructor(
+    props: PropsBase,
+    value?: BurstsType,
+    defaultValue = [],
+    onChange?: () => void,
+  ) {
+    super(props, value, defaultValue, onChange)
   }
 
   copyProp(other: Property<BurstsType>) {
@@ -19,7 +24,7 @@ export class PSBursts extends Property<BurstsType> {
 
   toDescriptor(): any | undefined {
     // Only output the descriptor if this a base property or if this is an override
-    if (this.base === undefined || this.override) {
+    if (this.props.isTopLevel || this.override) {
       return this.value.map((v) => ({
         time: v.time,
         count: v.count.toDescriptor(),

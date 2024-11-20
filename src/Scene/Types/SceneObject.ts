@@ -19,7 +19,6 @@ import LightProps from '../../Renderer/Properties/LightProps';
 import { PSString } from '../../Renderer/Properties/Property';
 import PropsBase from '../../Renderer/Properties/PropsBase';
 import Http from '../../Http/src';
-import type ModifierNode from './ModifierNode';
 
 class Header extends PropsBase implements HeaderInterface {
   name: PSString
@@ -27,7 +26,7 @@ class Header extends PropsBase implements HeaderInterface {
   constructor() {
     super()
 
-    this.name = new PSString('name', this)
+    this.name = new PSString(this)
   }
 
   toDescriptor(): object | undefined {
@@ -36,7 +35,7 @@ class Header extends PropsBase implements HeaderInterface {
 }
 
 class SceneObject implements SceneObjectInterface {
-  id?: number
+  id: number
 
   header: Header
 
@@ -45,13 +44,11 @@ class SceneObject implements SceneObjectInterface {
 
   transformProps: TransformPropsInterface = new TransformProps();
 
-  baseObject?: SceneObjectInterface
-
   node?: TreeNode;
 
-  modifierNode?: ModifierNode;
-
-  modifications?: ModificationEntry;
+  get isTopLevel(): boolean {
+    return this.node?.sceneId === this.node?.scene.root?.sceneId
+  }
 
   tree?: { id: number, name: string };
 
@@ -69,101 +66,102 @@ class SceneObject implements SceneObjectInterface {
     return false;
   }
 
-  constructor(id?: number) {
+  constructor(id: number) {
     this.id = id
     this.header = new Header()
   }
 
-  static async fromDescriptor(
+  static fromDescriptor(
     descriptor: SceneObjectDescriptor,
-    components?: Map<number, ComponentDescriptor>,
+    components: Map<number, ComponentDescriptor>,
   ) {
-    const object = new SceneObject(descriptor?.id);
+    const object = new SceneObject(descriptor.id);
     object.autosave = false;
 
     object.components = []
 
     object.header.name = new PSString(
-      'name',
       object.header,
-      descriptor?.name ?? undefined,
+      descriptor.name ?? undefined,
       undefined,
       object.onChange,
     )
 
-    const componentIds = descriptor?.components;
+    const componentIds = descriptor.components;
 
-    if (componentIds) {
-      for (const compId of componentIds) {
-        const c = components?.get(compId)
+    for (const compId of componentIds) {
+      const c = components.get(compId)
 
-        if (c) {
-          switch (c.type) {
-            case ComponentType.Transform: {
-              const props = new TransformProps(
-                c.props as TransformPropsDescriptor,
-              );
+      if (c) {
+        switch (c.type) {
+          case ComponentType.Transform: {
+            const props = new TransformProps(
+              c.props as TransformPropsDescriptor,
+            );
 
-              const component = {
-                id: c.id,
-                type: c.type,
-                props,
-              }
-
-              object.components.push(component)
-
-              props.onChange = () => {
-                object.transformChanged()
-
-                object.updateComponent(component)
-              }
-
-              object.transformProps = props
-
-              // Fix any scale values that are zero.
-              for (let i = 0; i < object.transformProps.scale.get().length; i += 1) {
-                if (object.transformProps.scale.get()[i] === 0) {
-                  object.transformProps.scale.get()[i] = 1;
-                }
-              }
-
-              break
+            const component: SceneObjectComponent = {
+              id: c.id,
+              type: c.type,
+              props,
             }
 
-            case ComponentType.ParticleSystem: {
-              const propsDescriptor = c.props as ParticleSystemPropsDescriptor;
+            object.components.push(component)
 
-              const props = new ParticleSystemProps(propsDescriptor);
+            props.onChange = () => {
+              console.log('transform changed')
+              object.transformChanged()
 
-              const component = {
-                id: c.id ?? object.getNextComponentId(),
-                type: c.type,
-                props,
+              object.updateComponent(component)
+            }
+
+            props.sceneObject = object;
+            object.transformProps = props
+
+            // Fix any scale values that are zero.
+            for (let i = 0; i < object.transformProps.scale.get().length; i += 1) {
+              if (object.transformProps.scale.get()[i] === 0) {
+                object.transformProps.scale.get()[i] = 1;
               }
-
-              props.onChange = () => { object.updateComponent(component) };
-              props.nodeObject = object;
-
-              object.components.push(component)
-
-              break;
             }
 
-            case ComponentType.Light: {
-              const propsDescriptor = c.props as LightPropsDescriptor;
+            break
+          }
 
-              const props = new LightProps(propsDescriptor);
-              props.onChange = object.onChange;
-              props.nodeObject = object;
+          case ComponentType.ParticleSystem: {
+            const propsDescriptor = c.props as ParticleSystemPropsDescriptor;
 
-              object.components.push({
-                id: c.id ?? object.getNextComponentId(),
-                type: c.type,
-                props,
-              })
+            const props = new ParticleSystemProps(propsDescriptor);
 
-              break;
+            const component: SceneObjectComponent = {
+              id: c.id,
+              type: c.type,
+              props,
             }
+
+            props.onChange = () => { object.updateComponent(component) };
+            props.sceneObject = object;
+
+            object.components.push(component)
+
+            break;
+          }
+
+          case ComponentType.Light: {
+            const propsDescriptor = c.props as LightPropsDescriptor;
+
+            const props = new LightProps(propsDescriptor);
+            props.onChange = object.onChange;
+            props.sceneObject = object;
+
+            const component: SceneObjectComponent = {
+              id: c.id,
+              type: c.type,
+              props,
+            }
+
+            object.components.push(component)
+
+            break;
           }
         }
       }
@@ -174,94 +172,115 @@ class SceneObject implements SceneObjectInterface {
     return object;
   }
 
-  static async fromModifications(
-    modifications: SceneObjectModifications,
-    baseObject: SceneObjectInterface,
-  ) {
-    const object = new SceneObject();
-    object.autosave = false;
+  applyModifications(modifications: SceneObjectModifications, override = false) {
+    if (modifications.name !== undefined) {
+      this.header.name.set(modifications.name as string, override)
+    }
 
-    object.components = []
-    object.header.name = new PSString(
-      'name',
-      object.header,
-      modifications?.name as string,
-      undefined,
-      object.onModificationChange,
-      baseObject?.header.name,
-    )
+    for (const c of this.components) {
+      const componentDescriptor: unknown | undefined = modifications[c.type]
 
-    for (const c of baseObject.components) {
-      let componentDescriptor: unknown | undefined
-      if (modifications) {
-        componentDescriptor = modifications[c.type]
-      }
+      if (componentDescriptor) {
+        switch (c.type) {
+          case ComponentType.Transform: {
+            (c.props as TransformProps).applyModifications(componentDescriptor, override)
+            break;
+          }
 
-      switch (c.type) {
-        case ComponentType.Transform: {
-          const props = new TransformProps(
-            componentDescriptor as TransformPropsDescriptor,
-            object.transformChanged,
-            baseObject.transformProps,
-          );
-
-          object.components.push({
-            id: c.id,
-            type: c.type,
-            props,
-          })
-
-          object.transformProps = props
-          break
-        }
-
-        case ComponentType.ParticleSystem: {
-          const props = new ParticleSystemProps(
-            componentDescriptor as ParticleSystemPropsDescriptor,
-            c.props as ParticleSystemProps,
-          );
-
-          props.onChange = object.onModificationChange;
-          props.nodeObject = object;
-
-          object.components.push({
-            id: c.id,
-            type: c.type,
-            props,
-          })
-
-          break
-        }
-
-        case ComponentType.Light: {
-          object.components.push({
-            id: c.id,
-            type: c.type,
-            props: c.props,
-          })
-
-          break
+          case ComponentType.ParticleSystem: {
+            (c.props as ParticleSystemProps).applyModifications(componentDescriptor, override)
+            break;
+          }
         }
       }
     }
-
-    // let componentDescriptor: unknown | undefined
-    // if (descriptor?.modifications) {
-    //   componentDescriptor = descriptor?.modifications[ComponentType.Transform]
-    // }
-
-    // object.transformProps = new TransformProps(
-    //   componentDescriptor as TransformPropsDescriptor,
-    //   object.transformChanged,
-    //   baseObject.transformProps,
-    // );
-
-    object.baseObject = baseObject
-
-    object.autosave = true;
-
-    return object;
   }
+
+  // static async fromModifications(
+  //   modifications: SceneObjectModifications,
+  //   baseObject: SceneObjectInterface,
+  // ) {
+  //   const object = new SceneObject();
+  //   object.autosave = false;
+
+  //   object.components = []
+  //   object.header.name = new PSString(
+  //     'name',
+  //     object.header,
+  //     modifications?.name as string,
+  //     undefined,
+  //     object.onModificationChange,
+  //     baseObject?.header.name,
+  //   )
+
+  //   for (const c of baseObject.components) {
+  //     const componentDescriptor: unknown | undefined = modifications[c.type]
+
+  //     switch (c.type) {
+  //       case ComponentType.Transform: {
+  //         const props = new TransformProps(
+  //           componentDescriptor as TransformPropsDescriptor,
+  //           object.transformChanged,
+  //           baseObject.transformProps,
+  //         );
+
+  //         object.components.push({
+  //           id: c.id,
+  //           type: c.type,
+  //           props,
+  //         })
+
+  //         object.transformProps = props
+  //         break
+  //       }
+
+  //       case ComponentType.ParticleSystem: {
+  //         const props = new ParticleSystemProps(
+  //           componentDescriptor as ParticleSystemPropsDescriptor,
+  //           c.props as ParticleSystemProps,
+  //         );
+
+  //         props.onChange = object.onModificationChange;
+  //         props.sceneObject = object;
+
+  //         object.components.push({
+  //           id: c.id,
+  //           type: c.type,
+  //           props,
+  //         })
+
+  //         break
+  //       }
+
+  //       case ComponentType.Light: {
+  //         object.components.push({
+  //           id: c.id,
+  //           type: c.type,
+  //           props: c.props,
+  //         })
+
+  //         break
+  //       }
+  //     }
+  //   }
+
+  //   // let componentDescriptor: unknown | undefined
+  //   // if (descriptor?.modifications) {
+  //   //   componentDescriptor = descriptor?.modifications[ComponentType.Transform]
+  //   // }
+
+  //   // object.transformProps = new TransformProps(
+  //   //   componentDescriptor as TransformPropsDescriptor,
+  //   //   object.transformChanged,
+  //   //   baseObject.transformProps,
+  //   // );
+
+  //   object.baseObject = baseObject
+
+  //   object.autosave = true;
+
+  //   return object;
+  // }
 
   async save(): Promise<void> {
     return objectManager.update(this)
@@ -269,54 +288,62 @@ class SceneObject implements SceneObjectInterface {
 
   onChange = () => {
     if (this.autosave) {
-      this.save();
+      console.log('onChange')
+      // this.save();
     }
-  }
-
-  async saveModifications(sceneObjectModifications: SceneObjectModifications) {
-    if (!this.modifierNode || !this.modifications) {
-      throw new Error('modifications not set')
-    }
-
-    const payload = {
-      modifierNodeId: this.modifierNode.id,
-      sceneId: this.modifierNode.sceneId,
-      pathId: this.modifications.pathId,
-      modifications: sceneObjectModifications,
-    }
-
-    const response = await Http.put('/api/node-modifications', payload)
-
-    if (response.ok) {
-      this.modifications.sceneObject = sceneObjectModifications
-    }
-  }
-
-  onModificationChange = () => {
-    if (!this.modifications) {
-      throw new Error('modifications not set')
-    }
-
-    const modifications: SceneObjectModifications = {}
-
-    modifications['name'] = this.header.name.toDescriptor()
-
-    for (const mod of this.components) {
-      const props = mod.props.toDescriptor()
-
-      if (props) {
-        modifications[mod.type] = props
-      }
-    }
-
-    this.saveModifications(modifications)
   }
 
   async updateComponent(component: SceneObjectComponent) {
-    const response = await Http.patch(`/api/components/${component.id}`, component.props.toDescriptor())
+    // Is this a component being updated or is a modification to a component being updated?
+    if (this.isTopLevel) {
+      // A component is being updated.
+      const descriptor = component.props.toDescriptor();
 
-    if (response.ok) {
-      //
+      if (descriptor) {
+        await this.node?.scene.updateObjectComponent(component.id, descriptor)
+      }
+    } else {
+      // A modification to a component is being updated.
+
+      if (this.node === undefined) {
+        throw new Error('node is not defined')
+      }
+
+      const descriptor = component.props.toDescriptor()
+
+      if (descriptor) {
+        const modifierNode = this.node?.getTopLevelModifierNode()?.modifierNode
+
+        if (modifierNode) {
+          const pathId = this.node.getPathId(modifierNode)
+
+          let modifications = modifierNode.modifications.get(pathId)
+
+          if (modifications === undefined) {
+            modifications = { pathId, sceneObject: {}, addedNodes: [] }
+            modifierNode.modifications.set(pathId, modifications)
+          }
+
+          const updatedModifications = {
+            ...modifications.sceneObject,
+            name: this.header.name.toDescriptor(),
+            [component.type]: descriptor,
+          }
+
+          const payload = {
+            modifierNodeId: modifierNode.id,
+            sceneId: modifierNode.sceneId,
+            pathId,
+            modifications: updatedModifications,
+          }
+
+          const response = await Http.put('/api/node-modifications', payload)
+
+          if (response.ok) {
+            modifications.sceneObject = updatedModifications
+          }
+        }
+      }
     }
   }
 

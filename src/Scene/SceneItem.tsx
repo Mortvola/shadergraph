@@ -46,7 +46,7 @@ const SceneItem: React.FC<PropsType> = observer(({
   }
 
   const [editing, setEditing] = React.useState<boolean>(false);
-  const [name, setName] = React.useState<string>(treeNode.nodeObject.header.name.get() ?? 'Unknown');
+  const [name, setName] = React.useState<string>(treeNode.sceneObject.header.name.get() ?? 'Unknown');
 
   const handleKeyDown: React.KeyboardEventHandler = (event) => {
     if (event.code === 'Enter') {
@@ -162,7 +162,7 @@ const SceneItem: React.FC<PropsType> = observer(({
                 onFocus={handleFocus}
               />
             )
-            : `${treeNode.nodeObject.header.name.get()}`
+            : `${treeNode.sceneObject.header.name.get()}`
         }
         {
           showMenu

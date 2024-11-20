@@ -8,14 +8,19 @@ import { removeUndefinedKeys } from '../Properties/Types';
 class LifetimeColor extends PSModule {
   color: PSColor;
 
-  constructor(props: PropsBase, descriptor?: LifetimeColorDescriptor, onChange?: () => void, previousProps?: LifetimeColor) {
-    super(props, descriptor?.enabled, undefined, onChange, previousProps?.enabled);
+  constructor(
+    props: PropsBase, descriptor?: LifetimeColorDescriptor, onChange?: () => void,
+  ) {
+    super(props, descriptor?.enabled, undefined, onChange);
 
-    this.color = new PSColor('Color', props, descriptor?.color, onChange, previousProps?.color);
+    this.color = new PSColor(props, descriptor?.color, onChange);
 
     makeObservable(this, {
       color: observable,
     })
+  }
+
+  update(descriptor?: LifetimeColorDescriptor) {
   }
 
   toDescriptor(): LifetimeColorDescriptor | undefined {

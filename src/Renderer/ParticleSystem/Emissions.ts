@@ -11,24 +11,36 @@ class Emissions extends PSModule {
 
   bursts: PSBursts
 
-  constructor(props: PropsBase, descriptor?: EmissionsDescriptor, onChange?: () => void, previousProps?: Emissions) {
-    super(props, descriptor?.enabled, true, onChange, previousProps?.enabled)
+  constructor(props: PropsBase, descriptor?: EmissionsDescriptor, onChange?: () => void) {
+    super(props, descriptor?.enabled, true, onChange)
 
-    this.rate = new PSNumber('Rate over time', props, descriptor?.rate, 2, onChange, previousProps?.rate)
+    this.rate = new PSNumber(props, descriptor?.rate, 2, this.onChange)
 
-    this.bursts = new PSBursts('', props, [], undefined, onChange, previousProps?.bursts)
+    const bursts = descriptor?.bursts
+      ? descriptor.bursts.map((burst) => ({
+          time: burst.time,
+          count: new PSValue(props, burst.count, undefined, this.onChange),
+          cycles: burst.cycles,
+          probability: burst.probability,
+        }))
+      : []
 
-    this.bursts.set(
-      descriptor?.bursts
-        ? descriptor.bursts.map((burst) => ({
-            time: burst.time,
-            count: new PSValue('', props, burst.count, undefined, onChange),
-            cycles: burst.cycles,
-            probability: burst.probability,
-          }))
-        : [],
-      descriptor?.bursts !== undefined,
-    )
+    this.bursts = new PSBursts(props, bursts, undefined, this.onChange)
+  }
+
+  update(descriptor?: EmissionsDescriptor) {
+    if (descriptor) {
+      this.rate.set(descriptor.rate)
+
+      this.bursts.set(
+        (descriptor.bursts ?? []).map((burst) => ({
+          time: burst.time,
+          count: new PSValue(this.props, burst.count, undefined, this.onChange),
+          cycles: burst.cycles,
+          probability: burst.probability,
+        })),
+      )
+    }
   }
 
   toDescriptor(): EmissionsDescriptor | undefined {

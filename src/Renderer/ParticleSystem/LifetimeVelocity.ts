@@ -8,14 +8,22 @@ import { removeUndefinedKeys } from '../Properties/Types';
 class LifetimeVelocity extends PSModule {
   speedModifier: PSValue;
 
-  constructor(props: PropsBase, descriptor?: LifetimeVelocityDescriptor, onChange?: () => void, previousProps?: LifetimeVelocity) {
-    super(props, descriptor?.enabled, undefined, onChange, previousProps?.enabled);
+  constructor(
+    props: PropsBase, descriptor?: LifetimeVelocityDescriptor, onChange?: () => void,
+  ) {
+    super(props, descriptor?.enabled, undefined, onChange);
 
-    this.speedModifier = new PSValue('Speed Modifier', props, descriptor?.speedModifier, undefined, onChange, previousProps?.speedModifier);
+    this.speedModifier = new PSValue(
+      props, descriptor?.speedModifier, undefined, onChange,
+    );
 
     makeObservable(this, {
       speedModifier: observable,
     })
+  }
+
+  update(descriptor?: LifetimeVelocityDescriptor) {
+
   }
 
   toDescriptor(): LifetimeVelocityDescriptor | undefined {

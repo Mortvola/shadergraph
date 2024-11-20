@@ -4,9 +4,13 @@ import { isModule, isProperty } from './Types';
 
 
 class PropsBase implements PropsBaseInterface {
-  nodeObject?: SceneObjectInterface;
+  sceneObject?: SceneObjectInterface;
 
-  toDescriptor(): object | undefined {
+  get isTopLevel(): boolean {
+    return this.sceneObject?.isTopLevel ?? false
+  }
+
+  toDescriptor(overridesOnly: boolean): object | undefined {
     return undefined;
   }
 

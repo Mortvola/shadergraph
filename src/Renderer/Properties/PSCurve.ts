@@ -54,7 +54,7 @@ class PSCurve {
 
   sanitize() {
     // Make sure the curve points are in order
-    this.points.sort((a, b) => a.x - b.x);
+    this.points = this.points.slice().sort((a, b) => a.x - b.x);
 
     // Make sure there is a point at position 0
     if (this.points[0].x !== 0) {

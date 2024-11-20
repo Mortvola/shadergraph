@@ -11,9 +11,11 @@ class Cone {
 
   originRadius: PSNumber;
 
-  constructor(props: PropsBase, descriptor?: ConeDescriptor, onChange?: () => void, previousProp?: Cone) {
-    this.angle = new PSNumber('Angle', props, descriptor?.angle, 25, onChange, previousProp?.angle);
-    this.originRadius = new PSNumber('Origin Radius', props, descriptor?.originRadius, 1, onChange, previousProp?.originRadius);
+  constructor(props: PropsBase, descriptor?: ConeDescriptor, onChange?: () => void) {
+    this.angle = new PSNumber(props, descriptor?.angle, 25, onChange);
+    this.originRadius = new PSNumber(
+      props, descriptor?.originRadius, 1, onChange,
+    );
   }
 
   toDescriptor(): ConeDescriptor | undefined {

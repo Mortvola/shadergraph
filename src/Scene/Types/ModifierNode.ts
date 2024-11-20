@@ -1,5 +1,4 @@
 import { observable } from 'mobx'
-import SceneObject from './SceneObject'
 import {
   type ModificationEntry,
   type SceneObjectInterface,
@@ -63,16 +62,18 @@ class ModifierNode {
   ): Promise<SceneObjectInterface> {
     const mods = this.getModificationEntry(pathId);
 
-    const object = await SceneObject.fromModifications(mods.sceneObject, baseObject)
+    // const object = await SceneObject.fromModifications(mods.sceneObject, baseObject)
 
-    if (object === undefined) {
-      throw new Error('object not defined')
-    }
+    // if (object === undefined) {
+    //   throw new Error('object not defined')
+    // }
 
-    object.modifierNode = this
-    object.modifications = mods
+    baseObject.applyModifications(mods.sceneObject, false)
 
-    return object
+    // object.modifierNode = this
+    // object.modifications = mods
+
+    return baseObject
   }
 
   addAddedNode(pathId: number, addedNodeId: number) {

@@ -15,7 +15,7 @@ class PSValue3D extends PropertyBase {
     runInAction(() => {
       this._separateAxes = value.value;
       if (value.override !== undefined) {
-        this.override = value.override && this.base !== undefined
+        this.override = value.override && !this.props.isTopLevel
       }
     })
   }
@@ -37,39 +37,24 @@ class PSValue3D extends PropertyBase {
     runInAction(() => {
       this._style = value.value;
       if (value.override) {
-        this.override = value.override && this.base !== undefined
+        this.override = value.override && !this.props.isTopLevel
       }
     })
   }
 
   constructor(
-    name: string,
     props: PropsBase,
     descriptor?: PSValue3DDescriptor,
     defaultDescriptor?: PSValue3DDescriptor,
     onChange?: () => void,
-    previousProp?: PSValue3D,
   ) {
-    super(name, props, previousProp)
+    super(props)
 
     this.values = [new PSValue2(this), new PSValue2(this), new PSValue2(this)]
 
     const d = descriptor ?? defaultDescriptor;
     if (d) {
       this.applyDescriptor(d)
-    }
-
-    // If there is a previous prop but the initial value
-    // for this property is undefined then copy the value
-    // from the previous prop. Otherwise, mark this property
-    // as an override of the previous prop.
-    if (previousProp) {
-      if (descriptor === undefined) {
-        this.copyProp(previousProp)
-      }
-      else {
-        this.override = true;
-      }
     }
 
     this.onChange = onChange;
@@ -90,6 +75,10 @@ class PSValue3D extends PropertyBase {
 
       this.override = false;
     })
+  }
+
+  update(descriptor?: PSValue3DDescriptor) {
+
   }
 
   applyDescriptor(descriptor: PSValue3DDescriptor & { value?: [number, number] }) {
@@ -131,7 +120,7 @@ class PSValue3D extends PropertyBase {
   }
 
   toDescriptor(): PSValue3DDescriptor | undefined {
-    if (this.base === undefined || this.override) {
+    if (this.props.isTopLevel || this.override) {
       return ({
         separateAxes: this.separateAxes,
         type: this.style,

@@ -13,8 +13,16 @@ class PSModule {
     return this.enabled.onChange
   }
 
-  constructor(props: PropsBase, enabled: boolean | undefined, defaultEnabled = false, onChange?: () => void, previousProp?: PSBoolean) {
-    this.enabled = new PSBoolean('Enabled', props, enabled, defaultEnabled, onChange, previousProp)
+  props: PropsBase
+
+  constructor(
+    props: PropsBase,
+    enabled: boolean | undefined,
+    defaultEnabled = false,
+    onChange?: () => void,
+  ) {
+    this.props = props
+    this.enabled = new PSBoolean(props, enabled, defaultEnabled, onChange)
   }
 
   protected setOnChange(onChange?: () => void) {

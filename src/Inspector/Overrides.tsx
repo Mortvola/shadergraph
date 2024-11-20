@@ -40,7 +40,7 @@ const Overrides: React.FC<PropsType> = observer(({
             <PopupButton
               key={`${node.getPathId(root.modifierNode)}`}
               className={styles.overridesButton}
-              label={node.nodeObject.header.name.get()}
+              label={node.sceneObject.header.name.get()}
               position={Position.left}
               style={{ marginLeft: `${level}rem`, fontWeight: 'bold' }}
             >
@@ -48,29 +48,28 @@ const Overrides: React.FC<PropsType> = observer(({
             </PopupButton>,
           )
         } else if (mod?.sceneObject.name !== undefined) {
-          let baseObject = node.nodeObject
-          while (baseObject.baseObject) {
-            baseObject = baseObject.baseObject
-          }
+          const baseObject = node.scene?.getObject(node.sceneObject.id)
 
-          connections.push(
-            <PopupButton
-              key={`${node.getPathId(root.modifierNode)}`}
-              className={styles.overridesButton}
-              label={node.nodeObject.header.name.get()}
-              position={Position.left}
-              style={{ marginLeft: `${level}rem`, fontWeight: 'bold' }}
-            >
-              <HeaderComparison root={root} node={node} baseObject={baseObject} object={node.nodeObject} />
-            </PopupButton>,
-          )
+          if (baseObject !== undefined) {
+            connections.push(
+              <PopupButton
+                key={`${node.getPathId(root.modifierNode)}`}
+                className={styles.overridesButton}
+                label={node.sceneObject.header.name.get()}
+                position={Position.left}
+                style={{ marginLeft: `${level}rem`, fontWeight: 'bold' }}
+              >
+                <HeaderComparison root={root} node={node} baseObject={baseObject} object={node.sceneObject} />
+              </PopupButton>,
+            )
+          }
         } else {
           connections.push(
             <div
               key={`${node.getPathId(root.modifierNode)}`}
               style={{ marginLeft: `${level}rem`, fontWeight }}
             >
-              {node.nodeObject.header.name.get()}
+              {node.sceneObject.header.name.get()}
             </div>,
           )
         }
@@ -78,27 +77,31 @@ const Overrides: React.FC<PropsType> = observer(({
         if (mod) {
           for (const k of Object.keys(mod.sceneObject)) {
             if (k !== 'name') {
-              const component = node.nodeObject.components.find((c) => c.type === k)
+              const component = node.sceneObject.components.find((c) => c.type === k)
 
-              let baseObject = node.nodeObject
-              while (baseObject.baseObject) {
-                baseObject = baseObject.baseObject
-              }
+              if (component !== undefined) {
+                const baseObject = node.scene?.getObject(node.sceneObject.id)
+                const baseComponent = baseObject?.components.find((c) => c.type === k)
 
-              const baseComponent = baseObject.components.find((c) => c.type === k)
-
-              if (baseComponent !== undefined && component !== undefined) {
-                connections.push(
-                  <PopupButton
-                    key={`${node.getPathId(root.modifierNode)}`}
-                    className={styles.overridesButton}
-                    label={k}
-                    position={Position.left}
-                    style={{ marginLeft: `${level + 1}rem`, fontWeight: 'bold' }}
-                  >
-                    <ComponentComparison baseComponent={baseComponent} component={component} />
-                  </PopupButton>,
-                )
+                if (baseObject != undefined && baseComponent !== undefined) {
+                  connections.push(
+                    <PopupButton
+                      key={`${node.getPathId(root.modifierNode)}`}
+                      className={styles.overridesButton}
+                      label={k}
+                      position={Position.left}
+                      style={{ marginLeft: `${level + 1}rem`, fontWeight: 'bold' }}
+                    >
+                      <ComponentComparison
+                        root={root}
+                        node={node}
+                        baseObject={baseObject}
+                        baseComponent={baseComponent}
+                        component={component}
+                      />
+                    </PopupButton>,
+                  )
+                }
               }
             }
           }

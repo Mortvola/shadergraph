@@ -22,17 +22,22 @@ class Shape extends PSModule {
     props: PropsBase,
     descriptor?: ShapeDescriptor,
     onChange?: () => void,
-    previousProps?: Shape,
   ) {
     const defaultDescriptor: ShapeDescriptor = { enabled: true, type: ShapeType.Cone };
 
-    super(props, descriptor?.enabled, defaultDescriptor.enabled, onChange, previousProps?.enabled);
+    super(props, descriptor?.enabled, defaultDescriptor.enabled, onChange);
 
-    this.type = new PSShapeType('Shape', props, descriptor?.type, defaultDescriptor?.type, onChange, previousProps?.type)
+    this.type = new PSShapeType(
+      props, descriptor?.type, defaultDescriptor?.type, onChange,
+    )
 
-    this.cone = new Cone(props, descriptor?.cone, onChange, previousProps?.cone);
-    this.sphere = new Sphere(props, false, descriptor?.sphere, onChange, previousProps?.sphere);
-    this.hemisphere = new Sphere(props, true, descriptor?.hemisphere, onChange, previousProps?.hemisphere);
+    this.cone = new Cone(props, descriptor?.cone, onChange);
+    this.sphere = new Sphere(props, false, descriptor?.sphere, onChange);
+    this.hemisphere = new Sphere(props, true, descriptor?.hemisphere, onChange);
+  }
+
+  update(descriptor?: ShapeDescriptor) {
+
   }
 
   toDescriptor(): ShapeDescriptor | undefined {

@@ -5,7 +5,7 @@ export type PSModuleDescriptor = {
 export enum RenderMode {
   Billboard = 'Billboard',
   HorizontalBillboard = 'Horizontal Billboard',
-  StretchedBillboard = 'Streteched Billboard',
+  StretchedBillboard = 'Stretched Billboard',
   Mesh = 'Mesh',
 }
 

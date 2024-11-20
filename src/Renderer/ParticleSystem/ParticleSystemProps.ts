@@ -60,15 +60,14 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
 
   constructor(
     descriptor?: ParticleSystemPropsDescriptor,
-    previousProps?: ParticleSystemProps,
   ) {
     super();
 
-    this.duration = new PSNumber('Duration', this, descriptor?.duration, 5, this.handleChange, previousProps?.duration);
+    this.duration = new PSNumber(this, descriptor?.duration, 5, this.handleChange);
     this.startDelay = new PSNumber(
-      'Start Delay', this, descriptor?.startDelay, 0, this.handleChange, previousProps?.startDelay,
+      this, descriptor?.startDelay, 0, this.handleChange,
     );
-    this.loop = new PSBoolean('Loop', this, descriptor?.loop, true, this.handleChange, previousProps?.loop);
+    this.loop = new PSBoolean(this, descriptor?.loop, true, this.handleChange);
 
     // Handle retrieving the rate over time from the old location
     // TODO: Remove when no longer needed.
@@ -78,22 +77,57 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
       emissionsDescriptor.rate = descriptor?.rate
     }
 
-    this.emissions = new Emissions(this, emissionsDescriptor, this.handleChange, previousProps?.emissions)
+    this.emissions = new Emissions(this, emissionsDescriptor, this.handleChange)
 
-    this.maxPoints = new PSNumber('Maximum Points', this, descriptor?.maxPoints, 50, this.handleChange, previousProps?.maxPoints);
-    this.lifetime = new PSValue('Lifetime', this, descriptor?.lifetime, { type: PSValueType.Constant, value: [5, 5] }, this.handleChange, previousProps?.lifetime);
-    this.shape = new Shape(this, descriptor?.shape, this.handleChange, previousProps?.shape);
-    this.startSpeed = new PSValue('Start Speed', this, descriptor?.startVelocity, {}, this.handleChange, previousProps?.startSpeed);
-    this.startSize = new PSValue3D('Start Size', this, descriptor?.startSize, undefined, this.handleChange, previousProps?.startSize);
-    this.startRotation = new PSValue3D('Start Rotation', this, descriptor?.startRotation, undefined, this.handleChange, previousProps?.startRotation);
-    this.startColor = new PSColor('Start Color', this, descriptor?.startColor, this.handleChange, previousProps?.startColor);
-    this.space = new PSSpace('Space', this, descriptor?.space, SpaceType.Local, this.handleChange, previousProps?.space);
-    this.lifetimeSize = new LifetimeSize(this, descriptor?.lifetimeSize, this.handleChange, previousProps?.lifetimeSize);
-    this.lifetimeRotation = new LifetimeRotation(this, descriptor?.lifetimeRotation, this.handleChange, previousProps?.lifetimeRotation)
-    this.lifetimeVelocity = new LifetimeVelocity(this, descriptor?.lifetimeVelocity, this.handleChange, previousProps?.lifetimeVelocity);
-    this.lifetimeColor = new LifetimeColor(this, descriptor?.lifetimeColor, this.handleChange, previousProps?.lifetimeColor);
+    this.maxPoints = new PSNumber(
+      this, descriptor?.maxPoints, 50, this.handleChange,
+    );
+
+    this.lifetime = new PSValue(
+      this,
+      descriptor?.lifetime,
+      { type: PSValueType.Constant, value: [5, 5] },
+      this.handleChange,
+    );
+
+    this.shape = new Shape(this, descriptor?.shape, this.handleChange);
+    this.startSpeed = new PSValue(
+      this, descriptor?.startVelocity, {}, this.handleChange,
+    );
+
+    this.startSize = new PSValue3D(
+      this, descriptor?.startSize, undefined, this.handleChange,
+    );
+
+    this.startRotation = new PSValue3D(
+      this, descriptor?.startRotation, undefined, this.handleChange,
+    );
+
+    this.startColor = new PSColor(
+      this, descriptor?.startColor, this.handleChange,
+    );
+
+    this.space = new PSSpace(
+      this, descriptor?.space, SpaceType.Local, this.handleChange,
+    );
+
+    this.lifetimeSize = new LifetimeSize(
+      this, descriptor?.lifetimeSize, this.handleChange,
+    );
+
+    this.lifetimeRotation = new LifetimeRotation(
+      this, descriptor?.lifetimeRotation, this.handleChange,
+    )
+
+    this.lifetimeVelocity = new LifetimeVelocity(
+      this, descriptor?.lifetimeVelocity, this.handleChange,
+    );
+
+    this.lifetimeColor = new LifetimeColor(
+      this, descriptor?.lifetimeColor, this.handleChange,
+    );
+
     this.gravityModifier = new PSValue(
-      'Gravity Modifier',
       this,
       descriptor?.gravityModifier,
       {
@@ -101,17 +135,38 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
         value: [0, 0],
       },
       this.handleChange,
-      previousProps?.gravityModifier,
     );
-    this.collision = new Collision(this, descriptor?.collision, this.handleChange, previousProps?.collision);
+
+    this.collision = new Collision(this, descriptor?.collision, this.handleChange);
 
     this.renderer = new Renderer(
       this,
       descriptor?.renderer,
       { enabled: true, mode: RenderMode.Billboard },
       this.handleChange,
-      previousProps?.renderer,
     );
+ }
+
+ applyModifications(descriptor: ParticleSystemPropsDescriptor, override: boolean) {
+  this.duration.applyModifications(descriptor.duration, override)
+  this.startDelay.applyModifications(descriptor.startDelay, override)
+  this.loop.applyModifications(descriptor.loop, override)
+  this.emissions.update(descriptor.emissions)
+  this.maxPoints.applyModifications(descriptor.maxPoints, override)
+  this.lifetime.update(descriptor.lifetime)
+  this.shape.update(descriptor.shape)
+  this.startSpeed.update(descriptor.startVelocity)
+  this.startSize.update(descriptor.startSize)
+  this.startRotation.update(descriptor.startRotation)
+  this.startColor.update(descriptor.startColor)
+  this.space.applyModifications(descriptor.space, override)
+  this.lifetimeSize.update(descriptor.lifetimeSize)
+  this.lifetimeRotation.update(descriptor.lifetimeRotation)
+  this.lifetimeVelocity.update(descriptor.lifetimeVelocity)
+  this.lifetimeColor.update(descriptor.lifetimeColor)
+  this.gravityModifier.update(descriptor.gravityModifier)
+  this.collision.update(descriptor.collision)
+  this.renderer.update(descriptor.renderer)
  }
 
   onChange?: () => void;

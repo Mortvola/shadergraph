@@ -14,13 +14,7 @@ export const isModule = (r: unknown): r is PSModuleInterface => (
 export type LineageEntry = { property: PropertyBaseInterface, name: string, container: string };
 
 export interface PropertyBaseInterface {
-  name: string;
-
-  base?: PropertyBaseInterface
-
   override: boolean
-
-  variations: Set<PropertyBaseInterface>;
 
   props: PropsBaseInterface;
 
@@ -38,8 +32,6 @@ export interface PropertyBaseInterface {
 
   disableReaction(): void
 
-  propogate(): void
-
   reactOnChange(observables: () => unknown): void
 }
 
@@ -49,9 +41,11 @@ export const removeUndefinedKeys = <T extends Record<string, unknown>>(obj: T): 
 };
 
 export interface PropsBaseInterface {
-  nodeObject?: SceneObjectInterface;
+  sceneObject?: SceneObjectInterface;
 
-  toDescriptor(): object | undefined;
+  get isTopLevel(): boolean;
+
+  toDescriptor(overridesOnly: boolean): object | undefined;
 
   get hasOverrides(): boolean;
 }

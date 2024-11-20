@@ -9,10 +9,18 @@ import PSValue3D from '../Properties/PSValue3D';
 class LifetimeRotation extends PSModule {
   angularVelocity: PSValue3D;
 
-  constructor(props: PropsBase, descriptor?: LifetimeRotationDescriptor, onChange?: () => void, previousProps?: LifetimeRotation) {
-    super(props, descriptor?.enabled, undefined, onChange, previousProps?.enabled);
+  constructor(
+    props: PropsBase, descriptor?: LifetimeRotationDescriptor, onChange?: () => void,
+  ) {
+    super(props, descriptor?.enabled, undefined, onChange);
 
-    this.angularVelocity = new PSValue3D('Size', props, descriptor?.angularVelocity, undefined, onChange, previousProps?.angularVelocity);
+    this.angularVelocity = new PSValue3D(
+      props, descriptor?.angularVelocity, undefined, onChange,
+    );
+  }
+
+  update(descriptor?: LifetimeRotationDescriptor) {
+
   }
 
   toDescriptor(): LifetimeRotationDescriptor | undefined {

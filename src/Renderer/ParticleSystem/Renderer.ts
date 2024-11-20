@@ -38,19 +38,27 @@ class Renderer extends PSModule {
     descriptor?: RendererDescriptor,
     defaultDescriptor?: RendererDescriptor,
     onChange?: () => void,
-    previousProps?: Renderer,
   ) {
-    super(props, descriptor?.enabled, defaultDescriptor?.enabled, onChange, previousProps?.enabled);
+    super(props, descriptor?.enabled, defaultDescriptor?.enabled, onChange);
 
-    this.materialId = new PSMaterialItem('Material', props, descriptor?.materialId, this.onMaterialChange, previousProps?.materialId)
-    this.meshId = new PSMeshItem('Mesh', props, descriptor?.meshId, onChange, previousProps?.meshId)
+    this.materialId = new PSMaterialItem(
+      props, descriptor?.materialId, this.onMaterialChange,
+    )
 
-    this.mode = new PSRenderMode('Mode', props, descriptor?.mode, defaultDescriptor?.mode, this.onMaterialChange, previousProps?.mode);
+    this.meshId = new PSMeshItem(props, descriptor?.meshId, onChange)
+
+    this.mode = new PSRenderMode(
+      props, descriptor?.mode, defaultDescriptor?.mode, this.onMaterialChange,
+    );
 
     this.renderAlignment = new PSRenderAlignment(
-      'Render Alignment', props, descriptor?.renderAlignment, defaultDescriptor?.renderAlignment,
-      this.onMaterialChange, previousProps?.renderAlignment,
+      props, descriptor?.renderAlignment, defaultDescriptor?.renderAlignment,
+      this.onMaterialChange,
     );
+  }
+
+  update(descriptor?: RendererDescriptor) {
+    
   }
 
   onMaterialChange = () => {

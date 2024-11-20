@@ -15,7 +15,7 @@ import ModifierNode from './ModifierNode';
 import { isModifierNode } from './ModifierNode';
 import ProjectItem from '../../Project/Types/ProjectItem';
 import { type FolderInterface } from '../../Project/Types/types';
-import { type ComponentType, type ComponentDescriptor } from '../../Renderer/Types';
+import { type ComponentType, type ComponentDescriptor, type ComponentPropsDescriptor } from '../../Renderer/Types';
 import type PropsBase from '../../Renderer/Properties/PropsBase';
 
 type ModifierNodeEntry = { modifier: ModifierNode, node?: TreeNode }
@@ -37,9 +37,6 @@ class Scene implements SceneInterface {
   accessor selectedNode: TreeNode | null = null;
 
   draggingNode: TreeNode | null = null;
-
-  // Map of nodes index by node id and then tree id
-  // nodeMaps: Map<number, NodeInfo> = new Map()
 
   private nodes: Map<SceneId, Map<NodeId, TreeNodeDescriptor | ModifierNode>> = new Map()
 
@@ -130,6 +127,18 @@ class Scene implements SceneInterface {
     }
   }
 
+  async updateObjectComponent(id: number, descriptor: ComponentPropsDescriptor) {
+    const response = await Http.patch(`/api/components/${id}`, descriptor)
+
+    if (response.ok) {
+      const component = this.components.get(id)
+
+      if (component) {
+        component.props = descriptor
+      }
+    }
+  }
+
   static async fromDescriptor(descriptor: SceneDescriptor) {
     const scene = new Scene(descriptor.id);
 
@@ -195,6 +204,14 @@ class Scene implements SceneInterface {
     }
   }
 
+  getObject(id: number) {
+    const descriptor = this.objects.get(id)?.descriptor
+
+    if (descriptor) {
+      return SceneObject.fromDescriptor(descriptor, this.components)
+    }
+  }
+
   async createTree(rootNodeId: number, rootSceneId: number, parent?: TreeNode) {
     let root: TreeNode | undefined;
 
@@ -241,11 +258,11 @@ class Scene implements SceneInterface {
           const o = this.objects.get(descriptor.sceneObjectId)
 
           if (o) {
-            if (o.object === undefined) {
-              o.object = await SceneObject.fromDescriptor(o.descriptor, this.components)
-            }
+            // if (o.object === undefined) {
+              object = await SceneObject.fromDescriptor(o.descriptor, this.components)
+            // }
 
-            object = o.object
+            // object = o.object
           }
 
           if (object == null) {
@@ -258,7 +275,10 @@ class Scene implements SceneInterface {
           for (let i = modifiers.length - 1; i >= 0; i -= 1) {
             const modifier = modifiers[i].modifier
 
-            object = await modifier.getObject(descriptor.id ^ pathId, object)
+            const mods = modifier.getModificationEntry(descriptor.id ^ pathId);
+            object.applyModifications(mods.sceneObject, i === 0)
+
+            // object = await modifier.getObject(descriptor.id ^ pathId, object)
 
             pathId ^= modifier.id
           }
@@ -509,7 +529,7 @@ class Scene implements SceneInterface {
       component: component
         ? {
           type: component.type,
-          props: component.props.toDescriptor(),
+          props: component.props.toDescriptor(false),
         }
         : undefined,
     }

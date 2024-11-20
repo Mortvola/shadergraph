@@ -10,15 +10,23 @@ class Sphere {
 
   hemisphere = false;
 
-  constructor(props: PropsBase, hemisphere = false, descriptor?: SphereDescriptor, onChange?: () => void, previousProps?: Sphere) {
-    this.radius = new PSNumber('Radius', props, descriptor?.radius, 1, onChange, previousProps?.radius)
+  props: PropsBase;
+
+  constructor(
+    props: PropsBase,
+    hemisphere = false,
+    descriptor?: SphereDescriptor,
+    onChange?: () => void,
+  ) {
+    this.props = props;
+    this.radius = new PSNumber(props, descriptor?.radius, 1, onChange)
     this.hemisphere = hemisphere;
   }
 
   toDescriptor(): SphereDescriptor | undefined {
     const descriptor = {
       radius: this.radius.toDescriptor(),
-      hemisphere: (this.radius.base === undefined || this.radius.override) ? this.hemisphere : undefined,
+      hemisphere: (this.props.isTopLevel || this.radius.override) ? this.hemisphere : undefined,
     }
 
     return removeUndefinedKeys(descriptor)

@@ -17,38 +17,45 @@ class TransformProps extends PropsBase implements TransformPropsInterface {
   constructor(
     descriptor?: Partial<TransformPropsDescriptor>,
     onChange?: () => void,
-    previousProps?: TransformProps,
   ) {
     super()
 
     this.onChange = onChange
 
     this.translate = new PSVec3Type(
-      'Translate',
       this,
       descriptor?.translate ? vec3n.create(...descriptor.translate) : undefined,
       vec3n.create(0, 0, 0),
-      () => this.handleChange,
-      previousProps?.translate,
+      () => { this.handleChange() },
     )
 
     this.rotate = new PSVec3Type(
-      'Rotate',
       this,
       descriptor?.rotate ? vec3n.create(...descriptor.rotate) : undefined,
       vec3n.create(0, 0, 0),
-      () => this.handleChange,
-      previousProps?.rotate,
+      () => { this.handleChange() },
     )
 
     this.scale = new PSVec3Type(
-      'Scale',
       this,
       descriptor?.scale ? vec3n.create(...descriptor.scale) : undefined,
       vec3n.create(1, 1, 1),
-      () => this.handleChange,
-      previousProps?.scale,
+      () => { this.handleChange() },
     )
+  }
+
+  applyModifications(descriptor: TransformPropsDescriptor, override: boolean) {
+    if (descriptor.translate) {
+      this.translate.applyModifications(descriptor.translate, override)
+    }
+
+    if (descriptor.rotate) {
+      this.rotate.applyModifications(descriptor.rotate, override)
+    }
+
+    if (descriptor.scale) {
+      this.scale.applyModifications(descriptor.scale, override)
+    }
   }
 
   toDescriptor(): TransformPropsDescriptor | undefined {

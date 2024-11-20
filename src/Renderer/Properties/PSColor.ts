@@ -21,7 +21,7 @@ class PSColor extends PropertyBase {
     runInAction(() => {
       this._type = value.value;
       if (value.override) {
-        this.override = value.override && this.base !== undefined;
+        this.override = value.override && !this.props.isTopLevel
       }
     })
   }
@@ -37,29 +37,22 @@ class PSColor extends PropertyBase {
     runInAction(() => {
       this._color = value.value;
       if (value.override) {
-        this.override = value.override && this.base !== undefined;
+        this.override = value.override && !this.props.isTopLevel
       }
     })
   }
 
   gradients: [Gradient, Gradient];
 
-  constructor(name: string, props: PropsBase, descriptor?: PSColorDescriptor, onChange?: () => void, prevousProp?: PSColor) {
-    super(name, props, prevousProp);
+  constructor(
+    props: PropsBase, descriptor?: PSColorDescriptor, onChange?: () => void,
+  ) {
+    super(props);
 
     this.gradients = [new Gradient(this), new Gradient(this)]
 
     if (descriptor) {
       this.applyDescriptor(descriptor)
-    }
-
-    if (prevousProp) {
-      if (descriptor === undefined) {
-        this.copyProp(prevousProp)
-      }
-      else {
-        this.override = true
-      }
     }
 
     this.onChange = onChange;
@@ -95,6 +88,10 @@ class PSColor extends PropertyBase {
     })
   }
 
+  update(descriptor?: PSColorDescriptor) {
+
+  }
+
   applyDescriptor(descriptor: PSColorDescriptor) {
     this.style = { value: descriptor.type ?? PSColorType.Constant };
     this.color = descriptor.color !== undefined
@@ -112,7 +109,7 @@ class PSColor extends PropertyBase {
   }
 
   toDescriptor(): PSColorDescriptor | undefined {
-    if (this.base === undefined || this.override) {
+    if (this.props.isTopLevel || this.override) {
       return ({
         type: this.style,
         color: [this.color[0].slice(), this.color[1].slice()],

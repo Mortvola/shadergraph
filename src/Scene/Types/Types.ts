@@ -3,7 +3,7 @@ import type { ParticleSystemPropsDescriptor } from '../../Renderer/ParticleSyste
 import { type PSString } from '../../Renderer/Properties/Property';
 import type { PropertyBaseInterface } from '../../Renderer/Properties/Types';
 import type {
-  ComponentDescriptor, ComponentType, LightPropsDescriptor, NewSceneObjectComponent,
+  ComponentDescriptor, ComponentPropsDescriptor, ComponentType, LightPropsDescriptor, NewSceneObjectComponent,
   SceneObjectComponent as SceneObjectComponent, TransformPropsInterface,
 } from '../../Renderer/Types';
 import type ModifierNode from './ModifierNode';
@@ -35,11 +35,6 @@ export type PrefabNodeDescriptor = {
 export type SceneId = number;
 export type NodeId = number;
 
-// export type NodeInfo = {
-//   treeNodes: Map<SceneId | undefined, TreeNode>,
-//   objects: Map<SceneId | undefined, SceneObjectInterface>,
-// }
-
 export interface SceneInterface {
   id: number;
 
@@ -51,7 +46,7 @@ export interface SceneInterface {
 
   draggingNode: TreeNode | null;
 
-  // nodeMaps: Map<number, NodeInfo>
+  getObject(id: number): SceneObjectInterface | undefined
 
   processModifications(modifications: (ModificationEntry & { sceneId: number, nodeId: number })[]): void
 
@@ -80,11 +75,13 @@ export interface SceneInterface {
   removeScene(): void;
 
   addNewItem(type: SceneItemType): void;
+
+  updateObjectComponent(id: number, descriptor: ComponentPropsDescriptor): Promise<void>;
 }
 
 export const isTreeNode = (r: unknown): r is TreeNode => (
   (r as TreeNode)?.renderNode !== undefined
-  && (r as TreeNode)?.nodeObject !== undefined
+  && (r as TreeNode)?.sceneObject !== undefined
   && (r as TreeNode)?.children !== undefined
   // && (r as TreeNode)?.components !== undefined
 )
@@ -94,6 +91,8 @@ export interface HeaderInterface {
 }
 
 export interface SceneObjectInterface {
+  id: number
+
   header: HeaderInterface;
 
   components: SceneObjectComponent[];
@@ -102,11 +101,11 @@ export interface SceneObjectInterface {
 
   node?: TreeNode;
 
-  modifierNode?: ModifierNode;
-
-  baseObject?: SceneObjectInterface;
-
   tree?: { id: number, name: string };
+
+  get isTopLevel(): boolean;
+
+  applyModifications(modifications: SceneObjectModifications, override: boolean): void;
 
   addComponent(component: NewSceneObjectComponent): void;
 

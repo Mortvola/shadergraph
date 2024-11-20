@@ -56,7 +56,7 @@ const Inspector: React.FC<PropsType> = observer(({
 
   const renderView = () => {
     if (selectedNode) {
-      return <SceneObject sceneObject={selectedNode.nodeObject} />
+      return <SceneObject sceneObject={selectedNode.sceneObject} />
     }
 
     if (selectedItem) {

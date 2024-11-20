@@ -84,7 +84,7 @@ class TreeNode {
 
   private _sceneObject: SceneObjectInterface;
 
-  get nodeObject(): SceneObjectInterface {
+  get sceneObject(): SceneObjectInterface {
     return this._sceneObject
   }
 
@@ -441,18 +441,18 @@ class TreeNode {
   }
 
   transformChanged() {
-    vec3.copy(this.nodeObject.transformProps.translate.get(), this.renderNode.translate)
+    vec3.copy(this.sceneObject.transformProps.translate.get(), this.renderNode.translate)
     this.renderNode.setFromAngles(
-      this.nodeObject.transformProps.rotate.get()[0],
-      this.nodeObject.transformProps.rotate.get()[1],
-      this.nodeObject.transformProps.rotate.get()[2],
+      this.sceneObject.transformProps.rotate.get()[0],
+      this.sceneObject.transformProps.rotate.get()[1],
+      this.sceneObject.transformProps.rotate.get()[2],
     )
-    vec3.copy(this.nodeObject.transformProps.scale.get(), this.renderNode.scale)
+    vec3.copy(this.sceneObject.transformProps.scale.get(), this.renderNode.scale)
   }
 
   changeName(name: string) {
     runInAction(() => {
-      this.nodeObject.header.name.set(name, true)
+      this.sceneObject.header.name.set(name, true)
     })
   }
 

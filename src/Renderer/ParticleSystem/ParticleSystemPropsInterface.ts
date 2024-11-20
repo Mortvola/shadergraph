@@ -51,7 +51,9 @@ export interface ParticleSystemPropsInterface {
 
   renderer: Renderer;
 
+  applyModifications(descriptor: ParticleSystemPropsDescriptor, override: boolean): void;
+
   handleChange: () => void;
 
-  toDescriptor(): ParticleSystemPropsDescriptor | undefined;
+  toDescriptor(overridesOnly: boolean): ParticleSystemPropsDescriptor | undefined;
 }
