@@ -15,7 +15,7 @@ import ModifierNode from './ModifierNode';
 import { isModifierNode } from './ModifierNode';
 import ProjectItem from '../../Project/Types/ProjectItem';
 import { type FolderInterface } from '../../Project/Types/types';
-import { type ComponentType, type ComponentDescriptor, type ComponentPropsDescriptor } from '../../Renderer/Types';
+import { type ComponentDescriptor, type ComponentPropsDescriptor, ComponentType, SceneObjectComponent } from '../../Renderer/Types';
 import type PropsBase from '../../Renderer/Properties/PropsBase';
 
 type ModifierNodeEntry = { modifier: ModifierNode, node?: TreeNode }
@@ -354,71 +354,96 @@ class Scene implements SceneInterface {
     return root;
   }
 
+  private rebuildSceneObject(node: TreeNode, componentType: ComponentType) {
+    // Rebuild scene object using new descriptor and modifications
+    let n: TreeNode | undefined = node.sceneRoot;
+    while (n) {
+      if (n.modifierNode) {
+        const mods = n.modifierNode.getModificationEntry(node.getPathId(n.modifierNode));
+
+        const componentMod = mods.sceneObject[componentType]
+
+        if (componentMod) {
+          node.sceneObject.updateComponent(componentType, componentMod, true)
+        }
+      }
+
+      n = (n.parentModifierNode?.parent ?? n.parent)?.sceneRoot
+    }
+  }
+
   private async applyOverride(
-    node: TreeNode,
-    modifierNode: ModifierNode,
+    node: TreeNode,             // The node to apply the overrides to
+    modifierNode: ModifierNode, // The overrides
     componentType: ComponentType,
     propertyPath?: string,
   ) {
     const srcMod = modifierNode.getModificationEntry(node.getPathId(modifierNode))
 
-    const component = node.sceneObject.components[componentType];
+    if (componentType === ComponentType.Self) {
+      const object = this.objects.get(node.sceneObject.id)
 
-    if (component) {
-      const descriptor = this.components.get(component.id)
+      if (object === undefined) {
+        throw new Error('object not found')
+      }
 
-      if (descriptor?.props) {
-        let mod = srcMod.sceneObject[componentType]
+      const mod = (srcMod.sceneObject[componentType] as unknown)
+      node.sceneObject.header.name.set(mod as string, false)
 
-        if (mod) {
-          if (propertyPath) {
-            mod = {
-              [propertyPath]: mod[propertyPath],
-            }
-          }
+      object.descriptor = node.sceneObject.toDescriptor(false)
 
-          node.sceneObject.updateComponent(componentType, descriptor.props, false)
-          node.sceneObject.updateComponent(componentType, mod, false)
+      delete srcMod.sceneObject[componentType]
 
-          const component = node.sceneObject.components[componentType]
-          const newDescriptor = component.props.toDescriptor(false)
+      // If there are no properties left then delete the whole component from the modifications.
+      // const names = Object.getOwnPropertyNames(comp)
+      // if (names.length === 0) {
+      //   delete srcMod.sceneObject[componentType]
+      // }
+    } else {
+      const component = node.sceneObject.components[componentType];
 
-          // TODO: Save the new descriptor to the database.
+      if (component) {
+        const descriptor = this.components.get(component.id)
 
-          descriptor.props = newDescriptor
+        if (descriptor?.props) {
+          let mod = srcMod.sceneObject[componentType]
 
-          // Delete the component from the scene object or
-          // the property from the scene object.
-          if (propertyPath === undefined) {
-            delete srcMod.sceneObject[componentType]
-          } else {
-            const comp = srcMod.sceneObject[componentType]
-            delete comp[propertyPath]
-
-            // If there are no properties left then delete the whole component from the modifications.
-            const names = Object.getOwnPropertyNames(comp)
-            if (names.length === 0) {
-              delete srcMod.sceneObject[componentType]
-            }
-          }
-
-          // TODO: Remove the modification entry if there are no components left
-          // in the sceneObject.
-
-          // Rebuild scene object using new descriptor and modifications
-          let n: TreeNode | undefined = node.sceneRoot;
-          while (n) {
-            if (n.modifierNode) {
-              const mods = n.modifierNode.getModificationEntry(node.getPathId(n.modifierNode));
-
-              const componentMod = mods.sceneObject[componentType]
-
-              if (componentMod) {
-                node.sceneObject.updateComponent(componentType, componentMod, true)
+          if (mod) {
+            if (propertyPath) {
+              mod = {
+                [propertyPath]: mod[propertyPath],
               }
             }
 
-            n = (n.parentModifierNode?.parent ?? n.parent)?.sceneRoot
+            node.sceneObject.updateComponent(componentType, descriptor.props, false)
+            node.sceneObject.updateComponent(componentType, mod, false)
+
+            const component = node.sceneObject.components[componentType]
+            const newDescriptor = component.props.toDescriptor(false)
+
+            // TODO: Save the new descriptor to the database.
+
+            descriptor.props = newDescriptor
+
+            // Delete the component from the scene object or
+            // the property from the scene object.
+            if (propertyPath === undefined) {
+              delete srcMod.sceneObject[componentType]
+            } else {
+              const comp = srcMod.sceneObject[componentType]
+              delete comp[propertyPath]
+
+              // If there are no properties left then delete the whole component from the modifications.
+              const names = Object.getOwnPropertyNames(comp)
+              if (names.length === 0) {
+                delete srcMod.sceneObject[componentType]
+              }
+            }
+
+            // TODO: Remove the modification entry if there are no components left
+            // in the sceneObject.
+
+            this.rebuildSceneObject(node, componentType)
           }
         }
       }

@@ -424,8 +424,9 @@ class SceneObject implements SceneObjectInterface {
     return this.node?.modifierNode !== undefined
   }
 
-  toDescriptor(overridesOnly: boolean): Omit<SceneObjectDescriptor, 'id'> {
+  toDescriptor(overridesOnly: boolean): SceneObjectDescriptor {
     const descriptor = {
+      id: this.id,
       name: this.header.name.toDescriptor(overridesOnly),
       components: Object.keys(this.components).map((c) => this.components[c].id),
     }

@@ -134,6 +134,8 @@ export interface SceneObjectInterface {
   getNextComponentId(): number;
 
   get hasOverrides(): boolean;
+
+  toDescriptor(overridesOnly: boolean): SceneObjectDescriptor;
 }
 
 export const isGameObject = (r: unknown): r is SceneObjectInterface => (

@@ -217,7 +217,7 @@ const SceneObject: React.FC<PropsType> = observer(({
   return (
     <div className={styles.gameObject} onDragOver={handleDragOver} onDrop={handleDrop}>
       <div className={styles.title}>
-        <Header header={sceneObject.header} />
+        <Header header={sceneObject.header} node={sceneObject.node!} />
         <div>
           <button ref={buttonRef} onClick={handleAddClick}>Add Component</button>
           {
