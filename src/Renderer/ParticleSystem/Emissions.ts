@@ -5,6 +5,7 @@ import PSModule from '../Properties/PSModule';
 import { type EmissionsDescriptor } from './Types';
 import { PSBursts } from '../Properties/PSBursts';
 import PSValue from '../Properties/PSValue';
+import { runInAction } from 'mobx';
 
 class Emissions extends PSModule {
   rate: PSNumber
@@ -43,11 +44,48 @@ class Emissions extends PSModule {
     }
   }
 
-  toDescriptor(): EmissionsDescriptor | undefined {
+  addBurst() {
+    runInAction(() => {
+      this.bursts.set(
+        [
+          ...this.bursts.get(),
+          { time: 0, count: new PSValue(this.rate.props, { value: [1, 1] }), cycles: 0, probability: 1 },
+        ],
+        true,
+      )
+    })
+  }
+
+  deleteBurst(index: number) {
+    runInAction(() => {
+      this.bursts.set(
+        [
+          ...this.bursts.get().slice(0, index),
+          ...this.bursts.get().slice(index + 1),
+        ],
+        true,
+      )
+    })
+  }
+
+  updateBurstTime(index: number, value: number) {
+    runInAction(() => {
+      this.bursts.set(
+        [
+          ...this.bursts.get().slice(0, index),
+          { ...this.bursts.get()[index], time: value },
+          ...this.bursts.get().slice(index + 1),
+        ],
+        true,
+      )
+    })
+  }
+
+  toDescriptor(overridesOnly: boolean): EmissionsDescriptor | undefined {
     const descriptor = {
-      enabled: this.enabled.toDescriptor(),
-      rate: this.rate.toDescriptor(),
-      bursts: this.bursts.toDescriptor(),
+      enabled: this.enabled.toDescriptor(overridesOnly),
+      rate: this.rate.toDescriptor(overridesOnly),
+      bursts: this.bursts.toDescriptor(overridesOnly),
     }
 
     return removeUndefinedKeys(descriptor)

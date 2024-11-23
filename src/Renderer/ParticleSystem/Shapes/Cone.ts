@@ -18,10 +18,10 @@ class Cone {
     );
   }
 
-  toDescriptor(): ConeDescriptor | undefined {
+  toDescriptor(overridesOnly: boolean): ConeDescriptor | undefined {
     const descriptor = {
-      angle: this.angle.toDescriptor(),
-      originRadius: this.originRadius.toDescriptor(),
+      angle: this.angle.toDescriptor(overridesOnly),
+      originRadius: this.originRadius.toDescriptor(overridesOnly),
     }
 
     return removeUndefinedKeys(descriptor)

@@ -4,7 +4,7 @@ import type PropsBase from './PropsBase';
 import PropertyBase from './PropertyBase';
 import { vec3n, type Vec3n } from 'wgpu-matrix';
 
-export class Property<T extends { toString(): string } | undefined> extends PropertyBase {
+export class Property<T> extends PropertyBase {
   @observable protected accessor value: T;
 
   set(value?: T, override = false) {
@@ -33,13 +33,13 @@ export class Property<T extends { toString(): string } | undefined> extends Prop
     return this.value;
   }
 
-  toString(): string {
-    if (this.value !== undefined) {
-      return this.value.toString()
-    }
+  // toString(): string {
+  //   if (this.value !== undefined) {
+  //     return this.value.toString()
+  //   }
 
-    return 'undefined'
-  }
+  //   return 'undefined'
+  // }
 
   constructor(
     props: PropsBase,
@@ -62,9 +62,9 @@ export class Property<T extends { toString(): string } | undefined> extends Prop
     })
   }
 
-  toDescriptor(): T | undefined {
+  toDescriptor(overridesOnly: boolean): T | undefined {
     // Only output the descriptor if this a base property or if this is an override
-    if (this.props.isTopLevel || this.override) {
+    if (!overridesOnly || this.override) {
       return this.value
     }
   }
@@ -189,9 +189,9 @@ export class PSVec3Type extends Property<Vec3n> {
     })
   }
 
-  toDescriptor(): Vec3n | undefined {
+  toDescriptor(overridesOnly: boolean): Vec3n | undefined {
     // Only output the descriptor if this a base property or if this is an override
-    if (this.props.isTopLevel || this.override) {
+    if (!overridesOnly || this.override) {
       return vec3n.create(...this.value)
     }
   }

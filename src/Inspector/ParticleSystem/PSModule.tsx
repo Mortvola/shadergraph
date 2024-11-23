@@ -4,17 +4,21 @@ import Checkbox from '../../ShaderEditor/Controls/Checkbox';
 import styles from './PSModule.module.scss';
 import type PSModuleData from '../../Renderer/Properties/PSModule';
 import Property from '../Property';
+import type TreeNode from '../../Scene/Types/TreeNode';
+import { ComponentType } from '../../Renderer/Types';
 
 type PropsType = {
   module: PSModuleData,
   title: string,
   children?: React.ReactNode,
+  node: TreeNode,
 }
 
 const PSModule: React.FC<PropsType> = observer(({
   module,
   title,
   children,
+  node,
 }) => {
   const [open, setOpen] = React.useState<boolean>(false);
 
@@ -30,7 +34,15 @@ const PSModule: React.FC<PropsType> = observer(({
     <div className={styles.layout}>
       <div onClick={handleOpenClick}>
         <Checkbox
-          label={<Property label={title} property={module.enabled} />}
+          label={
+            <Property
+              label={title}
+              property={module.enabled}
+              node={node}
+              componentType={ComponentType.ParticleSystem}
+              propertyPath="enabled"
+            />
+          }
           value={module.enabled.get()}
           onChange={handleEnableChange}
         />

@@ -40,13 +40,13 @@ class Shape extends PSModule {
 
   }
 
-  toDescriptor(): ShapeDescriptor | undefined {
+  toDescriptor(overridesOnly: boolean): ShapeDescriptor | undefined {
     const descriptor = {
-      enabled: this.enabled.toDescriptor(),
-      type: this.type.toDescriptor(),
-      cone: this.cone.toDescriptor(),
-      sphere: this.sphere.toDescriptor(),
-      hemisphere: this.hemisphere.toDescriptor(),
+      enabled: this.enabled.toDescriptor(overridesOnly),
+      type: this.type.toDescriptor(overridesOnly),
+      cone: this.cone.toDescriptor(overridesOnly),
+      sphere: this.sphere.toDescriptor(overridesOnly),
+      hemisphere: this.hemisphere.toDescriptor(overridesOnly),
     }
 
     return removeUndefinedKeys(descriptor)

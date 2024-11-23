@@ -23,9 +23,9 @@ class Sphere {
     this.hemisphere = hemisphere;
   }
 
-  toDescriptor(): SphereDescriptor | undefined {
+  toDescriptor(overridesOnly: boolean): SphereDescriptor | undefined {
     const descriptor = {
-      radius: this.radius.toDescriptor(),
+      radius: this.radius.toDescriptor(overridesOnly),
       hemisphere: (this.props.isTopLevel || this.radius.override) ? this.hemisphere : undefined,
     }
 

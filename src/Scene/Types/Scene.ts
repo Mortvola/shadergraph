@@ -176,12 +176,7 @@ class Scene implements SceneInterface {
         })
       }
 
-      if (node.parentModifierNode != null) {
-        node = node.parentModifierNode.parent
-      }
-      else {
-        node = node.parent
-      }
+      node = node.parentModifierNode?.parent ?? node.parent
     }
 
     modifiers.reverse()
@@ -357,6 +352,169 @@ class Scene implements SceneInterface {
     }
 
     return root;
+  }
+
+  private async applyOverride(
+    node: TreeNode,
+    modifierNode: ModifierNode,
+    componentType: ComponentType,
+    propertyPath?: string,
+  ) {
+    const srcMod = modifierNode.getModificationEntry(node.getPathId(modifierNode))
+
+    const component = node.sceneObject.components[componentType];
+
+    if (component) {
+      const descriptor = this.components.get(component.id)
+
+      if (descriptor?.props) {
+        let mod = srcMod.sceneObject[componentType]
+
+        if (mod) {
+          if (propertyPath) {
+            mod = {
+              [propertyPath]: mod[propertyPath],
+            }
+          }
+
+          node.sceneObject.updateComponent(componentType, descriptor.props, false)
+          node.sceneObject.updateComponent(componentType, mod, false)
+
+          const component = node.sceneObject.components[componentType]
+          const newDescriptor = component.props.toDescriptor(false)
+
+          // TODO: Save the new descriptor to the database.
+
+          descriptor.props = newDescriptor
+
+          // Delete the component from the scene object or
+          // the property from the scene object.
+          if (propertyPath === undefined) {
+            delete srcMod.sceneObject[componentType]
+          } else {
+            const comp = srcMod.sceneObject[componentType]
+            delete comp[propertyPath]
+
+            // If there are no properties left then delete the whole component from the modifications.
+            const names = Object.getOwnPropertyNames(comp)
+            if (names.length === 0) {
+              delete srcMod.sceneObject[componentType]
+            }
+          }
+
+          // TODO: Remove the modification entry if there are no components left
+          // in the sceneObject.
+
+          // Rebuild scene object using new descriptor and modifications
+          let n: TreeNode | undefined = node.sceneRoot;
+          while (n) {
+            if (n.modifierNode) {
+              const mods = n.modifierNode.getModificationEntry(node.getPathId(n.modifierNode));
+
+              const componentMod = mods.sceneObject[componentType]
+
+              if (componentMod) {
+                node.sceneObject.updateComponent(componentType, componentMod, true)
+              }
+            }
+
+            n = (n.parentModifierNode?.parent ?? n.parent)?.sceneRoot
+          }
+        }
+      }
+    }
+  }
+
+  private async applyAsOverride(
+    root: TreeNode,
+    node: TreeNode,
+    modifierNode: ModifierNode,
+    componentType: ComponentType,
+    propertyPath?: string,
+  ) {
+    if (root.modifierNode === undefined) {
+      throw new Error('modifier node not set')
+    }
+
+    const srcMod = root.modifierNode.getModificationEntry(node.getPathId(root.modifierNode))
+    const destMod = modifierNode.getModificationEntry(node.getPathId(modifierNode))
+
+    const payload = {
+      modifierNodeId: modifierNode.id,
+      sceneId: modifierNode.sceneId,
+      pathId: destMod.pathId,
+      source: {
+        modifierNodeId: root.modifierNode.id,
+        sceneId: root.modifierNode.sceneId,
+        pathId: srcMod.pathId,
+        key: componentType,
+      },
+    }
+
+    const response = await Http.put('/api/node-modifications', payload)
+
+    if (response.ok) {
+      runInAction(() => {
+        destMod.sceneObject = {
+          ...destMod.sceneObject,
+          [componentType]: srcMod.sceneObject[componentType],
+        }
+
+        delete srcMod.sceneObject[componentType]
+      })
+
+      console.log(JSON.stringify(destMod.sceneObject))
+    }
+  }
+
+  getApplyTargets(node: TreeNode, componentType: ComponentType, propertyPath?: string) {
+    const t: { label: string, action: () => void, }[] = []
+
+    const root = node.getTopLevelModifierNode()
+
+    if (root === undefined) {
+      throw new Error('root is not defiend')
+    }
+
+    let n: TreeNode | undefined = node.sceneRoot;
+
+    while (n) {
+      if (n.sceneRoot.sceneId === node.sceneId) {
+        const base = this.objects.get(node.sceneObject.id)
+
+        if (base === undefined) {
+          throw new Error('object not found')
+        }
+
+        t.push({
+          label: `Apply to ${base.descriptor.name}`,
+          action: () => { this.applyOverride(node, root.modifierNode!, componentType, propertyPath) },
+        })
+      } else if (n.modifierNode) {
+        // If we reached a modifier node in the top level scene then
+        // we don't need to look any further.
+        if (n.modifierNode.sceneId === n.scene.root?.sceneId) {
+          break;
+        }
+
+        const object = this.objects.get(n.sceneRoot.sceneObject.id)
+
+        if (object === undefined) {
+          throw new Error('object not defined')
+        }
+
+        const modifierNode = n.modifierNode
+
+        t.push({
+          label: `Apply as override in ${object.descriptor.name}`,
+          action: () => { this.applyAsOverride(root, node, modifierNode, componentType, propertyPath) },
+        })
+      }
+
+      n = (n.parentModifierNode?.parent ?? n.parent)?.sceneRoot
+    }
+
+    return t.reverse();
   }
 
   async pushTree(nodeId: number, sceneId: number) {

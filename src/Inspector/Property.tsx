@@ -3,7 +3,8 @@ import styles from './Inspector.module.scss';
 import Select from './Select';
 import { observer } from 'mobx-react-lite';
 import type { PropertyBaseInterface } from '../Renderer/Properties/Types';
-import type PropertyBase from '../Renderer/Properties/PropertyBase';
+import type TreeNode from '../Scene/Types/TreeNode';
+import { type ComponentType } from '../Renderer/Types';
 
 type PropsType = {
   label: string,
@@ -12,6 +13,9 @@ type PropsType = {
   onDragOver?: (event: React.DragEvent<HTMLLabelElement>) => void,
   onDrop?: (event: React.DragEvent<HTMLLabelElement>) => void,
   className?: string,
+  node: TreeNode,
+  componentType: ComponentType,
+  propertyPath: string,
 }
 
 const Property: React.FC<PropsType> = observer(({
@@ -21,13 +25,24 @@ const Property: React.FC<PropsType> = observer(({
   onDragOver,
   onDrop,
   className,
+  node,
+  componentType,
+  propertyPath,
 }) => {
   const [open, setOpen] = React.useState<DOMRect | null>(null);
   const ref = React.useRef<HTMLDivElement>(null);
 
   const options = [
-    { value: undefined, label: 'Revert Override' },
+    { action: () => { property.revertOverride() }, label: 'Revert Override' },
   ]
+
+  const applyOptions = () => {
+    const targets = node.scene.getApplyTargets(node, componentType, propertyPath)
+    return [
+      ...targets,
+      ...options,
+    ]
+  }
 
   const handleOpenClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();
@@ -48,12 +63,9 @@ const Property: React.FC<PropsType> = observer(({
     setOpen(null);
   }
 
-  const onSelect = (value: PropertyBase | undefined) => {
-    if (value === undefined) {
-      property.revertOverride()
-    }
-    else {
-      property.applyOverride(value)
+  const onSelect = (action: (() => void) | undefined) => {
+    if (action !== undefined) {
+      action()
     }
   }
 
@@ -84,13 +96,7 @@ const Property: React.FC<PropsType> = observer(({
               onSelect={onSelect}
               onClose={handleClose}
               rect={open}
-              options={[
-                ...property.lineage().map((l) => ({
-                  value: l.property,
-                  label: `Apply to ${l.name} in ${l.container}`,
-                })),
-                ...options,
-              ]}
+              options={applyOptions()}
             />
           )
           : null

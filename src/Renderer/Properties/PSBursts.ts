@@ -22,12 +22,12 @@ export class PSBursts extends Property<BurstsType> {
     })
   }
 
-  toDescriptor(): any | undefined {
+  toDescriptor(overridesOnly: boolean): any | undefined {
     // Only output the descriptor if this a base property or if this is an override
-    if (this.props.isTopLevel || this.override) {
+    if (!overridesOnly || this.override) {
       return this.value.map((v) => ({
         time: v.time,
-        count: v.count.toDescriptor(),
+        count: v.count.toDescriptor(overridesOnly),
         cycles: v.cycles,
         probability: v.probability,
       }))

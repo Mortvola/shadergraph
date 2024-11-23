@@ -4,11 +4,11 @@ import { type PSString } from '../../Renderer/Properties/Property';
 import type { PropertyBaseInterface } from '../../Renderer/Properties/Types';
 import type {
   ComponentDescriptor, ComponentPropsDescriptor, ComponentType, LightPropsDescriptor, NewSceneObjectComponent,
-  SceneObjectComponent as SceneObjectComponent, TransformPropsInterface,
+  SceneObjectComponent as SceneObjectComponent,
 } from '../../Renderer/Types';
-import type ModifierNode from './ModifierNode';
 import type TreeNode from './TreeNode';
 import type PropsBase from '../../Renderer/Properties/PropsBase';
+import type ModifierNode from './ModifierNode';
 
 export enum SceneItemType {
   SceneObject = 'SceneObject',
@@ -77,6 +77,12 @@ export interface SceneInterface {
   addNewItem(type: SceneItemType): void;
 
   updateObjectComponent(id: number, descriptor: ComponentPropsDescriptor): Promise<void>;
+
+  getApplyTargets(
+    node: TreeNode,
+    componentType: ComponentType,
+    propertyPath?: string,
+  ): { label: string, action: () => void, }[];
 }
 
 export const isTreeNode = (r: unknown): r is TreeNode => (
@@ -90,22 +96,30 @@ export interface HeaderInterface {
   name: PSString
 }
 
+export type SceneObjectComponents = Record<string, SceneObjectComponent>
+
 export interface SceneObjectInterface {
   id: number
 
   header: HeaderInterface;
 
-  components: SceneObjectComponent[];
+  components: SceneObjectComponents;
 
-  transformProps: TransformPropsInterface;
+  // transformProps: TransformPropsInterface;
 
   node?: TreeNode;
 
-  tree?: { id: number, name: string };
+  // tree?: { id: number, name: string };
 
   get isTopLevel(): boolean;
 
   applyModifications(modifications: SceneObjectModifications, override: boolean): void;
+
+  updateComponent(
+    componentType: ComponentType,
+    componentDescriptor: ComponentPropsDescriptor,
+    override: boolean,
+  ): void;
 
   addComponent(component: NewSceneObjectComponent): void;
 
@@ -115,7 +129,7 @@ export interface SceneObjectInterface {
 
   isPrefabInstanceRoot(): boolean;
 
-  save(): Promise<void>;
+  // save(): Promise<void>;
 
   getNextComponentId(): number;
 
@@ -206,7 +220,7 @@ export type AddedNode = {
   pathId: number,
 }
 
-export type SceneObjectModifications = Record<string, unknown>
+export type SceneObjectModifications = Record<string, Record<string, unknown>>
 
 export type ModificationEntry = {
   pathId: number,

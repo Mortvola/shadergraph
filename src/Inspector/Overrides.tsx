@@ -7,6 +7,7 @@ import type TreeNode from '../Scene/Types/TreeNode';
 import { observer } from 'mobx-react-lite';
 import ComponentComparison from './ComponentComparison';
 import HeaderComparison from './HeaderComparison';
+import { ComponentType } from '../Renderer/Types';
 
 type PropsType = {
   root: TreeNode,
@@ -59,7 +60,7 @@ const Overrides: React.FC<PropsType> = observer(({
                 position={Position.left}
                 style={{ marginLeft: `${level}rem`, fontWeight: 'bold' }}
               >
-                <HeaderComparison root={root} node={node} baseObject={baseObject} object={node.sceneObject} />
+                <HeaderComparison node={node} baseObject={baseObject} object={node.sceneObject} />
               </PopupButton>,
             )
           }
@@ -76,14 +77,14 @@ const Overrides: React.FC<PropsType> = observer(({
 
         if (mod) {
           for (const k of Object.keys(mod.sceneObject)) {
-            if (k !== 'name') {
-              const component = node.sceneObject.components.find((c) => c.type === k)
+            if (k !== ComponentType.Self) {
+              const component = node.sceneObject.components[k]
 
               if (component !== undefined) {
                 const baseObject = node.scene?.getObject(node.sceneObject.id)
-                const baseComponent = baseObject?.components.find((c) => c.type === k)
+                const baseComponent = baseObject?.components[k]
 
-                if (baseObject != undefined && baseComponent !== undefined) {
+                if (baseComponent !== undefined) {
                   connections.push(
                     <PopupButton
                       key={`${node.getPathId(root.modifierNode)}`}
@@ -93,9 +94,7 @@ const Overrides: React.FC<PropsType> = observer(({
                       style={{ marginLeft: `${level + 1}rem`, fontWeight: 'bold' }}
                     >
                       <ComponentComparison
-                        root={root}
                         node={node}
-                        baseObject={baseObject}
                         baseComponent={baseComponent}
                         component={component}
                       />

@@ -7,13 +7,17 @@ import { useStores } from '../../State/store';
 import Property from '../Property';
 import { ProjectItemType } from '../../Project/Types/types';
 import PSRenderAlignmentSelector from './PSRenderAlignmentSelector copy';
+import type TreeNode from '../../Scene/Types/TreeNode';
+import { ComponentType } from '../../Renderer/Types';
 
 type PropsType = {
   value: Renderer,
+  node: TreeNode,
 }
 
 const PSRenderer: React.FC<PropsType> = observer(({
   value,
+  node,
 }) => {
   const store = useStores();
 
@@ -71,13 +75,27 @@ const PSRenderer: React.FC<PropsType> = observer(({
 
   return (
     <>
-      <Property label="Render Mode" property={value.mode}>
+      <Property
+        label="Render Mode"
+        property={value.mode}
+        node={node}
+        componentType={ComponentType.ParticleSystem}
+        propertyPath="mode"
+      >
         <PSRenderModeTypeSelector value={value.mode.get()} onChange={handleModeChange} />
       </Property>
       {
         value.mode.get() === RenderMode.Mesh
           ? (
-            <Property label="Mesh" property={value.meshId} onDragOver={handleDragOver} onDrop={handleDrop}>
+            <Property
+              label="Mesh"
+              property={value.meshId}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              node={node}
+              componentType={ComponentType.ParticleSystem}
+              propertyPath="meshId"
+            >
               <div>
                 {
                   value.mesh
@@ -89,7 +107,15 @@ const PSRenderer: React.FC<PropsType> = observer(({
           )
           : null
       }
-      <Property label="Material" property={value.materialId} onDragOver={handleDragOver} onDrop={handleDrop}>
+      <Property
+        label="Material"
+        property={value.materialId}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+        node={node}
+        componentType={ComponentType.ParticleSystem}
+        propertyPath="materialId"
+      >
         <div>
           {
             value.material
@@ -98,7 +124,13 @@ const PSRenderer: React.FC<PropsType> = observer(({
           }
         </div>
       </Property>
-      <Property label="Render Alignment" property={value.mode}>
+      <Property
+        label="Render Alignment"
+        property={value.mode}
+        node={node}
+        componentType={ComponentType.ParticleSystem}
+        propertyPath="mode"
+      >
         <PSRenderAlignmentSelector value={value.renderAlignment.get()} onChange={handleRenderAlignmentChange} />
       </Property>
     </>

@@ -182,6 +182,7 @@ export type DecalItem = {
 }
 
 export enum ComponentType {
+  Self = 'name',
   Transform = 'Transform',
   Drawable = 'Drawable',
   Light = 'Light',

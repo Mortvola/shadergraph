@@ -23,10 +23,10 @@ class LifetimeRotation extends PSModule {
 
   }
 
-  toDescriptor(): LifetimeRotationDescriptor | undefined {
+  toDescriptor(overridesOnly: boolean): LifetimeRotationDescriptor | undefined {
     const descriptor = {
-      enabled: this.enabled.toDescriptor(),
-      angularVelocity: this.angularVelocity.toDescriptor(),
+      enabled: this.enabled.toDescriptor(overridesOnly),
+      angularVelocity: this.angularVelocity.toDescriptor(overridesOnly),
     }
 
     return removeUndefinedKeys(descriptor)

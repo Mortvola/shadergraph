@@ -18,13 +18,11 @@ export interface PropertyBaseInterface {
 
   props: PropsBaseInterface;
 
-  toString(): string;
+  // toString(): string;
 
   revertOverride(): void
 
-  applyOverride(property: PropertyBaseInterface): void
-
-  lineage(): LineageEntry[]
+  // applyOverride(property: PropertyBaseInterface): void
 
   copyProp(_other: PropertyBaseInterface): void
 

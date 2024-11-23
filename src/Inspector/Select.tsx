@@ -1,13 +1,12 @@
 import React from 'react';
 import { createPortal } from 'react-dom';
 import styles from './Select.module.scss';
-import type PropertyBase from '../Renderer/Properties/PropertyBase';
 
 type PropsType = {
-  onSelect: (value: PropertyBase | undefined) => void,
+  onSelect: (action: (() => void) | undefined) => void,
   onClose: () => void,
   rect: DOMRect,
-  options?: { value: PropertyBase | undefined, label: string }[],
+  options?: { action: (() => void) | undefined, label: string }[],
 }
 
 const Select: React.FC<PropsType> = ({
@@ -38,8 +37,8 @@ const Select: React.FC<PropsType> = ({
     }
   }, [])
 
-  const handleSelect = (value: PropertyBase | undefined) => {
-    onSelect(value);
+  const handleSelect = (action: (() => void) | undefined) => {
+    onSelect(action);
     onClose()
   }
 
@@ -60,7 +59,7 @@ const Select: React.FC<PropsType> = ({
               >
                 {
                   options.map((o) => (
-                    <div key={o.label} className={styles.item} onClick={() => handleSelect(o.value)}>{o.label}</div>
+                    <div key={o.label} className={styles.item} onClick={() => handleSelect(o.action)}>{o.label}</div>
                   ))
                 }
               </div>

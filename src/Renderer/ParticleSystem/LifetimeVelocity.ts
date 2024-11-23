@@ -26,10 +26,10 @@ class LifetimeVelocity extends PSModule {
 
   }
 
-  toDescriptor(): LifetimeVelocityDescriptor | undefined {
+  toDescriptor(overridesOnly: boolean): LifetimeVelocityDescriptor | undefined {
     const descriptor = {
-      enabled: this.enabled.toDescriptor(),
-      speedModifier: this.speedModifier.toDescriptor(),
+      enabled: this.enabled.toDescriptor(overridesOnly),
+      speedModifier: this.speedModifier.toDescriptor(overridesOnly),
     }
 
     return removeUndefinedKeys(descriptor)

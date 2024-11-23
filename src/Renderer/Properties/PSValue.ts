@@ -98,21 +98,21 @@ class PSValue extends PropertyBase {
     }
   }
 
-  toString(): string {
-    switch (this.valueType) {
-      case PSValueType.Constant:
-        return this.value[0].toString()
+  // toString(): string {
+  //   switch (this.valueType) {
+  //     case PSValueType.Constant:
+  //       return this.value[0].toString()
 
-      case PSValueType.Random:
-        return `${this.value[0].toString()} - ${this.value[1].toString()}`
+  //     case PSValueType.Random:
+  //       return `${this.value[0].toString()} - ${this.value[1].toString()}`
 
-      case PSValueType.Curve:
-        return 'Curve'
+  //     case PSValueType.Curve:
+  //       return 'Curve'
 
-      case PSValueType.RandomeCurve:
-        return 'Random Curve'
-    }
-  }
+  //     case PSValueType.RandomeCurve:
+  //       return 'Random Curve'
+  //   }
+  // }
 
   copyProp(other: PSValue) {
     runInAction(() => {
@@ -147,8 +147,8 @@ class PSValue extends PropertyBase {
     ]}
   }
 
-  toDescriptor(): PSValueDescriptor | undefined {
-    if (this.props.isTopLevel || this.override) {
+  toDescriptor(overridesOnly: boolean): PSValueDescriptor | undefined {
+    if (!overridesOnly || this.override) {
       return ({
         type: this.valueType,
         value: this.value,

@@ -119,8 +119,8 @@ class PSValue3D extends PropertyBase {
     return value;
   }
 
-  toDescriptor(): PSValue3DDescriptor | undefined {
-    if (this.props.isTopLevel || this.override) {
+  toDescriptor(overridesOnly: boolean): PSValue3DDescriptor | undefined {
+    if (!overridesOnly || this.override) {
       return ({
         separateAxes: this.separateAxes,
         type: this.style,

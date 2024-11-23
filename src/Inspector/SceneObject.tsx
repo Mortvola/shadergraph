@@ -235,17 +235,17 @@ const SceneObject: React.FC<PropsType> = observer(({
         {
           isGameObject2D(sceneObject)
             ? <GameObject2D gameObject={sceneObject} />
-            : sceneObject.components.map((component) => (
-              <div className={styles.item} key={component.id ?? 0} >
+            : Object.keys(sceneObject.components).map((c) => (
+              <div className={styles.item} key={sceneObject.components[c].id ?? 0} >
                 <div className={styles.componentTitle}>
-                  { componentTypeName(component) }
+                  { componentTypeName(sceneObject.components[c]) }
                   {
-                    component.type === ComponentType.Transform
+                    sceneObject.components[c].type === ComponentType.Transform
                       ? null
-                      : <Trash2Icon onClick={() => handleDelete(component)} />
+                      : <Trash2Icon onClick={() => handleDelete(sceneObject.components[c])} />
                   }
                 </div>
-                <Component component={component} />
+                <Component component={sceneObject.components[c]} node={sceneObject.node!} />
               </div>
             ))
         }

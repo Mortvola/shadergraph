@@ -6,28 +6,31 @@ import LightComponent from './Light'
 import type TransformProps from '../Renderer/Properties/TransformProps'
 import type ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps'
 import type LightProps from '../Renderer/Properties/LightProps'
+import type TreeNode from '../Scene/Types/TreeNode'
 
 type PropsType = {
   component: SceneObjectComponent
   className?: string
   style?: React.CSSProperties
+  node: TreeNode,
 }
 
 const Component: React.FC<PropsType> = ({
   component,
   className,
   style,
+  node,
 }) => {
   const renderComponent = () => {
     switch (component.type) {
       case ComponentType.Transform:
-        return <Transform transformProps={(component.props as TransformProps)} />
+        return <Transform transformProps={(component.props as TransformProps)} node={node} />
 
       // case ComponentType.Mesh:
       //   return <ModelTree modelItem={item.item as ModelItem} onChange={handleModelChange} />
 
       case ComponentType.ParticleSystem:
-        return <ParticleSystem particleSystemProps={(component.props as ParticleSystemProps)} />
+        return <ParticleSystem particleSystemProps={(component.props as ParticleSystemProps)} node={node} />
 
       // case ComponentType.Decal:
       //   return <Decal decalItem={item.item as DecalItem} onChange={handleDecalChange} />

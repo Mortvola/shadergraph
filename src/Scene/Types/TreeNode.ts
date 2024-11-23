@@ -6,7 +6,12 @@ import {
 } from './Types';
 import type ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemProps';
 import type LightProps from '../../Renderer/Properties/LightProps';
-import { ComponentType, type LightInterface, type ParticleSystemInterface } from '../../Renderer/Types';
+import {
+  ComponentType,
+  type TransformPropsInterface,
+  type LightInterface,
+  type ParticleSystemInterface,
+} from '../../Renderer/Types';
 import ParticleSystem from '../../Renderer/ParticleSystem/ParticleSystem';
 import { vec3 } from 'wgpu-matrix';
 import Http from '../../Http/src';
@@ -53,12 +58,7 @@ class TreeNode {
         break;
       }
 
-      if (node.parentModifierNode) {
-        node = node.parentModifierNode.parent
-      }
-      else {
-        node = node.parent
-      }
+      node = node.parentModifierNode?.parent ?? node.parent
     }
 
     return root;
@@ -71,7 +71,7 @@ class TreeNode {
   get hasOverrides(): boolean {
     if (this.modifierNode) {
       for (const [, mod] of this.modifierNode.modifications) {
-        if (mod.addedNodes.length > 0 || Object.keys(mod.sceneObject).length > 0) {
+        if (mod.addedNodes.length > 0 || Object.getOwnPropertyNames(mod.sceneObject).length > 0) {
           return true
         }
       }
@@ -221,12 +221,7 @@ class TreeNode {
         id ^= node.modifierNode.id
       }
 
-      if (node.parentModifierNode != null) {
-        node = node.parentModifierNode.parent
-      }
-      else {
-        node = node.parent
-      }
+      node = node.parentModifierNode?.parent ?? node.parent
     }
 
     return id ^ this.id
@@ -249,12 +244,7 @@ class TreeNode {
 
       // If we have reached an added node then break
       // out of the loop.
-      if (node.parentModifierNode !== undefined) {
-        node = node.parentModifierNode.parent
-      }
-      else {
-        node = node.parent
-      }
+      node = node.parentModifierNode?.parent ?? node.parent
     }
 
     return modifierNode
@@ -371,7 +361,9 @@ class TreeNode {
     //   const object = stack.pop();
 
       if (object) {
-        for (const comp of object.components) {
+        for (const t in object.components) {
+          const comp = object.components[t]
+
           switch (comp.type) {
             case ComponentType.ParticleSystem: {
               // const props = new ParticleSystemProps(
@@ -441,13 +433,17 @@ class TreeNode {
   }
 
   transformChanged() {
-    vec3.copy(this.sceneObject.transformProps.translate.get(), this.renderNode.translate)
-    this.renderNode.setFromAngles(
-      this.sceneObject.transformProps.rotate.get()[0],
-      this.sceneObject.transformProps.rotate.get()[1],
-      this.sceneObject.transformProps.rotate.get()[2],
-    )
-    vec3.copy(this.sceneObject.transformProps.scale.get(), this.renderNode.scale)
+    const transform = this.sceneObject.components[ComponentType.Transform]?.props as TransformPropsInterface
+
+    if (transform) {
+      vec3.copy(transform.translate.get(), this.renderNode.translate)
+      this.renderNode.setFromAngles(
+        transform.rotate.get()[0],
+        transform.rotate.get()[1],
+        transform.rotate.get()[2],
+      )
+      vec3.copy(transform.scale.get(), this.renderNode.scale)
+    }
   }
 
   changeName(name: string) {

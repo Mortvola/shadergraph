@@ -1,5 +1,5 @@
-import { type IReactionDisposer, observable, reaction, runInAction } from 'mobx';
-import type { LineageEntry, PropertyBaseInterface } from './Types';
+import { type IReactionDisposer, observable, reaction } from 'mobx';
+import type { PropertyBaseInterface } from './Types';
 import type PropsBase from './PropsBase';
 
 class PropertyBase implements PropertyBaseInterface {
@@ -10,32 +10,32 @@ class PropertyBase implements PropertyBaseInterface {
 
   onChange?: () => void;
 
-  onRevertOverride?: () => void;
+  // onRevertOverride?: () => void;
 
   constructor(props: PropsBase) {
     this.props = props;
   }
 
-  toString(): string {
-    throw new Error('not implemented')
-  }
+  // toString(): string {
+  //   throw new Error('not implemented')
+  // }
 
-  lineage(): LineageEntry[] {
-    const lineage: LineageEntry[] = [];
-    let property: PropertyBase | undefined;
+  // lineage(): LineageEntry[] {
+  //   const lineage: LineageEntry[] = [];
+  //   let property: PropertyBase | undefined;
 
-    while (property) {
-      lineage.push({
-        property,
-        name: this.props.sceneObject?.header.name.get() ?? 'unknown node',
-        container: property.props.sceneObject?.tree?.name ?? 'unknown prefab',
-      })
+  //   while (property) {
+  //     lineage.push({
+  //       property,
+  //       name: this.props.sceneObject?.header.name.get() ?? 'unknown node',
+  //       container: property.props.sceneObject?.tree?.name ?? 'unknown prefab',
+  //     })
 
-      property = undefined
-    }
+  //     property = undefined
+  //   }
 
-    return lineage
-  }
+  //   return lineage
+  // }
 
   revertOverride() {
     // if (this.base) {
@@ -47,7 +47,7 @@ class PropertyBase implements PropertyBaseInterface {
     // }
   }
 
-  applyOverride(original: PropertyBase): void {
+  // applyOverride(original: PropertyBase): void {
     // runInAction(() => {
     //   original.copyProp(this)
 
@@ -62,7 +62,7 @@ class PropertyBase implements PropertyBaseInterface {
     // runInAction(() => {
     //   original.propogate()
     // })
-  }
+  // }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   copyProp(_other: PropertyBase) {

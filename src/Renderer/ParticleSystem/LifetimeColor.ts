@@ -23,10 +23,10 @@ class LifetimeColor extends PSModule {
   update(descriptor?: LifetimeColorDescriptor) {
   }
 
-  toDescriptor(): LifetimeColorDescriptor | undefined {
+  toDescriptor(overridesOnly: boolean): LifetimeColorDescriptor | undefined {
     const descriptor = {
-      enabled: this.enabled.toDescriptor(),
-      color: this.color.toDescriptor(),
+      enabled: this.enabled.toDescriptor(overridesOnly),
+      color: this.color.toDescriptor(overridesOnly),
     };
 
     return removeUndefinedKeys(descriptor)

@@ -5,22 +5,21 @@ import Header from './Header';
 import type TreeNode from '../Scene/Types/TreeNode';
 import { observer } from 'mobx-react-lite';
 import OverrideApplyButton from './OverrideApplyButton';
+import { ComponentType } from '../Renderer/Types';
 
 type PropsType = {
-  root: TreeNode,
   node: TreeNode,
   baseObject: SceneObjectInterface,
   object: SceneObjectInterface,
 }
 
 const HeaderComparison: React.FC<PropsType> = observer(({
-  root,
   node,
   baseObject,
   object,
 }) => (
   <div className={styles.compare}>
-    <OverrideApplyButton root={root} node={node} baseObject={baseObject} key="name" />
+    <OverrideApplyButton node={node} componentType={ComponentType.Self} />
     <Header className={styles.component} header={baseObject.header}/>
     <Header className={styles.component} header={object.header}/>
   </div>

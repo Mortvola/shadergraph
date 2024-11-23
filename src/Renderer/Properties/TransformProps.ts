@@ -58,10 +58,10 @@ class TransformProps extends PropsBase implements TransformPropsInterface {
     }
   }
 
-  toDescriptor(): TransformPropsDescriptor | undefined {
-    const translateDescriptor = this.translate.toDescriptor();
-    const rotateDescriptor = this.rotate.toDescriptor();
-    const scaleDescriptor = this.scale.toDescriptor();
+  toDescriptor(overridesOnly: boolean): TransformPropsDescriptor | undefined {
+    const translateDescriptor = this.translate.toDescriptor(overridesOnly);
+    const rotateDescriptor = this.rotate.toDescriptor(overridesOnly);
+    const scaleDescriptor = this.scale.toDescriptor(overridesOnly);
 
     const descriptor = {
       translate: translateDescriptor ? [...translateDescriptor] : undefined,

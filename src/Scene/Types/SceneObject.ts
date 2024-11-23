@@ -1,18 +1,18 @@
 import { observable } from 'mobx';
 import {
   type ComponentDescriptor,
+  type ComponentPropsDescriptor,
   ComponentType, type LightPropsDescriptor, type NewSceneObjectComponent,
-  type SceneObjectComponent, type TransformPropsInterface,
+  type SceneObjectComponent,
 } from '../../Renderer/Types';
 import {
   type SceneObjectInterface, type SceneObjectDescriptor,
   type HeaderInterface, type TransformPropsDescriptor,
-  type ModificationEntry,
   type SceneObjectModifications,
+  type SceneObjectComponents,
 } from './Types';
 import TransformProps from '../../Renderer/Properties/TransformProps';
 import type TreeNode from './TreeNode';
-import { objectManager } from './ObjectManager';
 import ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemProps';
 import { type ParticleSystemPropsDescriptor } from '../../Renderer/ParticleSystem/Types';
 import LightProps from '../../Renderer/Properties/LightProps';
@@ -40,9 +40,7 @@ class SceneObject implements SceneObjectInterface {
   header: Header
 
   @observable
-  accessor components: SceneObjectComponent[] = []
-
-  transformProps: TransformPropsInterface = new TransformProps();
+  accessor components: SceneObjectComponents = {}
 
   node?: TreeNode;
 
@@ -50,15 +48,15 @@ class SceneObject implements SceneObjectInterface {
     return this.node?.sceneId === this.node?.scene.root?.sceneId
   }
 
-  tree?: { id: number, name: string };
+  // tree?: { id: number, name: string };
 
   nextComponentId = 0;
 
   autosave = true;
 
   get hasOverrides(): boolean {
-    for (const component of this.components) {
-      if (component.props.hasOverrides) {
+    for (const t in this.components) {
+      if (this.components[t].props.hasOverrides) {
         return true;
       }
     }
@@ -78,8 +76,6 @@ class SceneObject implements SceneObjectInterface {
     const object = new SceneObject(descriptor.id);
     object.autosave = false;
 
-    object.components = []
-
     object.header.name = new PSString(
       object.header,
       descriptor.name ?? undefined,
@@ -90,80 +86,10 @@ class SceneObject implements SceneObjectInterface {
     const componentIds = descriptor.components;
 
     for (const compId of componentIds) {
-      const c = components.get(compId)
+      const componentDescriptor = components.get(compId)
 
-      if (c) {
-        switch (c.type) {
-          case ComponentType.Transform: {
-            const props = new TransformProps(
-              c.props as TransformPropsDescriptor,
-            );
-
-            const component: SceneObjectComponent = {
-              id: c.id,
-              type: c.type,
-              props,
-            }
-
-            object.components.push(component)
-
-            props.onChange = () => {
-              console.log('transform changed')
-              object.transformChanged()
-
-              object.updateComponent(component)
-            }
-
-            props.sceneObject = object;
-            object.transformProps = props
-
-            // Fix any scale values that are zero.
-            for (let i = 0; i < object.transformProps.scale.get().length; i += 1) {
-              if (object.transformProps.scale.get()[i] === 0) {
-                object.transformProps.scale.get()[i] = 1;
-              }
-            }
-
-            break
-          }
-
-          case ComponentType.ParticleSystem: {
-            const propsDescriptor = c.props as ParticleSystemPropsDescriptor;
-
-            const props = new ParticleSystemProps(propsDescriptor);
-
-            const component: SceneObjectComponent = {
-              id: c.id,
-              type: c.type,
-              props,
-            }
-
-            props.onChange = () => { object.updateComponent(component) };
-            props.sceneObject = object;
-
-            object.components.push(component)
-
-            break;
-          }
-
-          case ComponentType.Light: {
-            const propsDescriptor = c.props as LightPropsDescriptor;
-
-            const props = new LightProps(propsDescriptor);
-            props.onChange = object.onChange;
-            props.sceneObject = object;
-
-            const component: SceneObjectComponent = {
-              id: c.id,
-              type: c.type,
-              props,
-            }
-
-            object.components.push(component)
-
-            break;
-          }
-        }
+      if (componentDescriptor) {
+        object.createComponent(componentDescriptor)
       }
     }
 
@@ -172,25 +98,116 @@ class SceneObject implements SceneObjectInterface {
     return object;
   }
 
-  applyModifications(modifications: SceneObjectModifications, override = false) {
-    if (modifications.name !== undefined) {
-      this.header.name.set(modifications.name as string, override)
+  createComponent(descriptor: ComponentDescriptor) {
+    switch (descriptor.type) {
+      case ComponentType.Transform: {
+        const props = new TransformProps(
+          descriptor.props as TransformPropsDescriptor,
+        );
+
+        // Fix any scale values that are zero.
+        for (let i = 0; i < props.scale.get().length; i += 1) {
+          if (props.scale.get()[i] === 0) {
+            props.scale.get()[i] = 1;
+          }
+        }
+
+        const component: SceneObjectComponent = {
+          id: descriptor.id,
+          type: descriptor.type,
+          props,
+        }
+
+        props.onChange = () => {
+          console.log('transform changed')
+          this.transformChanged()
+
+          this.saveComponent(component)
+        }
+
+        props.sceneObject = this;
+
+        this.components[descriptor.type] = component
+
+        break
+      }
+
+      case ComponentType.ParticleSystem: {
+        const propsDescriptor = descriptor.props as ParticleSystemPropsDescriptor;
+
+        const props = new ParticleSystemProps(propsDescriptor);
+
+        const component: SceneObjectComponent = {
+          id: descriptor.id,
+          type: descriptor.type,
+          props,
+        }
+
+        props.onChange = () => { this.saveComponent(component) };
+        props.sceneObject = this;
+
+        this.components[descriptor.type] = component
+
+        break;
+      }
+
+      case ComponentType.Light: {
+        const propsDescriptor = descriptor.props as LightPropsDescriptor;
+
+        const props = new LightProps(propsDescriptor);
+        props.onChange = this.onChange;
+        props.sceneObject = this;
+
+        const component: SceneObjectComponent = {
+          id: descriptor.id,
+          type: descriptor.type,
+          props,
+        }
+
+        this.components[descriptor.type] = component
+
+        break;
+      }
     }
+  }
 
-    for (const c of this.components) {
-      const componentDescriptor: unknown | undefined = modifications[c.type]
+  applyModifications(modifications: SceneObjectModifications, override = false) {
+    for (const key in modifications) {
+      if (key === 'name') {
+        if (modifications.name !== undefined) {
+          this.header.name.set((modifications.name as unknown) as string, override)
+        }
+      } else {
+        const componentDescriptor = modifications[key] as ComponentPropsDescriptor
 
-      if (componentDescriptor) {
-        switch (c.type) {
-          case ComponentType.Transform: {
-            (c.props as TransformProps).applyModifications(componentDescriptor, override)
-            break;
-          }
+        this.updateComponent(key as ComponentType, componentDescriptor, override)
+      }
+    }
+  }
 
-          case ComponentType.ParticleSystem: {
-            (c.props as ParticleSystemProps).applyModifications(componentDescriptor, override)
-            break;
-          }
+  updateComponent(
+    componentType: ComponentType,
+    componentDescriptor: ComponentPropsDescriptor,
+    override: boolean,
+  ) {
+    const component = this.components[componentType]
+
+    if (component) {
+      switch (component.type) {
+        case ComponentType.Transform: {
+          (component.props as TransformProps).applyModifications(
+            componentDescriptor as TransformPropsDescriptor,
+            override,
+          )
+          break;
+        }
+
+        case ComponentType.ParticleSystem: {
+          (component.props as ParticleSystemProps).applyModifications(
+            componentDescriptor as ParticleSystemPropsDescriptor,
+            override,
+          )
+          break;
         }
       }
     }
@@ -282,9 +299,9 @@ class SceneObject implements SceneObjectInterface {
   //   return object;
   // }
 
-  async save(): Promise<void> {
-    return objectManager.update(this)
-  }
+  // async save(): Promise<void> {
+  //   return objectManager.update(this)
+  // }
 
   onChange = () => {
     if (this.autosave) {
@@ -293,11 +310,11 @@ class SceneObject implements SceneObjectInterface {
     }
   }
 
-  async updateComponent(component: SceneObjectComponent) {
+  async saveComponent(component: SceneObjectComponent) {
     // Is this a component being updated or is a modification to a component being updated?
     if (this.isTopLevel) {
       // A component is being updated.
-      const descriptor = component.props.toDescriptor();
+      const descriptor = component.props.toDescriptor(false);
 
       if (descriptor) {
         await this.node?.scene.updateObjectComponent(component.id, descriptor)
@@ -309,7 +326,7 @@ class SceneObject implements SceneObjectInterface {
         throw new Error('node is not defined')
       }
 
-      const descriptor = component.props.toDescriptor()
+      const descriptor = component.props.toDescriptor(true)
 
       if (descriptor) {
         const modifierNode = this.node?.getTopLevelModifierNode()?.modifierNode
@@ -326,7 +343,7 @@ class SceneObject implements SceneObjectInterface {
 
           const updatedModifications = {
             ...modifications.sceneObject,
-            name: this.header.name.toDescriptor(),
+            name: this.header.name.toDescriptor(true),
             [component.type]: descriptor,
           }
 
@@ -340,7 +357,7 @@ class SceneObject implements SceneObjectInterface {
           const response = await Http.put('/api/node-modifications', payload)
 
           if (response.ok) {
-            modifications.sceneObject = updatedModifications
+            modifications.sceneObject = updatedModifications as SceneObjectModifications
           }
         }
       }
@@ -348,14 +365,7 @@ class SceneObject implements SceneObjectInterface {
   }
 
   addComponent(component: NewSceneObjectComponent) {
-    this.components = [
-      ...this.components,
-      {
-        id: this.getNextComponentId(),
-        ...component,
-      },
-    ];
-
+    this.components[component.type] = { ...component, id: this.getNextComponentId() }
     component.props.onChange = this.onChange;
 
     // if (component.component) {
@@ -366,20 +376,28 @@ class SceneObject implements SceneObjectInterface {
   }
 
   removeComponent(component: SceneObjectComponent) {
-    const index = this.components.findIndex((i) => i.id === component.id)
+    const c = this.components[component.type]
 
-    if (index !== -1) {
-      this.components = [
-        ...this.components.slice(0, index),
-        ...this.components.slice(index + 1),
-      ]
-
-      // if (component.component) {
-        // this.renderNode.removeComponent(component.component)
-      // }
-
+    if (c !== undefined) {
+      // this.renderNode.removeComponent(c.component)
+      delete this.components[component.type]
       this.onChange()
     }
+
+    // const index = this.components.findIndex((i) => i.id === component.id)
+
+    // if (index !== -1) {
+    //   this.components = [
+    //     ...this.components.slice(0, index),
+    //     ...this.components.slice(index + 1),
+    //   ]
+
+    //   // if (component.component) {
+    //     // this.renderNode.removeComponent(component.component)
+    //   // }
+
+      // this.onChange()
+    // }
   }
 
   // detachSelf() {
@@ -406,10 +424,10 @@ class SceneObject implements SceneObjectInterface {
     return this.node?.modifierNode !== undefined
   }
 
-  toDescriptor(): Omit<SceneObjectDescriptor, 'id'> {
+  toDescriptor(overridesOnly: boolean): Omit<SceneObjectDescriptor, 'id'> {
     const descriptor = {
-      name: this.header.name.toDescriptor(),
-      components: this.components.map((c) => c.id),
+      name: this.header.name.toDescriptor(overridesOnly),
+      components: Object.keys(this.components).map((c) => this.components[c].id),
     }
 
     return descriptor;

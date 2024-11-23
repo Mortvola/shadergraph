@@ -20,11 +20,11 @@ class Collision extends PSModule {
 
   }
 
-  toDescriptor(): CollisionDescriptor | undefined {
+  toDescriptor(overridesOnly: boolean): CollisionDescriptor | undefined {
     const descriptor = {
-      enabled: this.enabled.toDescriptor(),
-      bounce: this.bounce.toDescriptor(),
-      dampen: this.dampen.toDescriptor(),
+      enabled: this.enabled.toDescriptor(overridesOnly),
+      bounce: this.bounce.toDescriptor(overridesOnly),
+      dampen: this.dampen.toDescriptor(overridesOnly),
     }
 
     return removeUndefinedKeys(descriptor)

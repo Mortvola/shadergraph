@@ -6,58 +6,35 @@ import styles from './PSEmissions.module.scss';
 import { Button } from 'react-bootstrap';
 import { MinusIcon, PlusIcon } from 'lucide-react';
 import PSValueInput from './PSValueInput';
-import PSValue from '../../Renderer/Properties/PSValue';
 import { observer } from 'mobx-react-lite';
-import { runInAction } from 'mobx';
+import type TreeNode from '../../Scene/Types/TreeNode';
+import { ComponentType } from '../../Renderer/Types';
 
 type PropsType = {
   emissions: Emissions,
+  node: TreeNode,
 }
 
 const PSEmissions: React.FC<PropsType> = observer(({
   emissions,
+  node,
 }) => {
   const handleRateChange = (value: number) => {
     emissions.rate.set(value, true);
   }
 
   const handleAddClick = () => {
-    runInAction(() => {
-      emissions.bursts.set(
-        [
-          ...emissions.bursts.get(),
-          { time: 0, count: new PSValue(emissions.rate.props, { value: [1, 1] }), cycles: 0, probability: 1 },
-        ],
-        true,
-      )
-    })
+    emissions.addBurst()
   }
 
   const handleDeleteClick = () => {
-    runInAction(() => {
-      if (activeRow !== undefined) {
-        emissions.bursts.set(
-          [
-            ...emissions.bursts.get().slice(0, activeRow),
-            ...emissions.bursts.get().slice(activeRow + 1),
-          ],
-          true,
-        )
-      }
-    })
+    if (activeRow !== undefined) {
+      emissions.deleteBurst(activeRow)
+    }
   }
 
   const handleTimeChange = (index: number, value: number) => {
-    runInAction(() => {
-      emissions.bursts.set(
-        [
-          ...emissions.bursts.get().slice(0, index),
-          { ...emissions.bursts.get()[index], time: value },
-          ...emissions.bursts.get().slice(index + 1),
-        ],
-        true,
-      )
-    })
+    emissions.updateBurstTime(index, value)
   }
 
   const [activeRow, setActiveRow] = React.useState<number>()
@@ -68,11 +45,23 @@ const PSEmissions: React.FC<PropsType> = observer(({
 
   return (
     <div>
-      <Property label="Rate over time" property={emissions.rate}>
+      <Property
+        label="Rate over time"
+        property={emissions.rate}
+        node={node}
+        componentType={ComponentType.ParticleSystem}
+        propertyPath="rate"
+      >
         <NumberInput value={emissions.rate.get()} onChange={handleRateChange} />
       </Property>
       <div className={styles.bursts}>
-        <Property label="Bursts" property={emissions.bursts} />
+        <Property
+          label="Bursts"
+          property={emissions.bursts}
+          node={node}
+          componentType={ComponentType.ParticleSystem}
+          propertyPath="bursts"
+        />
         <div className={styles.table}>
           <div className={styles.title}>Time</div>
           <div className={styles.title}>Count</div>
