@@ -147,7 +147,7 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
     );
  }
 
- applyModifications(descriptor: ParticleSystemPropsDescriptor, override: boolean, propertyPath?: string) {
+ applyModifications(descriptor: ParticleSystemPropsDescriptor, override: boolean) {
   this.duration.applyModifications(descriptor.duration, override)
   this.startDelay.applyModifications(descriptor.startDelay, override)
   this.loop.applyModifications(descriptor.loop, override)

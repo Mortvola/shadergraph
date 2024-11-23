@@ -57,7 +57,9 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         )
 
         // Find the point on the plane that we will collide with if we travel far enough.
-        const intersectionPointOnPlane = intersectionPlane(planeOrigin, planeNormal, intersectionPointOnSphere, vec4.normalize(point.velocity));
+        const intersectionPointOnPlane = intersectionPlane(
+          planeOrigin, planeNormal, intersectionPointOnSphere, vec4.normalize(point.velocity),
+        );
 
         if (intersectionPointOnPlane) {
           // Will we travel far enough to hit the plane?
@@ -92,7 +94,11 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
             // reflection vector. Subtracting only once will give us a vector along the plane (no bounce).
             // Thus, the reason for scaling the vector by dot + dot * bounce factor.
             const dot = vec4.dot(point.velocity, planeNormal);
-            vec4.subtract(point.velocity, vec4.scale(planeNormal, dot + dot * this.props.collision.bounce.get()), point.velocity)
+            vec4.subtract(
+              point.velocity,
+              vec4.scale(planeNormal, dot + dot * this.props.collision.bounce.get()),
+              point.velocity,
+            )
 
             // Allow the collision to dampen the velocity
             vec4.scale(point.velocity, 1 - this.props.collision.dampen.get(), point.velocity)
@@ -163,7 +169,10 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
         await this.updateParticle(particle, time, camera);
       }
 
-      if (time >= this.nextEmitTime && (this.props.loop.get() || this.nextEmitTime <= this.startTime + this.props.duration.get() * 1000)) {
+      if (
+        time >= this.nextEmitTime
+        && (this.props.loop.get() || this.nextEmitTime <= this.startTime + this.props.duration.get() * 1000)
+      ) {
         await this.emit(time, camera)
 
         await this.burst(time, camera);
@@ -289,7 +298,10 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       )
 
       if (this.props.lifetimeVelocity.enabled.get()) {
-        particle.velocity = vec4.scale(particle.velocity, this.props.lifetimeVelocity.speedModifier.getValue(lifetimeT));
+        particle.velocity = vec4.scale(
+          particle.velocity,
+          this.props.lifetimeVelocity.speedModifier.getValue(lifetimeT),
+        );
       }
 
       if (!this.collided(particle,  elapsedSeconds)) {

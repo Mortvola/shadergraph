@@ -58,7 +58,6 @@ class Renderer extends PSModule {
   }
 
   update(descriptor?: RendererDescriptor) {
-    
   }
 
   onMaterialChange = () => {
