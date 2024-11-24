@@ -15,7 +15,11 @@ import ModifierNode from './ModifierNode';
 import { isModifierNode } from './ModifierNode';
 import ProjectItem from '../../Project/Types/ProjectItem';
 import { type FolderInterface } from '../../Project/Types/types';
-import { type ComponentDescriptor, type ComponentPropsDescriptor, ComponentType, SceneObjectComponent } from '../../Renderer/Types';
+import {
+  type ComponentDescriptor,
+  type ComponentPropsDescriptor,
+  ComponentType,
+} from '../../Renderer/Types';
 import type PropsBase from '../../Renderer/Properties/PropsBase';
 
 type ModifierNodeEntry = { modifier: ModifierNode, node?: TreeNode }
@@ -42,7 +46,7 @@ class Scene implements SceneInterface {
 
   private objects: Map<number, { descriptor: SceneObjectDescriptor, object?: SceneObjectInterface }> = new Map()
 
-  components: Map<number, ComponentDescriptor> = new Map()
+  components: Map<string, ComponentDescriptor> = new Map()
 
   constructor(id: number) {
     this.id = id
@@ -101,7 +105,7 @@ class Scene implements SceneInterface {
     }
 
     for (const component of response.components) {
-      this.components.set(component.id, component)
+      this.components.set(`${component.sceneObjectId}:${component.type}`, component)
     }
 
     if (response.modifications) {
@@ -127,11 +131,11 @@ class Scene implements SceneInterface {
     }
   }
 
-  async updateObjectComponent(id: number, descriptor: ComponentPropsDescriptor) {
-    const response = await Http.patch(`/api/components/${id}`, descriptor)
+  async updateObjectComponent(sceneObjectId: number, type: ComponentType, descriptor: ComponentPropsDescriptor) {
+    const response = await Http.patch(`/api/components/${sceneObjectId}/${type}`, descriptor)
 
     if (response.ok) {
-      const component = this.components.get(id)
+      const component = this.components.get(`${sceneObjectId}:${type}`)
 
       if (component) {
         component.props = descriptor
@@ -403,7 +407,7 @@ class Scene implements SceneInterface {
       const component = node.sceneObject.components[componentType];
 
       if (component) {
-        const descriptor = this.components.get(component.id)
+        const descriptor = this.components.get(`${node.sceneObject.id}:${component.type}`)
 
         if (descriptor?.props) {
           let mod = srcMod.sceneObject[componentType]

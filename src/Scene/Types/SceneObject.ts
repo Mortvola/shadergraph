@@ -71,7 +71,7 @@ class SceneObject implements SceneObjectInterface {
 
   static fromDescriptor(
     descriptor: SceneObjectDescriptor,
-    components: Map<number, ComponentDescriptor>,
+    components: Map<string, ComponentDescriptor>,
   ) {
     const object = new SceneObject(descriptor.id);
     object.autosave = false;
@@ -86,7 +86,7 @@ class SceneObject implements SceneObjectInterface {
     const componentIds = descriptor.components;
 
     for (const compId of componentIds) {
-      const componentDescriptor = components.get(compId)
+      const componentDescriptor = components.get(`${object.id}:${compId}`)
 
       if (componentDescriptor) {
         object.createComponent(componentDescriptor)
@@ -113,7 +113,7 @@ class SceneObject implements SceneObjectInterface {
         }
 
         const component: SceneObjectComponent = {
-          id: descriptor.id,
+          id: descriptor.sceneObjectId,
           type: descriptor.type,
           props,
         }
@@ -138,7 +138,7 @@ class SceneObject implements SceneObjectInterface {
         const props = new ParticleSystemProps(propsDescriptor);
 
         const component: SceneObjectComponent = {
-          id: descriptor.id,
+          id: descriptor.sceneObjectId,
           type: descriptor.type,
           props,
         }
@@ -159,7 +159,7 @@ class SceneObject implements SceneObjectInterface {
         props.sceneObject = this;
 
         const component: SceneObjectComponent = {
-          id: descriptor.id,
+          id: descriptor.sceneObjectId,
           type: descriptor.type,
           props,
         }
@@ -317,7 +317,7 @@ class SceneObject implements SceneObjectInterface {
       const descriptor = component.props.toDescriptor(false);
 
       if (descriptor) {
-        await this.node?.scene.updateObjectComponent(component.id, descriptor)
+        await this.node?.scene.updateObjectComponent(this.id, component.type, descriptor)
       }
     } else {
       // A modification to a component is being updated.
@@ -428,7 +428,7 @@ class SceneObject implements SceneObjectInterface {
     const descriptor = {
       id: this.id,
       name: this.header.name.toDescriptor(overridesOnly),
-      components: Object.keys(this.components).map((c) => this.components[c].id),
+      components: Object.keys(this.components).map((c) => this.components[c].type),
     }
 
     return descriptor;

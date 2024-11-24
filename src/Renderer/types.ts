@@ -209,7 +209,7 @@ export type ComponentPropsDescriptor =
   ModelPropsDescriptor
 
 export type ComponentDescriptor = {
-  id: number,
+  sceneObjectId: number,
   type: ComponentType,
   props?: ComponentPropsDescriptor,
 }

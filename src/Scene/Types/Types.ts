@@ -8,7 +8,6 @@ import type {
 } from '../../Renderer/Types';
 import type TreeNode from './TreeNode';
 import type PropsBase from '../../Renderer/Properties/PropsBase';
-import type ModifierNode from './ModifierNode';
 
 export enum SceneItemType {
   SceneObject = 'SceneObject',
@@ -76,7 +75,11 @@ export interface SceneInterface {
 
   addNewItem(type: SceneItemType): void;
 
-  updateObjectComponent(id: number, descriptor: ComponentPropsDescriptor): Promise<void>;
+  updateObjectComponent(
+    sceneObjectId: number,
+    type: ComponentType,
+    descriptor: ComponentPropsDescriptor,
+  ): Promise<void>;
 
   getApplyTargets(
     node: TreeNode,
@@ -146,7 +149,7 @@ export const isGameObject = (r: unknown): r is SceneObjectInterface => (
 export type SceneObjectDescriptor = {
   id: number,
   name?: string,
-  components: number[],
+  components: string[],
 }
 
 export type ConnectedObject = { prefabNodeId: number, objectId: number }
