@@ -76,25 +76,26 @@ const Overrides: React.FC<PropsType> = observer(({
         }
 
         if (mod) {
-          for (const k of Object.keys(mod.sceneObject)) {
-            if (k !== ComponentType.Self) {
-              const component = node.sceneObject.components[k]
+          for (const componentType of Object.keys(mod.sceneObject)) {
+            if (componentType !== ComponentType.Self) {
+              const component = node.sceneObject.components[componentType]
 
               if (component !== undefined) {
                 const baseObject = node.scene?.getObject(node.sceneObject.id)
-                const baseComponent = baseObject?.components[k]
+                const baseComponent = baseObject?.components[componentType]
 
                 if (baseComponent !== undefined) {
                   connections.push(
                     <PopupButton
                       key={`${node.getPathId(root.modifierNode)}`}
                       className={styles.overridesButton}
-                      label={k}
+                      label={componentType}
                       position={Position.left}
                       style={{ marginLeft: `${level + 1}rem`, fontWeight: 'bold' }}
                     >
                       <ComponentComparison
                         node={node}
+                        componentType={componentType as ComponentType}
                         baseComponent={baseComponent}
                         component={component}
                       />

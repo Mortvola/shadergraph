@@ -240,12 +240,8 @@ export interface LightInterface extends ComponentInterface {
 }
 
 export type SceneObjectComponent = {
-  id: number,
-  type: ComponentType,
   props: TransformProps | ParticleSystemProps | LightProps,
 }
-
-export type NewSceneObjectComponent = Omit<SceneObjectComponent, 'id'>
 
 export interface TransformPropsInterface extends PropsBaseInterface {
   translate: PSVec3Type;

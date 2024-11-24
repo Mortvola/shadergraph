@@ -407,7 +407,7 @@ class Scene implements SceneInterface {
       const component = node.sceneObject.components[componentType];
 
       if (component) {
-        const descriptor = this.components.get(`${node.sceneObject.id}:${component.type}`)
+        const descriptor = this.components.get(`${node.sceneObject.id}:${componentType}`)
 
         if (descriptor?.props) {
           let mod = srcMod.sceneObject[componentType]

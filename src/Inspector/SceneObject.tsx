@@ -3,7 +3,7 @@ import { isGameObject2D } from '../State/types';
 import { useStores } from '../State/store';
 import styles from './Inspector.module.scss'
 import { observer } from 'mobx-react-lite';
-import type { NewSceneObjectComponent, SceneObjectComponent } from '../Renderer/Types';
+import type { SceneObjectComponent } from '../Renderer/Types';
 import { ComponentType } from '../Renderer/Types';
 import GameObject2D from './GameObject2d';
 import ContextMenu from '../ContextMenu/ContextMenu';
@@ -112,12 +112,12 @@ const SceneObject: React.FC<PropsType> = observer(({
     // })
   // }
 
-  const handleDelete = (component: SceneObjectComponent) => {
-    sceneObject.removeComponent(component);
+  const handleDelete = (componentType: ComponentType, component: SceneObjectComponent) => {
+    sceneObject.removeComponent(componentType, component);
   }
 
-  const componentTypeName = (item: SceneObjectComponent) => {
-    switch (item.type) {
+  const componentTypeName = (type: ComponentType) => {
+    switch (type) {
       case ComponentType.Mesh:
         return 'Model';
 
@@ -131,7 +131,7 @@ const SceneObject: React.FC<PropsType> = observer(({
         return 'Light';
     }
 
-    return item.type;
+    return type;
   }
 
   const [showMenu, setShowMenu] = React.useState<{ x: number, y: number } | null>(null);
@@ -166,13 +166,11 @@ const SceneObject: React.FC<PropsType> = observer(({
       case ComponentType.Light: {
         const props = new LightProps()
         // const light = new Light(props);
-        const component: NewSceneObjectComponent = {
-          type: ComponentType.Light,
+        const component: SceneObjectComponent = {
           props: props,
-          // component: light,
         };
 
-        sceneObject.addComponent(component);
+        sceneObject.addComponent(ComponentType.Light, component);
         break;
       }
 
@@ -193,13 +191,11 @@ const SceneObject: React.FC<PropsType> = observer(({
 
           // particleSystemManager.add(particleSystem);
 
-          const item: NewSceneObjectComponent = {
-            type: ComponentType.ParticleSystem,
+          const item: SceneObjectComponent = {
             props: props,
-            // component: particleSystem,
           }
 
-          sceneObject.addComponent(item);
+          sceneObject.addComponent(ComponentType.ParticleSystem, item);
         })()
 
         break;
@@ -213,6 +209,24 @@ const SceneObject: React.FC<PropsType> = observer(({
     { name: 'Decal', action: () => {  addComponent(ComponentType.Decal) } },
     { name: 'Light', action: () => { addComponent(ComponentType.Light) } },
   ]), [addComponent]);
+
+  const renderComponent = (componentType: ComponentType) => (
+    <div className={styles.item} key={componentType} >
+      <div className={styles.componentTitle}>
+        { componentTypeName(componentType) }
+        {
+          componentType === ComponentType.Transform
+            ? null
+            : <Trash2Icon onClick={() => handleDelete(componentType, sceneObject.components[componentType])} />
+        }
+      </div>
+      <Component
+        componentType={componentType}
+        component={sceneObject.components[componentType]}
+        node={sceneObject.node!}
+      />
+    </div>
+  )
 
   return (
     <div className={styles.gameObject} onDragOver={handleDragOver} onDrop={handleDrop}>
@@ -235,19 +249,22 @@ const SceneObject: React.FC<PropsType> = observer(({
         {
           isGameObject2D(sceneObject)
             ? <GameObject2D gameObject={sceneObject} />
-            : Object.keys(sceneObject.components).map((c) => (
-              <div className={styles.item} key={sceneObject.components[c].id ?? 0} >
-                <div className={styles.componentTitle}>
-                  { componentTypeName(sceneObject.components[c]) }
-                  {
-                    sceneObject.components[c].type === ComponentType.Transform
-                      ? null
-                      : <Trash2Icon onClick={() => handleDelete(sceneObject.components[c])} />
-                  }
-                </div>
-                <Component component={sceneObject.components[c]} node={sceneObject.node!} />
-              </div>
-            ))
+            : (
+              <>
+                {
+                  renderComponent(ComponentType.Transform)
+                }
+                {
+                  Object.keys(sceneObject.components).map((c) => {
+                    if (c === ComponentType.Transform) {
+                      return null
+                    }
+
+                    return renderComponent(c as ComponentType)
+                  })
+                }
+              </>
+            )
         }
       </div>
       {

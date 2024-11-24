@@ -102,17 +102,17 @@ class Store implements StoreInterface {
       this.project.selectedItem?.type === ProjectItemType.SceneObject
       && isGameObject(this.project.selectedItem.item)
     ) {
-      for (const c in this.project.selectedItem.item.components) {
-        const component = this.project.selectedItem.item.components[c]
+      for (const type in this.project.selectedItem.item.components) {
+        const component = this.project.selectedItem.item.components[type]
 
-        if (component.type === ComponentType.ParticleSystem) {
+        if (type === ComponentType.ParticleSystem) {
           // const particleEntry = item.item as ParticleItem;
           // const particleSystem = await particleSystemManager.getParticleSystem(particleEntry.id)
           // if (particleSystem?.sceneNode) {
           //   this.mainView.removeSceneNode(particleSystem?.sceneNode)
           // }
         }
-        else if (component.type === ComponentType.Mesh) {
+        else if (type === ComponentType.Mesh) {
           // const modelItem = this.project.getItemByItemId((item.item as ModelItem).id, 'model');
 
           // if (modelItem) {
@@ -123,7 +123,7 @@ class Store implements StoreInterface {
           //   }
           // }
         }
-        else if (component.type === ComponentType.Decal) { /* empty */ }
+        else if (type === ComponentType.Decal) { /* empty */ }
       }
     }
 

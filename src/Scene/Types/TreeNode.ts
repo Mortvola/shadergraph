@@ -355,16 +355,16 @@ class TreeNode {
     //   nodeObject = nodeObject.baseObject;
     // }
 
-    const components: Map<number, NodeComponent> = new Map();
+    const components: Map<string, NodeComponent> = new Map();
 
     // while (stack.length > 0) {
     //   const object = stack.pop();
 
       if (object) {
-        for (const t in object.components) {
-          const comp = object.components[t]
+        for (const type in object.components) {
+          const comp = object.components[type]
 
-          switch (comp.type) {
+          switch (type) {
             case ComponentType.ParticleSystem: {
               // const props = new ParticleSystemProps(
               //   undefined,
@@ -374,8 +374,8 @@ class TreeNode {
 
               const ps = new ParticleSystem(props)
 
-              components.set(comp.id, {
-                type: comp.type,
+              components.set(`${object.id}:${type}`, {
+                type,
                 props,
                 component: ps,
               })

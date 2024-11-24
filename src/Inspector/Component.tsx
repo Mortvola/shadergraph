@@ -9,6 +9,7 @@ import type LightProps from '../Renderer/Properties/LightProps'
 import type TreeNode from '../Scene/Types/TreeNode'
 
 type PropsType = {
+  componentType: ComponentType,
   component: SceneObjectComponent
   className?: string
   style?: React.CSSProperties
@@ -16,13 +17,14 @@ type PropsType = {
 }
 
 const Component: React.FC<PropsType> = ({
+  componentType,
   component,
   className,
   style,
   node,
 }) => {
   const renderComponent = () => {
-    switch (component.type) {
+    switch (componentType) {
       case ComponentType.Transform:
         return <Transform transformProps={(component.props as TransformProps)} node={node} />
 

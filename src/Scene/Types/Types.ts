@@ -3,7 +3,7 @@ import type { ParticleSystemPropsDescriptor } from '../../Renderer/ParticleSyste
 import { type PSString } from '../../Renderer/Properties/Property';
 import type { PropertyBaseInterface } from '../../Renderer/Properties/Types';
 import type {
-  ComponentDescriptor, ComponentPropsDescriptor, ComponentType, LightPropsDescriptor, NewSceneObjectComponent,
+  ComponentDescriptor, ComponentPropsDescriptor, ComponentType, LightPropsDescriptor,
   SceneObjectComponent as SceneObjectComponent,
 } from '../../Renderer/Types';
 import type TreeNode from './TreeNode';
@@ -124,17 +124,15 @@ export interface SceneObjectInterface {
     override: boolean,
   ): void;
 
-  addComponent(component: NewSceneObjectComponent): void;
+  addComponent(componentType: ComponentType, component: SceneObjectComponent): void;
 
-  removeComponent(component: SceneObjectComponent): void;
+  removeComponent(componentType: ComponentType, component: SceneObjectComponent): void;
 
   // detachSelf(): void;
 
   isPrefabInstanceRoot(): boolean;
 
   // save(): Promise<void>;
-
-  getNextComponentId(): number;
 
   get hasOverrides(): boolean;
 

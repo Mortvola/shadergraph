@@ -2,7 +2,7 @@ import { observable } from 'mobx';
 import {
   type ComponentDescriptor,
   type ComponentPropsDescriptor,
-  ComponentType, type LightPropsDescriptor, type NewSceneObjectComponent,
+  ComponentType, type LightPropsDescriptor,
   type SceneObjectComponent,
 } from '../../Renderer/Types';
 import {
@@ -113,8 +113,6 @@ class SceneObject implements SceneObjectInterface {
         }
 
         const component: SceneObjectComponent = {
-          id: descriptor.sceneObjectId,
-          type: descriptor.type,
           props,
         }
 
@@ -122,7 +120,7 @@ class SceneObject implements SceneObjectInterface {
           console.log('transform changed')
           this.transformChanged()
 
-          this.saveComponent(component)
+          this.saveComponent(descriptor.type, component)
         }
 
         props.sceneObject = this;
@@ -138,12 +136,10 @@ class SceneObject implements SceneObjectInterface {
         const props = new ParticleSystemProps(propsDescriptor);
 
         const component: SceneObjectComponent = {
-          id: descriptor.sceneObjectId,
-          type: descriptor.type,
           props,
         }
 
-        props.onChange = () => { this.saveComponent(component) };
+        props.onChange = () => { this.saveComponent(descriptor.type, component) };
         props.sceneObject = this;
 
         this.components[descriptor.type] = component
@@ -159,8 +155,6 @@ class SceneObject implements SceneObjectInterface {
         props.sceneObject = this;
 
         const component: SceneObjectComponent = {
-          id: descriptor.sceneObjectId,
-          type: descriptor.type,
           props,
         }
 
@@ -193,7 +187,7 @@ class SceneObject implements SceneObjectInterface {
     const component = this.components[componentType]
 
     if (component) {
-      switch (component.type) {
+      switch (componentType) {
         case ComponentType.Transform: {
           (component.props as TransformProps).applyModifications(
             componentDescriptor as TransformPropsDescriptor,
@@ -310,14 +304,14 @@ class SceneObject implements SceneObjectInterface {
     }
   }
 
-  async saveComponent(component: SceneObjectComponent) {
+  async saveComponent(componentType: ComponentType, component: SceneObjectComponent) {
     // Is this a component being updated or is a modification to a component being updated?
     if (this.isTopLevel) {
       // A component is being updated.
       const descriptor = component.props.toDescriptor(false);
 
       if (descriptor) {
-        await this.node?.scene.updateObjectComponent(this.id, component.type, descriptor)
+        await this.node?.scene.updateObjectComponent(this.id, componentType, descriptor)
       }
     } else {
       // A modification to a component is being updated.
@@ -344,7 +338,7 @@ class SceneObject implements SceneObjectInterface {
           const updatedModifications = {
             ...modifications.sceneObject,
             name: this.header.name.toDescriptor(true),
-            [component.type]: descriptor,
+            [componentType]: descriptor,
           }
 
           const payload = {
@@ -364,8 +358,8 @@ class SceneObject implements SceneObjectInterface {
     }
   }
 
-  addComponent(component: NewSceneObjectComponent) {
-    this.components[component.type] = { ...component, id: this.getNextComponentId() }
+  addComponent(componentType: ComponentType, component: SceneObjectComponent) {
+    this.components[componentType] = { ...component }
     component.props.onChange = this.onChange;
 
     // if (component.component) {
@@ -375,12 +369,12 @@ class SceneObject implements SceneObjectInterface {
     this.onChange()
   }
 
-  removeComponent(component: SceneObjectComponent) {
-    const c = this.components[component.type]
+  removeComponent(componentType: ComponentType) {
+    const c = this.components[componentType]
 
     if (c !== undefined) {
       // this.renderNode.removeComponent(c.component)
-      delete this.components[component.type]
+      delete this.components[componentType]
       this.onChange()
     }
 
@@ -407,13 +401,6 @@ class SceneObject implements SceneObjectInterface {
   //   // }
   // }
 
-  getNextComponentId(): number {
-    const nextComponentId = this.nextComponentId;
-    this.nextComponentId += 1;
-
-    return nextComponentId;
-  }
-
   transformChanged = () => {
     this.node?.transformChanged()
 
@@ -428,7 +415,7 @@ class SceneObject implements SceneObjectInterface {
     const descriptor = {
       id: this.id,
       name: this.header.name.toDescriptor(overridesOnly),
-      components: Object.keys(this.components).map((c) => this.components[c].type),
+      components: Object.keys(this.components),
     }
 
     return descriptor;
