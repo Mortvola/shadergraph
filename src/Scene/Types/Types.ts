@@ -108,11 +108,7 @@ export interface SceneObjectInterface {
 
   components: SceneObjectComponents;
 
-  // transformProps: TransformPropsInterface;
-
   node?: TreeNode;
-
-  // tree?: { id: number, name: string };
 
   get isTopLevel(): boolean;
 
@@ -128,11 +124,7 @@ export interface SceneObjectInterface {
 
   removeComponent(componentType: ComponentType, component: SceneObjectComponent): void;
 
-  // detachSelf(): void;
-
   isPrefabInstanceRoot(): boolean;
-
-  // save(): Promise<void>;
 
   get hasOverrides(): boolean;
 

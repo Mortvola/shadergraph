@@ -137,22 +137,39 @@ class Scene implements SceneInterface {
   }
 
   async updateObjectComponent(sceneObjectId: number, type: ComponentType, descriptor: ComponentPropsDescriptor) {
-    const response = await Http.patch(`/api/components/${sceneObjectId}/${type}`, descriptor)
+    if (type === ComponentType.Self) {
+      const response = await Http.patch<Omit<unknown, 'id'>, void>(
+        `/api/scene-objects/${sceneObjectId}`,
+        descriptor,
+      );
 
-    if (response.ok) {
-      const object = this.objects.get(sceneObjectId)
+      if (response.ok) {
+        const object = this.objects.get(sceneObjectId)
 
-      if (object === undefined) {
-        throw new Error('object not found')
+        if (object === undefined) {
+          throw new Error('object not found')
+        }
+
+        object.descriptor = descriptor as SceneObjectDescriptor
       }
+    } else {
+      const response = await Http.patch(`/api/components/${sceneObjectId}/${type}`, descriptor)
 
-      const component = object.components.get(type)
+      if (response.ok) {
+        const object = this.objects.get(sceneObjectId)
 
-      if (component === undefined) {
-        throw new Error('component not found')
+        if (object === undefined) {
+          throw new Error('object not found')
+        }
+
+        const component = object.components.get(type)
+
+        if (component === undefined) {
+          throw new Error('component not found')
+        }
+
+        object.components.set(type, descriptor)
       }
-
-      object.components.set(type, descriptor)
     }
   }
 

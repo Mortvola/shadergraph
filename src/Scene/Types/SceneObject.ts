@@ -49,10 +49,6 @@ class SceneObject implements SceneObjectInterface {
     return this.node?.sceneId === this.node?.scene.root?.sceneId
   }
 
-  // tree?: { id: number, name: string };
-
-  nextComponentId = 0;
-
   autosave = true;
 
   get hasOverrides(): boolean {
@@ -97,7 +93,7 @@ class SceneObject implements SceneObjectInterface {
     return object;
   }
 
-  createComponent(componentType: ComponentType, descriptor: ComponentPropsDescriptor) {
+  private createComponent(componentType: ComponentType, descriptor: ComponentPropsDescriptor) {
     switch (componentType) {
       case ComponentType.Transform: {
         const props = new TransformProps(
@@ -194,100 +190,13 @@ class SceneObject implements SceneObjectInterface {
     }
   }
 
-  // static async fromModifications(
-  //   modifications: SceneObjectModifications,
-  //   baseObject: SceneObjectInterface,
-  // ) {
-  //   const object = new SceneObject();
-  //   object.autosave = false;
-
-  //   object.components = []
-  //   object.header.name = new PSString(
-  //     'name',
-  //     object.header,
-  //     modifications?.name as string,
-  //     undefined,
-  //     object.onModificationChange,
-  //     baseObject?.header.name,
-  //   )
-
-  //   for (const c of baseObject.components) {
-  //     const componentDescriptor: unknown | undefined = modifications[c.type]
-
-  //     switch (c.type) {
-  //       case ComponentType.Transform: {
-  //         const props = new TransformProps(
-  //           componentDescriptor as TransformPropsDescriptor,
-  //           object.transformChanged,
-  //           baseObject.transformProps,
-  //         );
-
-  //         object.components.push({
-  //           id: c.id,
-  //           type: c.type,
-  //           props,
-  //         })
-
-  //         object.transformProps = props
-  //         break
-  //       }
-
-  //       case ComponentType.ParticleSystem: {
-  //         const props = new ParticleSystemProps(
-  //           componentDescriptor as ParticleSystemPropsDescriptor,
-  //           c.props as ParticleSystemProps,
-  //         );
-
-  //         props.onChange = object.onModificationChange;
-  //         props.sceneObject = object;
-
-  //         object.components.push({
-  //           id: c.id,
-  //           type: c.type,
-  //           props,
-  //         })
-
-  //         break
-  //       }
-
-  //       case ComponentType.Light: {
-  //         object.components.push({
-  //           id: c.id,
-  //           type: c.type,
-  //           props: c.props,
-  //         })
-
-  //         break
-  //       }
-  //     }
-  //   }
-
-  //   // let componentDescriptor: unknown | undefined
-  //   // if (descriptor?.modifications) {
-  //   //   componentDescriptor = descriptor?.modifications[ComponentType.Transform]
-  //   // }
-
-  //   // object.transformProps = new TransformProps(
-  //   //   componentDescriptor as TransformPropsDescriptor,
-  //   //   object.transformChanged,
-  //   //   baseObject.transformProps,
-  //   // );
-
-  //   object.baseObject = baseObject
-
-  //   object.autosave = true;
-
-  //   return object;
-  // }
-
-  // async save(): Promise<void> {
-  //   return objectManager.update(this)
-  // }
-
   onChange = () => {
     if (this.autosave) {
-      console.log('onChange')
-      // this.save();
+      const descriptor = this.toDescriptor(false)
+
+      if (descriptor) {
+        this.node?.scene.updateObjectComponent(this.id, ComponentType.Self, descriptor)
+      }
     }
   }
 
@@ -380,13 +289,6 @@ class SceneObject implements SceneObjectInterface {
       // this.onChange()
     // }
   }
-
-  // detachSelf() {
-  //   // if (this.parent) {
-  //   //   this.parent.removeObject(this);
-  //   //   this.parent = null;
-  //   // }
-  // }
 
   transformChanged = () => {
     this.node?.transformChanged()
