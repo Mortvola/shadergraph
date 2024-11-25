@@ -15,9 +15,18 @@ fn fs(vertexOut: VertexOut) -> @location(0) vec4f
 
   var value =
     distance(center, textureSample(outlineTexture, ourSampler, vertexOut.texcoord + vec2f(1.0, 0.0) * textureStep).r)
-    + distance(center, textureSample(outlineTexture, ourSampler, vertexOut.texcoord + vec2f(-1.0, 0.0) * textureStep).r)
-    + distance(center, textureSample(outlineTexture, ourSampler, vertexOut.texcoord + vec2f(0.0, 1.0) * textureStep).r)
-    + distance(center, textureSample(outlineTexture, ourSampler, vertexOut.texcoord + vec2f(0.0, -1.0) * textureStep).r);
+      + distance(
+        center,
+        textureSample(outlineTexture, ourSampler, vertexOut.texcoord + vec2f(-1.0, 0.0) * textureStep).r
+      )
+      + distance(
+        center,
+        textureSample(outlineTexture, ourSampler, vertexOut.texcoord + vec2f(0.0, 1.0) * textureStep).r
+      )
+      + distance(
+        center,
+        textureSample(outlineTexture, ourSampler, vertexOut.texcoord + vec2f(0.0, -1.0) * textureStep).r
+      );
 
   return vec4f(value, value, 0, value);
 }

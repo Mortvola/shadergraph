@@ -39,7 +39,8 @@ const NodeOutputPort: React.FC<PropsType> = observer(({
       const rect = element.getBoundingClientRect();
 
       port.offsetX = rect.right - ((port.node.position!.x + translate.x) * scale + (origin.x - origin.x * scale));
-      port.offsetY = rect.top + rect.height / 2 - ((port.node.position!.y + translate.y) * scale + (origin.y - origin.y * scale));
+      port.offsetY = rect.top + rect.height / 2 - ((port.node.position!.y + translate.y) * scale
+        + (origin.y - origin.y * scale));
     }
   }, [origin.x, origin.y, port, scale, translate.x, translate.y]);
 

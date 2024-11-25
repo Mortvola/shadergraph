@@ -58,7 +58,8 @@ class ShaderGraph {
         }
 
         if ((shaderDescriptor as { depthWriteEnabled: boolean })?.depthWriteEnabled !== undefined) {
-          displayNode.settings.depthWriteEnabled = (shaderDescriptor as { depthWriteEnabled: boolean }).depthWriteEnabled
+          displayNode.settings.depthWriteEnabled
+            = (shaderDescriptor as { depthWriteEnabled: boolean }).depthWriteEnabled
         }
 
         if ((shaderDescriptor as { lit: boolean })?.lit !== undefined) {
@@ -172,6 +173,7 @@ class ShaderGraph {
     for (let i = 0; i < fragProperties.length; i += 1) {
       if (fragProperties[i].value.dataType === 'texture2D' || fragProperties[i].value.dataType === 'sampler') {
         fragBindings = fragBindings.concat(
+          // eslint-disable-next-line @stylistic/max-len
           `@group(${group}) @binding(${numFragBindings}) var${space(fragProperties[i].value.dataType)} ${fragProperties[i].name}: ${bindingType(fragProperties[i].value.dataType)};\n`,
         )
 
@@ -233,7 +235,8 @@ class ShaderGraph {
     vertexProperties: PropertyInterface[],
     root?: GraphNodeInterface,
   ): ShaderModule {
-    const [code, vertProperties, fragProperties, settings] = this.generateShaderCode(drawableType, vertexProperties, root);
+    const [code, vertProperties, fragProperties, settings]
+      = this.generateShaderCode(drawableType, vertexProperties, root);
 
     let shaderModule: GPUShaderModule
     try {

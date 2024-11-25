@@ -38,7 +38,9 @@ const NodeInputPort: React.FC<PropsType> = observer(({
       const rect = element.getBoundingClientRect();
 
       port.offsetX = rect.left - ((port.node.position!.x + translate.x) * scale + (origin.x - origin.x * scale))
-      port.offsetY = rect.top + (rect.height / 2) - ((port.node.position!.y + translate.y) * scale + (origin.y - origin.y * scale))
+      port.offsetY = rect.top + (
+        rect.height / 2) - ((port.node.position!.y + translate.y) * scale + (origin.y - origin.y * scale)
+      )
     }
   }, [origin.x, origin.y, port, scale, translate.x, translate.y]);
 
@@ -112,7 +114,9 @@ const NodeInputPort: React.FC<PropsType> = observer(({
   const handleValueChange = () => {
     if (store.graph && store.previewModeler.model) {
       const drawable = store.previewModeler.getDrawableNode(store.previewModeler.model);
-      drawable?.material.setPropertyValues(GPUShaderStage.FRAGMENT, [{ name: port.constantName, value: port.value!, builtin: false }])
+      drawable?.material.setPropertyValues(
+        GPUShaderStage.FRAGMENT, [{ name: port.constantName, value: port.value!, builtin: false }],
+      )
     }
   }
 
@@ -126,7 +130,13 @@ const NodeInputPort: React.FC<PropsType> = observer(({
         case 'vec3f':
         case 'vec4f':
           return Array.isArray(port.value.value)
-          ? <SimpleVector value={port.value.value as number[]} length={getLength(port.value.dataType)} onChange={handleValueChange} />
+          ? (
+            <SimpleVector
+              value={port.value.value as number[]}
+              length={getLength(port.value.dataType)}
+              onChange={handleValueChange}
+            />
+          )
           : null
         case 'uv':
           return <SimpleUV />

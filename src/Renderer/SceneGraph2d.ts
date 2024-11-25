@@ -150,7 +150,14 @@ class SceneGraph2D {
     return new Mesh2D(vertices, texcoords, indexes, 1, 1)
   }
 
-  setCanvasDimensions(width: number, height: number, scaleX?: number, scaleY?: number, viewportWidth?: number, viewportHeight?: number) {
+  setCanvasDimensions(
+    width: number,
+    height: number,
+    scaleX?: number,
+    scaleY?: number,
+    viewportWidth?: number,
+    viewportHeight?: number,
+  ) {
     this.width = width
     this.height = height
 
@@ -163,7 +170,11 @@ class SceneGraph2D {
     this.clipTransform = mat3.identity()
 
     mat3.translate(this.clipTransform, vec2.create(-1, 1), this.clipTransform)
-    mat3.scale(this.clipTransform, vec2.create(1 / this.width * this.scaleX, 1 / this.height * -this.scaleY), this.clipTransform)
+    mat3.scale(
+      this.clipTransform,
+      vec2.create(1 / this.width * this.scaleX, 1 / this.height * -this.scaleY),
+      this.clipTransform,
+    )
 
     this.scene2d.style.width = this.viewportWidth;
     this.scene2d.style.height = this.viewportHeight;
@@ -303,7 +314,9 @@ class SceneGraph2D {
           absoluteElements.push(node)
         }
         else {
-          let [childWidth, childHeight] = await this.layoutELements(node, childLeft, childTop, width, height, element.style.color)
+          let [childWidth, childHeight] = await this.layoutELements(
+            node, childLeft, childTop, width, height, element.style.color,
+          )
 
           if (isTextBox(node) || isElementNode(node)) {
             if (element.style?.flexDirection === 'column') {
@@ -427,8 +440,10 @@ class SceneGraph2D {
       // content area and the borders. Return the width and height with
       // the margins added in so the parent can have the total area occupied by this child.
       return [
-        width + (element.style.margin?.left ?? 0) + (element.style.margin?.right ?? 0) + (element.style.border?.width ?? 0) * 2,
-        height + (element.style.margin?.top ?? 0) + (element.style.margin?.bottom ?? 0) + (element.style.border?.width ?? 0) * 2,
+        width + (element.style.margin?.left ?? 0)
+          + (element.style.margin?.right ?? 0) + (element.style.border?.width ?? 0) * 2,
+        height + (element.style.margin?.top ?? 0)
+          + (element.style.margin?.bottom ?? 0) + (element.style.border?.width ?? 0) * 2,
       ]
     }
 

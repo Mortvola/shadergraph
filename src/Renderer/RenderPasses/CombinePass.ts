@@ -8,7 +8,12 @@ class CombinePass {
 
   deferredCombineBindGroup: GPUBindGroup
 
-  constructor(albedoView: GPUTextureView, positionView: GPUTextureView, normalView: GPUTextureView, decalView: GPUTextureView) {
+  constructor(
+    albedoView: GPUTextureView,
+    positionView: GPUTextureView,
+    normalView: GPUTextureView,
+    decalView: GPUTextureView,
+  ) {
     const bindGroupLayout = gpu.device.createBindGroupLayout({
       label: 'Deferred Combine Pass',
       entries: [

@@ -220,7 +220,9 @@ const traverseTree = async (
 
         parent.connections.push(n);
 
-        const result2 = await traverseTree(context, n, objectsNode, connectionsNode, connectedObjectId, setPercentComplete, geoPctComplete);
+        const result2 = await traverseTree(
+          context, n, objectsNode, connectionsNode, connectedObjectId, setPercentComplete, geoPctComplete,
+        );
 
         objectsVisited[connectedObjectId] = (objectsVisited[connectedObjectId] ?? 0) + 1;
 
@@ -231,7 +233,9 @@ const traverseTree = async (
             if (geometry) {
               const results = await geometry.generateBuffers();
 
-              const geometryNode = new FbxGeometryNode(geometry, results.vertices, results.normals, results.texcoords, results.indices);
+              const geometryNode = new FbxGeometryNode(
+                geometry, results.vertices, results.normals, results.texcoords, results.indices,
+              );
 
               geometryNode.name =  node.prop(1, 'string')?.split('::')[1] ?? '';
               if (geometryNode.name === '') {
@@ -373,7 +377,9 @@ export const downloadFbx = async (url: string): Promise<FbxNode | undefined> => 
           const id2 = node.props[2] as number;
           const subType = node.props[3] as string ?? '';
 
-          const edge = edges.find((e) => e.type === type && e.objectId === id1 && e.parentObjectId === id2 && e.subType === subType)
+          const edge = edges.find(
+            (e) => e.type === type && e.objectId === id1 && e.parentObjectId === id2 && e.subType === subType,
+          )
 
           if (edge) {
             console.log(`duplicate edge: ${edge}`)

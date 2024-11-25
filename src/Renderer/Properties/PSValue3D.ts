@@ -108,8 +108,12 @@ class PSValue3D extends PropertyBase {
       : [1, 1],
     };
     value.curve = [
-      PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 0) ? descriptor.curve![0] : undefined, this),
-      PSCurve.fromDescriptor((descriptor?.curve && descriptor?.curve.length > 1) ? descriptor.curve![1] : undefined, this),
+      PSCurve.fromDescriptor(
+        (descriptor?.curve && descriptor?.curve.length > 0) ? descriptor.curve![0] : undefined, this,
+      ),
+      PSCurve.fromDescriptor(
+        (descriptor?.curve && descriptor?.curve.length > 1) ? descriptor.curve![1] : undefined, this,
+      ),
     ];
     value.curveRange = { value: [
       descriptor.curveRange ? descriptor.curveRange[0] : 0,

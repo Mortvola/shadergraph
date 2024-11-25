@@ -1,5 +1,8 @@
 import { makeObservable, observable, runInAction } from 'mobx';
-import type { GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface, PortInterface, PropertyInterface } from '../Renderer/ShaderBuilder/Types';
+import type {
+  GraphEdgeInterface, GraphNodeInterface, InputPortInterface, OutputPortInterface,
+  PortInterface, PropertyInterface,
+} from '../Renderer/ShaderBuilder/Types';
 import GraphEdge from '../Renderer/ShaderBuilder/GraphEdge';
 import Display from '../Renderer/ShaderBuilder/Nodes/Display';
 import type { MaterialInterface } from '../Renderer/Types';

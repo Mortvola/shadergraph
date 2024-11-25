@@ -25,7 +25,10 @@ class DrawableComponent extends Component implements DrawableComponentInterface 
     this.color = material.color.slice();
   }
 
-  static async create(drawable: DrawableInterface, materialDescriptor?: MaterialDescriptor | number): Promise<DrawableComponent> {
+  static async create(
+    drawable: DrawableInterface,
+    materialDescriptor?: MaterialDescriptor | number,
+  ): Promise<DrawableComponent> {
     const material = await materialManager.get(materialDescriptor, drawable.type, drawable.vertexProperties)
 
     return new DrawableComponent(drawable, material);

@@ -15,7 +15,12 @@ const CurveGraph: React.FC<PropsType> = observer(({
 }) => {
   const graphRef = React.useRef<HTMLDivElement>(null);
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
-  const [graphRect, setGraphRect] = React.useState<{ left: number, top: number, width: number, height: number}>({ left: 0, top: 0, width: 0, height: 0})
+  const [graphRect, setGraphRect] = React.useState<{
+    left: number,
+    top: number,
+    width: number,
+    height: number
+  }>({ left: 0, top: 0, width: 0, height: 0})
   const renderer = React.useRef<CurveRenderer>(new CurveRenderer())
   const [dragPoint, setDragPoint] = React.useState<{ point: PSCurvePoint, subpoint: Subpoint }>();
 
@@ -53,7 +58,10 @@ const CurveGraph: React.FC<PropsType> = observer(({
           case Subpoint.LeftCtrl: {
             const leftCtrl = {
               x: Math.min(0, Math.max(0, Math.min(1, (x - graphRect.left) / graphRect.width)) - dragPoint.point.x),
-              y: Math.max(0, Math.min(1, (graphRect.height - (y - graphRect.top)) / graphRect.height)) - dragPoint.point.y,
+              y: Math.max(
+                0,
+                Math.min(1, (graphRect.height - (y - graphRect.top)) / graphRect.height),
+              ) - dragPoint.point.y,
             }
 
             const length = vec2.length(vec2.create(dragPoint.point.rightCtrl.x, dragPoint.point.leftCtrl.y));
@@ -73,7 +81,10 @@ const CurveGraph: React.FC<PropsType> = observer(({
           case Subpoint.RightCtrl: {
             const rightCtrl = {
               x: Math.max(0, Math.max(0, Math.min(1, (x - graphRect.left) / graphRect.width)) - dragPoint.point.x),
-              y: Math.max(0, Math.min(1, (graphRect.height - (y - graphRect.top)) / graphRect.height)) - dragPoint.point.y,
+              y: Math.max(
+                0,
+                Math.min(1, (graphRect.height - (y - graphRect.top)) / graphRect.height),
+              ) - dragPoint.point.y,
             }
 
             const length = vec2.length(vec2.create(dragPoint.point.leftCtrl.x, dragPoint.point.rightCtrl.y));

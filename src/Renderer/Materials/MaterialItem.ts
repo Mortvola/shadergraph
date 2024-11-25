@@ -18,7 +18,11 @@ class MaterialItem extends Entity implements MaterialItemInterface {
 
   materialManager: MaterialManagerInterface;
 
-  constructor(materailManager: MaterialManagerInterface, descriptor?: MaterialRecordDescriptor, onChange: (() => void) | null = null) {
+  constructor(
+    materailManager: MaterialManagerInterface,
+    descriptor?: MaterialRecordDescriptor,
+    onChange: (() => void) | null = null,
+  ) {
     super(-1, '')
 
     this.materialManager = materailManager;

@@ -45,7 +45,8 @@ fn lighting(albedo: vec3f, position: vec3f, normal: vec3f) -> vec3f
     var lightDirection = normalize(pointLight.position.xyz - position);
 
     var distance = distance(pointLight.position.xyz, position);
-    var attenuation = 1.0 / (pointLight.attConstant + pointLight.attLinear * distance + pointLight.attQuadratic * distance * distance);
+    var attenuation = 1.0 
+      / (pointLight.attConstant + pointLight.attLinear * distance + pointLight.attQuadratic * distance * distance);
 
     var result = blinnPhong(viewDir, normal, lightDirection, lightColor, attenuation);
 

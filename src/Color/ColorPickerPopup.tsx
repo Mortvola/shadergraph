@@ -107,7 +107,11 @@ const ColorPickerPopup: React.FC<PropsType> = ({
         {
           wrapperBounds
             ? (
-              <div className={styles.popup} style={{ left: rect.left, bottom: wrapperBounds!.bottom - rect.top }} onClick={handleClick}>
+              <div
+                className={styles.popup}
+                style={{ left: rect.left, bottom: wrapperBounds!.bottom - rect.top }}
+                onClick={handleClick}
+              >
                 <select className={styles.colorMode} value={colorMode} onChange={handleColorModeChange}>
                   <option value={ColorMode.HDR}>RGB 0.0-1.0</option>
                   <option value={ColorMode.RGB}>RGB 0-255</option>
@@ -140,7 +144,12 @@ const ColorPickerPopup: React.FC<PropsType> = ({
                     ? (
                       <label>
                         A:
-                        <ColorSlider className={styles.alphaGradient} value={alpha * 1000} min={0} max={1000} onChange={handleAlphaSliderChange} />
+                        <ColorSlider
+                          className={styles.alphaGradient} value={alpha * 1000}
+                          min={0}
+                          max={1000}
+                          onChange={handleAlphaSliderChange}
+                        />
                         <NumberInput value={alpha} onChange={handleAlphaChange} />
                       </label>
                     )

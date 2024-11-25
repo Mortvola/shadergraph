@@ -10,8 +10,10 @@ class ShaderGraphRenderer extends Renderer2d {
 
   connectionPoint(port: PortInterface): [number, number] {
     return [
-      (port.node.position!.x + this.translate[0]) * this.scale + (this.origin.x - this.origin.x * this.scale) + port.offsetX,
-      (port.node.position!.y + this.translate[1]) * this.scale + (this.origin.y - this.origin.y * this.scale) + port.offsetY,
+      (port.node.position!.x + this.translate[0])* this.scale
+        + (this.origin.x - this.origin.x * this.scale) + port.offsetX,
+      (port.node.position!.y + this.translate[1]) * this.scale
+        + (this.origin.y - this.origin.y * this.scale) + port.offsetY,
     ]
   }
 

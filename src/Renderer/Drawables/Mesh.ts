@@ -18,7 +18,14 @@ class Mesh extends Drawable {
 
   indexFormat: GPUIndexFormat = 'uint16';
 
-  constructor(mesh: SurfaceMesh, vertices: number[], normals: number[], texcoord: number[], indices: number[], id: number) {
+  constructor(
+    mesh: SurfaceMesh,
+    vertices: number[],
+    normals: number[],
+    texcoord: number[],
+    indices: number[],
+    id: number,
+  ) {
     super(DrawableType.Mesh, id)
 
     this.name = 'Mesh';

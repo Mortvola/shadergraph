@@ -90,7 +90,11 @@ const Material: React.FC<PropsType> = observer(({
               return (
                 <div key={p.name} className={styles.property} >
                   <div>{`${p.name}:`}</div>
-                  <ValueInput key={`${materialItem?.id}:${index}`} value={materialProp.value} onChange={handleValueChange} />
+                  <ValueInput
+                    key={`${materialItem?.id}:${index}`}
+                    value={materialProp.value}
+                    onChange={handleValueChange}
+                  />
                 </div>
               )
             })

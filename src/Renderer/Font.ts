@@ -108,7 +108,10 @@ class Font {
 
         texcoords.push(character.x / this.textuerWidth, character.y / this.textureHeight)
         texcoords.push(character.x / this.textuerWidth, (character.y + character.height) / this.textureHeight)
-        texcoords.push((character.x + character.width) / this.textuerWidth, (character.y + character.height) / this.textureHeight)
+        texcoords.push(
+          (character.x + character.width) / this.textuerWidth,
+          (character.y + character.height) / this.textureHeight,
+        )
         texcoords.push((character.x + character.width) / this.textuerWidth, character.y / this.textureHeight)
 
         indexes.push(

@@ -246,7 +246,9 @@ class PipelineManager implements PipelineManagerInterface {
       let binding = 2;
 
       if (shaderModule.vertProperties.length > 0) {
-        const layout = PipelineManager.layoutBindGroup(shaderModule.vertProperties, GPUShaderStage.VERTEX, 'vert group');
+        const layout = PipelineManager.layoutBindGroup(
+          shaderModule.vertProperties, GPUShaderStage.VERTEX, 'vert group',
+        );
 
         if (layout) {
           bindGroupLayouts.push(layout)
@@ -263,7 +265,9 @@ class PipelineManager implements PipelineManagerInterface {
       }
 
       if (shaderModule.fragProperties.length > 0) {
-        const layout = PipelineManager.layoutBindGroup(shaderModule.fragProperties, GPUShaderStage.FRAGMENT, 'frag group')
+        const layout = PipelineManager.layoutBindGroup(
+          shaderModule.fragProperties, GPUShaderStage.FRAGMENT, 'frag group',
+        )
 
         if (layout) {
           bindGroupLayouts.push(layout)
@@ -284,6 +288,7 @@ class PipelineManager implements PipelineManagerInterface {
       });
 
       const pipelineDescriptor: GPURenderPipelineDescriptor = {
+        // eslint-disable-next-line @stylistic/max-len
         label: `${drawableType}${shaderModule.settings.transparent ? ' transparent' : ''}${bloom ? ' bloom' : ''} pipeline`,
         vertex: {
           module: shaderModule.module,

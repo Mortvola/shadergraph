@@ -96,7 +96,13 @@ class SceneGraph implements SceneGraphInterface {
   }
 
   updateTransforms() {
-    let stack: { node: RenderNodeInterface, transform: Mat4 }[] = [{ node: this.rootRenderNode, transform: mat4.identity() }];
+    let stack: {
+      node: RenderNodeInterface,
+      transform: Mat4,
+    }[] = [{
+      node: this.rootRenderNode,
+      transform: mat4.identity(),
+    }];
 
     while (stack.length > 0) {
       const { node, transform } = stack[0];

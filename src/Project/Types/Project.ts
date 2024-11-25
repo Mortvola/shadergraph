@@ -291,7 +291,9 @@ class Project implements ProjectInterface {
         return new MaterialProjectItem(rec.id, rec.name, folder, rec.itemId)
 
       case ProjectItemType.Particle:
-        return new ProjectItem<ParticleSystemInterface>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+        return new ProjectItem<ParticleSystemInterface>(
+          rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId,
+        )
 
       case ProjectItemType.Scene:
         return new SceneProjectItem(rec.id, rec.name, folder, rec.itemId)

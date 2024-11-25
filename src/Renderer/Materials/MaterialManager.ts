@@ -54,7 +54,11 @@ class MaterialManager implements MaterialManagerInterface {
     }
   }
 
-  async get(id: MaterialDescriptor | number | undefined, drawableType: DrawableType, vertexProperties: PropertyInterface[]): Promise<Material> {
+  async get(
+    id: MaterialDescriptor | number | undefined,
+    drawableType: DrawableType,
+    vertexProperties: PropertyInterface[],
+  ): Promise<Material> {
     const key = JSON.stringify(id)
     const subKey = JSON.stringify({ drawableType, vertexProperties })
 

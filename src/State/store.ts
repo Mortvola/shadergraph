@@ -62,7 +62,8 @@ class Store implements StoreInterface {
       runInAction(() => {
         this.mainView.camera.offset = JSON.parse(cameraSettings)?.offset ?? this.mainView.camera.offset
         this.mainView.camera.rotateX = JSON.parse(cameraSettings)?.rotateX ?? this.mainView.camera.rotateX
-        this.mainView.camera.finalRotateY = JSON.parse(cameraSettings)?.finalRotateY ?? this.mainView.camera.finalRotateY
+        this.mainView.camera.finalRotateY = JSON.parse(cameraSettings)?.finalRotateY
+          ?? this.mainView.camera.finalRotateY
       })
     }
 

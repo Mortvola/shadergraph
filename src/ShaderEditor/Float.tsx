@@ -44,7 +44,14 @@ const Float: React.FC<PropsType> = ({
   return (
     <>
         {label}
-        <input style={style} value={value0} onChange={handleValue0Change}  onClick={handleClick}  onPointerDown={handlePointerDown} onKeyDown={handleKeyDown}/>
+        <input
+          style={style}
+          value={value0}
+          onChange={handleValue0Change}
+          onClick={handleClick}
+          onPointerDown={handlePointerDown}
+          onKeyDown={handleKeyDown}
+        />
     </>
   )
 }

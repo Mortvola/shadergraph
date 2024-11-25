@@ -35,9 +35,9 @@
     "build": "clear && tsc && vite build",
     "serve": "vite preview",
     "watch": "tsc --noEmit --watch",
-    "eslint": "eslint .",
-    "madge": "madge -c ./src/index.tsx",
-    "knip": "knip"
+    "eslint": "clear && eslint .",
+    "madge": "clear && madge -c ./src/index.tsx",
+    "knip": "clear && knip"
   },
   "madge": {
     "detectiveOptions": {

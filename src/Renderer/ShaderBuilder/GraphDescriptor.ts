@@ -1,9 +1,12 @@
-export type DataType = 'float' | 'vec2f' | 'vec3f' | 'vec4f' | 'texture2D' | 'sampler' | 'rgba' | 'string' | 'uv' | 'color';
+export type DataType =
+  'float' | 'vec2f' | 'vec3f' | 'vec4f' | 'texture2D' | 'sampler'
+  | 'rgba' | 'string' | 'uv' | 'color';
 
 export type NodeType =
   'property' | 'value'
   | 'uv' | 'UV' | 'time' | 'Time'
-  | 'Add' | 'Clamp' | 'Combine' | 'display' | 'Display' | 'Distance' | 'Divide' | 'Fraction' | 'FWidth' | 'Inverse' | 'Lerp' | 'Max' | 'Min' | 'Multiply' | 'Power'
+  | 'Add' | 'Clamp' | 'Combine' | 'display' | 'Display' | 'Distance' | 'Divide'
+  | 'Fraction' | 'FWidth' | 'Inverse' | 'Lerp' | 'Max' | 'Min' | 'Multiply' | 'Power'
   | 'SampleTexture' | 'Split' | 'Subtract' | 'Step' | 'TileAndScroll'
   | 'PhongShading' | 'TextureSize' | 'Twirl' | 'VertexColor' | 'Voronoi'
   | 'Preview';

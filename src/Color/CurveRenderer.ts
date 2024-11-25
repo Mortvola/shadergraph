@@ -160,7 +160,10 @@ class CurveRenderer extends Renderer2d {
       if (i > 0) {
         d = vec2.distance(
           vec2.create(x * width / this.canvasScale[0], (height - y * height) / this.canvasScale[1]),
-          vec2.create((point.x + point.leftCtrl.x) * width / this.canvasScale[0], (height - (point.y + point.leftCtrl.y) * height) / this.canvasScale[1]),
+          vec2.create(
+            (point.x + point.leftCtrl.x) * width / this.canvasScale[0],
+            (height - (point.y + point.leftCtrl.y) * height) / this.canvasScale[1],
+          ),
         )
 
         if (d <= this.radius) {
@@ -175,7 +178,10 @@ class CurveRenderer extends Renderer2d {
       if (i < this.points.length - 1) {
         d = vec2.distance(
           vec2.create(x * width / this.canvasScale[0], (height - y * height) / this.canvasScale[1]),
-          vec2.create((point.x + point.rightCtrl.x) * width / this.canvasScale[0], (height - (point.y + point.rightCtrl.y) * height) / this.canvasScale[1]),
+          vec2.create(
+            (point.x + point.rightCtrl.x) * width / this.canvasScale[0],
+            (height - (point.y + point.rightCtrl.y) * height) / this.canvasScale[1],
+          ),
         )
 
         if (d <= this.radius) {

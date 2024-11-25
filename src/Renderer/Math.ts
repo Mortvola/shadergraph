@@ -209,7 +209,12 @@ export const lineCircleIntersection = (center: Vec2, radius: number, p1: Vec2, p
 // A line segment may be split from
 // 1 (no intersection or a tangent) to
 // 3 (two intersections with the circle) segments.
-export const lineSegmentCircleIntersection = (center: Vec2, radius: number, p1: Vec2, p2: Vec2): [Vec2[], boolean[]] => {
+export const lineSegmentCircleIntersection = (
+  center: Vec2,
+  radius: number,
+  p1: Vec2,
+  p2: Vec2,
+): [Vec2[], boolean[]] => {
   const result = lineCircleIntersection(center, radius, p1, p2);
 
   if (result === null || result.length === 1) {
@@ -341,7 +346,12 @@ export const midpointCircle = (center: Vec2, radius: number) => {
   }
 }
 
-export const circleRectangleIntersectionTest = (center: Vec2, radius: number, upperLeft: Vec2, lowerRight: Vec2): boolean => {
+export const circleRectangleIntersectionTest = (
+  center: Vec2,
+  radius: number,
+  upperLeft: Vec2,
+  lowerRight: Vec2,
+): boolean => {
   const rectWidth = lowerRight[0] - upperLeft[0];
   const rectHeight = upperLeft[1] - lowerRight[1];
 

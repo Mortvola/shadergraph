@@ -30,6 +30,7 @@ export const getGradientCss = (colorKeys: ColorGradientKey[], alphaKeys: AlphaGr
   let position = 0;
 
   const toString = (color: number[], alpha: number, position: number) => (
+    // eslint-disable-next-line @stylistic/max-len
     `rgba(${color.map((c) => Math.round(c * 255)).join(' ')} / ${Math.round(alpha * 100)}%) ${(Math.round(position * 100))}%`
   )
 

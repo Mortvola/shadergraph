@@ -586,7 +586,14 @@ class Renderer implements RendererInterface {
     })
   }
 
-  canvasResize(width: number, height: number, scaleX: number, scaleY: number, viewportWidth: number, viewportHeight: number) {
+  canvasResize(
+    width: number,
+    height: number,
+    scaleX: number,
+    scaleY: number,
+    viewportWidth: number,
+    viewportHeight: number,
+  ) {
     this.scene2d.setCanvasDimensions(width, height, scaleX, scaleY, viewportWidth, viewportHeight)
   }
 

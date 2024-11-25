@@ -100,13 +100,25 @@ const PSValue3DInput: React.FC<PropsType> = observer(({
               case PSValueType.Curve:
                 return (
                   <>
-                    <CurveEditor value={value.values[0].curve[0]} range={value.values[0].curveRange} onRangeChange={handleRangeXChange} />
+                    <CurveEditor
+                      value={value.values[0].curve[0]}
+                      range={value.values[0].curveRange}
+                      onRangeChange={handleRangeXChange}
+                    />
                     {
                       value.separateAxes
                         ? (
                           <>
-                            <CurveEditor value={value.values[1].curve[0]} range={value.values[1].curveRange} onRangeChange={handleRangeYChange} />
-                            <CurveEditor value={value.values[2].curve[0]} range={value.values[2].curveRange} onRangeChange={handleRangeZChange} />
+                            <CurveEditor
+                              value={value.values[1].curve[0]}
+                              range={value.values[1].curveRange}
+                              onRangeChange={handleRangeYChange}
+                            />
+                            <CurveEditor
+                              value={value.values[2].curve[0]}
+                              range={value.values[2].curveRange}
+                              onRangeChange={handleRangeZChange}
+                            />
                             </>
                         )
                         : null
