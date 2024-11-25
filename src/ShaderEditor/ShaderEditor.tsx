@@ -112,7 +112,7 @@ const ShaderEditor: React.FC<PropsType> = observer(({
         <button type="button" onClick={handleClose}>Close</button>
       </Toolbar>
       <Canvas2d renderer2d={shaderGraphRenderer}/>
-      <Graph parent={ref} />
+      <Graph />
       <Preview />
       <Controls />
       <Properties graph={graph} />

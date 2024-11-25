@@ -5,13 +5,7 @@ import Node from './Node';
 import { shaderGraphRenderer } from '../Main';
 import { observer } from 'mobx-react-lite';
 
-type PropsType = {
-  children?: React.ReactNode,
-}
-
-const NodesContainer: React.FC<PropsType> = observer(({
-  children,
-}) => {
+const NodesContainer: React.FC = observer(() => {
   const { graph } = useStores();
 
   const ref = React.useRef<HTMLDivElement>(null)
