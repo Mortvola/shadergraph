@@ -82,8 +82,7 @@ class Display extends OperationNode {
     return `var fragOut = ${value};`;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  notify(notification?: GraphNotification) {
+  notify(_notification?: GraphNotification) {
     if (this.onChange) {
       this.onChange()
     }

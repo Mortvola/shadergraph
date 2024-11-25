@@ -344,6 +344,7 @@ export const downloadFbx = async (url: string): Promise<FbxNode | undefined> => 
       const buffer = new Uint8Array(arrayBuffer)
       fbx = FBXParser.parseBinary(buffer)
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     catch (error) {
       const dataView = new DataView(arrayBuffer);
       const decoder = new TextDecoder();

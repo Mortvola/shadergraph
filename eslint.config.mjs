@@ -26,5 +26,6 @@ export default tseslint.config({
     '@stylistic/jsx-quotes': ['warn', 'prefer-double'],
     '@stylistic/max-len': ['warn', { code: 120 }],
     '@stylistic/comma-dangle': ['warn', 'always-multiline'],
+    // '@stylistic/no-extra-parens': ['warn', 'all', { 'ignoreJSX': 'all' }],
   },
 });
