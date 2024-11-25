@@ -1,9 +1,10 @@
+import { type BurstDescriptor } from '../ParticleSystem/Types';
 import { Property } from './Property';
 import type PSValue from './PSValue';
 
 type BurstsType = { time: number, count: PSValue, cycles: number, probability: number }[];
 
-export class PSBursts extends Property<BurstsType> {
+export class PSBursts extends Property<BurstsType, BurstDescriptor[]> {
   constructor(
     value?: BurstsType,
     defaultValue = [],
@@ -12,15 +13,17 @@ export class PSBursts extends Property<BurstsType> {
     super(value, defaultValue, onChange)
   }
 
-  toDescriptor(overridesOnly: boolean): any[] | undefined {
+  toDescriptor(overridesOnly: boolean): BurstDescriptor[] | undefined {
     // Only output the descriptor if this a base property or if this is an override
     if (!overridesOnly || this.override) {
-      return this.value.map((v) => ({
+      const bursts = this.value.map((v) => ({
         time: v.time,
-        count: v.count.toDescriptor(overridesOnly),
+        count: v.count.toDescriptor(false),
         cycles: v.cycles,
         probability: v.probability,
       }))
+
+      return bursts
     }
   }
 }

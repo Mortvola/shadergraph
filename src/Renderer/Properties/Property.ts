@@ -3,7 +3,7 @@ import { RenderAlignment, RenderMode, ShapeType, SpaceType } from '../ParticleSy
 import PropertyBase from './PropertyBase';
 import { vec3n, type Vec3n } from 'wgpu-matrix';
 
-export class Property<T> extends PropertyBase {
+export class Property<T, D> extends PropertyBase {
   @observable protected accessor value: T;
 
   set(value?: T, override = false) {
@@ -45,15 +45,15 @@ export class Property<T> extends PropertyBase {
     this.reactOnChange(() => ({ value: this.value, override: this.override }))
   }
 
-  toDescriptor(overridesOnly: boolean): T | undefined {
+  toDescriptor(overridesOnly: boolean): D | undefined {
     // Only output the descriptor if this a base property or if this is an override
     if (!overridesOnly || this.override) {
-      return this.value
+      return (this.value as unknown) as D
     }
   }
 }
 
-export class PSBoolean extends Property<boolean> {
+export class PSBoolean extends Property<boolean, boolean> {
   constructor(
     value?: boolean,
     defaultValue = false,
@@ -63,7 +63,7 @@ export class PSBoolean extends Property<boolean> {
   }
 }
 
-export class PSString extends Property<string | undefined> {
+export class PSString extends Property<string | undefined, string | undefined> {
   constructor(
     value?: string,
     onChange?: () => void,
@@ -72,7 +72,7 @@ export class PSString extends Property<string | undefined> {
   }
 }
 
-export class PSNumber extends Property<number> {
+export class PSNumber extends Property<number, number> {
   constructor(
     value?: number,
     defaultValue = 0,
@@ -82,7 +82,7 @@ export class PSNumber extends Property<number> {
   }
 }
 
-export class PSSpace extends Property<SpaceType> {
+export class PSSpace extends Property<SpaceType, SpaceType> {
   constructor(
     value?: SpaceType,
     defaultValue = SpaceType.Local,
@@ -92,7 +92,7 @@ export class PSSpace extends Property<SpaceType> {
   }
 }
 
-export class PSRenderMode extends Property<RenderMode> {
+export class PSRenderMode extends Property<RenderMode, RenderMode> {
   constructor(
     value?: RenderMode,
     defaultValue = RenderMode.Billboard,
@@ -106,7 +106,7 @@ export class PSRenderMode extends Property<RenderMode> {
   }
 }
 
-export class PSRenderAlignment extends Property<RenderAlignment> {
+export class PSRenderAlignment extends Property<RenderAlignment, RenderAlignment> {
   constructor(
     value?: RenderAlignment,
     defaultValue = RenderAlignment.View,
@@ -116,7 +116,7 @@ export class PSRenderAlignment extends Property<RenderAlignment> {
   }
 }
 
-export class PSShapeType extends Property<ShapeType> {
+export class PSShapeType extends Property<ShapeType, ShapeType> {
   constructor(
     value?: ShapeType,
     defaultValue = ShapeType.Cone,
@@ -126,7 +126,7 @@ export class PSShapeType extends Property<ShapeType> {
   }
 }
 
-export class PSMaterialItem extends Property<number | undefined> {
+export class PSMaterialItem extends Property<number | undefined, number | undefined> {
   constructor(
     value: number | undefined,
     onChange?: () => void,
@@ -135,7 +135,7 @@ export class PSMaterialItem extends Property<number | undefined> {
   }
 }
 
-export class PSMeshItem extends Property<number | undefined> {
+export class PSMeshItem extends Property<number | undefined, number | undefined> {
   constructor(
     value: number | undefined,
     onChange?: () => void,
@@ -144,7 +144,7 @@ export class PSMeshItem extends Property<number | undefined> {
   }
 }
 
-export class PSVec3Type extends Property<Vec3n> {
+export class PSVec3Type extends Property<Vec3n, Vec3n> {
   constructor(
     value?: Vec3n,
     defaultValue = vec3n.create(),

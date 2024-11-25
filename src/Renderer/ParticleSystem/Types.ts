@@ -121,11 +121,16 @@ export type CollisionDescriptor = PSModuleDescriptor & {
   dampen?: number,
 }
 
-export type BurstsDescriptor = { time: number, count: PSValueDescriptor, cycles: number, probability: number }[];
+export type BurstDescriptor = {
+  time: number,
+  count: PSValueDescriptor | undefined,
+  cycles: number,
+  probability: number,
+};
 
 export type EmissionsDescriptor = PSModuleDescriptor & {
   rate?: number,
-  bursts?: BurstsDescriptor,
+  bursts?: BurstDescriptor[],
 }
 
 export enum SpaceType {
