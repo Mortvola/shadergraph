@@ -17,7 +17,7 @@ class Billboard extends Drawable {
     super.addInstanceInfo(transform, inverseTransform, color)
   }
 
-  hitTest(p: Vec4, viewTransform: Mat4): { point: Vec4, t: number, drawable: Drawable} | null {
+  hitTest(_p: Vec4, _viewTransform: Mat4): { point: Vec4, t: number, drawable: Drawable} | null {
     return null;
   }
 }

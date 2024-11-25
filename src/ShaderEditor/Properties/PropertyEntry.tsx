@@ -14,7 +14,7 @@ const PropertyEntry: React.FC<PropsType> = ({
 }) => {
   const ref = React.useRef<HTMLDivElement>(null);
 
-  const handleClick: React.MouseEventHandler = (event) => {
+  const handleClick: React.MouseEventHandler = (_event) => {
     const element = ref.current;
 
     if (element) {

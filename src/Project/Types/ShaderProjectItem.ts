@@ -1,6 +1,4 @@
 import { runInAction } from 'mobx';
-import Http from '../../Http/src';
-import type { ShaderRecord } from '../../Renderer/Types';
 import Graph from '../../State/Graph';
 import { store } from '../../State/store';
 import ProjectItem from './ProjectItem';

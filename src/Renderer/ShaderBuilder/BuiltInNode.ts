@@ -17,11 +17,11 @@ class BuiltIn extends GraphNode {
     return this.name;
   }
 
-  getExpression(editMode: boolean): [string, DataType] {
+  getExpression(_editMode: boolean): [string, DataType] {
     return this.getVarName() ?? ['', 'float'];
   }
 
-  output(editMode: boolean): string {
+  output(_editMode: boolean): string {
     return '';
   }
 }

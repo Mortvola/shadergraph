@@ -22,7 +22,7 @@ class LifetimeVelocity extends PSModule {
     })
   }
 
-  update(descriptor?: LifetimeVelocityDescriptor) {
+  update(_descriptor?: LifetimeVelocityDescriptor) {
 
   }
 

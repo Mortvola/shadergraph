@@ -10,7 +10,7 @@ const defs = makeShaderDataDefinitions(circleShader);
 class Circle extends Drawable {
   circleStructure = makeStructuredView(defs.structs.Circle);
 
-  constructor(radius: number, thickness: number, color: Vec4) {
+  constructor(radius: number, thickness: number, _color: Vec4) {
     super(DrawableType.Circle, 1)
 
     this.name = 'Circle'
@@ -29,7 +29,7 @@ class Circle extends Drawable {
     passEncoder.draw(numSegments * 2 * 3);
   }
 
-  hitTest(p: Vec4, viewTransform: Mat4): { point: Vec4, t: number, drawable: Drawable} | null {
+  hitTest(_p: Vec4, _viewTransform: Mat4): { point: Vec4, t: number, drawable: Drawable} | null {
     return null;
   }
 }

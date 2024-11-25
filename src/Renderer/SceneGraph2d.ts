@@ -235,7 +235,7 @@ class SceneGraph2D {
 
     await this.layoutELements(this.scene2d, 0, 0)
 
-    await this.addElements(this.scene2d, 0, 0, this.viewportWidth, this.viewportHeight)
+    await this.addElements(this.scene2d, 0, 0)
 
     if (this.meshes.size > 0) {
       this.allocateBuffers()
@@ -252,7 +252,6 @@ class SceneGraph2D {
     y: number,
     parentWidth?: number,
     parentHeight?: number,
-    parentColor?: number[],
   ): Promise<[number, number]> {
     if (isTextBox(element)) {
       const mesh = await element.createMesh(parentWidth)
@@ -315,7 +314,7 @@ class SceneGraph2D {
         }
         else {
           let [childWidth, childHeight] = await this.layoutELements(
-            node, childLeft, childTop, width, height, element.style.color,
+            node, childLeft, childTop, width, height,
           )
 
           if (isTextBox(node) || isElementNode(node)) {
@@ -394,7 +393,7 @@ class SceneGraph2D {
       for (let i = 0; i < absoluteElements.length; i += 1) {
         const node = element.nodes[i]
 
-        await this.layoutELements(node, 0, 0, width, height, element.style.color)
+        await this.layoutELements(node, 0, 0, width, height)
       }
 
       // Add any padding to the width and height
@@ -454,8 +453,6 @@ class SceneGraph2D {
     element: SceneNode2d,
     screenX: number,
     screenY: number,
-    parentWidth: number,
-    parentHeight: number,
   ) {
     element.screenX = screenX + element.x
     element.screenY = screenY + element.y
@@ -468,7 +465,7 @@ class SceneGraph2D {
       for (let i = 0; i < element.nodes.length; i += 1) {
         const node = element.nodes[i]
 
-        await this.addElements(node, element.screenX, element.screenY, element.width, element.height)
+        await this.addElements(node, element.screenX, element.screenY)
       }
 
       await this.addElement(

@@ -96,7 +96,7 @@ const Draggable: React.FC<PropsType> = observer(({
     }
   }
 
-  const handleLostPointerCapture: React.PointerEventHandler = (event) => {
+  const handleLostPointerCapture: React.PointerEventHandler = (_event) => {
     setDragInfo(null);
   }
 

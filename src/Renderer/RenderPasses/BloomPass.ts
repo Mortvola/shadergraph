@@ -88,7 +88,7 @@ class BloomPass {
     this.pipeline = this.createPipeline(shaderModule, bindGroupLayout, true);
   }
 
-  createPipeline(shaderModule: GPUShaderModule, bindGroupLayout: GPUBindGroupLayout, horizontal: boolean) {
+  createPipeline(shaderModule: GPUShaderModule, bindGroupLayout: GPUBindGroupLayout, _horizontal: boolean) {
     const pipelineDescriptor: GPURenderPipelineDescriptor = {
       label,
       vertex: {

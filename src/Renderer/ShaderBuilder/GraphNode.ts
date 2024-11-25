@@ -87,7 +87,7 @@ class GraphNode implements GraphNodeInterface {
     return '';
   }
 
-  getExpression(editMode: boolean): [string, DataType] {
+  getExpression(_editMode: boolean): [string, DataType] {
     return ['', this.getDataType()];
   }
 

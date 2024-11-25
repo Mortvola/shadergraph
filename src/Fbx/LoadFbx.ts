@@ -443,8 +443,8 @@ export const downloadFbx = async (url: string): Promise<FbxNode | undefined> => 
           objectsNode,
           connectionsNode,
           0,
-          (pct: number | null) => {}, // setPercentComplete(pct),
-          (pct: number | null) => {}, // setGeoPercent(pct),
+          (_pct: number | null) => {}, // setPercentComplete(pct),
+          (_pct: number | null) => {}, // setGeoPercent(pct),
         );
 
         // for (const sceneNode of result.sceneNodes) {

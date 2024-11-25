@@ -2,7 +2,6 @@ import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { useStores } from '../../State/store';
 import type { RenderNodeInterface, DrawableComponentInterface} from '../../Renderer/Types';
-import { ComponentType } from '../../Renderer/Types';
 import { isRenderNode } from '../../Renderer/Drawables/SceneNodes/RenderNode';
 import { isDrawableComponent } from '../../Renderer/Drawables/SceneNodes/utils';
 import MeshNode from './MeshNode';

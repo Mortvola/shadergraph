@@ -16,7 +16,7 @@ class Collision extends PSModule {
     this.dampen = new PSNumber(props, descriptor?.dampen, 0, onChange);
   }
 
-  update(descriptor?: CollisionDescriptor) {
+  update(_descriptor?: CollisionDescriptor) {
 
   }
 

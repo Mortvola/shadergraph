@@ -10,7 +10,7 @@ class UV extends BuiltIn {
     this.setVarName('vertexOut.texcoord');
   }
 
-  setVarName(varName: string | null): void {
+  setVarName(_varName: string | null): void {
     super.setVarName('vertexOut.texcoord')
   }
 

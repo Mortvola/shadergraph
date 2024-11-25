@@ -64,7 +64,6 @@ class PropertyBase implements PropertyBaseInterface {
     // })
   // }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   copyProp(_other: PropertyBase) {
     throw new Error('not implemented')
   }

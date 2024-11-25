@@ -88,7 +88,7 @@ class PSColor extends PropertyBase {
     })
   }
 
-  update(descriptor?: PSColorDescriptor) {
+  update(_descriptor?: PSColorDescriptor) {
 
   }
 

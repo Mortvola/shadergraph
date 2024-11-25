@@ -20,7 +20,7 @@ class LifetimeColor extends PSModule {
     })
   }
 
-  update(descriptor?: LifetimeColorDescriptor) {
+  update(_descriptor?: LifetimeColorDescriptor) {
   }
 
   toDescriptor(overridesOnly: boolean): LifetimeColorDescriptor | undefined {

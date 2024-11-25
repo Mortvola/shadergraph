@@ -31,7 +31,7 @@ class SurfaceMesh {
     return (this.vertices.length / 4) - 1;
   }
 
-  addFace(vertices: number[], normals?: number[], uv?: number[]) {
+  addFace(vertices: number[], normals?: number[], _uv?: number[]) {
     if (vertices.length === 3) {
       this.indexes = this.indexes.concat(vertices);
 

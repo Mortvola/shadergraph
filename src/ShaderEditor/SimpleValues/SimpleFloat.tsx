@@ -14,7 +14,7 @@ const SimpleFloat: React.FC<PropsType> = ({
   value,
   onChange,
 }) => {
-  const handleChange = (newValue: number, index?: number) => {
+  const handleChange = (newValue: number, _index?: number) => {
     value.value = newValue;
     graph.changed = true;
 

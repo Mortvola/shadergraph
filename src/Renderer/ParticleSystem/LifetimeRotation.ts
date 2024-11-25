@@ -19,7 +19,7 @@ class LifetimeRotation extends PSModule {
     );
   }
 
-  update(descriptor?: LifetimeRotationDescriptor) {
+  update(_descriptor?: LifetimeRotationDescriptor) {
 
   }
 

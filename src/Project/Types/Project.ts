@@ -5,7 +5,7 @@ import Folder from './Folder';
 import ProjectItem from './ProjectItem';
 import type { FolderInterface, ProjectInterface, ProjectItemLike} from './types';
 import { ProjectItemType, isFolder } from './types';
-import type { ParticleSystemInterface, RenderNodeInterface } from '../../Renderer/Types';
+import type { ParticleSystemInterface } from '../../Renderer/Types';
 import SceneProjectItem from './SceneProjectItem';
 import ShaderProjectItem from './ShaderProjectItem';
 import MaterialProjectItem from './MaterialProjectItem';

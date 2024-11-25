@@ -75,11 +75,11 @@ class Drawable implements DrawableInterface {
     });
   }
 
-  render(passEncoder: GPURenderPassEncoder): void {
+  render(_passEncoder: GPURenderPassEncoder): void {
     throw new Error('render not implemented')
   }
 
-  hitTest(origin: Vec4, vector: Vec4): { point: Vec4, t: number, drawable: DrawableInterface} | null {
+  hitTest(_origin: Vec4, _vector: Vec4): { point: Vec4, t: number, drawable: DrawableInterface} | null {
     return null;
   }
 

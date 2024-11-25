@@ -33,7 +33,7 @@ class LifetimeSize extends PSModule {
     }
   }
 
-  update(descriptor?: LifetimeSizeDescriptor) {
+  update(_descriptor?: LifetimeSizeDescriptor) {
 
   }
 

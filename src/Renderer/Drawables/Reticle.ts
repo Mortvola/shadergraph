@@ -45,7 +45,7 @@ class Reticle extends Drawable {
     passEncoder.draw(6);
   }
 
-  hitTest(p: Vec4, viewTransform: Mat4): { point: Vec4, t: number, drawable: Drawable} | null {
+  hitTest(_p: Vec4, _viewTransform: Mat4): { point: Vec4, t: number, drawable: Drawable} | null {
     // Transform point from model space to world space to camera space.
     // let t = mat4.multiply(mat4.inverse(viewTransform), this.getTransform());
 

@@ -14,7 +14,7 @@ class VertexColor extends BuiltIn {
     return 'vec4f';
   }
 
-  setVarName(varName: string | null): void {
+  setVarName(_varName: string | null): void {
     super.setVarName('vertexOut.color');
   }
 }

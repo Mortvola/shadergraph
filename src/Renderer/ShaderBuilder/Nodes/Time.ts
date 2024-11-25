@@ -10,7 +10,7 @@ class Time extends BuiltIn {
     this.setVarName('time');
   }
 
-  setVarName(varName: string | null): void {
+  setVarName(_varName: string | null): void {
     super.setVarName('time');
   }
 }

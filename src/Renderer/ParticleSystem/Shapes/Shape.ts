@@ -36,7 +36,7 @@ class Shape extends PSModule {
     this.hemisphere = new Sphere(props, true, descriptor?.hemisphere, onChange);
   }
 
-  update(descriptor?: ShapeDescriptor) {
+  update(_descriptor?: ShapeDescriptor) {
 
   }
 

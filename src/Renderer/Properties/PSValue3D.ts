@@ -77,7 +77,7 @@ class PSValue3D extends PropertyBase {
     })
   }
 
-  update(descriptor?: PSValue3DDescriptor) {
+  update(_descriptor?: PSValue3DDescriptor) {
 
   }
 

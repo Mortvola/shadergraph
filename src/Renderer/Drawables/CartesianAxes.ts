@@ -84,7 +84,7 @@ class CartesianAxes extends Drawable {
     passEncoder.draw(this.vertices.length / 8);
   }
 
-  hitTest(origin: Vec4, vector: Vec4): { point: Vec4, t: number, drawable: DrawableInterface} | null {
+  hitTest(_origin: Vec4, _vector: Vec4): { point: Vec4, t: number, drawable: DrawableInterface} | null {
     return null;
   }
 

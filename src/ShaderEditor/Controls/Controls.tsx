@@ -3,7 +3,6 @@ import Draggable from '../Draggable';
 import styles from './Controls.module.scss';
 import { useStores } from '../../State/store';
 import { observer } from 'mobx-react-lite';
-import Checkbox from './Checkbox';
 
 const Controls: React.FC = observer(() => {
   const { graph } = useStores();

@@ -128,6 +128,8 @@ class MaterialManager implements MaterialManagerInterface {
   async saveItem(materialItem: MaterialItem): Promise<void> {
     const descriptor = await materialItem.toDescriptor();
     const response = await Http.patch<MaterialRecordDescriptor, void>(`/api/materials/${materialItem.id}`, descriptor);
+
+    if (response.ok) { /* empty */ }
   }
 }
 

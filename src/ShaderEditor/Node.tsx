@@ -37,7 +37,7 @@ const Node: React.FC<PropsType> = observer(({
   // const [expanded, setExpanded] = React.useState<boolean>(node.inputPorts.some((ip) => ip.edge));
   const [expanded, setExpanded] = React.useState<boolean>(true);
 
-  const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (event) => {
+  const handlePointerDown: React.PointerEventHandler<HTMLDivElement> = (_event) => {
     graph.selectNode(node)
   }
 

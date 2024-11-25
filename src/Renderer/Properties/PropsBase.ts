@@ -10,7 +10,7 @@ class PropsBase implements PropsBaseInterface {
     return this.sceneObject?.isTopLevel ?? false
   }
 
-  toDescriptor(overridesOnly: boolean): object | undefined {
+  toDescriptor(_overridesOnly: boolean): object | undefined {
     return undefined;
   }
 
