@@ -239,9 +239,7 @@ export interface LightInterface extends ComponentInterface {
   props: LightPropsInterface;
 }
 
-export type SceneObjectComponent = {
-  props: TransformProps | ParticleSystemProps | LightProps,
-}
+export type SceneObjectComponent = TransformProps | ParticleSystemProps | LightProps
 
 export interface TransformPropsInterface extends PropsBaseInterface {
   translate: PSVec3Type;

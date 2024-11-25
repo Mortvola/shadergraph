@@ -423,7 +423,7 @@ class Scene implements SceneInterface {
             node.sceneObject.updateComponent(componentType, mod, false)
 
             const component = node.sceneObject.components[componentType]
-            const newDescriptor = component.props.toDescriptor(false)
+            const newDescriptor = component.toDescriptor(false)
 
             // TODO: Save the new descriptor to the database.
 

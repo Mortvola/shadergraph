@@ -165,12 +165,8 @@ const SceneObject: React.FC<PropsType> = observer(({
 
       case ComponentType.Light: {
         const props = new LightProps()
-        // const light = new Light(props);
-        const component: SceneObjectComponent = {
-          props: props,
-        };
 
-        sceneObject.addComponent(ComponentType.Light, component);
+        sceneObject.addComponent(ComponentType.Light, props);
         break;
       }
 
@@ -191,11 +187,7 @@ const SceneObject: React.FC<PropsType> = observer(({
 
           // particleSystemManager.add(particleSystem);
 
-          const item: SceneObjectComponent = {
-            props: props,
-          }
-
-          sceneObject.addComponent(ComponentType.ParticleSystem, item);
+          sceneObject.addComponent(ComponentType.ParticleSystem, props);
         })()
 
         break;

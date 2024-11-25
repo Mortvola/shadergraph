@@ -370,7 +370,7 @@ class TreeNode {
               //   undefined,
               //   comp.props as ParticleSystemProps,
               // );
-              const props = comp.props as ParticleSystemProps;
+              const props = comp as ParticleSystemProps;
 
               const ps = new ParticleSystem(props)
 
@@ -433,7 +433,7 @@ class TreeNode {
   }
 
   transformChanged() {
-    const transform = this.sceneObject.components[ComponentType.Transform]?.props as TransformPropsInterface
+    const transform = this.sceneObject.components[ComponentType.Transform] as TransformPropsInterface
 
     if (transform) {
       vec3.copy(transform.translate.get(), this.renderNode.translate)

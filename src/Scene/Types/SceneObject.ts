@@ -56,7 +56,7 @@ class SceneObject implements SceneObjectInterface {
 
   get hasOverrides(): boolean {
     for (const t in this.components) {
-      if (this.components[t].props.hasOverrides) {
+      if (this.components[t].hasOverrides) {
         return true;
       }
     }
@@ -112,20 +112,16 @@ class SceneObject implements SceneObjectInterface {
           }
         }
 
-        const component: SceneObjectComponent = {
-          props,
-        }
-
         props.onChange = () => {
           console.log('transform changed')
           this.transformChanged()
 
-          this.saveComponent(descriptor.type, component)
+          this.saveComponent(descriptor.type, props)
         }
 
         props.sceneObject = this;
 
-        this.components[descriptor.type] = component
+        this.components[descriptor.type] = props
 
         break
       }
@@ -135,14 +131,10 @@ class SceneObject implements SceneObjectInterface {
 
         const props = new ParticleSystemProps(propsDescriptor);
 
-        const component: SceneObjectComponent = {
-          props,
-        }
-
-        props.onChange = () => { this.saveComponent(descriptor.type, component) };
+        props.onChange = () => { this.saveComponent(descriptor.type, props) };
         props.sceneObject = this;
 
-        this.components[descriptor.type] = component
+        this.components[descriptor.type] = props
 
         break;
       }
@@ -154,11 +146,7 @@ class SceneObject implements SceneObjectInterface {
         props.onChange = this.onChange;
         props.sceneObject = this;
 
-        const component: SceneObjectComponent = {
-          props,
-        }
-
-        this.components[descriptor.type] = component
+        this.components[descriptor.type] = props
 
         break;
       }
@@ -189,7 +177,7 @@ class SceneObject implements SceneObjectInterface {
     if (component) {
       switch (componentType) {
         case ComponentType.Transform: {
-          (component.props as TransformProps).applyModifications(
+          (component as TransformProps).applyModifications(
             componentDescriptor as TransformPropsDescriptor,
             override,
           )
@@ -197,7 +185,7 @@ class SceneObject implements SceneObjectInterface {
         }
 
         case ComponentType.ParticleSystem: {
-          (component.props as ParticleSystemProps).applyModifications(
+          (component as ParticleSystemProps).applyModifications(
             componentDescriptor as ParticleSystemPropsDescriptor,
             override,
           )
@@ -308,7 +296,7 @@ class SceneObject implements SceneObjectInterface {
     // Is this a component being updated or is a modification to a component being updated?
     if (this.isTopLevel) {
       // A component is being updated.
-      const descriptor = component.props.toDescriptor(false);
+      const descriptor = component.toDescriptor(false);
 
       if (descriptor) {
         await this.node?.scene.updateObjectComponent(this.id, componentType, descriptor)
@@ -320,7 +308,7 @@ class SceneObject implements SceneObjectInterface {
         throw new Error('node is not defined')
       }
 
-      const descriptor = component.props.toDescriptor(true)
+      const descriptor = component.toDescriptor(true)
 
       if (descriptor) {
         const modifierNode = this.node?.getTopLevelModifierNode()?.modifierNode
@@ -359,8 +347,8 @@ class SceneObject implements SceneObjectInterface {
   }
 
   addComponent(componentType: ComponentType, component: SceneObjectComponent) {
-    this.components[componentType] = { ...component }
-    component.props.onChange = this.onChange;
+    this.components[componentType] = component
+    component.onChange = this.onChange;
 
     // if (component.component) {
       // this.renderNode.addComponent(component.component)
