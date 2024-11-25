@@ -1,6 +1,5 @@
 import { observable } from 'mobx';
 import {
-  type ComponentDescriptor,
   type ComponentPropsDescriptor,
   ComponentType, type LightPropsDescriptor,
   type SceneObjectComponent,
@@ -33,6 +32,8 @@ class Header extends PropsBase implements HeaderInterface {
     return undefined
   }
 }
+
+export type ComponentMap = Map<string, ComponentPropsDescriptor>
 
 class SceneObject implements SceneObjectInterface {
   id: number
@@ -71,7 +72,7 @@ class SceneObject implements SceneObjectInterface {
 
   static fromDescriptor(
     descriptor: SceneObjectDescriptor,
-    components: Map<string, ComponentDescriptor>,
+    components: ComponentMap,
   ) {
     const object = new SceneObject(descriptor.id);
     object.autosave = false;
@@ -87,7 +88,7 @@ class SceneObject implements SceneObjectInterface {
       const componentDescriptor = components.get(componentType)
 
       if (componentDescriptor) {
-        object.createComponent(componentDescriptor)
+        object.createComponent(componentType as ComponentType, componentDescriptor)
       }
     }
 
@@ -96,11 +97,11 @@ class SceneObject implements SceneObjectInterface {
     return object;
   }
 
-  createComponent(descriptor: ComponentDescriptor) {
-    switch (descriptor.type) {
+  createComponent(componentType: ComponentType, descriptor: ComponentPropsDescriptor) {
+    switch (componentType) {
       case ComponentType.Transform: {
         const props = new TransformProps(
-          descriptor.props as TransformPropsDescriptor,
+          descriptor as TransformPropsDescriptor,
         );
 
         // Fix any scale values that are zero.
@@ -114,37 +115,37 @@ class SceneObject implements SceneObjectInterface {
           console.log('transform changed')
           this.transformChanged()
 
-          this.saveComponent(descriptor.type, props)
+          this.saveComponent(componentType, props)
         }
 
         props.sceneObject = this;
 
-        this.components[descriptor.type] = props
+        this.components[componentType] = props
 
         break
       }
 
       case ComponentType.ParticleSystem: {
-        const propsDescriptor = descriptor.props as ParticleSystemPropsDescriptor;
+        const propsDescriptor = descriptor as ParticleSystemPropsDescriptor;
 
         const props = new ParticleSystemProps(propsDescriptor);
 
-        props.onChange = () => { this.saveComponent(descriptor.type, props) };
+        props.onChange = () => { this.saveComponent(componentType, props) };
         props.sceneObject = this;
 
-        this.components[descriptor.type] = props
+        this.components[componentType] = props
 
         break;
       }
 
       case ComponentType.Light: {
-        const propsDescriptor = descriptor.props as LightPropsDescriptor;
+        const propsDescriptor = descriptor as LightPropsDescriptor;
 
         const props = new LightProps(propsDescriptor);
         props.onChange = this.onChange;
         props.sceneObject = this;
 
-        this.components[descriptor.type] = props
+        this.components[componentType] = props
 
         break;
       }

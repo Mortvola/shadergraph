@@ -10,13 +10,12 @@ import type {
   SceneObjectInterface, TreeNodeDescriptor,
 } from './Types';
 import TreeNode from './TreeNode';
-import SceneObject from './SceneObject';
+import SceneObject, { type ComponentMap } from './SceneObject';
 import ModifierNode from './ModifierNode';
 import { isModifierNode } from './ModifierNode';
 import ProjectItem from '../../Project/Types/ProjectItem';
 import { type FolderInterface } from '../../Project/Types/types';
 import {
-  type ComponentDescriptor,
   type ComponentPropsDescriptor,
   ComponentType,
 } from '../../Renderer/Types';
@@ -46,7 +45,7 @@ class Scene implements SceneInterface {
 
   private objects: Map<number, {
     descriptor: SceneObjectDescriptor,
-    components: Map<string, ComponentDescriptor>,
+    components: ComponentMap,
     object?: SceneObjectInterface,
   }> = new Map()
 
@@ -107,7 +106,7 @@ class Scene implements SceneInterface {
 
       for (const component of response.components) {
         if (component.sceneObjectId === obj.id) {
-          components.set(component.type, component)
+          components.set(component.type, component.props)
         }
       }
 
@@ -153,7 +152,7 @@ class Scene implements SceneInterface {
         throw new Error('component not found')
       }
 
-      component.props = descriptor
+      object.components.set(type, descriptor)
     }
   }
 
@@ -425,7 +424,7 @@ class Scene implements SceneInterface {
 
         const descriptor = object.components.get(componentType)
 
-        if (descriptor?.props) {
+        if (descriptor) {
           let mod = srcMod.sceneObject[componentType]
 
           if (mod) {
@@ -435,7 +434,7 @@ class Scene implements SceneInterface {
               }
             }
 
-            node.sceneObject.updateComponent(componentType, descriptor.props, false)
+            node.sceneObject.updateComponent(componentType, descriptor, false)
             node.sceneObject.updateComponent(componentType, mod, false)
 
             const component = node.sceneObject.components[componentType]
@@ -447,7 +446,7 @@ class Scene implements SceneInterface {
 
             // TODO: Save the new descriptor to the database.
 
-            descriptor.props = newDescriptor
+            object.components.set(componentType, newDescriptor)
 
             // Delete the component from the scene object or
             // the property from the scene object.

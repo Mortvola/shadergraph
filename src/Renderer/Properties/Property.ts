@@ -33,14 +33,6 @@ export class Property<T> extends PropertyBase {
     return this.value;
   }
 
-  // toString(): string {
-  //   if (this.value !== undefined) {
-  //     return this.value.toString()
-  //   }
-
-  //   return 'undefined'
-  // }
-
   constructor(
     props: PropsBase,
     value: T | undefined,
