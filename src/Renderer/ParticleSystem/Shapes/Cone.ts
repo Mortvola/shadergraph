@@ -2,7 +2,6 @@ import type { ConeDescriptor } from '../Types';
 import type { Vec4} from 'wgpu-matrix';
 import { mat4, vec4 } from 'wgpu-matrix';
 import { degToRad } from '../../Math';
-import type PropsBase from '../../Properties/PropsBase';
 import { removeUndefinedKeys } from '../../Properties/Types';
 import { PSNumber } from '../../Properties/Property';
 
@@ -11,10 +10,10 @@ class Cone {
 
   originRadius: PSNumber;
 
-  constructor(props: PropsBase, descriptor?: ConeDescriptor, onChange?: () => void) {
-    this.angle = new PSNumber(props, descriptor?.angle, 25, onChange);
+  constructor(descriptor?: ConeDescriptor, onChange?: () => void) {
+    this.angle = new PSNumber(descriptor?.angle, 25, onChange);
     this.originRadius = new PSNumber(
-      props, descriptor?.originRadius, 1, onChange,
+      descriptor?.originRadius, 1, onChange,
     );
   }
 

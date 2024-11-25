@@ -27,7 +27,7 @@ const PSModule: React.FC<PropsType> = observer(({
   }
 
   const handleEnableChange = (value: boolean) => {
-    module.enabled.set(value, true)
+    module.enabled.set(value, !node.isTopLevel)
   }
 
   return (

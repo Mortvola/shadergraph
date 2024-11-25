@@ -1,4 +1,3 @@
-import type PropsBase from '../../Properties/PropsBase';
 import { removeUndefinedKeys } from '../../Properties/Types';
 import type { Vec4} from 'wgpu-matrix';
 import { vec4 } from 'wgpu-matrix';
@@ -10,23 +9,19 @@ class Sphere {
 
   hemisphere = false;
 
-  props: PropsBase;
-
   constructor(
-    props: PropsBase,
     hemisphere = false,
     descriptor?: SphereDescriptor,
     onChange?: () => void,
   ) {
-    this.props = props;
-    this.radius = new PSNumber(props, descriptor?.radius, 1, onChange)
+    this.radius = new PSNumber(descriptor?.radius, 1, onChange)
     this.hemisphere = hemisphere;
   }
 
   toDescriptor(overridesOnly: boolean): SphereDescriptor | undefined {
     const descriptor = {
       radius: this.radius.toDescriptor(overridesOnly),
-      hemisphere: (this.props.isTopLevel || this.radius.override) ? this.hemisphere : undefined,
+      hemisphere: (!overridesOnly || this.radius.override) ? this.hemisphere : undefined,
     }
 
     return removeUndefinedKeys(descriptor)

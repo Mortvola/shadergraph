@@ -5,13 +5,16 @@ import PSColorTypeSelector from './PSColorTypeSelector';
 import GradientEditor from '../../Color/GradientEditor';
 import type PSColor from '../../Renderer/Properties/PSColor';
 import { observer } from 'mobx-react-lite';
+import type TreeNode from '../../Scene/Types/TreeNode';
 
 type PropsType = {
   value: PSColor,
+  node: TreeNode,
 }
 
 const PSColorInput: React.FC<PropsType> = observer(({
   value,
+  node,
 }) => {
   const handleMinChange = (color: number[]) => {
     value.color = {
@@ -19,7 +22,7 @@ const PSColorInput: React.FC<PropsType> = observer(({
         color,
         value.color[1],
       ],
-      override: true,
+      override: !node.isTopLevel,
     }
   }
 
@@ -29,12 +32,12 @@ const PSColorInput: React.FC<PropsType> = observer(({
         value.color[0],
         color,
       ],
-      override: true,
+      override: !node.isTopLevel,
     }
   }
 
   const handleTypeChange = (newValue: PSColorType) => {
-    value.style = { value: newValue, override: true }
+    value.style = { value: newValue, override: !node.isTopLevel }
   }
 
   return (

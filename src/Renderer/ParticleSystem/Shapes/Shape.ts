@@ -5,7 +5,6 @@ import type { Vec4 } from 'wgpu-matrix';
 import { vec4 } from 'wgpu-matrix';
 import Sphere from './Sphere';
 import PSModule from '../../Properties/PSModule';
-import type PropsBase from '../../Properties/PropsBase';
 import { removeUndefinedKeys } from '../../Properties/Types';
 import { PSShapeType } from '../../Properties/Property';
 
@@ -19,21 +18,20 @@ class Shape extends PSModule {
   hemisphere: Sphere;
 
   constructor(
-    props: PropsBase,
     descriptor?: ShapeDescriptor,
     onChange?: () => void,
   ) {
     const defaultDescriptor: ShapeDescriptor = { enabled: true, type: ShapeType.Cone };
 
-    super(props, descriptor?.enabled, defaultDescriptor.enabled, onChange);
+    super(descriptor?.enabled, defaultDescriptor.enabled, onChange);
 
     this.type = new PSShapeType(
-      props, descriptor?.type, defaultDescriptor?.type, onChange,
+      descriptor?.type, defaultDescriptor?.type, onChange,
     )
 
-    this.cone = new Cone(props, descriptor?.cone, onChange);
-    this.sphere = new Sphere(props, false, descriptor?.sphere, onChange);
-    this.hemisphere = new Sphere(props, true, descriptor?.hemisphere, onChange);
+    this.cone = new Cone(descriptor?.cone, onChange);
+    this.sphere = new Sphere(false, descriptor?.sphere, onChange);
+    this.hemisphere = new Sphere(true, descriptor?.hemisphere, onChange);
   }
 
   update(_descriptor?: ShapeDescriptor) {

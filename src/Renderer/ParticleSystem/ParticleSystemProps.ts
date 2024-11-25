@@ -63,11 +63,11 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
   ) {
     super();
 
-    this.duration = new PSNumber(this, descriptor?.duration, 5, this.handleChange);
+    this.duration = new PSNumber(descriptor?.duration, 5, this.handleChange);
     this.startDelay = new PSNumber(
-      this, descriptor?.startDelay, 0, this.handleChange,
+      descriptor?.startDelay, 0, this.handleChange,
     );
-    this.loop = new PSBoolean(this, descriptor?.loop, true, this.handleChange);
+    this.loop = new PSBoolean(descriptor?.loop, true, this.handleChange);
 
     // Handle retrieving the rate over time from the old location
     // TODO: Remove when no longer needed.
@@ -77,58 +77,56 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
       emissionsDescriptor.rate = descriptor?.rate
     }
 
-    this.emissions = new Emissions(this, emissionsDescriptor, this.handleChange)
+    this.emissions = new Emissions(emissionsDescriptor, this.handleChange)
 
     this.maxPoints = new PSNumber(
-      this, descriptor?.maxPoints, 50, this.handleChange,
+      descriptor?.maxPoints, 50, this.handleChange,
     );
 
     this.lifetime = new PSValue(
-      this,
       descriptor?.lifetime,
       { type: PSValueType.Constant, value: [5, 5] },
       this.handleChange,
     );
 
-    this.shape = new Shape(this, descriptor?.shape, this.handleChange);
+    this.shape = new Shape(descriptor?.shape, this.handleChange);
     this.startSpeed = new PSValue(
-      this, descriptor?.startVelocity, {}, this.handleChange,
+      descriptor?.startVelocity, {}, this.handleChange,
     );
 
     this.startSize = new PSValue3D(
-      this, descriptor?.startSize, undefined, this.handleChange,
+      descriptor?.startSize, undefined, this.handleChange,
     );
 
     this.startRotation = new PSValue3D(
-      this, descriptor?.startRotation, undefined, this.handleChange,
+      descriptor?.startRotation, undefined, this.handleChange,
     );
 
     this.startColor = new PSColor(
-      this, descriptor?.startColor, this.handleChange,
+      descriptor?.startColor, this.handleChange,
     );
 
     this.space = new PSSpace(
-      this, descriptor?.space, SpaceType.Local, this.handleChange,
+      descriptor?.space, SpaceType.Local, this.handleChange,
     );
 
     this.lifetimeSize = new LifetimeSize(
-      this, descriptor?.lifetimeSize, this.handleChange,
+      descriptor?.lifetimeSize, this.handleChange,
     );
 
     this.lifetimeRotation = new LifetimeRotation(
-      this, descriptor?.lifetimeRotation, this.handleChange,
+      descriptor?.lifetimeRotation, this.handleChange,
     )
 
     this.lifetimeVelocity = new LifetimeVelocity(
-      this, descriptor?.lifetimeVelocity, this.handleChange,
+      descriptor?.lifetimeVelocity, this.handleChange,
     );
 
     this.lifetimeColor = new LifetimeColor(
-      this, descriptor?.lifetimeColor, this.handleChange,
+      descriptor?.lifetimeColor, this.handleChange,
     );
 
     this.gravityModifier = new PSValue(
-      this,
       descriptor?.gravityModifier,
       {
         type: PSValueType.Constant,
@@ -137,10 +135,9 @@ class ParticleSystemProps extends PropsBase implements ParticleSystemPropsInterf
       this.handleChange,
     );
 
-    this.collision = new Collision(this, descriptor?.collision, this.handleChange);
+    this.collision = new Collision(descriptor?.collision, this.handleChange);
 
     this.renderer = new Renderer(
-      this,
       descriptor?.renderer,
       { enabled: true, mode: RenderMode.Billboard },
       this.handleChange,

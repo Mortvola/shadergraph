@@ -1,18 +1,16 @@
 import { runInAction } from 'mobx';
 import { Property } from './Property';
 import type PSValue from './PSValue';
-import type PropsBase from './PropsBase';
 
 type BurstsType = { time: number, count: PSValue, cycles: number, probability: number }[];
 
 export class PSBursts extends Property<BurstsType> {
   constructor(
-    props: PropsBase,
     value?: BurstsType,
     defaultValue = [],
     onChange?: () => void,
   ) {
-    super(props, value, defaultValue, onChange)
+    super(value, defaultValue, onChange)
   }
 
   copyProp(other: Property<BurstsType>) {

@@ -4,7 +4,6 @@ import type { PSValueDescriptor} from '../ParticleSystem/Types';
 import { PSValueType } from '../ParticleSystem/Types';
 import PSCurve from './PSCurve';
 import type { PropertyType } from './Types';
-import type PropsBase from './PropsBase';
 import PropertyBase from './PropertyBase';
 
 class PSValue extends PropertyBase {
@@ -20,7 +19,7 @@ class PSValue extends PropertyBase {
     runInAction(() => {
       this._type = value.value;
       if (value.override) {
-        this.override = value.override && !this.props.isTopLevel
+        this.override = value.override
       }
     })
   }
@@ -37,7 +36,7 @@ class PSValue extends PropertyBase {
     runInAction(() => {
       this._value = value.value;
       if (value.override !== undefined) {
-        this.override = value.override && !this.props.isTopLevel
+        this.override = value.override
       }
     })
   }
@@ -58,18 +57,17 @@ class PSValue extends PropertyBase {
     runInAction(() => {
       this._curveRange = value.value;
       if (value.override !== undefined) {
-        this.override = value.override && !this.props.isTopLevel
+        this.override = value.override
       }
     })
   }
 
   constructor(
-    props: PropsBase,
     descriptor?: PSValueDescriptor,
     defaultDescriptor?: PSValueDescriptor,
     onChange?: () => void,
   ) {
-    super(props)
+    super()
 
     this.curve = [new PSCurve(this), new PSCurve(this)]
 

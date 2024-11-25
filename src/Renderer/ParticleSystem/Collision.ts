@@ -1,6 +1,5 @@
 import PSModule from '../Properties/PSModule';
 import type { CollisionDescriptor } from './Types';
-import type PropsBase from '../Properties/PropsBase';
 import { removeUndefinedKeys } from '../Properties/Types';
 import { PSNumber } from '../Properties/Property';
 
@@ -9,11 +8,11 @@ class Collision extends PSModule {
 
   dampen: PSNumber;
 
-  constructor(props: PropsBase, descriptor?: CollisionDescriptor, onChange?: () => void) {
-    super(props, descriptor?.enabled, undefined, onChange);
+  constructor(descriptor?: CollisionDescriptor, onChange?: () => void) {
+    super(descriptor?.enabled, undefined, onChange);
 
-    this.bounce = new PSNumber(props, descriptor?.bounce, 1, onChange);
-    this.dampen = new PSNumber(props, descriptor?.dampen, 0, onChange);
+    this.bounce = new PSNumber(descriptor?.bounce, 1, onChange);
+    this.dampen = new PSNumber(descriptor?.dampen, 0, onChange);
   }
 
   update(_descriptor?: CollisionDescriptor) {

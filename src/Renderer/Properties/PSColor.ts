@@ -4,7 +4,6 @@ import type { PSColorDescriptor} from '../ParticleSystem/Types';
 import { PSColorType } from '../ParticleSystem/Types';
 import Gradient from '../ParticleSystem/Gradient';
 import type { PropertyType } from './Types';
-import type PropsBase from './PropsBase';
 import PropertyBase from './PropertyBase';
 
 type ColorPair = [number[], number[]];
@@ -21,7 +20,7 @@ class PSColor extends PropertyBase {
     runInAction(() => {
       this._type = value.value;
       if (value.override) {
-        this.override = value.override && !this.props.isTopLevel
+        this.override = value.override
       }
     })
   }
@@ -37,7 +36,7 @@ class PSColor extends PropertyBase {
     runInAction(() => {
       this._color = value.value;
       if (value.override) {
-        this.override = value.override && !this.props.isTopLevel
+        this.override = value.override
       }
     })
   }
@@ -45,9 +44,9 @@ class PSColor extends PropertyBase {
   gradients: [Gradient, Gradient];
 
   constructor(
-    props: PropsBase, descriptor?: PSColorDescriptor, onChange?: () => void,
+    descriptor?: PSColorDescriptor, onChange?: () => void,
   ) {
-    super(props);
+    super();
 
     this.gradients = [new Gradient(this), new Gradient(this)]
 

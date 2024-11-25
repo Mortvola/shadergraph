@@ -5,32 +5,35 @@ import { PSValueType } from '../../Renderer/ParticleSystem/Types';
 import type PSValue from '../../Renderer/Properties/PSValue';
 import { observer } from 'mobx-react-lite';
 import CurveEditor from '../../Color/CurveEditor';
+import type TreeNode from '../../Scene/Types/TreeNode';
 
 type PropsType = {
   value: PSValue,
   onFocus?: () => void,
   onBlur?: () => void,
+  node: TreeNode,
 }
 
 const PSValueInput: React.FC<PropsType> = observer(({
   value,
   onFocus,
   onBlur,
+  node,
 }) => {
   const handleMinChange = (min: number) => {
-    value.value = { value: [min, value.value[1]], override: true }
+    value.value = { value: [min, value.value[1]], override: !node.isTopLevel }
   }
 
   const handleMaxChange = (max: number) => {
-    value.value = { value: [value.value[0], max], override: true }
+    value.value = { value: [value.value[0], max], override: !node.isTopLevel }
   }
 
   const handleTypeChange = (newValue: PSValueType) => {
-    value.valueType = { value: newValue, override: true }
+    value.valueType = { value: newValue, override: !node.isTopLevel }
   }
 
   const handleRangeChange = (range: [number, number]) => {
-    value.curveRange = { value: range, override: true };
+    value.curveRange = { value: range, override: !node.isTopLevel };
   }
 
   return (

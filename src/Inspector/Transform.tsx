@@ -23,7 +23,7 @@ const Transform: React.FC<PropsType> = observer(({
       x,
       transformProps.translate.get()[1],
       transformProps.translate.get()[2],
-    ), true)
+    ), !node.isTopLevel)
   }
 
   const handleTranslateYChange = (y: number) => {
@@ -31,7 +31,7 @@ const Transform: React.FC<PropsType> = observer(({
       transformProps.translate.get()[0],
       y,
       transformProps.translate.get()[2],
-    ), true)
+    ), !node.isTopLevel)
   }
 
   const handleTranslateZChange = (z: number) => {
@@ -39,7 +39,7 @@ const Transform: React.FC<PropsType> = observer(({
       transformProps.translate.get()[0],
       transformProps.translate.get()[1],
       z,
-    ), true)
+    ), !node.isTopLevel)
   }
 
   const handleRotateXChange = (x: number) => {
@@ -47,7 +47,7 @@ const Transform: React.FC<PropsType> = observer(({
       degToRad(x),
       transformProps.rotate.get()[1],
       transformProps.rotate.get()[2],
-    ), true)
+    ), !node.isTopLevel)
   }
 
   const handleRotateYChange = (y: number) => {
@@ -55,7 +55,7 @@ const Transform: React.FC<PropsType> = observer(({
       transformProps.rotate.get()[0],
       degToRad(y),
       transformProps.rotate.get()[2],
-    ), true)
+    ), !node.isTopLevel)
   }
 
   const handleRotateZChange = (z: number) => {
@@ -63,7 +63,7 @@ const Transform: React.FC<PropsType> = observer(({
       transformProps.rotate.get()[0],
       transformProps.rotate.get()[1],
       degToRad(z),
-    ), true)
+    ), !node.isTopLevel)
   }
 
   const handleScaleXChange = (x: number) => {
@@ -71,7 +71,7 @@ const Transform: React.FC<PropsType> = observer(({
       x,
       transformProps.scale.get()[1],
       transformProps.scale.get()[2],
-    ), true)
+    ), !node.isTopLevel)
   }
 
   const handleScaleYChange = (y: number) => {
@@ -79,7 +79,7 @@ const Transform: React.FC<PropsType> = observer(({
       transformProps.scale.get()[0],
       y,
       transformProps.scale.get()[2],
-    ), true)
+    ), !node.isTopLevel)
   }
 
   const handleScaleZChange = (z: number) => {
@@ -87,7 +87,7 @@ const Transform: React.FC<PropsType> = observer(({
       transformProps.scale.get()[0],
       transformProps.scale.get()[1],
       z,
-    ), true)
+    ), !node.isTopLevel)
   }
 
   return (

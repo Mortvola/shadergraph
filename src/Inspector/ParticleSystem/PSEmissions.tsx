@@ -20,7 +20,7 @@ const PSEmissions: React.FC<PropsType> = observer(({
   node,
 }) => {
   const handleRateChange = (value: number) => {
-    emissions.rate.set(value, true);
+    emissions.rate.set(value, !node.isTopLevel);
   }
 
   const handleAddClick = () => {
@@ -76,7 +76,7 @@ const PSEmissions: React.FC<PropsType> = observer(({
                     onChange={(value: number) => handleTimeChange(index, value)}
                     onFocus={() => handleRowFocus(index)}
                   /></div>
-                <div><PSValueInput value={burst.count} onFocus={() => handleRowFocus(index)} /></div>
+                <div><PSValueInput value={burst.count} onFocus={() => handleRowFocus(index)} node={node} /></div>
                 <div><NumberInput value={burst.cycles} onFocus={() => handleRowFocus(index)} /></div>
                 <div><NumberInput value={burst.probability} onFocus={() => handleRowFocus(index)} /></div>
               </>

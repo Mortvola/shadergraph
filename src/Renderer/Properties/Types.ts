@@ -1,5 +1,3 @@
-import type { SceneObjectInterface } from '../../Scene/Types/Types';
-
 export type PropertyType<T> = { value: T, override?: boolean }
 
 export const isProperty = (r: unknown): r is PropertyBaseInterface => (
@@ -16,13 +14,7 @@ export type LineageEntry = { property: PropertyBaseInterface, name: string, cont
 export interface PropertyBaseInterface {
   override: boolean
 
-  props: PropsBaseInterface;
-
-  // toString(): string;
-
   revertOverride(): void
-
-  // applyOverride(property: PropertyBaseInterface): void
 
   copyProp(_other: PropertyBaseInterface): void
 
@@ -39,10 +31,6 @@ export const removeUndefinedKeys = <T extends Record<string, unknown>>(obj: T): 
 };
 
 export interface PropsBaseInterface {
-  sceneObject?: SceneObjectInterface;
-
-  get isTopLevel(): boolean;
-
   toDescriptor(overridesOnly: boolean): object | undefined;
 
   get hasOverrides(): boolean;

@@ -1,5 +1,4 @@
 import { PSBoolean } from './Property'
-import type PropsBase from './PropsBase';
 import { isProperty } from './Types';
 
 class PSModule {
@@ -13,16 +12,12 @@ class PSModule {
     return this.enabled.onChange
   }
 
-  props: PropsBase
-
   constructor(
-    props: PropsBase,
     enabled: boolean | undefined,
     defaultEnabled = false,
     onChange?: () => void,
   ) {
-    this.props = props
-    this.enabled = new PSBoolean(props, enabled, defaultEnabled, onChange)
+    this.enabled = new PSBoolean(enabled, defaultEnabled, onChange)
   }
 
   protected setOnChange(onChange?: () => void) {

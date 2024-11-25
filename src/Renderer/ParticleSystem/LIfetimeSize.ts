@@ -6,7 +6,6 @@ import {
   PSValueType,
   type LifetimeSizeDescriptor,
 } from './Types';
-import type PropsBase from '../Properties/PropsBase';
 import { removeUndefinedKeys } from '../Properties/Types';
 import PSValue3D from '../Properties/PSValue3D';
 
@@ -14,12 +13,12 @@ class LifetimeSize extends PSModule {
   size: PSValue3D;
 
   constructor(
-    props: PropsBase, descriptor?: LifetimeSizeDescriptor, onChange?: () => void,
+    descriptor?: LifetimeSizeDescriptor, onChange?: () => void,
   ) {
-    super(props, descriptor?.enabled, undefined, onChange);
+    super(descriptor?.enabled, undefined, onChange);
 
     if ( descriptor?.size === undefined || isPSValue3DDescriptor(descriptor?.size)) {
-      this.size = new PSValue3D(props, descriptor?.size, undefined, onChange);
+      this.size = new PSValue3D(descriptor?.size, undefined, onChange);
     }
     else {
       const valueDescriptor: PSValueDescriptor = descriptor?.size ?? { type: PSValueType.Constant, value: [1, 1] }
@@ -29,7 +28,7 @@ class LifetimeSize extends PSModule {
         values: [valueDescriptor, valueDescriptor, valueDescriptor],
       }
 
-      this.size = new PSValue3D(props, tmpDescriptor, undefined, onChange);
+      this.size = new PSValue3D(tmpDescriptor, undefined, onChange);
     }
   }
 

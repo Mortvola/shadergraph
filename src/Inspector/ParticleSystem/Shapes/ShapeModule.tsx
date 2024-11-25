@@ -20,7 +20,7 @@ const ShapeModule: React.FC<PropsType> = observer(({
   node,
 }) => {
   const handleShapeTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    shape.type.set(event.target.value as ShapeType, true);
+    shape.type.set(event.target.value as ShapeType, !node.isTopLevel);
   }
 
   return (
@@ -38,13 +38,13 @@ const ShapeModule: React.FC<PropsType> = observer(({
         (() => {
           switch (shape.type.get()) {
             case ShapeType.Cone:
-              return <Cone cone={shape.cone} />
+              return <Cone cone={shape.cone} node={node} />
 
             case ShapeType.Sphere:
-              return <Sphere sphere={shape.sphere} />
+              return <Sphere sphere={shape.sphere} node={node} />
 
             case ShapeType.Hemisphere:
-              return <Sphere sphere={shape.hemisphere} />
+              return <Sphere sphere={shape.hemisphere} node={node} />
 
             default:
               return null;

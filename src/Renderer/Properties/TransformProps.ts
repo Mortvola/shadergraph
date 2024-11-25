@@ -23,21 +23,18 @@ class TransformProps extends PropsBase implements TransformPropsInterface {
     this.onChange = onChange
 
     this.translate = new PSVec3Type(
-      this,
       descriptor?.translate ? vec3n.create(...descriptor.translate) : undefined,
       vec3n.create(0, 0, 0),
       () => { this.handleChange() },
     )
 
     this.rotate = new PSVec3Type(
-      this,
       descriptor?.rotate ? vec3n.create(...descriptor.rotate) : undefined,
       vec3n.create(0, 0, 0),
       () => { this.handleChange() },
     )
 
     this.scale = new PSVec3Type(
-      this,
       descriptor?.scale ? vec3n.create(...descriptor.scale) : undefined,
       vec3n.create(1, 1, 1),
       () => { this.handleChange() },

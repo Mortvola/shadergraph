@@ -7,44 +7,47 @@ import { observer } from 'mobx-react-lite';
 import CurveEditor from '../../Color/CurveEditor';
 import Checkbox from '../../ShaderEditor/Controls/Checkbox';
 import RangeInput from './RangeInput';
+import type TreeNode from '../../Scene/Types/TreeNode';
 
 type PropsType = {
   value: PSValue3D,
+  node: TreeNode,
 }
 
 const PSValue3DInput: React.FC<PropsType> = observer(({
   value,
+  node,
 }) => {
   const handleXChange = (min: number) => {
-    value.values[0].value = { value: [min, value.values[0].value[1]], override: true }
+    value.values[0].value = { value: [min, value.values[0].value[1]], override: !node.isTopLevel }
   }
 
   const handleYChange = (min: number) => {
-    value.values[1].value = { value: [min, value.values[1].value[1]], override: true }
+    value.values[1].value = { value: [min, value.values[1].value[1]], override: !node.isTopLevel }
   }
 
   const handleZChange = (min: number) => {
-    value.values[2].value = { value: [min, value.values[2].value[1]], override: true }
+    value.values[2].value = { value: [min, value.values[2].value[1]], override: !node.isTopLevel }
   }
 
   const handleTypeChange = (newValue: PSValueType) => {
-    value.style = { value: newValue, override: true }
+    value.style = { value: newValue, override: !node.isTopLevel }
   }
 
   const handleRangeXChange = (range: [number, number]) => {
-    value.values[0].curveRange = { value: range, override: true };
+    value.values[0].curveRange = { value: range, override: !node.isTopLevel };
   }
 
   const handleRangeYChange = (range: [number, number]) => {
-    value.values[1].curveRange = { value: range, override: true };
+    value.values[1].curveRange = { value: range, override: !node.isTopLevel };
   }
 
   const handleRangeZChange = (range: [number, number]) => {
-    value.values[2].curveRange = { value: range, override: true };
+    value.values[2].curveRange = { value: range, override: !node.isTopLevel };
   }
 
   const handleAxesChange = (separateAxes: boolean) => {
-    value.separateAxes = { value: separateAxes, override: true }
+    value.separateAxes = { value: separateAxes, override: !node.isTopLevel }
   }
 
   return (

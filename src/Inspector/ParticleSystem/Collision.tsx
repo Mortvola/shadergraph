@@ -15,11 +15,11 @@ const Collision: React.FC<PropsType> = ({
   node,
 }) => {
   const handleBounceChange = (bounce: number) => {
-    value.bounce.set(bounce, true)
+    value.bounce.set(bounce, !node.isTopLevel)
   }
 
   const handleDampenChange = (dampen: number) => {
-    value.dampen.set(dampen, true)
+    value.dampen.set(dampen, !node.isTopLevel)
   }
 
   return (

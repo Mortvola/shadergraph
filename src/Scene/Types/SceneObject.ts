@@ -25,7 +25,7 @@ class Header extends PropsBase implements HeaderInterface {
   constructor() {
     super()
 
-    this.name = new PSString(this)
+    this.name = new PSString()
   }
 
   toDescriptor(): object | undefined {
@@ -74,9 +74,7 @@ class SceneObject implements SceneObjectInterface {
     object.autosave = false;
 
     object.header.name = new PSString(
-      object.header,
-      descriptor.name ?? undefined,
-      undefined,
+      descriptor.name,
       object.onChange,
     )
 
@@ -114,8 +112,6 @@ class SceneObject implements SceneObjectInterface {
           this.saveComponent(componentType, props)
         }
 
-        props.sceneObject = this;
-
         this.components[componentType] = props
 
         break
@@ -127,7 +123,6 @@ class SceneObject implements SceneObjectInterface {
         const props = new ParticleSystemProps(propsDescriptor);
 
         props.onChange = () => { this.saveComponent(componentType, props) };
-        props.sceneObject = this;
 
         this.components[componentType] = props
 
@@ -139,7 +134,6 @@ class SceneObject implements SceneObjectInterface {
 
         const props = new LightProps(propsDescriptor);
         props.onChange = this.onChange;
-        props.sceneObject = this;
 
         this.components[componentType] = props
 

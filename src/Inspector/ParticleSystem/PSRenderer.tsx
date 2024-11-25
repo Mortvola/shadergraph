@@ -22,11 +22,11 @@ const PSRenderer: React.FC<PropsType> = observer(({
   const store = useStores();
 
   const handleModeChange = (mode: RenderMode) => {
-    value.mode.set(mode, true);
+    value.mode.set(mode, !node.isTopLevel);
   }
 
   const handleRenderAlignmentChange = (mode: RenderAlignment) => {
-    value.renderAlignment.set(mode, true);
+    value.renderAlignment.set(mode, !node.isTopLevel);
   }
 
   const handleDragOver: React.DragEventHandler = (event) => {

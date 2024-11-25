@@ -1,6 +1,5 @@
 import { PSNumber } from '../Properties/Property';
 import { removeUndefinedKeys } from '../Properties/Types';
-import type PropsBase from '../Properties/PropsBase';
 import PSModule from '../Properties/PSModule';
 import { type EmissionsDescriptor } from './Types';
 import { PSBursts } from '../Properties/PSBursts';
@@ -12,21 +11,21 @@ class Emissions extends PSModule {
 
   bursts: PSBursts
 
-  constructor(props: PropsBase, descriptor?: EmissionsDescriptor, onChange?: () => void) {
-    super(props, descriptor?.enabled, true, onChange)
+  constructor(descriptor?: EmissionsDescriptor, onChange?: () => void) {
+    super(descriptor?.enabled, true, onChange)
 
-    this.rate = new PSNumber(props, descriptor?.rate, 2, this.onChange)
+    this.rate = new PSNumber(descriptor?.rate, 2, this.onChange)
 
     const bursts = descriptor?.bursts
       ? descriptor.bursts.map((burst) => ({
           time: burst.time,
-          count: new PSValue(props, burst.count, undefined, this.onChange),
+          count: new PSValue(burst.count, undefined, this.onChange),
           cycles: burst.cycles,
           probability: burst.probability,
         }))
       : []
 
-    this.bursts = new PSBursts(props, bursts, undefined, this.onChange)
+    this.bursts = new PSBursts(bursts, undefined, this.onChange)
   }
 
   update(descriptor?: EmissionsDescriptor) {
@@ -36,7 +35,7 @@ class Emissions extends PSModule {
       this.bursts.set(
         (descriptor.bursts ?? []).map((burst) => ({
           time: burst.time,
-          count: new PSValue(this.props, burst.count, undefined, this.onChange),
+          count: new PSValue(burst.count, undefined, this.onChange),
           cycles: burst.cycles,
           probability: burst.probability,
         })),
@@ -49,7 +48,7 @@ class Emissions extends PSModule {
       this.bursts.set(
         [
           ...this.bursts.get(),
-          { time: 0, count: new PSValue(this.rate.props, { value: [1, 1] }), cycles: 0, probability: 1 },
+          { time: 0, count: new PSValue({ value: [1, 1] }), cycles: 0, probability: 1 },
         ],
         true,
       )

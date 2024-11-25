@@ -4,7 +4,6 @@ import { materialManager } from '../Materials/MaterialManager';
 import type DrawableInterface from '../Drawables/DrawableInterface';
 import Billboard from '../Drawables/Billboard';
 import DrawableComponent from '../Drawables/DrawableComponent';
-import type PropsBase from '../Properties/PropsBase';
 import { removeUndefinedKeys } from '../Properties/Types';
 import { PSMaterialItem, PSMeshItem, PSRenderAlignment, PSRenderMode } from '../Properties/Property';
 import type MaterialItem from '../Materials/MaterialItem';
@@ -34,25 +33,24 @@ class Renderer extends PSModule {
   renderAlignment: PSRenderAlignment;
 
   constructor(
-    props: PropsBase,
     descriptor?: RendererDescriptor,
     defaultDescriptor?: RendererDescriptor,
     onChange?: () => void,
   ) {
-    super(props, descriptor?.enabled, defaultDescriptor?.enabled, onChange);
+    super(descriptor?.enabled, defaultDescriptor?.enabled, onChange);
 
     this.materialId = new PSMaterialItem(
-      props, descriptor?.materialId, this.onMaterialChange,
+      descriptor?.materialId, this.onMaterialChange,
     )
 
-    this.meshId = new PSMeshItem(props, descriptor?.meshId, onChange)
+    this.meshId = new PSMeshItem(descriptor?.meshId, onChange)
 
     this.mode = new PSRenderMode(
-      props, descriptor?.mode, defaultDescriptor?.mode, this.onMaterialChange,
+      descriptor?.mode, defaultDescriptor?.mode, this.onMaterialChange,
     );
 
     this.renderAlignment = new PSRenderAlignment(
-      props, descriptor?.renderAlignment, defaultDescriptor?.renderAlignment,
+      descriptor?.renderAlignment, defaultDescriptor?.renderAlignment,
       this.onMaterialChange,
     );
   }

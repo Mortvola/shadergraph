@@ -5,7 +5,6 @@ import PropertyBase from './PropertyBase';
 import PSCurve from './PSCurve';
 import PSValue2 from './PSValue2'
 import { type PropertyType } from './Types';
-import type PropsBase from './PropsBase';
 
 class PSValue3D extends PropertyBase {
   @observable
@@ -15,7 +14,7 @@ class PSValue3D extends PropertyBase {
     runInAction(() => {
       this._separateAxes = value.value;
       if (value.override !== undefined) {
-        this.override = value.override && !this.props.isTopLevel
+        this.override = value.override
       }
     })
   }
@@ -37,18 +36,17 @@ class PSValue3D extends PropertyBase {
     runInAction(() => {
       this._style = value.value;
       if (value.override) {
-        this.override = value.override && !this.props.isTopLevel
+        this.override = value.override
       }
     })
   }
 
   constructor(
-    props: PropsBase,
     descriptor?: PSValue3DDescriptor,
     defaultDescriptor?: PSValue3DDescriptor,
     onChange?: () => void,
   ) {
-    super(props)
+    super()
 
     this.values = [new PSValue2(this), new PSValue2(this), new PSValue2(this)]
 

@@ -448,7 +448,7 @@ class TreeNode {
 
   changeName(name: string) {
     runInAction(() => {
-      this.sceneObject.header.name.set(name, true)
+      this.sceneObject.header.name.set(name, !this.isTopLevel)
     })
   }
 

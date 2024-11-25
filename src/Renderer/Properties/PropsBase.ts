@@ -1,15 +1,8 @@
-import type { SceneObjectInterface } from '../../Scene/Types/Types';
 import type { PropsBaseInterface } from './Types';
 import { isModule, isProperty } from './Types';
 
 
 class PropsBase implements PropsBaseInterface {
-  sceneObject?: SceneObjectInterface;
-
-  get isTopLevel(): boolean {
-    return this.sceneObject?.isTopLevel ?? false
-  }
-
   toDescriptor(_overridesOnly: boolean): object | undefined {
     return undefined;
   }

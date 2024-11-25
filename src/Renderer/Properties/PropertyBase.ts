@@ -1,41 +1,11 @@
 import { type IReactionDisposer, observable, reaction } from 'mobx';
 import type { PropertyBaseInterface } from './Types';
-import type PropsBase from './PropsBase';
 
 class PropertyBase implements PropertyBaseInterface {
   @observable
   accessor override = false;
 
-  props: PropsBase
-
   onChange?: () => void;
-
-  // onRevertOverride?: () => void;
-
-  constructor(props: PropsBase) {
-    this.props = props;
-  }
-
-  // toString(): string {
-  //   throw new Error('not implemented')
-  // }
-
-  // lineage(): LineageEntry[] {
-  //   const lineage: LineageEntry[] = [];
-  //   let property: PropertyBase | undefined;
-
-  //   while (property) {
-  //     lineage.push({
-  //       property,
-  //       name: this.props.sceneObject?.header.name.get() ?? 'unknown node',
-  //       container: property.props.sceneObject?.tree?.name ?? 'unknown prefab',
-  //     })
-
-  //     property = undefined
-  //   }
-
-  //   return lineage
-  // }
 
   revertOverride() {
     // if (this.base) {
