@@ -6,7 +6,7 @@ import {
 } from '../../Renderer/Types';
 import {
   type SceneObjectInterface, type SceneObjectDescriptor,
-  type HeaderInterface, type TransformPropsDescriptor,
+  type TransformPropsDescriptor,
   type SceneObjectModifications,
   type SceneObjectComponents,
 } from './Types';
@@ -16,29 +16,14 @@ import ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemPro
 import { type ParticleSystemPropsDescriptor } from '../../Renderer/ParticleSystem/Types';
 import LightProps from '../../Renderer/Properties/LightProps';
 import { PSString } from '../../Renderer/Properties/Property';
-import PropsBase from '../../Renderer/Properties/PropsBase';
 import Http from '../../Http/src';
-
-class Header extends PropsBase implements HeaderInterface {
-  name: PSString
-
-  constructor() {
-    super()
-
-    this.name = new PSString()
-  }
-
-  toDescriptor(): object | undefined {
-    return undefined
-  }
-}
 
 export type ComponentMap = Map<string, ComponentPropsDescriptor>
 
 class SceneObject implements SceneObjectInterface {
   id: number
 
-  header: Header
+  name = new PSString()
 
   @observable
   accessor components: SceneObjectComponents = {}
@@ -63,7 +48,6 @@ class SceneObject implements SceneObjectInterface {
 
   constructor(id: number) {
     this.id = id
-    this.header = new Header()
   }
 
   static fromDescriptor(
@@ -73,7 +57,7 @@ class SceneObject implements SceneObjectInterface {
     const object = new SceneObject(descriptor.id);
     object.autosave = false;
 
-    object.header.name = new PSString(
+    object.name = new PSString(
       descriptor.name,
       object.onChange,
     )
@@ -146,7 +130,7 @@ class SceneObject implements SceneObjectInterface {
     for (const key in modifications) {
       if (key === 'name') {
         if (modifications.name !== undefined) {
-          this.header.name.set((modifications.name as unknown) as string, override)
+          this.name.set((modifications.name as unknown) as string, override)
         }
       } else {
         const componentDescriptor = modifications[key] as ComponentPropsDescriptor
@@ -227,7 +211,7 @@ class SceneObject implements SceneObjectInterface {
 
           const updatedModifications = {
             ...modifications.sceneObject,
-            name: this.header.name.toDescriptor(true),
+            name: this.name.toDescriptor(true),
             [componentType]: descriptor,
           }
 
@@ -297,7 +281,7 @@ class SceneObject implements SceneObjectInterface {
   toDescriptor(overridesOnly: boolean): SceneObjectDescriptor {
     const descriptor = {
       id: this.id,
-      name: this.header.name.toDescriptor(overridesOnly),
+      name: this.name.toDescriptor(overridesOnly),
       components: Object.keys(this.components),
     }
 

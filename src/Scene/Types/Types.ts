@@ -104,7 +104,7 @@ export type SceneObjectComponents = Record<string, SceneObjectComponent>
 export interface SceneObjectInterface {
   id: number
 
-  header: HeaderInterface;
+  name: PSString;
 
   components: SceneObjectComponents;
 

@@ -41,7 +41,7 @@ const Overrides: React.FC<PropsType> = observer(({
             <PopupButton
               key={`${node.getPathId(root.modifierNode)}`}
               className={styles.overridesButton}
-              label={node.sceneObject.header.name.get()}
+              label={node.sceneObject.name.get()}
               position={Position.left}
               style={{ marginLeft: `${level}rem`, fontWeight: 'bold' }}
             >
@@ -56,7 +56,7 @@ const Overrides: React.FC<PropsType> = observer(({
               <PopupButton
                 key={`${node.getPathId(root.modifierNode)}`}
                 className={styles.overridesButton}
-                label={node.sceneObject.header.name.get()}
+                label={node.sceneObject.name.get()}
                 position={Position.left}
                 style={{ marginLeft: `${level}rem`, fontWeight: 'bold' }}
               >
@@ -70,7 +70,7 @@ const Overrides: React.FC<PropsType> = observer(({
               key={`${node.getPathId(root.modifierNode)}`}
               style={{ marginLeft: `${level}rem`, fontWeight }}
             >
-              {node.sceneObject.header.name.get()}
+              {node.sceneObject.name.get()}
             </div>,
           )
         }

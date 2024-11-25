@@ -418,7 +418,7 @@ class Scene implements SceneInterface {
       }
 
       const mod = (srcMod.sceneObject[componentType] as unknown)
-      node.sceneObject.header.name.set(mod as string, false)
+      node.sceneObject.name.set(mod as string, false)
 
       object.descriptor = node.sceneObject.toDescriptor(false)
 

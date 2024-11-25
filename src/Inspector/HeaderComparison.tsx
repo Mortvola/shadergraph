@@ -20,8 +20,8 @@ const HeaderComparison: React.FC<PropsType> = observer(({
 }) => (
   <div className={styles.compare}>
     <OverrideApplyButton node={node} componentType={ComponentType.Self} />
-    <Header className={styles.component} header={baseObject.header} node={node} />
-    <Header className={styles.component} header={object.header} node={node} />
+    <Header className={styles.component} header={baseObject} node={node} />
+    <Header className={styles.component} header={object} node={node} />
   </div>
 ))
 
