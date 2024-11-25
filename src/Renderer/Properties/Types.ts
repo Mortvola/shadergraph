@@ -9,18 +9,10 @@ export const isModule = (r: unknown): r is PSModuleInterface => (
   && (r as PSModuleInterface)?.hasOverrides !== undefined
 )
 
-export type LineageEntry = { property: PropertyBaseInterface, name: string, container: string };
-
 export interface PropertyBaseInterface {
   override: boolean
 
   revertOverride(): void
-
-  copyProp(_other: PropertyBaseInterface): void
-
-  enableReaction(): void
-
-  disableReaction(): void
 
   reactOnChange(observables: () => unknown): void
 }

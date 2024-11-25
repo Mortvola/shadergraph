@@ -20,7 +20,7 @@ export class PSBursts extends Property<BurstsType> {
     })
   }
 
-  toDescriptor(overridesOnly: boolean): any | undefined {
+  toDescriptor(overridesOnly: boolean): any[] | undefined {
     // Only output the descriptor if this a base property or if this is an override
     if (!overridesOnly || this.override) {
       return this.value.map((v) => ({
