@@ -44,9 +44,11 @@ class Scene implements SceneInterface {
 
   private nodes: Map<SceneId, Map<NodeId, TreeNodeDescriptor | ModifierNode>> = new Map()
 
-  private objects: Map<number, { descriptor: SceneObjectDescriptor, object?: SceneObjectInterface }> = new Map()
-
-  components: Map<string, ComponentDescriptor> = new Map()
+  private objects: Map<number, {
+    descriptor: SceneObjectDescriptor,
+    components: Map<string, ComponentDescriptor>,
+    object?: SceneObjectInterface,
+  }> = new Map()
 
   constructor(id: number) {
     this.id = id
@@ -101,11 +103,15 @@ class Scene implements SceneInterface {
     }
 
     for (const obj of response.objects) {
-      this.objects.set(obj.id, { descriptor: obj })
-    }
+      const components = new Map()
 
-    for (const component of response.components) {
-      this.components.set(`${component.sceneObjectId}:${component.type}`, component)
+      for (const component of response.components) {
+        if (component.sceneObjectId === obj.id) {
+          components.set(component.type, component)
+        }
+      }
+
+      this.objects.set(obj.id, { descriptor: obj, components })
     }
 
     if (response.modifications) {
@@ -135,11 +141,19 @@ class Scene implements SceneInterface {
     const response = await Http.patch(`/api/components/${sceneObjectId}/${type}`, descriptor)
 
     if (response.ok) {
-      const component = this.components.get(`${sceneObjectId}:${type}`)
+      const object = this.objects.get(sceneObjectId)
 
-      if (component) {
-        component.props = descriptor
+      if (object === undefined) {
+        throw new Error('object not found')
       }
+
+      const component = object.components.get(type)
+
+      if (component === undefined) {
+        throw new Error('component not found')
+      }
+
+      component.props = descriptor
     }
   }
 
@@ -204,10 +218,10 @@ class Scene implements SceneInterface {
   }
 
   getObject(id: number) {
-    const descriptor = this.objects.get(id)?.descriptor
+    const object = this.objects.get(id)
 
-    if (descriptor) {
-      return SceneObject.fromDescriptor(descriptor, this.components)
+    if (object) {
+      return SceneObject.fromDescriptor(object.descriptor, object.components)
     }
   }
 
@@ -257,11 +271,7 @@ class Scene implements SceneInterface {
           const o = this.objects.get(descriptor.sceneObjectId)
 
           if (o) {
-            // if (o.object === undefined) {
-              object = await SceneObject.fromDescriptor(o.descriptor, this.components)
-            // }
-
-            // object = o.object
+            object = SceneObject.fromDescriptor(o.descriptor, o.components)
           }
 
           if (object == null) {
@@ -407,7 +417,13 @@ class Scene implements SceneInterface {
       const component = node.sceneObject.components[componentType];
 
       if (component) {
-        const descriptor = this.components.get(`${node.sceneObject.id}:${componentType}`)
+        const object = this.objects.get(node.sceneObject.id)
+
+        if (object === undefined) {
+          throw new Error('object not found')
+        }
+
+        const descriptor = object.components.get(componentType)
 
         if (descriptor?.props) {
           let mod = srcMod.sceneObject[componentType]
@@ -424,6 +440,10 @@ class Scene implements SceneInterface {
 
             const component = node.sceneObject.components[componentType]
             const newDescriptor = component.toDescriptor(false)
+
+            if (newDescriptor === undefined) {
+              throw new Error('new descriptor is undefined')
+            }
 
             // TODO: Save the new descriptor to the database.
 

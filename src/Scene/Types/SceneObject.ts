@@ -83,10 +83,8 @@ class SceneObject implements SceneObjectInterface {
       object.onChange,
     )
 
-    const componentIds = descriptor.components;
-
-    for (const compId of componentIds) {
-      const componentDescriptor = components.get(`${object.id}:${compId}`)
+    for (const componentType of descriptor.components) {
+      const componentDescriptor = components.get(componentType)
 
       if (componentDescriptor) {
         object.createComponent(componentDescriptor)
