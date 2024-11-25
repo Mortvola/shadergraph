@@ -8,6 +8,10 @@
   grid-template-rows: max-content minmax(0,1fr);
 }
 
+.noScene {
+  border-bottom: thin black solid;
+}
+
 .sceneTitle {
   display: flex;
   justify-content: space-between;

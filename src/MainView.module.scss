@@ -1,8 +1,12 @@
 .main {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 200px 200px;
-  grid-template-rows: max-content minmax(0, 1fr);
-  grid-template-areas: "menubar scene sidebar" "canvas scene sidebar" "inspector inspector sidebar";
+  grid-template-rows: max-content minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas:
+    "menubar scene project"
+    "canvas scene project"
+    "canvas inspector inspector"
+    ;
   width: 100%;
   height: 100%;
   user-select: none;
@@ -20,7 +24,7 @@
   background-color: darkgray;
 }
 
-.sidebar {
+.project {
   display: grid;
   grid-template-rows: max-content minmax(0, 1fr);
   width: 100%;
@@ -29,7 +33,7 @@
   box-sizing: border-box;
   font-size: 14px;
   border-left: thin black solid;
-  grid-area: sidebar;
+  grid-area: project;
 }
 
 .scene {

@@ -33,7 +33,7 @@ const Scene: React.FC<PropsType> = observer(({
 
   if (scene === undefined) {
     return (
-      <div className={className}>Select a scene to edit.</div>
+      <div className={`${styles.noScene} ${className ?? ''}`}>Select a scene to edit.</div>
     )
   }
 

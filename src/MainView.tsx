@@ -138,7 +138,7 @@ const MainView: React.FC = observer(() => {
                 <Canvas3d renderer={mainView} onWheel={handleWheel} />
                 <Scene className={styles.scene} scene={scene} />
                 <Inspector selectedItem={project.selectedItem} selectedNode={scene?.selectedNode} />
-                <Project className={styles.sidebar} project={project} />
+                <Project className={styles.project} project={project} />
               </div>
               <OpenProjectDialog show={showDialog} onHide={handleHideDialog} onSelect={handleSelect} />
             </>

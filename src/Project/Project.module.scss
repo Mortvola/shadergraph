@@ -10,6 +10,7 @@
   display: grid;
   grid-template-rows: max-content minmax(0,1fr);
   overflow-y: auto;
+  border-bottom: thin black solid;
 }
 
 .project {
