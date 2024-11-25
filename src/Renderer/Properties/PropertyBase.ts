@@ -34,10 +34,6 @@ class PropertyBase implements PropertyBaseInterface {
     // })
   // }
 
-  copyProp(_other: PropertyBase) {
-    throw new Error('not implemented')
-  }
-
   // Members and methods for managing the mobx reaction to report changes...
   observables?: () => unknown;
 

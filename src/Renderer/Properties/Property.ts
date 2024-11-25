@@ -45,13 +45,6 @@ export class Property<T> extends PropertyBase {
     this.reactOnChange(() => ({ value: this.value, override: this.override }))
   }
 
-  copyProp(other: Property<T>) {
-    runInAction(() => {
-      this.value = other.value;
-      this.override = false;
-    })
-  }
-
   toDescriptor(overridesOnly: boolean): T | undefined {
     // Only output the descriptor if this a base property or if this is an override
     if (!overridesOnly || this.override) {
@@ -158,13 +151,6 @@ export class PSVec3Type extends Property<Vec3n> {
     onChange?: () => void,
   ) {
     super(value, defaultValue, onChange)
-  }
-
-  copyProp(other: Property<Vec3n>) {
-    runInAction(() => {
-      this.value = vec3n.create(...(other as PSVec3Type).value);
-      this.override = false;
-    })
   }
 
   toDescriptor(overridesOnly: boolean): Vec3n | undefined {

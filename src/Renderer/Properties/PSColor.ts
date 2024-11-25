@@ -73,20 +73,6 @@ class PSColor extends PropertyBase {
     }));
   }
 
-  copyProp(other: PSColor) {
-    runInAction(() => {
-      this._type = other._type;
-      this._color = [
-        [...other._color[0]],
-        [...other._color[1]],
-      ];
-      this.gradients[0].copy(other.gradients[0]);
-      this.gradients[1].copy(other.gradients[1]);
-
-      this.override = false;
-    })
-  }
-
   update(_descriptor?: PSColorDescriptor) {
 
   }

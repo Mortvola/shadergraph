@@ -1,4 +1,3 @@
-import { runInAction } from 'mobx';
 import { Property } from './Property';
 import type PSValue from './PSValue';
 
@@ -11,13 +10,6 @@ export class PSBursts extends Property<BurstsType> {
     onChange?: () => void,
   ) {
     super(value, defaultValue, onChange)
-  }
-
-  copyProp(other: Property<BurstsType>) {
-    runInAction(() => {
-      this.value = [...(other as PSBursts).value];
-      this.override = false;
-    })
   }
 
   toDescriptor(overridesOnly: boolean): any[] | undefined {

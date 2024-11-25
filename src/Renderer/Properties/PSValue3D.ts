@@ -65,16 +65,6 @@ class PSValue3D extends PropertyBase {
     }))
   }
 
-  copyProp(other: PSValue3D) {
-    runInAction(() => {
-      this._separateAxes = other._separateAxes;
-      this._style = other._style;
-      this.values = [...other.values];
-
-      this.override = false;
-    })
-  }
-
   update(_descriptor?: PSValue3DDescriptor) {
 
   }

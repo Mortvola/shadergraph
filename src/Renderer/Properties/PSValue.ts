@@ -96,34 +96,6 @@ class PSValue extends PropertyBase {
     }
   }
 
-  // toString(): string {
-  //   switch (this.valueType) {
-  //     case PSValueType.Constant:
-  //       return this.value[0].toString()
-
-  //     case PSValueType.Random:
-  //       return `${this.value[0].toString()} - ${this.value[1].toString()}`
-
-  //     case PSValueType.Curve:
-  //       return 'Curve'
-
-  //     case PSValueType.RandomeCurve:
-  //       return 'Random Curve'
-  //   }
-  // }
-
-  copyProp(other: PSValue) {
-    runInAction(() => {
-      this._type = other._type;
-      this._value = [...other._value];
-      this._curveRange = [...other._curveRange];
-      this.curve[0].copy(other.curve[0]);
-      this.curve[1].copy(other.curve[1]);
-
-      this.override = false;
-    })
-  }
-
   applyDescriptor(descriptor: PSValueDescriptor) {
     this.valueType = { value: descriptor.type ?? PSValueType.Constant };
     this.value = { value: (descriptor.value !== undefined
