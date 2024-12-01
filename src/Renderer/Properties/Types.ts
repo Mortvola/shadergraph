@@ -12,8 +12,6 @@ export const isModule = (r: unknown): r is PSModuleInterface => (
 export interface PropertyBaseInterface {
   override: boolean
 
-  revertOverride(): void
-
   reactOnChange(observables: () => unknown): void
 }
 

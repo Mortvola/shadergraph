@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { observable, runInAction } from 'mobx';
 import {
   type ComponentPropsDescriptor,
   ComponentType, type LightPropsDescriptor,
@@ -142,38 +142,81 @@ class SceneObject implements SceneObjectInterface {
 
   updateComponent(
     componentType: ComponentType,
-    componentDescriptor: ComponentPropsDescriptor,
+    componentDescriptor: ComponentPropsDescriptor | string,
     override: boolean,
   ) {
-    const component = this.components[componentType]
+    if (componentType === ComponentType.Self) {
+      this.name.set(componentDescriptor as string, override)
+    } else {
+      const component = this.components[componentType]
 
-    if (component) {
-      switch (componentType) {
-        case ComponentType.Transform: {
-          (component as TransformProps).applyModifications(
-            componentDescriptor as TransformPropsDescriptor,
-            override,
-          )
-          break;
-        }
+      if (component) {
+        switch (componentType) {
+          case ComponentType.Transform: {
+            (component as TransformProps).applyModifications(
+              componentDescriptor as TransformPropsDescriptor,
+              override,
+            )
+            break;
+          }
 
-        case ComponentType.ParticleSystem: {
-          (component as ParticleSystemProps).applyModifications(
-            componentDescriptor as ParticleSystemPropsDescriptor,
-            override,
-          )
-          break;
+          case ComponentType.ParticleSystem: {
+            (component as ParticleSystemProps).applyModifications(
+              componentDescriptor as ParticleSystemPropsDescriptor,
+              override,
+            )
+            break;
+          }
         }
       }
     }
   }
 
-  onChange = () => {
+  onChange = async () => {
     if (this.autosave) {
-      const descriptor = this.toDescriptor(false)
+      if (this.isTopLevel) {
+        const descriptor = this.toDescriptor(false)
 
-      if (descriptor) {
-        this.node?.scene.updateObjectComponent(this.id, ComponentType.Self, descriptor)
+        if (descriptor) {
+          this.node?.scene.updateObjectComponent(this.id, ComponentType.Self, descriptor)
+        }
+      } else {
+        if (this.node === undefined) {
+          throw new Error('node is not defined')
+        }
+
+        const modifierNode = this.node?.getTopLevelModifierNode()?.modifierNode
+
+        if (modifierNode) {
+          const pathId = this.node.getPathId(modifierNode)
+
+          let modifications = modifierNode.modifications.get(pathId)
+
+          if (modifications === undefined) {
+            modifications = { pathId, sceneObject: {}, addedNodes: [] }
+            modifierNode.modifications.set(pathId, modifications)
+          }
+
+          const updatedModifications: SceneObjectModifications = {
+            ...modifications.sceneObject,
+            name: this.name.toDescriptor(true),
+          }
+
+          const payload = {
+            modifierNodeId: modifierNode.id,
+            sceneId: modifierNode.sceneId,
+            pathId,
+            modifications: updatedModifications,
+          }
+
+          const response = await Http.put('/api/node-modifications', payload)
+
+          if (response.ok) {
+            runInAction(() => {
+              modifications.sceneObject = updatedModifications
+            })
+          }
+        }
       }
     }
   }
@@ -278,7 +321,13 @@ class SceneObject implements SceneObjectInterface {
     return this.node?.modifierNode !== undefined
   }
 
-  toDescriptor(overridesOnly: boolean): SceneObjectDescriptor {
+  toDescriptor(overridesOnly: boolean): SceneObjectDescriptor | { name?: string } {
+    if (overridesOnly) {
+      return {
+        name: this.name.toDescriptor(overridesOnly),
+      }
+    }
+
     const descriptor = {
       id: this.id,
       name: this.name.toDescriptor(overridesOnly),

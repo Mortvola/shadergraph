@@ -387,6 +387,27 @@ class Scene implements SceneInterface {
   private rebuildSceneObject(node: TreeNode, componentType: ComponentType) {
     // Rebuild scene object using new descriptor and modifications
     let n: TreeNode | undefined = node.sceneRoot;
+
+    const object = this.objects.get(node.sceneObject.id)
+
+    if (object === undefined) {
+      throw new Error('object not found')
+    }
+
+    node.sceneObject.autosave = false
+
+    if (componentType === ComponentType.Self) {
+      node.sceneObject.updateComponent(componentType, object.descriptor.name, false)
+    } else {
+      const descriptor = object.components.get(componentType)
+
+      if (descriptor === undefined) {
+        throw new Error('descriptor not found')
+      }
+
+      node.sceneObject.updateComponent(componentType, descriptor, false)
+    }
+
     while (n) {
       if (n.modifierNode) {
         const mods = n.modifierNode.getModificationEntry(node.getPathId(n.modifierNode));
@@ -400,6 +421,68 @@ class Scene implements SceneInterface {
 
       n = (n.parentModifierNode?.parent ?? n.parent)?.sceneRoot
     }
+
+    node.sceneObject.autosave = true
+  }
+
+  private static deleteOverride(mod: ModificationEntry, componentType: ComponentType, propertyPath?: string) {
+    if (componentType === ComponentType.Self) {
+      if (propertyPath === undefined) {
+        delete mod.sceneObject['name']
+      } else {
+        delete mod.sceneObject[propertyPath]
+      }
+    } else {
+      if (propertyPath === undefined) {
+        delete mod.sceneObject[componentType]
+      } else {
+        const comp = mod.sceneObject[componentType]
+
+        if (typeof comp !== 'object') {
+          throw new Error('component not found')
+        }
+
+        delete comp[propertyPath]
+
+        // If there are no properties left then delete the whole component from the modifications.
+        const names = Object.getOwnPropertyNames(comp)
+        if (names.length === 0) {
+          delete mod.sceneObject[componentType]
+        }
+      }
+
+      // TODO: Remove the modification entry if there are no components left
+      // in the sceneObject.
+    }
+  }
+
+  private async revertOverride(
+    node: TreeNode,
+    modifierNode: ModifierNode,
+    componentType: ComponentType,
+    propertyPath?: string,
+  ) {
+    const pathId = node.getPathId(modifierNode)
+    const srcMod = modifierNode.getModificationEntry(pathId)
+
+    // Delete the component from the scene object or
+    // the property from the scene object.
+    Scene.deleteOverride(srcMod, componentType, propertyPath)
+
+    const payload = {
+      modifierNodeId: modifierNode.id,
+      sceneId: modifierNode.sceneId,
+      pathId,
+      modifications: srcMod.sceneObject,
+    }
+
+    const response = await Http.put('/api/node-modifications', payload)
+
+    if (response.ok) {
+      /* nothing */
+    }
+
+    this.rebuildSceneObject(node, componentType)
   }
 
   private async applyOverride(
@@ -420,7 +503,7 @@ class Scene implements SceneInterface {
       const mod = (srcMod.sceneObject[componentType] as unknown)
       node.sceneObject.name.set(mod as string, false)
 
-      object.descriptor = node.sceneObject.toDescriptor(false)
+      object.descriptor = node.sceneObject.toDescriptor(false) as SceneObjectDescriptor
 
       delete srcMod.sceneObject[componentType]
 
@@ -441,50 +524,38 @@ class Scene implements SceneInterface {
 
         const descriptor = object.components.get(componentType)
 
-        if (descriptor) {
-          let mod = srcMod.sceneObject[componentType]
+        if (descriptor === undefined) {
+          throw new Error('descriptor not found')
+        }
 
-          if (mod) {
-            if (propertyPath) {
-              mod = {
-                [propertyPath]: mod[propertyPath],
-              }
+        let mod = srcMod.sceneObject[componentType]
+
+        if (typeof mod === 'object') {
+          if (propertyPath) {
+            mod = {
+              [propertyPath]: mod[propertyPath],
             }
-
-            node.sceneObject.updateComponent(componentType, descriptor, false)
-            node.sceneObject.updateComponent(componentType, mod, false)
-
-            const component = node.sceneObject.components[componentType]
-            const newDescriptor = component.toDescriptor(false)
-
-            if (newDescriptor === undefined) {
-              throw new Error('new descriptor is undefined')
-            }
-
-            // TODO: Save the new descriptor to the database.
-
-            object.components.set(componentType, newDescriptor)
-
-            // Delete the component from the scene object or
-            // the property from the scene object.
-            if (propertyPath === undefined) {
-              delete srcMod.sceneObject[componentType]
-            } else {
-              const comp = srcMod.sceneObject[componentType]
-              delete comp[propertyPath]
-
-              // If there are no properties left then delete the whole component from the modifications.
-              const names = Object.getOwnPropertyNames(comp)
-              if (names.length === 0) {
-                delete srcMod.sceneObject[componentType]
-              }
-            }
-
-            // TODO: Remove the modification entry if there are no components left
-            // in the sceneObject.
-
-            this.rebuildSceneObject(node, componentType)
           }
+
+          node.sceneObject.updateComponent(componentType, descriptor, false)
+          node.sceneObject.updateComponent(componentType, mod, false)
+
+          const component = node.sceneObject.components[componentType]
+          const newDescriptor = component.toDescriptor(false)
+
+          if (newDescriptor === undefined) {
+            throw new Error('new descriptor is undefined')
+          }
+
+          // TODO: Save the new descriptor to the database.
+
+          object.components.set(componentType, newDescriptor)
+
+          // Delete the component from the scene object or
+          // the property from the scene object.
+          Scene.deleteOverride(srcMod, componentType, propertyPath)
+
+          this.rebuildSceneObject(node, componentType)
         }
       }
     }
@@ -540,6 +611,11 @@ class Scene implements SceneInterface {
     if (root === undefined) {
       throw new Error('root is not defiend')
     }
+
+    t.push({
+      label: 'Revert Override',
+      action: () => this.revertOverride(node, root.modifierNode!, componentType, propertyPath),
+    })
 
     let n: TreeNode | undefined = node.sceneRoot;
 

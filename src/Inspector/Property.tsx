@@ -32,17 +32,7 @@ const Property: React.FC<PropsType> = observer(({
   const [open, setOpen] = React.useState<DOMRect | null>(null);
   const ref = React.useRef<HTMLDivElement>(null);
 
-  const options = [
-    { action: () => { property.revertOverride() }, label: 'Revert Override' },
-  ]
-
-  const applyOptions = () => {
-    const targets = node.scene.getApplyTargets(node, componentType, propertyPath)
-    return [
-      ...targets,
-      ...options,
-    ]
-  }
+  const applyOptions = () => node.scene.getApplyTargets(node, componentType, propertyPath)
 
   const handleOpenClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();

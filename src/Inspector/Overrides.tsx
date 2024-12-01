@@ -54,7 +54,7 @@ const Overrides: React.FC<PropsType> = observer(({
           if (baseObject !== undefined) {
             connections.push(
               <PopupButton
-                key={`${node.getPathId(root.modifierNode)}`}
+                key={`${node.getPathId(root.modifierNode)}:Self`}
                 className={styles.overridesButton}
                 label={node.sceneObject.name.get()}
                 position={Position.left}
@@ -87,7 +87,7 @@ const Overrides: React.FC<PropsType> = observer(({
                 if (baseComponent !== undefined) {
                   connections.push(
                     <PopupButton
-                      key={`${node.getPathId(root.modifierNode)}`}
+                      key={`${node.getPathId(root.modifierNode)}:${componentType}`}
                       className={styles.overridesButton}
                       label={componentType}
                       position={Position.left}

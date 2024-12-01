@@ -110,13 +110,15 @@ export interface SceneObjectInterface {
 
   node?: TreeNode;
 
+  autosave: boolean;
+
   get isTopLevel(): boolean;
 
   applyModifications(modifications: SceneObjectModifications, override: boolean): void;
 
   updateComponent(
     componentType: ComponentType,
-    componentDescriptor: ComponentPropsDescriptor,
+    componentDescriptor: ComponentPropsDescriptor | string,
     override: boolean,
   ): void;
 
@@ -128,7 +130,7 @@ export interface SceneObjectInterface {
 
   get hasOverrides(): boolean;
 
-  toDescriptor(overridesOnly: boolean): SceneObjectDescriptor;
+  toDescriptor(overridesOnly: boolean): SceneObjectDescriptor | { name?: string };
 }
 
 export const isGameObject = (r: unknown): r is SceneObjectInterface => (
@@ -138,7 +140,7 @@ export const isGameObject = (r: unknown): r is SceneObjectInterface => (
 
 export type SceneObjectDescriptor = {
   id: number,
-  name?: string,
+  name: string,
   components: string[],
 }
 
@@ -215,7 +217,7 @@ export type AddedNode = {
   pathId: number,
 }
 
-export type SceneObjectModifications = Record<string, Record<string, unknown>>
+export type SceneObjectModifications = Record<string, Record<string, unknown> | string | undefined>
 
 export type ModificationEntry = {
   pathId: number,

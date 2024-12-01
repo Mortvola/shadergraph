@@ -3,6 +3,7 @@ import { type HeaderInterface } from '../Scene/Types/Types'
 import Property from './Property'
 import { ComponentType } from '../Renderer/Types'
 import type TreeNode from '../Scene/Types/TreeNode'
+import { observer } from 'mobx-react-lite'
 
 type PropsType = {
   header: HeaderInterface
@@ -10,7 +11,7 @@ type PropsType = {
   node: TreeNode,
 }
 
-const Header: React.FC<PropsType> = ({
+const Header: React.FC<PropsType> = observer(({
   header,
   className,
   node,
@@ -26,6 +27,6 @@ const Header: React.FC<PropsType> = ({
       {header.name.get()}
     </Property>
   </div>
-)
+))
 
 export default Header

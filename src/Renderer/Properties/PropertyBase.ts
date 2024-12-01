@@ -7,33 +7,6 @@ class PropertyBase implements PropertyBaseInterface {
 
   onChange?: () => void;
 
-  revertOverride() {
-    // if (this.base) {
-    //   this.copyProp(this.base)
-    // }
-
-    // if (this.onRevertOverride) {
-    //   this.onRevertOverride()
-    // }
-  }
-
-  // applyOverride(original: PropertyBase): void {
-    // runInAction(() => {
-    //   original.copyProp(this)
-
-    //   // Mark the change as an override unless the original is the
-    //   // root property (.original === undefined)
-    //   original.override = original.base !== undefined
-
-    //   this.revertOverride()
-    // })
-
-    // // Propogate the new property value to the variants.
-    // runInAction(() => {
-    //   original.propogate()
-    // })
-  // }
-
   // Members and methods for managing the mobx reaction to report changes...
   observables?: () => unknown;
 
