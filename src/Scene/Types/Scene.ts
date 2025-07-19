@@ -7,7 +7,7 @@ import type {
   ModificationEntry,
   NodeId,
   NodesResponse2, SceneId, SceneInterface, SceneItemType, SceneObjectDescriptor,
-  SceneObjectInterface, TreeNodeDescriptor,
+  SceneObjectInterface, SceneObjectModifications, TreeNodeDescriptor,
 } from './Types';
 import TreeNode from './TreeNode';
 import SceneObject, { type ComponentMap } from './SceneObject';
@@ -46,7 +46,7 @@ class Scene implements SceneInterface {
   private objects: Map<number, {
     descriptor: SceneObjectDescriptor,
     components: ComponentMap,
-    object?: SceneObjectInterface,
+    nodes: TreeNode[],
   }> = new Map()
 
   constructor(id: number) {
@@ -110,7 +110,7 @@ class Scene implements SceneInterface {
         }
       }
 
-      this.objects.set(obj.id, { descriptor: obj, components })
+      this.objects.set(obj.id, { descriptor: obj, components, nodes:[] })
     }
 
     if (response.modifications) {
@@ -262,6 +262,13 @@ class Scene implements SceneInterface {
       parentModifierNode: parent ? this.getParentModifierNode(rootNodeId, parent, modifiers) : undefined,
     }]
 
+    // Clear the objects array in each entry
+    // TODO: Do we need to do this or can we identify
+    // each node in the tree using the xor'd node id and modifier node id?
+    for (const [, entry] of this.objects) {
+      entry.nodes = []
+    }
+
     while (stack.length > 0) {
       const { nodeId, sceneId, parent, modifiers, parentModifierNode } = stack[0]
       stack = stack.slice(1)
@@ -278,17 +285,17 @@ class Scene implements SceneInterface {
             parentModifierNode,
           })
         } else {
-          let object: SceneObjectInterface | undefined
-
           // Get the object entry from the map of objects
           // If the entry was found but the object has not yet
           // been created then create the object and store it in
           // the map entry.
           const o = this.objects.get(descriptor.sceneObjectId)
 
-          if (o) {
-            object = SceneObject.fromDescriptor(o.descriptor, o.components)
+          if (o === undefined) {
+            throw new Error('object entry not found')
           }
+
+          const object = SceneObject.fromDescriptor(o.descriptor, o.components)
 
           if (object == null) {
             throw new Error('object not set')
@@ -321,6 +328,8 @@ class Scene implements SceneInterface {
             parentModifierNode,
             parent,
           )
+
+          o.nodes.push(node)
 
           if (modifierNodeEntry) {
             modifierNodeEntry.node = node
@@ -384,45 +393,47 @@ class Scene implements SceneInterface {
     return root;
   }
 
-  private rebuildSceneObject(node: TreeNode, componentType: ComponentType) {
+  private rebuildSceneObject(sceneObject: SceneObjectInterface, componentType: ComponentType) {
     // Rebuild scene object using new descriptor and modifications
-    let n: TreeNode | undefined = node.sceneRoot;
-
-    const object = this.objects.get(node.sceneObject.id)
+    const object = this.objects.get(sceneObject.id)
 
     if (object === undefined) {
       throw new Error('object not found')
     }
 
-    node.sceneObject.autosave = false
+    for (const node of object.nodes) {
+      node.sceneObject.autosave = false
 
-    if (componentType === ComponentType.Self) {
-      node.sceneObject.updateComponent(componentType, object.descriptor.name, false)
-    } else {
-      const descriptor = object.components.get(componentType)
+      if (componentType === ComponentType.Self) {
+        node.sceneObject.updateComponent(componentType, object.descriptor.name, false)
+      } else {
+        const descriptor = object.components.get(componentType)
 
-      if (descriptor === undefined) {
-        throw new Error('descriptor not found')
-      }
-
-      node.sceneObject.updateComponent(componentType, descriptor, false)
-    }
-
-    while (n) {
-      if (n.modifierNode) {
-        const mods = n.modifierNode.getModificationEntry(node.getPathId(n.modifierNode));
-
-        const componentMod = mods.sceneObject[componentType]
-
-        if (componentMod) {
-          node.sceneObject.updateComponent(componentType, componentMod, true)
+        if (descriptor === undefined) {
+          throw new Error('descriptor not found')
         }
+
+        node.sceneObject.updateComponent(componentType, descriptor, false)
       }
 
-      n = (n.parentModifierNode?.parent ?? n.parent)?.sceneRoot
-    }
+      let n: TreeNode | undefined = node.sceneRoot;
 
-    node.sceneObject.autosave = true
+      while (n) {
+        if (n.modifierNode) {
+          const mods = n.modifierNode.getModificationEntry(node.getPathId(n.modifierNode));
+
+          const componentMod = mods.sceneObject[componentType]
+
+          if (componentMod) {
+            node.sceneObject.updateComponent(componentType, componentMod, true)
+          }
+        }
+
+        n = (n.parentModifierNode?.parent ?? n.parent)?.sceneRoot
+      }
+
+      node.sceneObject.autosave = true
+    }
   }
 
   private static deleteOverride(mod: ModificationEntry, componentType: ComponentType, propertyPath?: string) {
@@ -482,7 +493,7 @@ class Scene implements SceneInterface {
       /* nothing */
     }
 
-    this.rebuildSceneObject(node, componentType)
+    this.rebuildSceneObject(node.sceneObject, componentType)
   }
 
   private async applyOverride(
@@ -491,7 +502,11 @@ class Scene implements SceneInterface {
     componentType: ComponentType,
     propertyPath?: string,
   ) {
-    const srcMod = modifierNode.getModificationEntry(node.getPathId(modifierNode))
+    node.sceneObject.autosave = false;
+
+    const pathId = node.getPathId(modifierNode)
+
+    const srcMod = modifierNode.getModificationEntry(pathId)
 
     if (componentType === ComponentType.Self) {
       const object = this.objects.get(node.sceneObject.id)
@@ -505,13 +520,34 @@ class Scene implements SceneInterface {
 
       object.descriptor = node.sceneObject.toDescriptor(false) as SceneObjectDescriptor
 
-      delete srcMod.sceneObject[componentType]
+      const updatedModifications: SceneObjectModifications = {
+        ...srcMod.sceneObject,
+      }
+
+      delete updatedModifications['name']
+
+      const payload = {
+        modifierNodeId: modifierNode.id,
+        sceneId: modifierNode.sceneId,
+        pathId,
+        modifications: updatedModifications,
+      }
+
+      const response = await Http.put('/api/node-modifications', payload)
+
+      if (response.ok) {
+        runInAction(() => {
+          srcMod.sceneObject = updatedModifications
+        })
+      }
 
       // If there are no properties left then delete the whole component from the modifications.
       // const names = Object.getOwnPropertyNames(comp)
       // if (names.length === 0) {
       //   delete srcMod.sceneObject[componentType]
       // }
+
+      this.rebuildSceneObject(node.sceneObject, componentType)
     } else {
       const component = node.sceneObject.components[componentType];
 
@@ -555,10 +591,12 @@ class Scene implements SceneInterface {
           // the property from the scene object.
           Scene.deleteOverride(srcMod, componentType, propertyPath)
 
-          this.rebuildSceneObject(node, componentType)
+          this.rebuildSceneObject(node.sceneObject, componentType)
         }
       }
     }
+
+    node.sceneObject.autosave = true;
   }
 
   private async applyAsOverride(

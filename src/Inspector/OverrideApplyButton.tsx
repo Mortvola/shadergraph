@@ -16,7 +16,7 @@ const OverrideApplyButton: React.FC<PropsType> = ({
     const targets = node.scene.getApplyTargets(node, componentType)
 
     return targets.map((target) => (
-      <Dropdown.Item onClick={target.action}>
+      <Dropdown.Item key={target.label} onClick={target.action}>
         {target.label}
       </Dropdown.Item>
     ))
