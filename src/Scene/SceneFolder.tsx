@@ -4,7 +4,7 @@ import { useStores } from '../State/store';
 import { observer } from 'mobx-react-lite';
 import styles from './Project.module.scss';
 import { SceneItemType, type SceneInterface } from './Types/Types';
-import type TreeNode from './Types/TreeNode';
+import type SceneNode from './Types/SceneNode';
 import { ComponentType } from '../Renderer/Types';
 import ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps';
 import LightProps from '../Renderer/Properties/LightProps';
@@ -12,8 +12,8 @@ import { ProjectItemType } from '../Project/Types/types';
 
 type PropsType = {
   scene: SceneInterface,
-  folder: TreeNode,
-  onSelect?: (item: TreeNode) => void,
+  folder: SceneNode,
+  onSelect?: (item: SceneNode) => void,
   level: number,
 }
 

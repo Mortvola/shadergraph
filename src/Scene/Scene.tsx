@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import type { SceneInterface } from './Types/Types';
 import SceneFolder from './SceneFolder';
 import styles from './Scene.module.scss'
-import type TreeNode from './Types/TreeNode';
+import type SceneNode from './Types/SceneNode';
 import { ChevronLeft } from 'lucide-react';
 
 type PropsType = {
@@ -16,7 +16,7 @@ const Scene: React.FC<PropsType> = observer(({
   scene,
   className,
 }) => {
-  const handleObjectClick = (node: TreeNode) => {
+  const handleObjectClick = (node: SceneNode) => {
     scene?.setSelected(node)
   }
 

@@ -3,10 +3,10 @@ import Component from './Component';
 import styles from './ComponentComparison.module.scss';
 import { type ComponentType, type SceneObjectComponent } from '../Renderer/Types';
 import OverrideApplyButton from './OverrideApplyButton';
-import type TreeNode from '../Scene/Types/TreeNode';
+import type SceneNode from '../Scene/Types/SceneNode';
 
 type PropsType = {
-  node: TreeNode,
+  node: SceneNode,
   componentType: ComponentType,
   baseComponent: SceneObjectComponent,
   component: SceneObjectComponent,

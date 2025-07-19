@@ -7,12 +7,12 @@ import { useStores } from '../../State/store';
 import Property from '../Property';
 import { ProjectItemType } from '../../Project/Types/types';
 import PSRenderAlignmentSelector from './PSRenderAlignmentSelector copy';
-import type TreeNode from '../../Scene/Types/TreeNode';
+import type SceneNode from '../../Scene/Types/SceneNode';
 import { ComponentType } from '../../Renderer/Types';
 
 type PropsType = {
   value: Renderer,
-  node: TreeNode,
+  node: SceneNode,
 }
 
 const PSRenderer: React.FC<PropsType> = observer(({

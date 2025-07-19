@@ -244,7 +244,9 @@ const SceneObject: React.FC<PropsType> = observer(({
             : (
               <>
                 {
-                  renderComponent(ComponentType.Transform)
+                  sceneObject.components[ComponentType.Transform] !== undefined
+                    ? renderComponent(ComponentType.Transform)
+                    : null
                 }
                 {
                   Object.keys(sceneObject.components).map((c) => {

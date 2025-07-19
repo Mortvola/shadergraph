@@ -2,13 +2,13 @@ import React from 'react';
 import styles from './ComponentComparison.module.scss';
 import { type SceneObjectInterface } from '../Scene/Types/Types';
 import Header from './Header';
-import type TreeNode from '../Scene/Types/TreeNode';
+import type SceneNode from '../Scene/Types/SceneNode';
 import { observer } from 'mobx-react-lite';
 import OverrideApplyButton from './OverrideApplyButton';
 import { ComponentType } from '../Renderer/Types';
 
 type PropsType = {
-  node: TreeNode,
+  node: SceneNode,
   baseObject: SceneObjectInterface,
   object: SceneObjectInterface,
 }

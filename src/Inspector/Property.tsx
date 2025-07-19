@@ -3,7 +3,7 @@ import styles from './Inspector.module.scss';
 import Select from './Select';
 import { observer } from 'mobx-react-lite';
 import type { PropertyBaseInterface } from '../Renderer/Properties/Types';
-import type TreeNode from '../Scene/Types/TreeNode';
+import type SceneNode from '../Scene/Types/SceneNode';
 import { type ComponentType } from '../Renderer/Types';
 
 type PropsType = {
@@ -13,7 +13,7 @@ type PropsType = {
   onDragOver?: (event: React.DragEvent<HTMLLabelElement>) => void,
   onDrop?: (event: React.DragEvent<HTMLLabelElement>) => void,
   className?: string,
-  node: TreeNode,
+  node: SceneNode,
   componentType: ComponentType,
   propertyPath: string,
 }

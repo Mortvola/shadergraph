@@ -1,10 +1,10 @@
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
-import type TreeNode from '../Scene/Types/TreeNode';
+import type SceneNode from '../Scene/Types/SceneNode';
 import { type ComponentType } from '../Renderer/Types';
 
 type PropsType = {
-  node: TreeNode,
+  node: SceneNode,
   componentType: ComponentType,
 }
 

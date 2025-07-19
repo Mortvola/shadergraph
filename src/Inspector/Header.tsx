@@ -2,13 +2,13 @@ import React from 'react'
 import { type HeaderInterface } from '../Scene/Types/Types'
 import Property from './Property'
 import { ComponentType } from '../Renderer/Types'
-import type TreeNode from '../Scene/Types/TreeNode'
+import type SceneNode from '../Scene/Types/SceneNode'
 import { observer } from 'mobx-react-lite'
 
 type PropsType = {
   header: HeaderInterface
   className?: string,
-  node: TreeNode,
+  node: SceneNode,
 }
 
 const Header: React.FC<PropsType> = observer(({

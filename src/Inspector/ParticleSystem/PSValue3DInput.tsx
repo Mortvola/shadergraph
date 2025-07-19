@@ -7,11 +7,11 @@ import { observer } from 'mobx-react-lite';
 import CurveEditor from '../../Color/CurveEditor';
 import Checkbox from '../../ShaderEditor/Controls/Checkbox';
 import RangeInput from './RangeInput';
-import type TreeNode from '../../Scene/Types/TreeNode';
+import type SceneNode from '../../Scene/Types/SceneNode';
 
 type PropsType = {
   value: PSValue3D,
-  node: TreeNode,
+  node: SceneNode,
 }
 
 const PSValue3DInput: React.FC<PropsType> = observer(({

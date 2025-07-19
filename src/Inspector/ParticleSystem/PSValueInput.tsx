@@ -5,13 +5,13 @@ import { PSValueType } from '../../Renderer/ParticleSystem/Types';
 import type PSValue from '../../Renderer/Properties/PSValue';
 import { observer } from 'mobx-react-lite';
 import CurveEditor from '../../Color/CurveEditor';
-import type TreeNode from '../../Scene/Types/TreeNode';
+import type SceneNode from '../../Scene/Types/SceneNode';
 
 type PropsType = {
   value: PSValue,
   onFocus?: () => void,
   onBlur?: () => void,
-  node: TreeNode,
+  node: SceneNode,
 }
 
 const PSValueInput: React.FC<PropsType> = observer(({

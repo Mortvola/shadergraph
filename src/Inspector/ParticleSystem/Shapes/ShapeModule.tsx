@@ -7,12 +7,12 @@ import Cone from './Cone';
 import styles from '../PSModule.module.scss';
 import Sphere from './Sphere';
 import Property from '../../Property';
-import type TreeNode from '../../../Scene/Types/TreeNode';
+import type SceneNode from '../../../Scene/Types/SceneNode';
 import { ComponentType } from '../../../Renderer/Types';
 
 type PropsType = {
   shape: Shape,
-  node: TreeNode,
+  node: SceneNode,
 }
 
 const ShapeModule: React.FC<PropsType> = observer(({

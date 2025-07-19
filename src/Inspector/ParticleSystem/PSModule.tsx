@@ -4,14 +4,14 @@ import Checkbox from '../../ShaderEditor/Controls/Checkbox';
 import styles from './PSModule.module.scss';
 import type PSModuleData from '../../Renderer/Properties/PSModule';
 import Property from '../Property';
-import type TreeNode from '../../Scene/Types/TreeNode';
+import type SceneNode from '../../Scene/Types/SceneNode';
 import { ComponentType } from '../../Renderer/Types';
 
 type PropsType = {
   module: PSModuleData,
   title: string,
   children?: React.ReactNode,
-  node: TreeNode,
+  node: SceneNode,
 }
 
 const PSModule: React.FC<PropsType> = observer(({

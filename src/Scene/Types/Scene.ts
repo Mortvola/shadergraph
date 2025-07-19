@@ -9,7 +9,7 @@ import type {
   NodesResponse2, SceneId, SceneInterface, SceneItemType, SceneObjectDescriptor,
   SceneObjectInterface, SceneObjectModifications, TreeNodeDescriptor,
 } from './Types';
-import TreeNode from './TreeNode';
+import SceneNode from './SceneNode';
 import SceneObject, { type ComponentMap } from './SceneObject';
 import ModifierNode from './ModifierNode';
 import { isModifierNode } from './ModifierNode';
@@ -21,7 +21,7 @@ import {
 } from '../../Renderer/Types';
 import type PropsBase from '../../Renderer/Properties/PropsBase';
 
-type ModifierNodeEntry = { modifier: ModifierNode, node?: TreeNode }
+type ModifierNodeEntry = { modifier: ModifierNode, node?: SceneNode }
 
 class Scene implements SceneInterface {
   id: number;
@@ -29,24 +29,24 @@ class Scene implements SceneInterface {
   name: string = '';
 
   @observable
-  accessor rootStack: TreeNode[] = []
+  accessor rootStack: SceneNode[] = []
 
   @observable
-  accessor root: TreeNode | undefined
+  accessor root: SceneNode | undefined
 
-  private renderedScene: TreeNode | undefined
+  private renderedScene: SceneNode | undefined
 
   @observable
-  accessor selectedNode: TreeNode | null = null;
+  accessor selectedNode: SceneNode | null = null;
 
-  draggingNode: TreeNode | null = null;
+  draggingNode: SceneNode | null = null;
 
   private nodes: Map<SceneId, Map<NodeId, TreeNodeDescriptor | ModifierNode>> = new Map()
 
   private objects: Map<number, {
     descriptor: SceneObjectDescriptor,
     components: ComponentMap,
-    nodes: TreeNode[],
+    nodes: SceneNode[],
   }> = new Map()
 
   constructor(id: number) {
@@ -86,7 +86,7 @@ class Scene implements SceneInterface {
     return nodeMap.get(nodeId)
   }
 
-  private processNodeResponse(response: NodesResponse2, parent?: TreeNode) {
+  private processNodeResponse(response: NodesResponse2, parent?: SceneNode) {
     for (const node of response.nodes) {
       const nodesMap = this.getNodesMap(node.sceneId)
 
@@ -193,10 +193,10 @@ class Scene implements SceneInterface {
     return scene;
   }
 
-  getModifiers(start: TreeNode | undefined) {
-    const modifiers: { modifier: ModifierNode, node?: TreeNode }[] = []
+  getModifiers(start: SceneNode | undefined) {
+    const modifiers: { modifier: ModifierNode, node?: SceneNode }[] = []
 
-    let node: TreeNode | undefined = start
+    let node: SceneNode | undefined = start
 
     for(;;) {
       if (node == null) {
@@ -218,7 +218,7 @@ class Scene implements SceneInterface {
     return modifiers
   }
 
-  private getParentModifierNode(nodeId: number, parent: TreeNode, modifiers: ModifierNodeEntry[]) {
+  private getParentModifierNode(nodeId: number, parent: SceneNode, modifiers: ModifierNodeEntry[]) {
     let pathId = 0;
     for (let i = modifiers.length - 1; i >= 0; i -= 1) {
       const modifier = modifiers[i].modifier
@@ -241,15 +241,15 @@ class Scene implements SceneInterface {
     }
   }
 
-  async createTree(rootNodeId: number, rootSceneId: number, parent?: TreeNode) {
-    let root: TreeNode | undefined;
+  async createTree(rootNodeId: number, rootSceneId: number, parent?: SceneNode) {
+    let root: SceneNode | undefined;
 
     type StackEntry = {
       nodeId: number,
       sceneId: number,
-      parent?: TreeNode,
+      parent?: SceneNode,
       modifiers: ModifierNodeEntry[],
-      parentModifierNode?: TreeNode,
+      parentModifierNode?: SceneNode,
     }
 
     const modifiers = this.getModifiers(parent)
@@ -416,7 +416,7 @@ class Scene implements SceneInterface {
         node.sceneObject.updateComponent(componentType, descriptor, false)
       }
 
-      let n: TreeNode | undefined = node.sceneRoot;
+      let n: SceneNode | undefined = node.sceneRoot;
 
       while (n) {
         if (n.modifierNode) {
@@ -468,7 +468,7 @@ class Scene implements SceneInterface {
   }
 
   private async revertOverride(
-    node: TreeNode,
+    node: SceneNode,
     modifierNode: ModifierNode,
     componentType: ComponentType,
     propertyPath?: string,
@@ -497,7 +497,7 @@ class Scene implements SceneInterface {
   }
 
   private async applyOverride(
-    node: TreeNode,             // The node to apply the overrides to
+    node: SceneNode,             // The node to apply the overrides to
     modifierNode: ModifierNode, // The overrides
     componentType: ComponentType,
     propertyPath?: string,
@@ -600,8 +600,8 @@ class Scene implements SceneInterface {
   }
 
   private async applyAsOverride(
-    root: TreeNode,
-    node: TreeNode,
+    root: SceneNode,
+    node: SceneNode,
     modifierNode: ModifierNode,
     componentType: ComponentType,
     propertyPath?: string,
@@ -641,7 +641,7 @@ class Scene implements SceneInterface {
     }
   }
 
-  getApplyTargets(node: TreeNode, componentType: ComponentType, propertyPath?: string) {
+  getApplyTargets(node: SceneNode, componentType: ComponentType, propertyPath?: string) {
     const t: { label: string, action: () => void, }[] = []
 
     const root = node.getTopLevelModifierNode()
@@ -655,7 +655,7 @@ class Scene implements SceneInterface {
       action: () => this.revertOverride(node, root.modifierNode!, componentType, propertyPath),
     })
 
-    let n: TreeNode | undefined = node.sceneRoot;
+    let n: SceneNode | undefined = node.sceneRoot;
 
     while (n) {
       if (n.sceneRoot.sceneId === node.sceneId) {
@@ -729,7 +729,7 @@ class Scene implements SceneInterface {
     }
   }
 
-  async createPrefab(node: TreeNode, folder: FolderInterface) {
+  async createPrefab(node: SceneNode, folder: FolderInterface) {
     if (node.parent === undefined) {
       throw new Error('no parent set')
     }
@@ -749,7 +749,7 @@ class Scene implements SceneInterface {
     if (response.ok) {
       const body = await response.body();
 
-      const projectItem = new ProjectItem<TreeNode>(
+      const projectItem = new ProjectItem<SceneNode>(
         body.item.id, body.item.name, body.item.type, folder, node.id,
       );
 
@@ -765,7 +765,7 @@ class Scene implements SceneInterface {
     }
   }
 
-  async instantiatePrefab(subSceneId: number, parent: TreeNode) {
+  async instantiatePrefab(subSceneId: number, parent: SceneNode) {
     const { descriptor: parentDescriptor, modifierNode } = parent.getParentDescriptor()
 
     const payload = {
@@ -790,10 +790,10 @@ class Scene implements SceneInterface {
     sceneId: number,
     object: SceneObjectInterface,
     modifierNode?: ModifierNode,
-    parentModifierNode?: TreeNode,
-    parent?: TreeNode,
-  ): TreeNode {
-    const node = new TreeNode(id, sceneId, object, this)
+    parentModifierNode?: SceneNode,
+    parent?: SceneNode,
+  ): SceneNode {
+    const node = new SceneNode(id, sceneId, object, this)
 
     runInAction(() => {
       node.modifierNode = modifierNode
@@ -817,7 +817,7 @@ class Scene implements SceneInterface {
     })
   }
 
-  setSelected(node: TreeNode | null) {
+  setSelected(node: SceneNode | null) {
     runInAction(() => {
       this.selectedNode = node;
 
@@ -845,7 +845,7 @@ class Scene implements SceneInterface {
     }
   }
 
-  removeNode(node: TreeNode) {
+  removeNode(node: SceneNode) {
     const nodes = this.getNodesMap(node.sceneId)
 
     nodes.delete(node.id)
@@ -856,7 +856,7 @@ class Scene implements SceneInterface {
   async addChild(
     component: { type: ComponentType, props: PropsBase } | undefined,
     name: string,
-    parent: TreeNode,
+    parent: SceneNode,
   ) {
     const { descriptor: parentDescriptor, modifierNode } = parent.getParentDescriptor()
 
@@ -897,7 +897,7 @@ class Scene implements SceneInterface {
 
   addNewItem(type: SceneItemType) {
     runInAction(() => {
-      const parent: TreeNode | undefined = this.selectedNode ?? this.root
+      const parent: SceneNode | undefined = this.selectedNode ?? this.root
 
       if (parent) {
         parent.newItemType = type;

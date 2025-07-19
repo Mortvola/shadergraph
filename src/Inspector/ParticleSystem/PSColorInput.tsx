@@ -5,11 +5,11 @@ import PSColorTypeSelector from './PSColorTypeSelector';
 import GradientEditor from '../../Color/GradientEditor';
 import type PSColor from '../../Renderer/Properties/PSColor';
 import { observer } from 'mobx-react-lite';
-import type TreeNode from '../../Scene/Types/TreeNode';
+import type SceneNode from '../../Scene/Types/SceneNode';
 
 type PropsType = {
   value: PSColor,
-  node: TreeNode,
+  node: SceneNode,
 }
 
 const PSColorInput: React.FC<PropsType> = observer(({

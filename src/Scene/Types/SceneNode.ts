@@ -29,15 +29,15 @@ type ParentDescriptor = {
   pathId: number | null,
 }
 
-class TreeNode {
+class SceneNode {
   id: number;
 
   sceneId: number;
 
   @observable
-  accessor children: TreeNode[] = [];
+  accessor children: SceneNode[] = [];
 
-  parent?: TreeNode;
+  parent?: SceneNode;
 
   get modifierNodeId(): number | undefined {
     if (this.parent?.modifierNode !== undefined) {
@@ -47,10 +47,10 @@ class TreeNode {
     return this.parent?.modifierNodeId
   }
 
-  get sceneRoot(): TreeNode {
+  get sceneRoot(): SceneNode {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let node: TreeNode | undefined = this;
-    let root: TreeNode = this.scene.root!
+    let node: SceneNode | undefined = this;
+    let root: SceneNode = this.scene.root!
 
     while (node) {
       if (node.modifierNode) {
@@ -101,7 +101,7 @@ class TreeNode {
   scene: SceneInterface;
 
   @observable
-  accessor parentModifierNode: TreeNode | undefined;
+  accessor parentModifierNode: SceneNode | undefined;
 
   get isModifierRoot(): boolean {
     return this.modifierNode !== undefined
@@ -133,9 +133,9 @@ class TreeNode {
     this.transformChanged()
   }
 
-  isAncestor(node: TreeNode): boolean {
+  isAncestor(node: SceneNode): boolean {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let child: TreeNode | undefined = this;
+    let child: SceneNode | undefined = this;
     for (;;) {
       if (child === undefined || child.parent === node) {
         break;
@@ -151,7 +151,7 @@ class TreeNode {
     return false;
   }
 
-  addNode(node: TreeNode) {
+  addNode(node: SceneNode) {
     runInAction(() => {
       node.detachSelf()
 
@@ -167,7 +167,7 @@ class TreeNode {
     })
   }
 
-  removeNode(node: TreeNode) {
+  removeNode(node: SceneNode) {
     const index = this.children.findIndex((o) => o === node)
 
     if (index !== -1) {
@@ -210,7 +210,7 @@ class TreeNode {
     let id = 0
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let node: TreeNode | undefined = this
+    let node: SceneNode | undefined = this
 
     while (node !== undefined) {
       if (node.modifierNode?.id === modifierNode.id) {
@@ -227,11 +227,11 @@ class TreeNode {
     return id ^ this.id
   }
 
-  getTopLevelModifierNode(): TreeNode | undefined {
-    let modifierNode: TreeNode | undefined
+  getTopLevelModifierNode(): SceneNode | undefined {
+    let modifierNode: SceneNode | undefined
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let node: TreeNode | undefined = this;
+    let node: SceneNode | undefined = this;
 
     for (;;) {
       if (node === undefined) {
@@ -250,7 +250,7 @@ class TreeNode {
     return modifierNode
   }
 
-  getParentDescriptor(): { descriptor: ParentDescriptor, modifierNode: TreeNode | undefined } {
+  getParentDescriptor(): { descriptor: ParentDescriptor, modifierNode: SceneNode | undefined } {
     let descriptor: ParentDescriptor = {
       parentNodeId: this.id,
       modifierNodeId: null,
@@ -277,7 +277,7 @@ class TreeNode {
     return { descriptor, modifierNode: node };
   }
 
-  async reparent(newParent: TreeNode) {
+  async reparent(newParent: SceneNode) {
     if (!this.isTopLevel) {
       throw new Error('Cannot move nodes not at top level')
     }
@@ -459,11 +459,11 @@ class TreeNode {
   }
 
   @computed
-  get connectionOverrides(): TreeNode[] {
-    const connections: TreeNode[] = [];
+  get connectionOverrides(): SceneNode[] {
+    const connections: SceneNode[] = [];
 
     if (this.isModifierRoot) {
-      let stack: TreeNode[] = [this];
+      let stack: SceneNode[] = [this];
 
       while (stack.length > 0) {
         const node = stack[0];
@@ -483,4 +483,4 @@ class TreeNode {
   }
 }
 
-export default TreeNode;
+export default SceneNode;

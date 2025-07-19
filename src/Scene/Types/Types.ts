@@ -6,7 +6,7 @@ import type {
   ComponentDescriptor, ComponentPropsDescriptor, ComponentType, LightPropsDescriptor,
   SceneObjectComponent as SceneObjectComponent,
 } from '../../Renderer/Types';
-import type TreeNode from './TreeNode';
+import type SceneNode from './SceneNode';
 import type PropsBase from '../../Renderer/Properties/PropsBase';
 
 export enum SceneItemType {
@@ -37,37 +37,37 @@ export type NodeId = number;
 export interface SceneInterface {
   id: number;
 
-  root: TreeNode | undefined;
+  root: SceneNode | undefined;
 
-  rootStack: TreeNode[];
+  rootStack: SceneNode[];
 
-  selectedNode: TreeNode | null;
+  selectedNode: SceneNode | null;
 
-  draggingNode: TreeNode | null;
+  draggingNode: SceneNode | null;
 
   getObject(id: number): SceneObjectInterface | undefined
 
   processModifications(modifications: (ModificationEntry & { sceneId: number, nodeId: number })[]): void
 
-  createTree(rootNodeId: number, rootSceneId: number, parent?: TreeNode): Promise<TreeNode | undefined>;
+  createTree(rootNodeId: number, rootSceneId: number, parent?: SceneNode): Promise<SceneNode | undefined>;
 
   pushTree(nodeId: number, sceneId: number): Promise<void>
 
   popTree(): Promise<void>
 
-  createPrefab(node: TreeNode, folder: FolderInterface): Promise<void>;
+  createPrefab(node: SceneNode, folder: FolderInterface): Promise<void>;
 
-  instantiatePrefab(sceneId: number, parent: TreeNode): Promise<void>;
+  instantiatePrefab(sceneId: number, parent: SceneNode): Promise<void>;
 
   addChild(
     component: { type: ComponentType, props: PropsBase } | undefined,
     name: string,
-    parent: TreeNode,
-  ): Promise<TreeNode | undefined>
+    parent: SceneNode,
+  ): Promise<SceneNode | undefined>
 
-  removeNode(node: TreeNode): void;
+  removeNode(node: SceneNode): void;
 
-  setSelected(node: TreeNode | null): void;
+  setSelected(node: SceneNode | null): void;
 
   renderScene(): void;
 
@@ -82,16 +82,16 @@ export interface SceneInterface {
   ): Promise<void>;
 
   getApplyTargets(
-    node: TreeNode,
+    node: SceneNode,
     componentType: ComponentType,
     propertyPath?: string,
   ): { label: string, action: () => void, }[];
 }
 
-export const isTreeNode = (r: unknown): r is TreeNode => (
-  (r as TreeNode)?.renderNode !== undefined
-  && (r as TreeNode)?.sceneObject !== undefined
-  && (r as TreeNode)?.children !== undefined
+export const isTreeNode = (r: unknown): r is SceneNode => (
+  (r as SceneNode)?.renderNode !== undefined
+  && (r as SceneNode)?.sceneObject !== undefined
+  && (r as SceneNode)?.children !== undefined
   // && (r as TreeNode)?.components !== undefined
 )
 
@@ -108,7 +108,7 @@ export interface SceneObjectInterface {
 
   components: SceneObjectComponents;
 
-  node?: TreeNode;
+  node?: SceneNode;
 
   autosave: boolean;
 

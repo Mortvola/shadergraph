@@ -3,14 +3,14 @@ import styles from './Overrides.module.scss';
 import PopupButton from './PopupButton';
 import { Position } from './PopupWrapper';
 import OverrideConnection from './OverrideConnection';
-import type TreeNode from '../Scene/Types/TreeNode';
+import type SceneNode from '../Scene/Types/SceneNode';
 import { observer } from 'mobx-react-lite';
 import ComponentComparison from './ComponentComparison';
 import HeaderComparison from './HeaderComparison';
 import { ComponentType } from '../Renderer/Types';
 
 type PropsType = {
-  root: TreeNode,
+  root: SceneNode,
 }
 
 const Overrides: React.FC<PropsType> = observer(({
@@ -20,7 +20,7 @@ const Overrides: React.FC<PropsType> = observer(({
     const connections: React.ReactNode[] = [];
 
     if (root.modifierNode !== undefined) {
-      type StackEntry = { node: TreeNode, level: number }
+      type StackEntry = { node: SceneNode, level: number }
       let stack: StackEntry[] = [{ node: root, level: 0 }];
 
       while (stack.length > 0) {

@@ -2,12 +2,12 @@ import React from 'react';
 import NumberInput from '../NumberInput';
 import type CollisionData from '../../Renderer/ParticleSystem/Collision';
 import Property from '../Property';
-import type TreeNode from '../../Scene/Types/TreeNode';
+import type SceneNode from '../../Scene/Types/SceneNode';
 import { ComponentType } from '../../Renderer/Types';
 
 type PropsType = {
   value: CollisionData
-  node: TreeNode,
+  node: SceneNode,
 }
 
 const Collision: React.FC<PropsType> = ({

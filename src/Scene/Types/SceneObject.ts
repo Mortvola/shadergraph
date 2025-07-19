@@ -11,7 +11,7 @@ import {
   type SceneObjectComponents,
 } from './Types';
 import TransformProps from '../../Renderer/Properties/TransformProps';
-import type TreeNode from './TreeNode';
+import type SceneNode from './SceneNode';
 import ParticleSystemProps from '../../Renderer/ParticleSystem/ParticleSystemProps';
 import { type ParticleSystemPropsDescriptor } from '../../Renderer/ParticleSystem/Types';
 import LightProps from '../../Renderer/Properties/LightProps';
@@ -28,7 +28,7 @@ class SceneObject implements SceneObjectInterface {
   @observable
   accessor components: SceneObjectComponents = {}
 
-  node?: TreeNode;
+  node?: SceneNode;
 
   get isTopLevel(): boolean {
     return this.node?.sceneId === this.node?.scene.root?.sceneId

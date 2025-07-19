@@ -7,7 +7,7 @@ import type {
 } from '../../State/types';
 import type { SceneObjectInterface } from '../../Scene/Types/Types';
 import type { SceneInterface } from '../../Scene/Types/Types';
-import type TreeNode from '../../Scene/Types/TreeNode';
+import type SceneNode from '../../Scene/Types/SceneNode';
 
 export type ProjectItemLike =
   ProjectItemInterface<SceneObjectInterface> |
@@ -20,7 +20,7 @@ export type ProjectItemLike =
   ProjectItemInterface<ShaderRecord> |
   ProjectItemInterface<SceneInterface> |
   ProjectItemInterface<FolderInterface> |
-  ProjectItemInterface<TreeNode>;
+  ProjectItemInterface<SceneNode>;
 
 export enum ProjectItemType {
   Particle = 'particle',

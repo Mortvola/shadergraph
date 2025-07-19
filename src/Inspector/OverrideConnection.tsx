@@ -1,10 +1,10 @@
 import React from 'react';
 import styles from './Overrides.module.scss';
-import type TreeNode from '../Scene/Types/TreeNode';
+import type SceneNode from '../Scene/Types/SceneNode';
 import { PopupContext } from './PopupContext';
 
 type PropsType = {
-  connection: TreeNode,
+  connection: SceneNode,
 }
 
 const OverrideConnection: React.FC<PropsType> = ({

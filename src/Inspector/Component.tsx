@@ -6,14 +6,14 @@ import LightComponent from './Light'
 import type TransformProps from '../Renderer/Properties/TransformProps'
 import type ParticleSystemProps from '../Renderer/ParticleSystem/ParticleSystemProps'
 import type LightProps from '../Renderer/Properties/LightProps'
-import type TreeNode from '../Scene/Types/TreeNode'
+import type SceneNode from '../Scene/Types/SceneNode'
 
 type PropsType = {
   componentType: ComponentType,
   component: SceneObjectComponent
   className?: string
   style?: React.CSSProperties
-  node: TreeNode,
+  node: SceneNode,
 }
 
 const Component: React.FC<PropsType> = ({

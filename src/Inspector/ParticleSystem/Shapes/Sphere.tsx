@@ -2,11 +2,11 @@ import React from 'react';
 import NumberInput from '../../NumberInput';
 import type SphereData from '../../../Renderer/ParticleSystem/Shapes/Sphere';
 import { observer } from 'mobx-react-lite';
-import type TreeNode from '../../../Scene/Types/TreeNode';
+import type SceneNode from '../../../Scene/Types/SceneNode';
 
 type PropsType = {
   sphere: SphereData
-  node: TreeNode,
+  node: SceneNode,
 }
 
 const Sphere: React.FC<PropsType> = observer(({

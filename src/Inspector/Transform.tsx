@@ -6,12 +6,12 @@ import Property from './Property';
 import { observer } from 'mobx-react-lite';
 import { degToRad, radToDeg } from '../Renderer/Math';
 import { vec3n } from 'wgpu-matrix';
-import type TreeNode from '../Scene/Types/TreeNode';
+import type SceneNode from '../Scene/Types/SceneNode';
 import { ComponentType } from '../Renderer/Types';
 
 type PropsType = {
   transformProps: TransformProps,
-  node: TreeNode,
+  node: SceneNode,
 }
 
 const Transform: React.FC<PropsType> = observer(({

@@ -7,12 +7,12 @@ import { Button } from 'react-bootstrap';
 import { MinusIcon, PlusIcon } from 'lucide-react';
 import PSValueInput from './PSValueInput';
 import { observer } from 'mobx-react-lite';
-import type TreeNode from '../../Scene/Types/TreeNode';
+import type SceneNode from '../../Scene/Types/SceneNode';
 import { ComponentType } from '../../Renderer/Types';
 
 type PropsType = {
   emissions: Emissions,
-  node: TreeNode,
+  node: SceneNode,
 }
 
 const PSEmissions: React.FC<PropsType> = observer(({

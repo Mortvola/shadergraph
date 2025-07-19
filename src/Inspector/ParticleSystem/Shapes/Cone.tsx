@@ -2,11 +2,11 @@ import React from 'react';
 import NumberInput from '../../NumberInput';
 import type ConeData from '../../../Renderer/ParticleSystem/Shapes/Cone';
 import { observer } from 'mobx-react-lite';
-import type TreeNode from '../../../Scene/Types/TreeNode';
+import type SceneNode from '../../../Scene/Types/SceneNode';
 
 type PropsType = {
   cone: ConeData,
-  node: TreeNode,
+  node: SceneNode,
 }
 
 const Cone: React.FC<PropsType> = observer(({

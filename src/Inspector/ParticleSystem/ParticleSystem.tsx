@@ -15,12 +15,12 @@ import PSSpaceTypeSelector from './PSSpaceTypeSelector';
 import PSValue3DInput from './PSValue3DInput';
 import Checkbox from '../../ShaderEditor/Controls/Checkbox';
 import PSEmissions from './PSEmissions';
-import type TreeNode from '../../Scene/Types/TreeNode';
+import type SceneNode from '../../Scene/Types/SceneNode';
 import { ComponentType } from '../../Renderer/Types';
 
 type PropsType = {
   particleSystemProps: ParticleSystemProps,
-  node: TreeNode,
+  node: SceneNode,
 }
 
 const ParticleSystem: React.FC<PropsType> = observer(({

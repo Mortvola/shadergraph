@@ -4,13 +4,13 @@ import { observer } from 'mobx-react-lite';
 import ContextMenu from '../ContextMenu/ContextMenu';
 import type { MenuItemLike } from '../ContextMenu/types';
 import type { SceneInterface } from './Types/Types';
-import type TreeNode from './Types/TreeNode';
+import type SceneNode from './Types/SceneNode';
 import { BoxIcon, ChevronRight, PlusIcon } from 'lucide-react';
 
 type PropsType = {
   scene: SceneInterface,
-  treeNode: TreeNode,
-  onSelect?: (item: TreeNode) => void,
+  treeNode: SceneNode,
+  onSelect?: (item: SceneNode) => void,
   selected: boolean,
   draggable?: boolean,
   level: number,

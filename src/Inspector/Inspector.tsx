@@ -9,11 +9,11 @@ import SceneObject from './SceneObject';
 import type { MaterialItemInterface } from '../State/types';
 import type { SceneObjectInterface } from '../Scene/Types/Types';
 import { type ProjectItemLike, ProjectItemType } from '../Project/Types/types';
-import type TreeNode from '../Scene/Types/TreeNode';
+import type SceneNode from '../Scene/Types/SceneNode';
 
 type PropsType = {
   selectedItem: ProjectItemLike | null,
-  selectedNode?: TreeNode | null,
+  selectedNode?: SceneNode | null,
 }
 
 const Inspector: React.FC<PropsType> = observer(({

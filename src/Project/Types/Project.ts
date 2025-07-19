@@ -11,7 +11,7 @@ import ShaderProjectItem from './ShaderProjectItem';
 import MaterialProjectItem from './MaterialProjectItem';
 import TextureProjectItem from './TextureProjectItem';
 import type { ProjectItemRecord } from '../../State/ProjectItemRecord';
-import type TreeNode from '../../Scene/Types/TreeNode';
+import type SceneNode from '../../Scene/Types/SceneNode';
 import SceneObjectProjectItem from './SceneObjectProjectItem';
 import ModelProjectItem from './ModelProjectItem';
 
@@ -305,7 +305,7 @@ class Project implements ProjectInterface {
         return new TextureProjectItem(rec.id, rec.name, folder, rec.itemId)
 
       case ProjectItemType.TreeNode:
-        return new ProjectItem<TreeNode>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
+        return new ProjectItem<SceneNode>(rec.id, rec.name, rec.type as ProjectItemType, folder, rec.itemId)
     }
   }
 
