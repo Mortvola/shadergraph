@@ -25,6 +25,7 @@ const Scene: React.FC<PropsType> = observer(({
       (
         async () => {
           await scene.popTree()
+          scene.setSelected(null)
           scene.renderScene()
         }
       )()
@@ -45,6 +46,8 @@ const Scene: React.FC<PropsType> = observer(({
           <SceneToolbar scene={scene} />
         </div>
         {
+          // Display the "back" indicator if we are not at the top
+          // of the root stack
           scene.rootStack.length > 1
             ? <ChevronLeft size={16} onClick={handleBackClick} />
             : null

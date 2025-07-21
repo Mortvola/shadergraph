@@ -119,6 +119,7 @@ const SceneItem: React.FC<PropsType> = observer(({
     (
       async () => {
         await scene.pushTree(treeNode.id, treeNode.sceneId)
+        scene.setSelected(null)
         scene.renderScene()
       }
     )()

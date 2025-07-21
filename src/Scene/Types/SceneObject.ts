@@ -276,7 +276,10 @@ class SceneObject implements SceneObjectInterface {
   }
 
   addComponent(componentType: ComponentType, component: SceneObjectComponent) {
-    this.components[componentType] = component
+    runInAction(() => {
+      this.components[componentType] = component
+    })
+
     component.onChange = this.onChange;
 
     // if (component.component) {
