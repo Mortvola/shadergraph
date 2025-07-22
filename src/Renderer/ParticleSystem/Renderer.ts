@@ -9,7 +9,6 @@ import { PSMaterialItem, PSMeshItem, PSRenderAlignment, PSRenderMode } from '../
 import type MaterialItem from '../Materials/MaterialItem';
 import { observable, runInAction } from 'mobx';
 import { DrawableType } from '../Drawables/DrawableInterface';
-import type ModelItem from '../Models/ModelItem';
 import { modelManager } from '../Models/ModelManager';
 import { type DrawableComponentInterface, type RenderNodeInterface } from '../Types';
 import { isRenderNode } from '../Drawables/SceneNodes/RenderNode';
@@ -24,9 +23,6 @@ class Renderer extends PSModule {
   accessor material: MaterialItem | undefined = undefined;
 
   meshId: PSMeshItem;
-
-  @observable
-  accessor mesh: ModelItem | undefined = undefined
 
   drawable?: DrawableInterface;
 
@@ -180,11 +176,6 @@ class Renderer extends PSModule {
   setMesh(meshId: number) {
     runInAction(() => {
       this.meshId.set(meshId)
-
-      // If the current mesh doesn't match the new mesh id then remove it.
-      if (this.mesh !== undefined && this.mesh.id !== meshId) {
-        this.mesh = undefined;
-      }
     })
   }
 

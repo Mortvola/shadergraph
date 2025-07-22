@@ -73,6 +73,36 @@ const PSRenderer: React.FC<PropsType> = observer(({
     }
   }
 
+  const getMeshName = () => {
+    const meshId = value.meshId.get()
+    if (meshId !== undefined) {
+      const item = store.project.getItemByItemId(meshId, ProjectItemType.Model)
+
+      if (item) {
+        return item.name
+      }
+
+      return meshId
+    }
+
+    return 'not assigned'
+  }
+
+  const getMaterialName = () => {
+    const materialId = value.materialId.get()
+    if (materialId !== undefined) {
+      const item = store.project.getItemByItemId(materialId, ProjectItemType.Material)
+
+      if (item) {
+        return item.name
+      }
+
+      return materialId
+    }
+
+    return 'not assigned'
+  }
+
   return (
     <>
       <Property
@@ -98,9 +128,7 @@ const PSRenderer: React.FC<PropsType> = observer(({
             >
               <div>
                 {
-                  value.mesh
-                    ? value.mesh.name
-                    : 'not assigned'
+                  getMeshName()
                 }
               </div>
             </Property>
@@ -118,9 +146,7 @@ const PSRenderer: React.FC<PropsType> = observer(({
       >
         <div>
           {
-            value.material
-              ? value.material.name
-              : 'not assigned'
+            getMaterialName()
           }
         </div>
       </Property>

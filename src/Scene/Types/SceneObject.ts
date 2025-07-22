@@ -275,18 +275,28 @@ class SceneObject implements SceneObjectInterface {
     }
   }
 
-  addComponent(componentType: ComponentType, component: SceneObjectComponent) {
-    runInAction(() => {
-      this.components[componentType] = component
-    })
+  async addComponent(componentType: ComponentType, component: SceneObjectComponent) {
+    const response = await Http.post(
+      `/api/scene-objects/${this.id}/components`,
+      {
+        type: componentType,
+        props: component.toDescriptor(false),
+      },
+    )
 
-    component.onChange = this.onChange;
+    if (response.ok) {
+      runInAction(() => {
+        this.components[componentType] = component
+      })
 
-    // if (component.component) {
-      // this.renderNode.addComponent(component.component)
-    // }
+      component.onChange = this.onChange;
 
-    this.onChange()
+      // if (component.component) {
+        // this.renderNode.addComponent(component.component)
+      // }
+
+      this.onChange()
+    }
   }
 
   removeComponent(componentType: ComponentType) {

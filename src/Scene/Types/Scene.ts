@@ -153,7 +153,7 @@ class Scene implements SceneInterface {
         object.descriptor = descriptor as SceneObjectDescriptor
       }
     } else {
-      const response = await Http.patch(`/api/components/${sceneObjectId}/${type}`, descriptor)
+      const response = await Http.patch(`/api/scene-objects/${sceneObjectId}/components/${type}`, descriptor)
 
       if (response.ok) {
         const object = this.objects.get(sceneObjectId)

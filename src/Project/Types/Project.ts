@@ -309,7 +309,7 @@ class Project implements ProjectInterface {
     }
   }
 
-  getItemByItemId(itemId: number, type: string): ProjectItemLike | undefined {
+  getItemByItemId(itemId: number, type: ProjectItemType): ProjectItemLike | undefined {
     if (this.projectItems) {
       let stack: ProjectItemLike[] = [this.projectItems]
 

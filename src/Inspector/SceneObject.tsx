@@ -181,14 +181,12 @@ const SceneObject: React.FC<PropsType> = observer(({
       //   break;
 
       case ComponentType.ParticleSystem: {
-        (async () => {
-          const props = new ParticleSystemProps();
-          // const particleSystem = new ParticleSystemData(props);
+        const props = new ParticleSystemProps();
+        // const particleSystem = new ParticleSystemData(props);
 
-          // particleSystemManager.add(particleSystem);
+        // particleSystemManager.add(particleSystem);
 
-          sceneObject.addComponent(ComponentType.ParticleSystem, props);
-        })()
+        sceneObject.addComponent(ComponentType.ParticleSystem, props);
 
         break;
       }
