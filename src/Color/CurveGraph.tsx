@@ -15,31 +15,39 @@ const CurveGraph: React.FC<PropsType> = observer(({
 }) => {
   const graphRef = React.useRef<HTMLDivElement>(null);
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
-  const [graphRect, setGraphRect] = React.useState<{
-    left: number,
-    top: number,
-    width: number,
-    height: number
-  }>({ left: 0, top: 0, width: 0, height: 0})
   const renderer = React.useRef<CurveRenderer>(new CurveRenderer())
   const [dragPoint, setDragPoint] = React.useState<{ point: PSCurvePoint, subpoint: Subpoint }>();
-
-  React.useEffect(() => {
-    const element = graphRef.current;
-
-    if (element) {
-      const rect = element.getBoundingClientRect();
-
-      setGraphRect({ left: rect.left, top: rect.top, width: rect.width, height: rect.height });
-    }
-  }, [])
 
   React.useEffect(() => {
     renderer.current.updateCurve(value.points);
   }, [value.points])
 
-  const handleMove = (x: number, y: number) => {
-    if (dragPoint) {
+  const handlePointerDown: React.PointerEventHandler<HTMLCanvasElement> = (event) => {
+    const element = canvasRef.current;
+
+    if (element) {
+      const canvasRect = element.getBoundingClientRect()
+      const x = (event.clientX - canvasRect.left) / canvasRect.width;
+      const y = 1 - (event.clientY - canvasRect.top) / canvasRect.height;
+
+      const point = renderer.current.hitTest(x, y);
+
+      if (point) {
+        setDragPoint(point)
+        element.setPointerCapture(event.pointerId);
+      }
+    }
+  }
+
+  const handlePointerMove: React.PointerEventHandler<HTMLCanvasElement> = (event) => {
+    const element = canvasRef.current;
+
+    if (element && element.hasPointerCapture(event.pointerId) && dragPoint) {
+      const x = event.clientX
+      const y = event.clientY
+
+      const canvasRect = element.getBoundingClientRect()
+
       const index = value.points.findIndex((p) => p.id === dragPoint.point.id);
 
       if (index !== -1) {
@@ -49,18 +57,18 @@ const CurveGraph: React.FC<PropsType> = observer(({
           case Subpoint.Main:
             updatedPoint = {
               ...value.points[index],
-              x: Math.max(0, Math.min(1, (x - graphRect.left) / graphRect.width)),
-              y: Math.max(0, Math.min(1, (graphRect.height - (y - graphRect.top)) / graphRect.height)),
+              x: Math.max(0, Math.min(1, (x - canvasRect.left) / canvasRect.width)),
+              y: Math.max(0, Math.min(1, (canvasRect.height - (y - canvasRect.top)) / canvasRect.height)),
             };
 
             break;
 
           case Subpoint.LeftCtrl: {
             const leftCtrl = {
-              x: Math.min(0, Math.max(0, Math.min(1, (x - graphRect.left) / graphRect.width)) - dragPoint.point.x),
+              x: Math.min(0, Math.max(0, Math.min(1, (x - canvasRect.left) / canvasRect.width)) - dragPoint.point.x),
               y: Math.max(
                 0,
-                Math.min(1, (graphRect.height - (y - graphRect.top)) / graphRect.height),
+                Math.min(1, (canvasRect.height - (y - canvasRect.top)) / canvasRect.height),
               ) - dragPoint.point.y,
             }
 
@@ -80,10 +88,10 @@ const CurveGraph: React.FC<PropsType> = observer(({
 
           case Subpoint.RightCtrl: {
             const rightCtrl = {
-              x: Math.max(0, Math.max(0, Math.min(1, (x - graphRect.left) / graphRect.width)) - dragPoint.point.x),
+              x: Math.max(0, Math.max(0, Math.min(1, (x - canvasRect.left) / canvasRect.width)) - dragPoint.point.x),
               y: Math.max(
                 0,
-                Math.min(1, (graphRect.height - (y - graphRect.top)) / graphRect.height),
+                Math.min(1, (canvasRect.height - (y - canvasRect.top)) / canvasRect.height),
               ) - dragPoint.point.y,
             }
 
@@ -110,31 +118,6 @@ const CurveGraph: React.FC<PropsType> = observer(({
 
         value.setPoints(points, true)
       }
-    }
-  }
-
-  const handlePointerDown: React.PointerEventHandler<HTMLCanvasElement> = (event) => {
-    const element = canvasRef.current;
-
-    if (element) {
-      const x = (event.clientX - graphRect.left) / graphRect.width;
-      const y = 1 - (event.clientY - graphRect.top) / graphRect.height;
-
-      const point = renderer.current.hitTest(x, y);
-
-      if (point) {
-        setDragPoint(point)
-        element.setPointerCapture(event.pointerId);
-      }
-    }
-  }
-
-  const handlePointerMove: React.PointerEventHandler<HTMLCanvasElement> = (event) => {
-    const element = canvasRef.current;
-
-    if (element && element.hasPointerCapture(event.pointerId) && dragPoint) {
-      // handleMove(id, event.clientX - dragOffset.x, event.clientY - dragOffset.y)
-      handleMove(event.clientX, event.clientY)
     }
   }
 

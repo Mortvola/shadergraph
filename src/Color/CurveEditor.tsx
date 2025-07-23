@@ -57,7 +57,8 @@ const CurveEditor: React.FC<PropsType> = observer(({
               value={value}
               range={range}
               onRangeChange={onRangeChange}
-              onClose={handleClose} rect={open}
+              onClose={handleClose}
+              parentRect={open}
             />
           )
           : null

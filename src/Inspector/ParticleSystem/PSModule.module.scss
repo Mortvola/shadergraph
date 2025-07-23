@@ -6,11 +6,12 @@
   > div:first-child {
     background-color: darkgray;
     border: black thin solid;
+    padding-left: 0.25rem;
   }
 
   > div:nth-child(2) {
     // background-color: lightgray;
-    margin-left: 2rem;
+    margin-left: 0.25rem;
     padding-top: 0.5rem;
   }
 

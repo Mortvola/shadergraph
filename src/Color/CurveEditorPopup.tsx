@@ -11,7 +11,7 @@ type PropsType = {
   range?: [number, number],
   onRangeChange?: (range: [number, number]) => void,
   onClose: () => void,
-  rect: DOMRect,
+  parentRect: DOMRect,
 }
 
 const CurveEditorPopup: React.FC<PropsType> = observer(({
@@ -19,18 +19,25 @@ const CurveEditorPopup: React.FC<PropsType> = observer(({
   range = [0, 1],
   onRangeChange,
   onClose,
-  rect,
+  parentRect,
 }) => {
   const ref = React.useRef<HTMLDivElement>(null);
-  const [wrapperBounds, setWrapperBounds] = React.useState<DOMRect>();
+  const popupRef = React.useRef<HTMLDivElement>(null);
+  const [position, setPosition] = React.useState<React.CSSProperties>();
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const element = ref.current;
+    const popupElement = popupRef.current;
 
-    if (element) {
-      const rect = element.getBoundingClientRect();
+    if (element && popupElement) {
+      const wrapperRect = element.getBoundingClientRect();
+      const popupRect = element.getBoundingClientRect()
 
-      setWrapperBounds(rect);
+      if (parentRect.left + popupRect.width <= wrapperRect.right) {
+        setPosition({ left: parentRect.left, bottom: wrapperRect.bottom - parentRect.top });
+      } else {
+        setPosition({ right: wrapperRect.right - parentRect.right, bottom: wrapperRect.bottom - parentRect.top });
+      }
     }
   }, [])
 
@@ -70,24 +77,21 @@ const CurveEditorPopup: React.FC<PropsType> = observer(({
         onClick={onClose}
       >
         {
-          wrapperBounds
-            ? (
-              <div
-                className={styles.popup}
-                style={{ left: rect.left, bottom: wrapperBounds!.bottom - rect.top }}
-                onClick={handleClick}
-                onKeyDown={handleKeyDown}
-              >
-                <div className={styles.range}>
-                <NumberInput value={range[1]} onChange={handleMaxRangeChange} />
-                <NumberInput value={range[0]} onChange={handleMinRangeChange} />
-                </div>
-                <div className={styles.graph}>
-                  <CurveGraph value={value} />
-                </div>
-              </div>
-            )
-            : null
+          <div
+            ref={popupRef}
+            className={styles.popup}
+            style={position}
+            onClick={handleClick}
+            onKeyDown={handleKeyDown}
+          >
+            <div className={styles.range}>
+            <NumberInput value={range[1]} onChange={handleMaxRangeChange} />
+            <NumberInput value={range[0]} onChange={handleMinRangeChange} />
+            </div>
+            <div className={styles.graph}>
+              <CurveGraph value={value} />
+            </div>
+          </div>
         }
       </div>,
       document.body,
