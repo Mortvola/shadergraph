@@ -5,6 +5,7 @@ import { type EmissionsDescriptor } from './Types';
 import { PSBursts } from '../Properties/PSBursts';
 import PSValue from '../Properties/PSValue';
 import { runInAction } from 'mobx';
+import { v4 as uuidv4 } from 'uuid';
 
 class Emissions extends PSModule {
   rate: PSNumber
@@ -18,6 +19,7 @@ class Emissions extends PSModule {
 
     const bursts = descriptor?.bursts
       ? descriptor.bursts.map((burst) => ({
+          key: uuidv4(),
           time: burst.time,
           count: new PSValue(burst.count, undefined, this.onChange),
           cycles: burst.cycles,
@@ -34,6 +36,7 @@ class Emissions extends PSModule {
 
       this.bursts.set(
         (descriptor.bursts ?? []).map((burst) => ({
+          key: uuidv4(),
           time: burst.time,
           count: new PSValue(burst.count, undefined, this.onChange),
           cycles: burst.cycles,
@@ -48,7 +51,7 @@ class Emissions extends PSModule {
       this.bursts.set(
         [
           ...this.bursts.get(),
-          { time: 0, count: new PSValue({ value: [1, 1] }), cycles: 0, probability: 1 },
+          { key: uuidv4(), time: 0, count: new PSValue({ value: [1, 1] }), cycles: 0, probability: 1 },
         ],
         true,
       )

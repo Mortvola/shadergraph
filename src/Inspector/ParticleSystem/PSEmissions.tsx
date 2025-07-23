@@ -43,6 +43,23 @@ const PSEmissions: React.FC<PropsType> = observer(({
     setActiveRow(index)
   }
 
+  const renderBurstsTable = () => (
+    emissions.bursts.get().map((burst, index) => (
+      <React.Fragment key={burst.key}>
+        <div>
+          <NumberInput
+            value={burst.time}
+            onChange={(value: number) => handleTimeChange(index, value)}
+            onFocus={() => handleRowFocus(index)}
+          />
+        </div>
+        <div><PSValueInput value={burst.count} onFocus={() => handleRowFocus(index)} node={node} /></div>
+        <div><NumberInput value={burst.cycles} onFocus={() => handleRowFocus(index)} /></div>
+        <div><NumberInput value={burst.probability} onFocus={() => handleRowFocus(index)} /></div>
+      </React.Fragment>
+    ))
+  )
+
   return (
     <div>
       <Property
@@ -68,19 +85,7 @@ const PSEmissions: React.FC<PropsType> = observer(({
           <div className={styles.title}>Cycles</div>
           <div className={styles.title}>Probability</div>
           {
-            emissions.bursts.get().map((burst, index) => (
-              <>
-                <div>
-                  <NumberInput
-                    value={burst.time}
-                    onChange={(value: number) => handleTimeChange(index, value)}
-                    onFocus={() => handleRowFocus(index)}
-                  /></div>
-                <div><PSValueInput value={burst.count} onFocus={() => handleRowFocus(index)} node={node} /></div>
-                <div><NumberInput value={burst.cycles} onFocus={() => handleRowFocus(index)} /></div>
-                <div><NumberInput value={burst.probability} onFocus={() => handleRowFocus(index)} /></div>
-              </>
-            ))
+            renderBurstsTable()
           }
         </div>
         <Button className={styles.iconButton} onClick={handleAddClick}><PlusIcon size={12} /></Button>
