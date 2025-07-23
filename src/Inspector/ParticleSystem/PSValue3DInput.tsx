@@ -52,7 +52,7 @@ const PSValue3DInput: React.FC<PropsType> = observer(({
 
   return (
     <>
-      <Checkbox value={value.separateAxes} label="Separate Axes" onChange={handleAxesChange} />
+      <Checkbox value={value.separateAxes} label="3D" onChange={handleAxesChange} />
       {
         (
           () => {
