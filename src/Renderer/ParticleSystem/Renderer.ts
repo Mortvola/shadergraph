@@ -102,6 +102,7 @@ class Renderer extends PSModule {
       switch (this.mode.get()) {
         case RenderMode.Billboard:
         case RenderMode.HorizontalBillboard:
+        case RenderMode.VerticalBillboard:
         case RenderMode.StretchedBillboard:
           return DrawableType.Billboard
 

@@ -377,36 +377,60 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       if (this.props.renderer.renderAlignment.get() === RenderAlignment.View) {
         let lookAt = vec3.normalize(vec4.subtract(cameraPosition, position))
 
-        if (this.props.renderer.mode.get() === RenderMode.Billboard) {
-          let up = vec3.create(0, 1, 0);
-          let right = vec3.create(1, 0, 0)
+        switch (this.props.renderer.mode.get()) {
+          case RenderMode.Billboard: {
+            let up = vec3.create(0, 1, 0);
+            let right = vec3.create(1, 0, 0)
 
-          right = vec3.normalize(vec3.cross(up, lookAt));
-          up = vec3.normalize(vec3.cross(lookAt, right));
+            right = vec3.normalize(vec3.cross(up, lookAt));
+            up = vec3.normalize(vec3.cross(lookAt, right));
 
-          mat4.setAxis(transform, right, 0, transform)
-          mat4.setAxis(transform, up, 1, transform)
-          mat4.setAxis(transform, lookAt, 2, transform)
-        }
-        else if (this.props.renderer.mode.get() === RenderMode.StretchedBillboard) {
-          const up = vec3.normalize(particle.velocity)
-          const right = vec3.normalize(vec3.cross(up, lookAt));
-          lookAt = vec3.normalize(vec3.cross(right, up));
+            mat4.setAxis(transform, right, 0, transform)
+            mat4.setAxis(transform, up, 1, transform)
+            mat4.setAxis(transform, lookAt, 2, transform)
 
-          mat4.setAxis(transform, right, 0, transform)
-          mat4.setAxis(transform, up, 1, transform)
-          mat4.setAxis(transform, lookAt, 2, transform)
+            break;
+          }
 
-          mat4.scale(transform, vec3.create(1, vec3.length(particle.velocity), 1), transform)
-        }
-        else if (this.props.renderer.mode.get() === RenderMode.HorizontalBillboard) {
-          lookAt = vec3.create(0, 1, 0)
-          const up = vec3.create(0, 0, -1);
-          const right = vec3.create(1, 0, 0)
+          case RenderMode.StretchedBillboard: {
+            const up = vec3.normalize(particle.velocity)
+            const right = vec3.normalize(vec3.cross(up, lookAt));
+            lookAt = vec3.normalize(vec3.cross(right, up));
 
-          mat4.setAxis(transform, right, 0, transform)
-          mat4.setAxis(transform, up, 1, transform)
-          mat4.setAxis(transform, lookAt, 2, transform)
+            mat4.setAxis(transform, right, 0, transform)
+            mat4.setAxis(transform, up, 1, transform)
+            mat4.setAxis(transform, lookAt, 2, transform)
+
+            mat4.scale(transform, vec3.create(1, vec3.length(particle.velocity), 1), transform)
+
+            break;
+          }
+
+          case RenderMode.HorizontalBillboard: {
+            const zAxis = vec3.create(0, 1, 0)
+
+            const xAxis = vec3.normalize(vec3.cross(zAxis, lookAt));
+            const yAxis = vec3.normalize(vec3.cross(xAxis, zAxis));
+
+            mat4.setAxis(transform, xAxis, 0, transform)
+            mat4.setAxis(transform, yAxis, 1, transform)
+            mat4.setAxis(transform, zAxis, 2, transform)
+
+            break;
+          }
+
+          case RenderMode.VerticalBillboard: {
+            const yAxis = vec3.create(0, 1, 0);
+
+            const xAxis = vec3.normalize(vec3.cross(yAxis, lookAt));
+            const zAxis = vec3.normalize(vec3.cross(xAxis, yAxis));
+
+            mat4.setAxis(transform, xAxis, 0, transform)
+            mat4.setAxis(transform, yAxis, 1, transform)
+            mat4.setAxis(transform, zAxis, 2, transform)
+
+            break;
+          }
         }
       }
       else if (this.props.renderer.renderAlignment.get() === RenderAlignment.Local) {
