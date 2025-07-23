@@ -7,7 +7,7 @@ import Mesh from '../Renderer/Drawables/Mesh';
 import { plane as planeShape } from '../Renderer/Drawables/Shapes/plane';
 import DrawableComponent from '../Renderer/Drawables/DrawableComponent';
 import RenderNode from '../Renderer/Drawables/SceneNodes/RenderNode';
-import { isModelItem } from '../Project/Types/types';
+import { isModelItem, ProjectItemType } from '../Project/Types/types';
 
 const Preview: React.FC = () => {
   const store = useStores();
@@ -56,7 +56,7 @@ const Preview: React.FC = () => {
       store.graph?.applyMaterial()
     }
     else {
-      const modelItem = store.project.getItemByItemId(parseInt(value, 10), 'model')
+      const modelItem = store.project.getItemByItemId(parseInt(value, 10), ProjectItemType.Model)
 
       if (isModelItem(modelItem)) {
         const model = await store.getModel(modelItem)

@@ -7,6 +7,7 @@ import { isDrawableComponent } from '../../Renderer/Drawables/SceneNodes/utils';
 import MeshNode from './MeshNode';
 import { modelManager } from '../../Renderer/Models/ModelManager';
 import type ModelProjectItem from '../../Project/Types/ModelProjectItem';
+import { ProjectItemType } from '../../Project/Types/types';
 
 type PropsType = {
   modelItem: ModelProjectItem,
@@ -79,7 +80,7 @@ const ModelTree: React.FC<PropsType> = observer(({
     return elements;
   }
 
-  const modelName = store.project.getItemByItemId(modelItem.id, 'model')?.name ?? ''
+  const modelName = store.project.getItemByItemId(modelItem.id, ProjectItemType.Model)?.name ?? ''
 
   return (
     <div>
