@@ -26,12 +26,12 @@ const CurveEditorPopup: React.FC<PropsType> = observer(({
   const [position, setPosition] = React.useState<React.CSSProperties>();
 
   React.useLayoutEffect(() => {
-    const element = ref.current;
+    const wrapperElement = ref.current;
     const popupElement = popupRef.current;
 
-    if (element && popupElement) {
-      const wrapperRect = element.getBoundingClientRect();
-      const popupRect = element.getBoundingClientRect()
+    if (wrapperElement && popupElement) {
+      const wrapperRect = wrapperElement.getBoundingClientRect();
+      const popupRect = popupElement.getBoundingClientRect()
 
       if (parentRect.left + popupRect.width <= wrapperRect.right) {
         setPosition({ left: parentRect.left, bottom: wrapperRect.bottom - parentRect.top });
@@ -76,23 +76,21 @@ const CurveEditorPopup: React.FC<PropsType> = observer(({
         className={styles.wrapper}
         onClick={onClose}
       >
-        {
-          <div
-            ref={popupRef}
-            className={styles.popup}
-            style={position}
-            onClick={handleClick}
-            onKeyDown={handleKeyDown}
-          >
-            <div className={styles.range}>
-            <NumberInput value={range[1]} onChange={handleMaxRangeChange} />
-            <NumberInput value={range[0]} onChange={handleMinRangeChange} />
-            </div>
-            <div className={styles.graph}>
-              <CurveGraph value={value} />
-            </div>
+        <div
+          ref={popupRef}
+          className={styles.popup}
+          style={position}
+          onClick={handleClick}
+          onKeyDown={handleKeyDown}
+        >
+          <div className={styles.range}>
+          <NumberInput value={range[1]} onChange={handleMaxRangeChange} />
+          <NumberInput value={range[0]} onChange={handleMinRangeChange} />
           </div>
-        }
+          <div className={styles.graph}>
+            <CurveGraph value={value} />
+          </div>
+        </div>
       </div>,
       document.body,
     )

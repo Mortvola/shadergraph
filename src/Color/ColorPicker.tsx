@@ -60,7 +60,7 @@ const ColorPicker: React.FC<PropsType> = observer(({
                 value={value}
                 onChange={onChange}
                 onClose={handleClose}
-                rect={open}
+                parentRect={open}
                 useHdr={useHdr}
                 useAlpha={useAlpha}
               />

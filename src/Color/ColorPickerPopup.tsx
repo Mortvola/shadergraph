@@ -13,7 +13,7 @@ type PropsType = {
   value: number[],
   useAlpha?: boolean,
   useHdr?: boolean,
-  rect: DOMRect,
+  parentRect: DOMRect,
   onChange: (value: number[]) => void,
   onClose: () => void,
 }
@@ -28,7 +28,7 @@ const ColorPickerPopup: React.FC<PropsType> = ({
   value,
   useAlpha = false,
   useHdr = false,
-  rect,
+  parentRect,
   onChange,
   onClose,
 }) => {
@@ -36,7 +36,9 @@ const ColorPickerPopup: React.FC<PropsType> = ({
   const [intensity, setIntensity] = React.useState<number>(0)
 
   const ref = React.useRef<HTMLDivElement>(null);
-  const [wrapperBounds, setWrapperBounds] = React.useState<DOMRect>();
+  const popupRef = React.useRef<HTMLDivElement>(null);
+  const [position, setPosition] = React.useState<React.CSSProperties>();
+
   const colorMutator = React.useRef<ColorMutator>()
   const [colorMode, setColorMode] = React.useState<ColorMode>(ColorMode.HDR)
 
@@ -45,6 +47,22 @@ const ColorPickerPopup: React.FC<PropsType> = ({
 
     setIntensity(colorMutator.current!.exposureValue)
   }, [value])
+
+  React.useLayoutEffect(() => {
+    const wrapperElement = ref.current;
+    const popupElement = popupRef.current;
+
+    if (wrapperElement && popupElement) {
+      const wrapperRect = wrapperElement.getBoundingClientRect();
+      const popupRect = popupElement.getBoundingClientRect()
+
+      if (parentRect.left + popupRect.width <= wrapperRect.right) {
+        setPosition({ left: parentRect.left, bottom: wrapperRect.bottom - parentRect.top });
+      } else {
+        setPosition({ right: wrapperRect.right - parentRect.right, bottom: wrapperRect.bottom - parentRect.top });
+      }
+    }
+  }, [])
 
   const handleChange = () => {
     const mutator = colorMutator.current;
@@ -83,16 +101,6 @@ const ColorPickerPopup: React.FC<PropsType> = ({
     event.stopPropagation();
   }
 
-  React.useEffect(() => {
-    const element = ref.current;
-
-    if (element) {
-      const rect = element.getBoundingClientRect();
-
-      setWrapperBounds(rect);
-    }
-  }, [])
-
   const handleColorModeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
     setColorMode(parseInt(event.target.value, 10))
   }
@@ -104,71 +112,66 @@ const ColorPickerPopup: React.FC<PropsType> = ({
         className={styles.wrapper}
         onClick={onClose}
       >
-        {
-          wrapperBounds
-            ? (
-              <div
-                className={styles.popup}
-                style={{ left: rect.left, bottom: wrapperBounds!.bottom - rect.top }}
-                onClick={handleClick}
-              >
-                <select className={styles.colorMode} value={colorMode} onChange={handleColorModeChange}>
-                  <option value={ColorMode.HDR}>RGB 0.0-1.0</option>
-                  <option value={ColorMode.RGB}>RGB 0-255</option>
-                  <option value={ColorMode.HSV}>HSV</option>
-                </select>
-                {
-                  (() => {
-                    switch (colorMode) {
-                      case ColorMode.HDR:
-                        return (
-                          <HdrPicker colorMutator={colorMutator.current} onChange={handleChange} />
-                        )
+        <div
+          ref={popupRef}
+          className={styles.popup}
+          style={position}
+          onClick={handleClick}
+        >
+          <select className={styles.colorMode} value={colorMode} onChange={handleColorModeChange}>
+            <option value={ColorMode.HDR}>RGB 0.0-1.0</option>
+            <option value={ColorMode.RGB}>RGB 0-255</option>
+            <option value={ColorMode.HSV}>HSV</option>
+          </select>
+          {
+            (() => {
+              switch (colorMode) {
+                case ColorMode.HDR:
+                  return (
+                    <HdrPicker colorMutator={colorMutator.current} onChange={handleChange} />
+                  )
 
-                        case ColorMode.RGB:
-                          return (
-                            <RgbPicker colorMutator={colorMutator.current} onChange={handleChange} />
-                          )
-
-                      case ColorMode.HSV:
-                        return (
-                          <HsvPicker colorMutator={colorMutator.current} onChange={handleChange} />
-                        )
-                    }
-
-                    return null
-                  })()
-                }
-                {
-                  useAlpha
-                    ? (
-                      <label>
-                        A:
-                        <ColorSlider
-                          className={styles.alphaGradient} value={alpha * 1000}
-                          min={0}
-                          max={1000}
-                          onChange={handleAlphaSliderChange}
-                        />
-                        <NumberInput value={alpha} onChange={handleAlphaChange} />
-                      </label>
+                  case ColorMode.RGB:
+                    return (
+                      <RgbPicker colorMutator={colorMutator.current} onChange={handleChange} />
                     )
-                    : null
-                }
-                {
-                  useHdr
-                    ? (
-                      <label>
-                        Intensity:
-                        <NumberInput value={intensity} onChange={handleIntensityChange} />
-                      </label>
-                    )
-                    : null
-                }
-              </div>
-            )
-            : null
-        }
+
+                case ColorMode.HSV:
+                  return (
+                    <HsvPicker colorMutator={colorMutator.current} onChange={handleChange} />
+                  )
+              }
+
+              return null
+            })()
+          }
+          {
+            useAlpha
+              ? (
+                <label>
+                  A:
+                  <ColorSlider
+                    className={styles.alphaGradient} value={alpha * 1000}
+                    min={0}
+                    max={1000}
+                    onChange={handleAlphaSliderChange}
+                  />
+                  <NumberInput value={alpha} onChange={handleAlphaChange} />
+                </label>
+              )
+              : null
+          }
+          {
+            useHdr
+              ? (
+                <label>
+                  Intensity:
+                  <NumberInput value={intensity} onChange={handleIntensityChange} />
+                </label>
+              )
+              : null
+          }
+        </div>
       </div>,
       document.body,
     )
