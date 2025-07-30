@@ -30,11 +30,11 @@ const Property: React.FC<PropsType> = observer(({
   propertyPath,
 }) => {
   const [open, setOpen] = React.useState<DOMRect | null>(null);
-  const ref = React.useRef<HTMLDivElement>(null);
+  const ref = React.useRef<HTMLLabelElement>(null);
 
   const applyOptions = () => sceneNode.scene.getApplyTargets(sceneNode, componentType, propertyPath)
 
-  const handleOpenClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
+  const handleOpenClick: React.MouseEventHandler<HTMLLabelElement> = (event) => {
     event.stopPropagation();
     event.preventDefault();
 
@@ -59,25 +59,17 @@ const Property: React.FC<PropsType> = observer(({
     }
   }
 
-  const handleLabelClick: React.MouseEventHandler<HTMLLabelElement> = (event) => {
-    event.stopPropagation()
-    event.preventDefault()
-  }
-
   return (
-    <label
-      className={`${styles.property} ${className ?? ''}`}
-      onDragOver={onDragOver}
-      onDrop={onDrop}
-      onClick={handleLabelClick}
-    >
-      <div
+    <div className={styles.property}>
+      <label
         ref={ref}
         className={property.override ? styles.overriden : undefined}
+        onDragOver={onDragOver}
+        onDrop={onDrop}
         onClick={handleOpenClick}
       >
         {`${label}:`}
-      </div>
+      </label>
       {children}
       {
         open
@@ -91,7 +83,7 @@ const Property: React.FC<PropsType> = observer(({
           )
           : null
       }
-    </label>
+    </div>
   )
 })
 

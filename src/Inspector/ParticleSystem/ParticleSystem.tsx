@@ -67,19 +67,18 @@ const ParticleSystem: React.FC<PropsType> = observer(({
       >
         <NumberInput value={particleSystemProps.startDelay.get()} onChange={handleStartDelayChange} />
       </Property>
-      <Checkbox
-        label={
-          <Property
-            label="Loop"
-            property={particleSystemProps.loop}
-            sceneNode={sceneNode}
-            componentType={ComponentType.ParticleSystem}
-            propertyPath="loop"
-          />
-        }
-        value={particleSystemProps.loop.get()}
-        onChange={handleLoopChange}
-      />
+      <Property
+        label="Loop"
+        property={particleSystemProps.loop}
+        sceneNode={sceneNode}
+        componentType={ComponentType.ParticleSystem}
+        propertyPath="loop"
+      >
+        <Checkbox
+          value={particleSystemProps.loop.get()}
+          onChange={handleLoopChange}
+        />
+      </Property>
       <Property
         label="Maximum Particles"
         property={particleSystemProps.maxPoints}

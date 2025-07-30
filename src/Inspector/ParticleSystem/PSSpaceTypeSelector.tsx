@@ -1,6 +1,7 @@
 import React from 'react';
 import { SpaceType } from '../../Renderer/ParticleSystem/Types';
 import { observer } from 'mobx-react-lite';
+import styles from './PSSpaceTypeSelector.module.scss'
 
 type PropsType = {
   value: SpaceType,
@@ -18,7 +19,7 @@ const PSSpaceTypeSelector: React.FC<PropsType> = observer(({
   }
 
   return (
-    <select value={value} onChange={handleChange}>
+    <select className={styles.layout} value={value} onChange={handleChange}>
       <option value={SpaceType.Local}>Local</option>
       <option value={SpaceType.World}>World</option>
     </select>

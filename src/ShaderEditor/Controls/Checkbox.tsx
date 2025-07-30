@@ -3,7 +3,7 @@ import styles from './Checkbox.module.scss'
 
 type PropsType = {
   value: boolean,
-  label: React.ReactNode,
+  label?: React.ReactNode,
   onChange?: (value: boolean) => void,
 }
 
@@ -31,16 +31,32 @@ const Checkbox: React.FC<PropsType> = ({
   }
 
   return (
-    <label className={styles.layout} onClick={handleClick}>
-      <input
-        type="checkbox"
-        checked={value}
-        onChange={handleChange}
-        onPointerDown={handlePointerDown}
-        onKeyDown={handleKeyDown}
-      />
-      { label }
-    </label>
+    <>
+      {
+        label !== undefined
+          ? (
+            <label className={styles.layout} onClick={handleClick}>
+              <input
+                type="checkbox"
+                checked={value}
+                onChange={handleChange}
+                onPointerDown={handlePointerDown}
+                onKeyDown={handleKeyDown}
+              />
+              { label }
+            </label>
+          )
+          : (
+              <input
+                type="checkbox"
+                checked={value}
+                onChange={handleChange}
+                onPointerDown={handlePointerDown}
+                onKeyDown={handleKeyDown}
+              />
+          )
+      }
+    </>
   )
 }
 

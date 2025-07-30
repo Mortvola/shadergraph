@@ -11,7 +11,7 @@
   > div {
     display: flex;
 
-    @container propsValue (width < 20px) {
+    @container propsValue (width < 305px) {
       flex-direction: column;
     }
   }
