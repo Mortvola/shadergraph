@@ -126,6 +126,7 @@ export type BurstDescriptor = {
   time: number,
   count: PSValueDescriptor | undefined,
   cycles: number,
+  interval?: number,
   probability: number,
 };
 

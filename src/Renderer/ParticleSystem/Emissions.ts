@@ -23,6 +23,7 @@ class Emissions extends PSModule {
           time: burst.time,
           count: new PSValue(burst.count, undefined, this.onChange),
           cycles: burst.cycles,
+          interval: burst.interval ?? 1,
           probability: burst.probability,
         }))
       : []
@@ -40,6 +41,7 @@ class Emissions extends PSModule {
           time: burst.time,
           count: new PSValue(burst.count, undefined, this.onChange),
           cycles: burst.cycles,
+          interval: burst.interval ?? 1,
           probability: burst.probability,
         })),
       )
@@ -51,7 +53,14 @@ class Emissions extends PSModule {
       this.bursts.set(
         [
           ...this.bursts.get(),
-          { key: uuidv4(), time: 0, count: new PSValue({ value: [1, 1] }), cycles: 0, probability: 1 },
+          {
+            key: uuidv4(),
+            time: 0,
+            count: new PSValue({ value: [1, 1] }),
+            cycles: 0,
+            interval: 1,
+            probability: 1,
+          },
         ],
         true,
       )
@@ -76,6 +85,32 @@ class Emissions extends PSModule {
         [
           ...this.bursts.get().slice(0, index),
           { ...this.bursts.get()[index], time: value },
+          ...this.bursts.get().slice(index + 1),
+        ],
+        true,
+      )
+    })
+  }
+
+  updateCycles(index: number, value: number) {
+    runInAction(() => {
+      this.bursts.set(
+        [
+          ...this.bursts.get().slice(0, index),
+          { ...this.bursts.get()[index], cycles: value },
+          ...this.bursts.get().slice(index + 1),
+        ],
+        true,
+      )
+    })
+  }
+
+  updateIntervalTime(index: number, value: number) {
+    runInAction(() => {
+      this.bursts.set(
+        [
+          ...this.bursts.get().slice(0, index),
+          { ...this.bursts.get()[index], interval: value },
           ...this.bursts.get().slice(index + 1),
         ],
         true,

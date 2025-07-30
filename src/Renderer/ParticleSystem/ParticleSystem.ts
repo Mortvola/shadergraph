@@ -21,9 +21,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
   private startTime = 0;
 
-  private nextEmitTime = 0;
-
-  private lastBurstTime: number | null = null;
+  private lastTime = 0;
 
   private rootNode = new RenderNode();
 
@@ -135,6 +133,11 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
 
   public async update(time: number, elapsedTime: number, camera: Camera): Promise<void> {
     if (this.renderNode) {
+      const emitterDuration = this.props.duration.get() * 1000.0
+      if (emitterDuration === 0) {
+        throw new Error('duration is zero')
+      }
+
       if (this.rootNode.parentNode === null) {
         this.renderNode.sceneGraph?.addNode(this.rootNode)
       }
@@ -158,8 +161,7 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       if (this.initializationTime === null || this.initializationTime >= time) {
         this.initializationTime = time;
         this.startTime = this.initializationTime + this.props.startDelay.get() * 1000.0;
-        this.nextEmitTime = this.startTime;
-        this.lastBurstTime = null;
+        this.lastTime = this.startTime - this.props.duration.get() * 1000;
 
         this.removeParticles()
       }
@@ -170,63 +172,119 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       }
 
       if (
-        time >= this.nextEmitTime
-        && (this.props.loop.get() || this.nextEmitTime <= this.startTime + this.props.duration.get() * 1000)
+        time >= this.startTime
+        && (
+          this.props.loop.get()
+          || this.lastTime < this.startTime + emitterDuration
+        )
       ) {
-        await this.emit(time, camera)
-
-        await this.burst(time, camera);
+        await this.emit(time, emitterDuration, camera)
+        await this.burst(time, emitterDuration, camera);
       }
+
+      this.lastTime = time;
     }
   }
 
-  private async burst(time: number, camera: Camera) {
-    // const elapsedSinceStart = (time - this.startTime) / 1000.0;
-    // const durationRemainder = elapsedSinceStart % this.props.duration.get();
-
-    const durationMilliseconds = (this.props.duration.get() * 1000)
-    const period = Math.trunc((this.lastBurstTime ?? this.startTime) / durationMilliseconds)
-    const currentPeriod = Math.trunc(time / durationMilliseconds)
-
-    for (let p = period; p <= currentPeriod; p += 1) {
-      for (const burst of this.props.emissions.bursts.get()) {
-        const burstTime = p * durationMilliseconds + burst.time * 1000;
-
-        if ((this.lastBurstTime === null || burstTime > this.lastBurstTime) && burstTime <= time) {
-          for (let i = 0; i < burst.count.getValue(0); i += 1) {
-            this.emitOne(burstTime, time, camera)
-          }
-
-          this.lastBurstTime = burstTime;
-        }
-      }
-    }
-  }
-
-  private async emit(time: number, camera: Camera) {
-    const millisecondsPerEmission = 1000 / this.props.emissions.rate.get();
+  private async burst(time: number, emitterDuration: number, camera: Camera) {
     const maxParticles = this.props.maxPoints.get();
 
-    while (this.nextEmitTime  <= time) {
-      const startTime = this.nextEmitTime;
-
-      if (this.particles.size < maxParticles) {
-        await this.emitOne(startTime, time, camera)
+    for (const burst of this.props.emissions.bursts.get()) {
+      let lastTime = this.lastTime
+      if (lastTime < this.startTime) {
+        lastTime = this.startTime
       }
 
-      this.nextEmitTime += millisecondsPerEmission;
+      let periodStartTime = Math.max((
+        Math.floor((lastTime - this.startTime) / emitterDuration)
+      ) * emitterDuration + this.startTime, this.startTime)
+
+      const interval = burst.interval * 1000
+
+      // Iterate through each period for the current burst entry
+      // until the current time is reached
+      // Going into this loop, lastTime may be mid period but
+      // each subsequent iteration lastTime will equal periodStartTime
+      while (periodStartTime < time) {
+        // Compute the first burst time within this period
+        const firstBurstTime = periodStartTime + burst.time * 1000
+
+        let emitTime = Math.max(
+          Math.ceil((lastTime - firstBurstTime) / interval) * interval + firstBurstTime,
+          firstBurstTime,
+        )
+
+        // Compute the end emit time.
+        // If the number of cycles is not infinite (it is non-zero) then use the
+        // number of cycles and interval length to compute the end emit time.
+        let endEmitTime = periodStartTime + emitterDuration;
+        if (burst.cycles !== 0) {
+          endEmitTime = periodStartTime + Math.min(burst.cycles * interval, emitterDuration);
+        }
+
+        // We cannot go beyond the current time
+        endEmitTime = Math.min(endEmitTime, time)
+
+        while (emitTime < endEmitTime) {
+          const numParticles = Math.min(burst.count.getValue(0), maxParticles - this.particles.size)
+          for (let i = 0; i < numParticles; i += 1) {
+            this.emitOne(emitTime, time, emitterDuration, camera)
+          }
+
+          emitTime += interval
+        }
+
+        if (!this.props.loop.get()) {
+          break;
+        }
+
+        periodStartTime += emitterDuration
+        lastTime = periodStartTime
+      }
     }
   }
 
-  private async emitOne(startTime: number, time: number, camera: Camera) {
-    const elapsedSinceStart = (startTime - this.startTime) / 1000.0;
-    const durationRemainder = elapsedSinceStart % this.props.duration.get();
-    const durationT = durationRemainder / this.props.duration.get();
+  private async emit(time: number, emitterDuration: number, camera: Camera) {
+    const rate = this.props.emissions.rate.get()
 
-    const lifetime = this.props.lifetime.getValue(durationT);
+    if (rate > 0) {
+      const maxParticles = this.props.maxPoints.get();
+      const millisecondsPerEmission = 1000 / rate;
+
+      let emitTime = Math.max((
+        Math.floor((this.lastTime - this.startTime) / millisecondsPerEmission)
+        + 1
+      ) * millisecondsPerEmission + this.startTime, this.startTime)
+
+      let endEmitTime = (
+        Math.floor((time - this.startTime) / millisecondsPerEmission) + 1
+      ) * millisecondsPerEmission + this.startTime
+
+      // If we are not looping make sure the next emit time is
+      // no greater than the start time plus the duration.
+      if (!this.props.loop.get()) {
+        endEmitTime = Math.min(endEmitTime, this.startTime + emitterDuration);
+      }
+
+      while (emitTime < endEmitTime) {
+        if (this.particles.size < maxParticles) {
+          await this.emitOne(emitTime, time, emitterDuration, camera)
+        }
+
+        emitTime += millisecondsPerEmission;
+      }
+    }
+  }
+
+  private async emitOne(particleStartTime: number, time: number, emitterDuration: number, camera: Camera) {
+    const elapsedSinceParticleStart = particleStartTime - this.startTime;
+
+    const durationT = (elapsedSinceParticleStart % emitterDuration) / emitterDuration;
+
+    const particleLifetime = this.props.lifetime.getValue(durationT / 1000.0);
 
     // Make sure that the particle will still exist at the end of this time slice...
-    if (startTime + lifetime * 1000 >= time) {
+    if (particleStartTime + particleLifetime * 1000 >= time) {
       const startSpeed = this.props.startSpeed.getValue(durationT);
       const startSize = this.props.startSize.getValue(durationT);
       const startRotation = this.props.startRotation.getValue(durationT)
@@ -236,8 +294,8 @@ class ParticleSystem extends Component implements ParticleSystemInterface {
       const particle = new Particle(
         position,
         vec4.scale(direction, startSpeed),
-        startTime,
-        lifetime,
+        particleStartTime,
+        particleLifetime,
         startSize,
         startRotation,
         startColor,

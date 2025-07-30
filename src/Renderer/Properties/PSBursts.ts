@@ -1,8 +1,16 @@
+import { Interval } from 'luxon';
 import { type BurstDescriptor } from '../ParticleSystem/Types';
 import { Property } from './Property';
 import type PSValue from './PSValue';
 
-type BurstsType = { key: string, time: number, count: PSValue, cycles: number, probability: number }[];
+type BurstsType = {
+  key: string,
+  time: number,
+  count: PSValue,
+  cycles: number,
+  interval: number,
+  probability: number,
+}[];
 
 export class PSBursts extends Property<BurstsType, BurstDescriptor[]> {
   constructor(
@@ -20,6 +28,7 @@ export class PSBursts extends Property<BurstsType, BurstDescriptor[]> {
         time: v.time,
         count: v.count.toDescriptor(false),
         cycles: v.cycles,
+        interval: v.interval,
         probability: v.probability,
       }))
 

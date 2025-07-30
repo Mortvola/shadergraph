@@ -37,6 +37,14 @@ const PSEmissions: React.FC<PropsType> = observer(({
     emissions.updateBurstTime(index, value)
   }
 
+  const handleCyclesChange = (index: number, value: number) => {
+    emissions.updateCycles(index, value)
+  }
+
+  const handleIntervalChange = (index: number, value: number) => {
+    emissions.updateIntervalTime(index, value)
+  }
+
   const [activeRow, setActiveRow] = React.useState<number>()
 
   const handleRowFocus = (index: number) => {
@@ -54,7 +62,19 @@ const PSEmissions: React.FC<PropsType> = observer(({
           />
         </div>
         <div><PSValueInput value={burst.count} onFocus={() => handleRowFocus(index)} node={node} /></div>
-        <div><NumberInput value={burst.cycles} onFocus={() => handleRowFocus(index)} /></div>
+        <div>
+          <NumberInput
+            value={burst.cycles}
+            onFocus={() => handleRowFocus(index)}
+            onChange={(value: number) => handleCyclesChange(index, value)}
+          />
+        </div>
+        <div>
+          <NumberInput
+            value={burst.interval}
+            onFocus={() => handleRowFocus(index)}
+            onChange={(value: number) => handleIntervalChange(index, value)}
+          /></div>
         <div><NumberInput value={burst.probability} onFocus={() => handleRowFocus(index)} /></div>
       </React.Fragment>
     ))
@@ -83,6 +103,7 @@ const PSEmissions: React.FC<PropsType> = observer(({
           <div className={styles.title}>Time</div>
           <div className={styles.title}>Count</div>
           <div className={styles.title}>Cycles</div>
+          <div className={styles.title}>Interval</div>
           <div className={styles.title}>Probability</div>
           {
             renderBurstsTable()
