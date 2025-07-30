@@ -8,20 +8,20 @@ import OverrideApplyButton from './OverrideApplyButton';
 import { ComponentType } from '../Renderer/Types';
 
 type PropsType = {
-  node: SceneNode,
+  sceneNode: SceneNode,
   baseObject: SceneObjectInterface,
   object: SceneObjectInterface,
 }
 
 const HeaderComparison: React.FC<PropsType> = observer(({
-  node,
+  sceneNode,
   baseObject,
   object,
 }) => (
   <div className={styles.compare}>
-    <OverrideApplyButton node={node} componentType={ComponentType.Self} />
-    <Header className={styles.component} header={baseObject} node={node} />
-    <Header className={styles.component} header={object} node={node} />
+    <OverrideApplyButton sceneNode={sceneNode} componentType={ComponentType.Self} />
+    <Header className={styles.component} header={baseObject} sceneNode={sceneNode} />
+    <Header className={styles.component} header={object} sceneNode={sceneNode} />
   </div>
 ))
 

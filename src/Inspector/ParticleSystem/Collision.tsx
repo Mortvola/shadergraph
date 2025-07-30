@@ -7,19 +7,19 @@ import { ComponentType } from '../../Renderer/Types';
 
 type PropsType = {
   value: CollisionData
-  node: SceneNode,
+  sceneNode: SceneNode,
 }
 
 const Collision: React.FC<PropsType> = ({
   value,
-  node,
+  sceneNode,
 }) => {
   const handleBounceChange = (bounce: number) => {
-    value.bounce.set(bounce, !node.isTopLevel)
+    value.bounce.set(bounce, !sceneNode.isTopLevel)
   }
 
   const handleDampenChange = (dampen: number) => {
-    value.dampen.set(dampen, !node.isTopLevel)
+    value.dampen.set(dampen, !sceneNode.isTopLevel)
   }
 
   return (
@@ -27,7 +27,7 @@ const Collision: React.FC<PropsType> = ({
       <Property
         label="Bounce"
         property={value.bounce}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="bounce"
       >
@@ -36,7 +36,7 @@ const Collision: React.FC<PropsType> = ({
       <Property
         label="Dampen"
         property={value.dampen}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="dampen"
       >

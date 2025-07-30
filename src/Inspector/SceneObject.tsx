@@ -213,7 +213,7 @@ const SceneObject: React.FC<PropsType> = observer(({
       <Component
         componentType={componentType}
         component={sceneObject.components[componentType]}
-        node={sceneObject.node!}
+        sceneNode={sceneObject.node!}
       />
     </div>
   )
@@ -221,7 +221,7 @@ const SceneObject: React.FC<PropsType> = observer(({
   return (
     <div className={styles.gameObject} onDragOver={handleDragOver} onDrop={handleDrop}>
       <div className={styles.title}>
-        <Header header={sceneObject} node={sceneObject.node!} />
+        <Header header={sceneObject} sceneNode={sceneObject.node!} />
         <div>
           <button ref={buttonRef} onClick={handleAddClick}>Add Component</button>
           {

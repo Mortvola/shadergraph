@@ -11,14 +11,14 @@ type PropsType = {
   module: PSModuleData,
   title: string,
   children?: React.ReactNode,
-  node: SceneNode,
+  sceneNode: SceneNode,
 }
 
 const PSModule: React.FC<PropsType> = observer(({
   module,
   title,
   children,
-  node,
+  sceneNode,
 }) => {
   const [open, setOpen] = React.useState<boolean>(false);
 
@@ -27,7 +27,7 @@ const PSModule: React.FC<PropsType> = observer(({
   }
 
   const handleEnableChange = (value: boolean) => {
-    module.enabled.set(value, !node.isTopLevel)
+    module.enabled.set(value, !sceneNode.isTopLevel)
   }
 
   return (
@@ -38,7 +38,7 @@ const PSModule: React.FC<PropsType> = observer(({
             <Property
               label={title}
               property={module.enabled}
-              node={node}
+              sceneNode={sceneNode}
               componentType={ComponentType.ParticleSystem}
               propertyPath="enabled"
             />

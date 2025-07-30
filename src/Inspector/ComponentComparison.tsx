@@ -6,22 +6,27 @@ import OverrideApplyButton from './OverrideApplyButton';
 import type SceneNode from '../Scene/Types/SceneNode';
 
 type PropsType = {
-  node: SceneNode,
+  sceneNode: SceneNode,
   componentType: ComponentType,
   baseComponent: SceneObjectComponent,
   component: SceneObjectComponent,
 }
 
 const ComponentComparison: React.FC<PropsType> = ({
-  node,
+  sceneNode,
   componentType,
   baseComponent,
   component,
 }) => (
   <div className={styles.compare}>
-    <OverrideApplyButton node={node} componentType={componentType} />
-    <Component className={styles.component} componentType={componentType} component={baseComponent} node={node} />
-    <Component className={styles.component} componentType={componentType} component={component} node={node} />
+    <OverrideApplyButton sceneNode={sceneNode} componentType={componentType} />
+    <Component
+      className={styles.component}
+      componentType={componentType}
+      component={baseComponent}
+      sceneNode={sceneNode}
+    />
+    <Component className={styles.component} componentType={componentType} component={component} sceneNode={sceneNode} />
   </div>
 )
 

@@ -13,7 +13,7 @@ type PropsType = {
   component: SceneObjectComponent
   className?: string
   style?: React.CSSProperties
-  node: SceneNode,
+  sceneNode: SceneNode,
 }
 
 const Component: React.FC<PropsType> = ({
@@ -21,18 +21,18 @@ const Component: React.FC<PropsType> = ({
   component,
   className,
   style,
-  node,
+  sceneNode,
 }) => {
   const renderComponent = () => {
     switch (componentType) {
       case ComponentType.Transform:
-        return <Transform transformProps={(component as TransformProps)} node={node} />
+        return <Transform transformProps={(component as TransformProps)} sceneNode={sceneNode} />
 
       // case ComponentType.Mesh:
       //   return <ModelTree modelItem={item.item as ModelItem} onChange={handleModelChange} />
 
       case ComponentType.ParticleSystem:
-        return <ParticleSystem particleSystemProps={(component as ParticleSystemProps)} node={node} />
+        return <ParticleSystem particleSystemProps={(component as ParticleSystemProps)} sceneNode={sceneNode} />
 
       // case ComponentType.Decal:
       //   return <Decal decalItem={item.item as DecalItem} onChange={handleDecalChange} />

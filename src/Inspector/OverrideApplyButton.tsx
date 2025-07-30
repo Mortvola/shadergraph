@@ -4,16 +4,16 @@ import type SceneNode from '../Scene/Types/SceneNode';
 import { type ComponentType } from '../Renderer/Types';
 
 type PropsType = {
-  node: SceneNode,
+  sceneNode: SceneNode,
   componentType: ComponentType,
 }
 
 const OverrideApplyButton: React.FC<PropsType> = ({
-  node,
+  sceneNode,
   componentType,
 }) => {
   const targets = () => {
-    const targets = node.scene.getApplyTargets(node, componentType)
+    const targets = sceneNode.scene.getApplyTargets(sceneNode, componentType)
 
     return targets.map((target) => (
       <Dropdown.Item key={target.label} onClick={target.action}>

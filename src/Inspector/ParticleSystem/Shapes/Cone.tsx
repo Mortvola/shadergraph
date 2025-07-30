@@ -6,19 +6,19 @@ import type SceneNode from '../../../Scene/Types/SceneNode';
 
 type PropsType = {
   cone: ConeData,
-  node: SceneNode,
+  sceneNode: SceneNode,
 }
 
 const Cone: React.FC<PropsType> = observer(({
   cone,
-  node,
+  sceneNode,
 }) => {
   const handleAngleChange = (value: number) => {
-    cone.angle.set(value, !node.isTopLevel);
+    cone.angle.set(value, !sceneNode.isTopLevel);
   }
 
   const handleRadiusChange = (value: number) => {
-    cone.originRadius.set(value, !node.isTopLevel);
+    cone.originRadius.set(value, !sceneNode.isTopLevel);
   }
 
   return (

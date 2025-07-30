@@ -11,29 +11,29 @@ type PropsType = {
   value: PSValue,
   onFocus?: () => void,
   onBlur?: () => void,
-  node: SceneNode,
+  sceneNode: SceneNode,
 }
 
 const PSValueInput: React.FC<PropsType> = observer(({
   value,
   onFocus,
   onBlur,
-  node,
+  sceneNode,
 }) => {
   const handleMinChange = (min: number) => {
-    value.value = { value: [min, value.value[1]], override: !node.isTopLevel }
+    value.value = { value: [min, value.value[1]], override: !sceneNode.isTopLevel }
   }
 
   const handleMaxChange = (max: number) => {
-    value.value = { value: [value.value[0], max], override: !node.isTopLevel }
+    value.value = { value: [value.value[0], max], override: !sceneNode.isTopLevel }
   }
 
   const handleTypeChange = (newValue: PSValueType) => {
-    value.valueType = { value: newValue, override: !node.isTopLevel }
+    value.valueType = { value: newValue, override: !sceneNode.isTopLevel }
   }
 
   const handleRangeChange = (range: [number, number]) => {
-    value.curveRange = { value: range, override: !node.isTopLevel };
+    value.curveRange = { value: range, override: !sceneNode.isTopLevel };
   }
 
   return (

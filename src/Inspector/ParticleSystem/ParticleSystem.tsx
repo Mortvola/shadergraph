@@ -20,31 +20,31 @@ import { ComponentType } from '../../Renderer/Types';
 
 type PropsType = {
   particleSystemProps: ParticleSystemProps,
-  node: SceneNode,
+  sceneNode: SceneNode,
 }
 
 const ParticleSystem: React.FC<PropsType> = observer(({
   particleSystemProps,
-  node,
+  sceneNode,
 }) => {
   const handleDurationChange = (value: number) => {
-    particleSystemProps.duration.set(value, !node.isTopLevel);
+    particleSystemProps.duration.set(value, !sceneNode.isTopLevel);
   }
 
   const handleStartDelayChange = (value: number) => {
-    particleSystemProps.startDelay.set(value, !node.isTopLevel);
+    particleSystemProps.startDelay.set(value, !sceneNode.isTopLevel);
   }
 
   const handleLoopChange = (value: boolean) => {
-    particleSystemProps.loop.set(value, !node.isTopLevel);
+    particleSystemProps.loop.set(value, !sceneNode.isTopLevel);
   }
 
   const handleMaxPointsChange = (value: number) => {
-    particleSystemProps.maxPoints.set(value, !node.isTopLevel);
+    particleSystemProps.maxPoints.set(value, !sceneNode.isTopLevel);
   }
 
   const handleSpaceChange = (value: SpaceType) => {
-    particleSystemProps.space.set(value, !node.isTopLevel);
+    particleSystemProps.space.set(value, !sceneNode.isTopLevel);
   }
 
   return (
@@ -52,7 +52,7 @@ const ParticleSystem: React.FC<PropsType> = observer(({
       <Property
         label="Duration"
         property={particleSystemProps.duration}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="duration"
       >
@@ -61,7 +61,7 @@ const ParticleSystem: React.FC<PropsType> = observer(({
       <Property
         label="Start Delay"
         property={particleSystemProps.startDelay}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="startDelay"
       >
@@ -72,7 +72,7 @@ const ParticleSystem: React.FC<PropsType> = observer(({
           <Property
             label="Loop"
             property={particleSystemProps.loop}
-            node={node}
+            sceneNode={sceneNode}
             componentType={ComponentType.ParticleSystem}
             propertyPath="loop"
           />
@@ -83,7 +83,7 @@ const ParticleSystem: React.FC<PropsType> = observer(({
       <Property
         label="Maximum Particles"
         property={particleSystemProps.maxPoints}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="maxPoints"
       >
@@ -92,52 +92,52 @@ const ParticleSystem: React.FC<PropsType> = observer(({
       <Property
         label="Lifetime"
         property={particleSystemProps.lifetime}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="lifetime"
       >
-        <PSValueInput value={particleSystemProps.lifetime} node={node} />
+        <PSValueInput value={particleSystemProps.lifetime} sceneNode={sceneNode} />
       </Property>
       <Property
         label="Start Speed"
         property={particleSystemProps.startSpeed}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="startSpeed"
       >
-        <PSValueInput value={particleSystemProps.startSpeed} node={node} />
+        <PSValueInput value={particleSystemProps.startSpeed} sceneNode={sceneNode} />
       </Property>
       <Property
         label="Start Size"
         property={particleSystemProps.startSize}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="startSize"
       >
-        <PSValue3DInput value={particleSystemProps.startSize} node={node} />
+        <PSValue3DInput value={particleSystemProps.startSize} sceneNode={sceneNode} />
       </Property>
       <Property
         label="Start Rotation"
         property={particleSystemProps.startRotation}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="startRotation"
       >
-        <PSValue3DInput value={particleSystemProps.startRotation} node={node} />
+        <PSValue3DInput value={particleSystemProps.startRotation} sceneNode={sceneNode} />
       </Property>
       <Property
         label="Start Color"
         property={particleSystemProps.startColor}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="startColor"
       >
-        <PSColorInput value={particleSystemProps.startColor} node={node} />
+        <PSColorInput value={particleSystemProps.startColor} sceneNode={sceneNode} />
       </Property>
       <Property
         label="Space"
         property={particleSystemProps.space}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="space"
       >
@@ -146,67 +146,67 @@ const ParticleSystem: React.FC<PropsType> = observer(({
       <Property
         label="Gravity Modifier"
         property={particleSystemProps.gravityModifier}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="gravityModifier"
       >
-        <PSValueInput value={particleSystemProps.gravityModifier} node={node} />
+        <PSValueInput value={particleSystemProps.gravityModifier} sceneNode={sceneNode} />
       </Property>
-      <PSModule title="Emissions" module={particleSystemProps.emissions} node={node}>
-        <PSEmissions emissions={particleSystemProps.emissions} node={node} />
+      <PSModule title="Emissions" module={particleSystemProps.emissions} sceneNode={sceneNode}>
+        <PSEmissions emissions={particleSystemProps.emissions} sceneNode={sceneNode} />
       </PSModule>
-      <PSModule title="Shape" module={particleSystemProps.shape} node={node}>
-        <ShapeModule shape={particleSystemProps.shape} node={node} />
+      <PSModule title="Shape" module={particleSystemProps.shape} sceneNode={sceneNode}>
+        <ShapeModule shape={particleSystemProps.shape} sceneNode={sceneNode} />
       </PSModule>
-      <PSModule title="Size over lifetime" module={particleSystemProps.lifetimeSize} node={node}>
+      <PSModule title="Size over lifetime" module={particleSystemProps.lifetimeSize} sceneNode={sceneNode}>
         <Property
           label="Size"
           property={particleSystemProps.lifetimeSize.size}
-          node={node}
+          sceneNode={sceneNode}
           componentType={ComponentType.ParticleSystem}
           propertyPath="lifetimeSize.size"
         >
-          <PSValue3DInput value={particleSystemProps.lifetimeSize.size} node={node} />
+          <PSValue3DInput value={particleSystemProps.lifetimeSize.size} sceneNode={sceneNode} />
         </Property>
       </PSModule>
-      <PSModule title="Rotation over lifetime" module={particleSystemProps.lifetimeRotation} node={node}>
+      <PSModule title="Rotation over lifetime" module={particleSystemProps.lifetimeRotation} sceneNode={sceneNode}>
         <Property
           label="Angular Velocity"
           property={particleSystemProps.lifetimeRotation.angularVelocity}
-          node={node}
+          sceneNode={sceneNode}
           componentType={ComponentType.ParticleSystem}
           propertyPath="lifetimeRotation.angularVelocity"
         >
-          <PSValue3DInput value={particleSystemProps.lifetimeRotation.angularVelocity} node={node} />
+          <PSValue3DInput value={particleSystemProps.lifetimeRotation.angularVelocity} sceneNode={sceneNode} />
         </Property>
       </PSModule>
-      <PSModule title="Color over lifetime" module={particleSystemProps.lifetimeColor} node={node}>
+      <PSModule title="Color over lifetime" module={particleSystemProps.lifetimeColor} sceneNode={sceneNode}>
         <Property
           label="Color"
           property={particleSystemProps.lifetimeColor.color}
-          node={node}
+          sceneNode={sceneNode}
           componentType={ComponentType.ParticleSystem}
           propertyPath="lifetimeColor.color"
         >
-          <PSColorInput value={particleSystemProps.lifetimeColor.color} node={node} />
+          <PSColorInput value={particleSystemProps.lifetimeColor.color} sceneNode={sceneNode} />
         </Property>
       </PSModule>
-      <PSModule title="Velocity over lifetime" module={particleSystemProps.lifetimeVelocity} node={node}>
+      <PSModule title="Velocity over lifetime" module={particleSystemProps.lifetimeVelocity} sceneNode={sceneNode}>
         <Property
           label="Speed Modifier"
           property={particleSystemProps.lifetimeVelocity.speedModifier}
-          node={node}
+          sceneNode={sceneNode}
           componentType={ComponentType.ParticleSystem}
           propertyPath="lifetimeVelocity.speedModifier"
         >
-          <PSValueInput value={particleSystemProps.lifetimeVelocity.speedModifier} node={node} />
+          <PSValueInput value={particleSystemProps.lifetimeVelocity.speedModifier} sceneNode={sceneNode} />
         </Property>
       </PSModule>
-      <PSModule title="Collsion" module={particleSystemProps.collision} node={node}>
-        <Collision value={particleSystemProps.collision} node={node} />
+      <PSModule title="Collsion" module={particleSystemProps.collision} sceneNode={sceneNode}>
+        <Collision value={particleSystemProps.collision} sceneNode={sceneNode} />
       </PSModule>
-      <PSModule title="Renderer" module={particleSystemProps.renderer} node={node}>
-        <PSRenderer value={particleSystemProps.renderer} node={node} />
+      <PSModule title="Renderer" module={particleSystemProps.renderer} sceneNode={sceneNode}>
+        <PSRenderer value={particleSystemProps.renderer} sceneNode={sceneNode} />
       </PSModule>
     </div>
   )

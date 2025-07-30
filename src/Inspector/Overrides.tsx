@@ -60,7 +60,7 @@ const Overrides: React.FC<PropsType> = observer(({
                 position={Position.left}
                 style={{ marginLeft: `${level}rem`, fontWeight: 'bold' }}
               >
-                <HeaderComparison node={node} baseObject={baseObject} object={node.sceneObject} />
+                <HeaderComparison sceneNode={node} baseObject={baseObject} object={node.sceneObject} />
               </PopupButton>,
             )
           }
@@ -94,7 +94,7 @@ const Overrides: React.FC<PropsType> = observer(({
                       style={{ marginLeft: `${level + 1}rem`, fontWeight: 'bold' }}
                     >
                       <ComponentComparison
-                        node={node}
+                        sceneNode={node}
                         componentType={componentType as ComponentType}
                         baseComponent={baseComponent}
                         component={component}

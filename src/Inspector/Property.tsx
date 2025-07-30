@@ -13,7 +13,7 @@ type PropsType = {
   onDragOver?: (event: React.DragEvent<HTMLLabelElement>) => void,
   onDrop?: (event: React.DragEvent<HTMLLabelElement>) => void,
   className?: string,
-  node: SceneNode,
+  sceneNode: SceneNode,
   componentType: ComponentType,
   propertyPath: string,
 }
@@ -25,14 +25,14 @@ const Property: React.FC<PropsType> = observer(({
   onDragOver,
   onDrop,
   className,
-  node,
+  sceneNode,
   componentType,
   propertyPath,
 }) => {
   const [open, setOpen] = React.useState<DOMRect | null>(null);
   const ref = React.useRef<HTMLDivElement>(null);
 
-  const applyOptions = () => node.scene.getApplyTargets(node, componentType, propertyPath)
+  const applyOptions = () => sceneNode.scene.getApplyTargets(sceneNode, componentType, propertyPath)
 
   const handleOpenClick: React.MouseEventHandler<HTMLDivElement> = (event) => {
     event.stopPropagation();

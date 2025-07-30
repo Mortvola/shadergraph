@@ -12,15 +12,15 @@ import { ComponentType } from '../../../Renderer/Types';
 
 type PropsType = {
   shape: Shape,
-  node: SceneNode,
+  sceneNode: SceneNode,
 }
 
 const ShapeModule: React.FC<PropsType> = observer(({
   shape,
-  node,
+  sceneNode,
 }) => {
   const handleShapeTypeChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    shape.type.set(event.target.value as ShapeType, !node.isTopLevel);
+    shape.type.set(event.target.value as ShapeType, !sceneNode.isTopLevel);
   }
 
   return (
@@ -28,7 +28,7 @@ const ShapeModule: React.FC<PropsType> = observer(({
       <Property
         label="Shape"
         property={shape.type}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="type"
       >
@@ -38,13 +38,13 @@ const ShapeModule: React.FC<PropsType> = observer(({
         (() => {
           switch (shape.type.get()) {
             case ShapeType.Cone:
-              return <Cone cone={shape.cone} node={node} />
+              return <Cone cone={shape.cone} sceneNode={sceneNode} />
 
             case ShapeType.Sphere:
-              return <Sphere sphere={shape.sphere} node={node} />
+              return <Sphere sphere={shape.sphere} sceneNode={sceneNode} />
 
             case ShapeType.Hemisphere:
-              return <Sphere sphere={shape.hemisphere} node={node} />
+              return <Sphere sphere={shape.hemisphere} sceneNode={sceneNode} />
 
             default:
               return null;

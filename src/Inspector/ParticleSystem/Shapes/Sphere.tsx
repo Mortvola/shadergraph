@@ -6,15 +6,15 @@ import type SceneNode from '../../../Scene/Types/SceneNode';
 
 type PropsType = {
   sphere: SphereData
-  node: SceneNode,
+  sceneNode: SceneNode,
 }
 
 const Sphere: React.FC<PropsType> = observer(({
   sphere,
-  node,
+  sceneNode,
 }) => {
   const handleRadiusChange = (value: number) => {
-    sphere.radius.set(value, !node.isTopLevel)
+    sphere.radius.set(value, !sceneNode.isTopLevel)
   }
 
   return (

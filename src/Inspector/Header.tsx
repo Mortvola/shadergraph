@@ -8,19 +8,19 @@ import { observer } from 'mobx-react-lite'
 type PropsType = {
   header: HeaderInterface
   className?: string,
-  node: SceneNode,
+  sceneNode: SceneNode,
 }
 
 const Header: React.FC<PropsType> = observer(({
   header,
   className,
-  node,
+  sceneNode,
 }) => (
   <div className={className}>
     <Property
       label="Name"
       property={header.name}
-      node={node}
+      sceneNode={sceneNode}
       componentType={ComponentType.Self}
       propertyPath="name"
     >

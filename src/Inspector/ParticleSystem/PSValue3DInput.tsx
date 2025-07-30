@@ -11,43 +11,43 @@ import type SceneNode from '../../Scene/Types/SceneNode';
 
 type PropsType = {
   value: PSValue3D,
-  node: SceneNode,
+  sceneNode: SceneNode,
 }
 
 const PSValue3DInput: React.FC<PropsType> = observer(({
   value,
-  node,
+  sceneNode,
 }) => {
   const handleXChange = (min: number) => {
-    value.values[0].value = { value: [min, value.values[0].value[1]], override: !node.isTopLevel }
+    value.values[0].value = { value: [min, value.values[0].value[1]], override: !sceneNode.isTopLevel }
   }
 
   const handleYChange = (min: number) => {
-    value.values[1].value = { value: [min, value.values[1].value[1]], override: !node.isTopLevel }
+    value.values[1].value = { value: [min, value.values[1].value[1]], override: !sceneNode.isTopLevel }
   }
 
   const handleZChange = (min: number) => {
-    value.values[2].value = { value: [min, value.values[2].value[1]], override: !node.isTopLevel }
+    value.values[2].value = { value: [min, value.values[2].value[1]], override: !sceneNode.isTopLevel }
   }
 
   const handleTypeChange = (newValue: PSValueType) => {
-    value.style = { value: newValue, override: !node.isTopLevel }
+    value.style = { value: newValue, override: !sceneNode.isTopLevel }
   }
 
   const handleRangeXChange = (range: [number, number]) => {
-    value.values[0].curveRange = { value: range, override: !node.isTopLevel };
+    value.values[0].curveRange = { value: range, override: !sceneNode.isTopLevel };
   }
 
   const handleRangeYChange = (range: [number, number]) => {
-    value.values[1].curveRange = { value: range, override: !node.isTopLevel };
+    value.values[1].curveRange = { value: range, override: !sceneNode.isTopLevel };
   }
 
   const handleRangeZChange = (range: [number, number]) => {
-    value.values[2].curveRange = { value: range, override: !node.isTopLevel };
+    value.values[2].curveRange = { value: range, override: !sceneNode.isTopLevel };
   }
 
   const handleAxesChange = (separateAxes: boolean) => {
-    value.separateAxes = { value: separateAxes, override: !node.isTopLevel }
+    value.separateAxes = { value: separateAxes, override: !sceneNode.isTopLevel }
   }
 
   return (

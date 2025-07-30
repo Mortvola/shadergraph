@@ -12,21 +12,21 @@ import { ComponentType } from '../../Renderer/Types';
 
 type PropsType = {
   value: Renderer,
-  node: SceneNode,
+  sceneNode: SceneNode,
 }
 
 const PSRenderer: React.FC<PropsType> = observer(({
   value,
-  node,
+  sceneNode,
 }) => {
   const store = useStores();
 
   const handleModeChange = (mode: RenderMode) => {
-    value.mode.set(mode, !node.isTopLevel);
+    value.mode.set(mode, !sceneNode.isTopLevel);
   }
 
   const handleRenderAlignmentChange = (mode: RenderAlignment) => {
-    value.renderAlignment.set(mode, !node.isTopLevel);
+    value.renderAlignment.set(mode, !sceneNode.isTopLevel);
   }
 
   const handleDragOver: React.DragEventHandler = (event) => {
@@ -108,7 +108,7 @@ const PSRenderer: React.FC<PropsType> = observer(({
       <Property
         label="Render Mode"
         property={value.mode}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="mode"
       >
@@ -122,7 +122,7 @@ const PSRenderer: React.FC<PropsType> = observer(({
               property={value.meshId}
               onDragOver={handleDragOver}
               onDrop={handleDrop}
-              node={node}
+              sceneNode={sceneNode}
               componentType={ComponentType.ParticleSystem}
               propertyPath="meshId"
             >
@@ -140,7 +140,7 @@ const PSRenderer: React.FC<PropsType> = observer(({
         property={value.materialId}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="materialId"
       >
@@ -153,7 +153,7 @@ const PSRenderer: React.FC<PropsType> = observer(({
       <Property
         label="Render Alignment"
         property={value.mode}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="mode"
       >

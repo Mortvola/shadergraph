@@ -12,15 +12,15 @@ import { ComponentType } from '../../Renderer/Types';
 
 type PropsType = {
   emissions: Emissions,
-  node: SceneNode,
+  sceneNode: SceneNode,
 }
 
 const PSEmissions: React.FC<PropsType> = observer(({
   emissions,
-  node,
+  sceneNode,
 }) => {
   const handleRateChange = (value: number) => {
-    emissions.rate.set(value, !node.isTopLevel);
+    emissions.rate.set(value, !sceneNode.isTopLevel);
   }
 
   const handleAddClick = () => {
@@ -61,7 +61,7 @@ const PSEmissions: React.FC<PropsType> = observer(({
             onFocus={() => handleRowFocus(index)}
           />
         </div>
-        <div><PSValueInput value={burst.count} onFocus={() => handleRowFocus(index)} node={node} /></div>
+        <div><PSValueInput value={burst.count} onFocus={() => handleRowFocus(index)} sceneNode={sceneNode} /></div>
         <div>
           <NumberInput
             value={burst.cycles}
@@ -85,7 +85,7 @@ const PSEmissions: React.FC<PropsType> = observer(({
       <Property
         label="Rate over time"
         property={emissions.rate}
-        node={node}
+        sceneNode={sceneNode}
         componentType={ComponentType.ParticleSystem}
         propertyPath="rate"
       >
@@ -95,7 +95,7 @@ const PSEmissions: React.FC<PropsType> = observer(({
         <Property
           label="Bursts"
           property={emissions.bursts}
-          node={node}
+          sceneNode={sceneNode}
           componentType={ComponentType.ParticleSystem}
           propertyPath="bursts"
         />

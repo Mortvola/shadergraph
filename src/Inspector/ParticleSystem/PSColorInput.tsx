@@ -9,12 +9,12 @@ import type SceneNode from '../../Scene/Types/SceneNode';
 
 type PropsType = {
   value: PSColor,
-  node: SceneNode,
+  sceneNode: SceneNode,
 }
 
 const PSColorInput: React.FC<PropsType> = observer(({
   value,
-  node,
+  sceneNode,
 }) => {
   const handleMinChange = (color: number[]) => {
     value.color = {
@@ -22,7 +22,7 @@ const PSColorInput: React.FC<PropsType> = observer(({
         color,
         value.color[1],
       ],
-      override: !node.isTopLevel,
+      override: !sceneNode.isTopLevel,
     }
   }
 
@@ -32,12 +32,12 @@ const PSColorInput: React.FC<PropsType> = observer(({
         value.color[0],
         color,
       ],
-      override: !node.isTopLevel,
+      override: !sceneNode.isTopLevel,
     }
   }
 
   const handleTypeChange = (newValue: PSColorType) => {
-    value.style = { value: newValue, override: !node.isTopLevel }
+    value.style = { value: newValue, override: !sceneNode.isTopLevel }
   }
 
   return (
