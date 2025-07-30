@@ -1,6 +1,6 @@
 import React from 'react';
 import NumberInput from '../NumberInput';
-import styles from './Particle.module.scss';
+import styles from './ParticleSystem.module.scss';
 import { observer } from 'mobx-react-lite';
 import PSValueInput from './PSValueInput';
 import PSColorInput from './PSColorInput';

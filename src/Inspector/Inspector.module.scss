@@ -29,6 +29,11 @@
 
 .transform {
   padding: 0.25rem 0;
+
+  > div {
+    display: flex;
+    column-gap: 0.25rem;
+  }
 }
 
 .overriden {

@@ -1,6 +1,7 @@
 import React from 'react';
 import NumberInput from '../NumberInput';
 import type PSValue2 from '../../Renderer/Properties/PSValue2';
+import styles from './PSValue3DInput.module.scss';
 
 type PropsType = {
   value: PSValue2,
@@ -18,7 +19,7 @@ const RangeInput: React.FC<PropsType> = ({
   }
 
   return (
-    <div>
+    <div className={styles.range}>
       <NumberInput
         value={value.value[0]}
         onChange={handleMinChange}

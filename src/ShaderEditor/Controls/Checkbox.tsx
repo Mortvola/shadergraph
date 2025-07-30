@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './Checkbox.module.scss'
 
 type PropsType = {
   value: boolean,
@@ -30,7 +31,7 @@ const Checkbox: React.FC<PropsType> = ({
   }
 
   return (
-    <label onClick={handleClick}>
+    <label className={styles.layout} onClick={handleClick}>
       <input
         type="checkbox"
         checked={value}

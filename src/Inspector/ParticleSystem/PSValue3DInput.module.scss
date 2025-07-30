@@ -1,0 +1,28 @@
+.layout {
+  display: flex;
+  column-gap: inherit;
+  align-items: inherit;
+
+  container-name: propsValue;
+  container-type: inline-size;
+
+  width: 100%;
+
+  > div {
+    display: flex;
+
+    @container propsValue (width < 20px) {
+      flex-direction: column;
+    }
+  }
+}
+
+.range {
+  display: flex;
+}
+
+@container propsValue (width < 280px) {
+  .triple .range {
+    flex-direction: column;
+  }
+}

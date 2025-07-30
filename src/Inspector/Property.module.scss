@@ -1,0 +1,13 @@
+.property {
+  display: grid;
+  grid-template-columns: max-content minmax(0,1fr);
+  flex-direction: row;
+  column-gap: 0.25rem;
+  width: 100%;
+  align-items: center;
+}
+
+.overriden {
+  color: #6060FF;
+  text-decoration: underline;
+}

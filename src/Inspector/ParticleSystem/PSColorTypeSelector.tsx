@@ -2,7 +2,7 @@ import React from 'react';
 import { PSColorType } from '../../Renderer/ParticleSystem/Types';
 import { observer } from 'mobx-react-lite';
 import Dropdown from 'react-bootstrap/Dropdown';
-import styles from './Particle.module.scss';
+import styles from './ParticleSystem.module.scss';
 import { CheckIcon } from 'lucide-react';
 
 type PropsType = {

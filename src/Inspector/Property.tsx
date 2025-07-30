@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './Inspector.module.scss';
+import styles from './Property.module.scss';
 import Select from './Select';
 import { observer } from 'mobx-react-lite';
 import type { PropertyBaseInterface } from '../Renderer/Properties/Types';

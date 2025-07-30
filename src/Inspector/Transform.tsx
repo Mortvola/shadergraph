@@ -100,9 +100,11 @@ const Transform: React.FC<PropsType> = observer(({
         componentType={ComponentType.Transform}
         propertyPath="translate"
       >
-        <NumberInput value={transformProps.translate.get()[0]} onChange={handleTranslateXChange} />
-        <NumberInput value={transformProps.translate.get()[1]} onChange={handleTranslateYChange} />
-        <NumberInput value={transformProps.translate.get()[2]} onChange={handleTranslateZChange} />
+        <div>
+          <NumberInput value={transformProps.translate.get()[0]} onChange={handleTranslateXChange} />
+          <NumberInput value={transformProps.translate.get()[1]} onChange={handleTranslateYChange} />
+          <NumberInput value={transformProps.translate.get()[2]} onChange={handleTranslateZChange} />
+        </div>
       </Property>
 
       <Property
@@ -113,9 +115,11 @@ const Transform: React.FC<PropsType> = observer(({
         componentType={ComponentType.Transform}
         propertyPath="rotate"
       >
-        <NumberInput value={radToDeg(transformProps.rotate.get()[0])} onChange={handleRotateXChange} />
-        <NumberInput value={radToDeg(transformProps.rotate.get()[1])} onChange={handleRotateYChange} />
-        <NumberInput value={radToDeg(transformProps.rotate.get()[2])} onChange={handleRotateZChange} />
+        <div>
+          <NumberInput value={radToDeg(transformProps.rotate.get()[0])} onChange={handleRotateXChange} />
+          <NumberInput value={radToDeg(transformProps.rotate.get()[1])} onChange={handleRotateYChange} />
+          <NumberInput value={radToDeg(transformProps.rotate.get()[2])} onChange={handleRotateZChange} />
+        </div>
       </Property>
 
       <Property
@@ -126,9 +130,11 @@ const Transform: React.FC<PropsType> = observer(({
         componentType={ComponentType.Transform}
         propertyPath="scale"
       >
-        <NumberInput value={transformProps.scale.get()[0]} onChange={handleScaleXChange} />
-        <NumberInput value={transformProps.scale.get()[1]} onChange={handleScaleYChange} />
-        <NumberInput value={transformProps.scale.get()[2]} onChange={handleScaleZChange} />
+        <div>
+          <NumberInput value={transformProps.scale.get()[0]} onChange={handleScaleXChange} />
+          <NumberInput value={transformProps.scale.get()[1]} onChange={handleScaleYChange} />
+          <NumberInput value={transformProps.scale.get()[2]} onChange={handleScaleZChange} />
+        </div>
       </Property>
     </>
   )

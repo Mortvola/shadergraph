@@ -8,6 +8,7 @@ import CurveEditor from '../../Color/CurveEditor';
 import Checkbox from '../../ShaderEditor/Controls/Checkbox';
 import RangeInput from './RangeInput';
 import type SceneNode from '../../Scene/Types/SceneNode';
+import styles from './PSValue3DInput.module.scss';
 
 type PropsType = {
   value: PSValue3D,
@@ -51,7 +52,7 @@ const PSValue3DInput: React.FC<PropsType> = observer(({
   }
 
   return (
-    <>
+    <div className={`${styles.layout} ${value.separateAxes ? styles.triple : ''}`}>
       <Checkbox value={value.separateAxes} label="3D" onChange={handleAxesChange} />
       {
         (
@@ -135,7 +136,7 @@ const PSValue3DInput: React.FC<PropsType> = observer(({
         )()
       }
       <PSValueTypeSelector value={value.style} onChange={handleTypeChange} />
-    </>
+    </div>
   )
 })
 
