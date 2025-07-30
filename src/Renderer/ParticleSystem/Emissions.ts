@@ -57,7 +57,7 @@ class Emissions extends PSModule {
             key: uuidv4(),
             time: 0,
             count: new PSValue({ value: [1, 1] }),
-            cycles: 0,
+            cycles: 1,
             interval: 1,
             probability: 1,
           },
